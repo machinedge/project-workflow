@@ -1,17 +1,17 @@
-# AI Project Toolkit
+# AI Project Workflow
 
-A zero-copy-paste system for running big projects with AI coding assistants across multiple sessions. Works with both **Claude Code** and **Cursor**.
+MachinEdge's system for running big projects with AI coding assistants across multiple sessions. Works with both **Claude Code** and **Cursor**.
 
 ## How It Works
 
-Both Claude Code and Cursor support two features that eliminate manual copy-paste:
+Both Claude Code and Cursor support two features that support this automated workflow:
 
 | Feature | Claude Code | Cursor |
 |---------|-------------|--------|
 | Auto-loaded rules | `.claude/CLAUDE.md` | `.cursor/rules/project-os.mdc` |
 | Slash commands | `.claude/commands/*.md` | `.cursor/commands/*.md` |
 
-The rules file tells the AI where all project documents live and how to behave. The slash commands automate each phase of the workflow. The command files are identical for both editors — they're maintained once in `commands/` and copied to the right place at setup time.
+The rules file tells the AI where all project documents live and how to behave. The slash commands automate each phase of the workflow. Everything is maintained once — `editor.md` for the rules, `commands/` for the commands — and `setup.sh` copies them to the right place for each editor (prepending Cursor's YAML frontmatter automatically).
 
 ## Quick Start
 
@@ -81,7 +81,8 @@ This is what the toolkit itself looks like. You clone/download this once and use
 
 ```
 ai-project-toolkit/
-├── commands/                            ← Single source of truth for all commands
+├── editor.md                            ← Single source: AI rules (both editors)
+├── commands/                            ← Single source: all slash commands
 │   ├── brainstorm.md
 │   ├── vision.md
 │   ├── roadmap.md
@@ -89,15 +90,12 @@ ai-project-toolkit/
 │   ├── start.md                         ← The key one (7-phase execution loop)
 │   ├── handoff.md
 │   └── postmortem.md
-├── .claude/
-│   └── CLAUDE.md                        ← Claude Code rules (auto-loaded)
-├── .cursor/
-│   └── rules/
-│       └── project-os.mdc              ← Cursor rules (same content + frontmatter)
 ├── setup.sh                             ← Set up an existing project
 ├── new_repo.sh                          ← Create a new GitHub repo with toolkit
 └── README.md                            ← This file
 ```
+
+`setup.sh` copies `editor.md` as-is to `.claude/CLAUDE.md`, and prepends Cursor's YAML frontmatter to produce `.cursor/rules/project-os.mdc`. No duplication in the toolkit itself.
 
 ## Project Structure (after setup)
 

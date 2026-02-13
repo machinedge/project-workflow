@@ -13,7 +13,7 @@ Interview them about this project, one category at a time, in this order:
 7. **Risks** — What could go wrong? What's most uncertain?
 
 Rules:
-- Ask 2-3 questions per category, then WAIT for answers before moving on.
+- Ask questions one-at-a-time per category, then WAIT for answers before moving on.
 - If an answer is vague, push back and ask for specifics.
 - After all categories, produce a structured summary and flag any contradictions or gaps.
 - Save the summary to `docs/brainstorm-notes.md`.

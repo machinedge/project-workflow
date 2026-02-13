@@ -71,24 +71,36 @@ fi
 
 # ─────────────────────────────────────────────
 # Claude Code setup
+# editor.md is copied as-is to .claude/CLAUDE.md
 # ─────────────────────────────────────────────
 
 if [ "$EDITOR" = "claude" ] || [ "$EDITOR" = "both" ]; then
     echo "  Setting up Claude Code (.claude/)..."
     mkdir -p "$TARGET/.claude/commands"
-    cp "$SCRIPT_DIR/.claude/CLAUDE.md" "$TARGET/.claude/CLAUDE.md"
+    cp "$SCRIPT_DIR/editor.md" "$TARGET/.claude/CLAUDE.md"
     cp "$SCRIPT_DIR"/commands/*.md "$TARGET/.claude/commands/"
 fi
 
 # ─────────────────────────────────────────────
 # Cursor setup
+# editor.md + YAML frontmatter → .cursor/rules/project-os.mdc
 # ─────────────────────────────────────────────
 
 if [ "$EDITOR" = "cursor" ] || [ "$EDITOR" = "both" ]; then
     echo "  Setting up Cursor (.cursor/)..."
     mkdir -p "$TARGET/.cursor/rules"
     mkdir -p "$TARGET/.cursor/commands"
-    cp "$SCRIPT_DIR/.cursor/rules/project-os.mdc" "$TARGET/.cursor/rules/project-os.mdc"
+
+    # Prepend Cursor's frontmatter to the shared editor rules
+    {
+        printf '%s\n' "---"
+        printf '%s\n' "description: Project operating system — multi-session project management protocol"
+        printf '%s\n' "alwaysApply: true"
+        printf '%s\n' "---"
+        printf '\n'
+        cat "$SCRIPT_DIR/editor.md"
+    } > "$TARGET/.cursor/rules/project-os.mdc"
+
     cp "$SCRIPT_DIR"/commands/*.md "$TARGET/.cursor/commands/"
 fi
 
