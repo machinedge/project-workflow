@@ -31,18 +31,36 @@ The rules file tells the AI where all project documents live and how to behave. 
 .\setup.ps1 -Editor cursor -Target ~\projects\my-existing-project             # Cursor only
 ```
 
-### New repo (creates GitHub repo under machinedge/)
+### New repo (creates GitHub repo under your org/user)
+
+First, set your GitHub org or username. You can either export it in your shell profile (set once, used everywhere):
+
+```bash
+# .bashrc / .zshrc
+export GITHUB_ORG="your-org-or-username"
+```
+
+```powershell
+# PowerShell profile
+$env:GITHUB_ORG = "your-org-or-username"
+```
+
+Or pass it per-invocation with `--org` / `-Org`.
 
 **macOS / Linux:**
 ```bash
-./new_repo.sh my-new-project            # Both editors
-./new_repo.sh my-new-project cursor     # Cursor only
+./new_repo.sh my-new-project                        # Uses $GITHUB_ORG, both editors
+./new_repo.sh --org mycompany my-new-project        # Explicit org
+./new_repo.sh --editor cursor my-new-project        # Cursor only
+./new_repo.sh --org mycompany --editor claude app   # All flags
 ```
 
 **Windows (PowerShell):**
 ```powershell
-.\new_repo.ps1 my-new-project           # Both editors
-.\new_repo.ps1 my-new-project cursor    # Cursor only
+.\new_repo.ps1 my-new-project                       # Uses $env:GITHUB_ORG, both editors
+.\new_repo.ps1 -Org mycompany my-new-project        # Explicit org
+.\new_repo.ps1 -Editor cursor my-new-project        # Cursor only
+.\new_repo.ps1 -Org mycompany -Editor claude app    # All flags
 ```
 
 Then open the project in your editor and run `/brainstorm`.
@@ -178,6 +196,7 @@ The `docs/` folder is the same regardless of editor, so mixed teams work fine.
 
 - **Git** — installed and configured
 - **GitHub CLI (`gh`)** — required for `new_repo` scripts ([install](https://cli.github.com/))
+- **`GITHUB_ORG`** — set this environment variable to your GitHub org or username (required for `new_repo` scripts, or pass `--org` / `-Org` each time)
 - **macOS / Linux:** Bash
 - **Windows:** PowerShell 5.1+ (ships with Windows 10/11) or PowerShell 7+
 

@@ -1,19 +1,27 @@
 # AI Project Toolkit — New Repo Scaffolder (Windows)
-# Usage: .\new_repo.ps1 <repo-name> [claude|cursor|both]
+# Usage: .\new_repo.ps1 [-Org <github-org>] [-Editor claude|cursor|both] <repo-name>
 #
 # Creates a new git repo with the toolkit pre-configured,
-# and pushes it to GitHub under machinedge/.
+# and pushes it to GitHub under the specified org/user.
+#
+# The GitHub org/user can be set via:
+#   1. -Org parameter (highest priority)
+#   2. GITHUB_ORG environment variable
 #
 # Examples:
-#   .\new_repo.ps1 my-app              # Both editors (default)
-#   .\new_repo.ps1 my-app cursor       # Cursor only
-#   .\new_repo.ps1 my-app claude       # Claude Code only
+#   .\new_repo.ps1 my-app                          # Uses $env:GITHUB_ORG, both editors
+#   .\new_repo.ps1 -Org mycompany my-app           # Explicit org
+#   .\new_repo.ps1 -Editor cursor my-app           # Cursor only
+#   .\new_repo.ps1 -Org myco -Editor claude app    # All flags
 
 param(
     [Parameter(Mandatory = $true, Position = 0)]
     [string]$RepoName,
 
-    [Parameter(Position = 1)]
+    [Parameter()]
+    [string]$Org = "",
+
+    [Parameter()]
     [ValidateSet("claude", "cursor", "both")]
     [string]$Editor = "both"
 )
@@ -27,6 +35,15 @@ if (-not (Get-Command git -ErrorAction SilentlyContinue)) {
 }
 if (-not (Get-Command gh -ErrorAction SilentlyContinue)) {
     Write-Error "Error: gh CLI is not installed (https://cli.github.com)"
+    exit 1
+}
+
+# Resolve org: parameter > env var
+if ([string]::IsNullOrEmpty($Org)) {
+    $Org = $env:GITHUB_ORG
+}
+if ([string]::IsNullOrEmpty($Org)) {
+    Write-Error "Error: GitHub org/user not specified. Set GITHUB_ORG in your environment or pass -Org <github-org>"
     exit 1
 }
 
@@ -62,7 +79,7 @@ try {
     git add .
     git commit -m "Initial commit: project scaffold with AI toolkit"
 
-    gh repo create "machinedge/$RepoName" --private
+    gh repo create "$Org/$RepoName" --private
     if ($LASTEXITCODE -ne 0) {
         Write-Warning "Failed to create GitHub repo. Cleaning up local repo."
         Pop-Location
@@ -70,7 +87,7 @@ try {
         exit 1
     }
 
-    git remote add origin "git@github.com:machinedge/$RepoName.git"
+    git remote add origin "git@github.com:$Org/$RepoName.git"
     git branch -M main
     git push -u origin main
 } finally {
@@ -79,5 +96,5 @@ try {
 
 Write-Host ""
 Write-Host "Done! Repo ready at: $RepoDir"
-Write-Host "GitHub: https://github.com/machinedge/$RepoName"
+Write-Host "GitHub: https://github.com/$Org/$RepoName"
 Write-Host ""

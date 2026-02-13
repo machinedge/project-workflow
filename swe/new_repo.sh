@@ -1,22 +1,22 @@
 #!/bin/bash
 
 # AI Project Toolkit — New Repo Scaffolder
-# Usage: ./new_repo.sh <repo-name> [claude|cursor|both]
+# Usage: ./new_repo.sh [--org <github-org>] [--editor claude|cursor|both] <repo-name>
 #
 # Creates a new git repo with the toolkit pre-configured,
-# and pushes it to GitHub under machinedge/.
+# and pushes it to GitHub under the specified org/user.
+#
+# The GitHub org/user can be set via:
+#   1. --org flag (highest priority)
+#   2. GITHUB_ORG environment variable
 #
 # Examples:
-#   ./new_repo.sh my-app              # Both editors (default)
-#   ./new_repo.sh my-app cursor       # Cursor only
-#   ./new_repo.sh my-app claude       # Claude Code only
+#   ./new_repo.sh my-app                        # Uses $GITHUB_ORG, both editors
+#   ./new_repo.sh --org mycompany my-app        # Explicit org
+#   ./new_repo.sh --editor cursor my-app        # Cursor only
+#   ./new_repo.sh --org myco --editor claude app # All flags
 
 set -e
-
-if [ -z "$1" ]; then
-    echo "Usage: ./new_repo.sh <repo-name> [claude|cursor|both]"
-    exit 1
-fi
 
 # Check prerequisites
 if ! command -v git &> /dev/null; then
@@ -31,15 +31,50 @@ fi
 # Resolve the directory where this script lives (the toolkit root)
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
-REPO_NAME="$1"
-EDITOR="${2:-both}"
-REPO_DIR="$HOME/work/$REPO_NAME"
+# Parse arguments
+ORG=""
+EDITOR="both"
+REPO_NAME=""
+
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        --org)
+            ORG="$2"
+            shift 2
+            ;;
+        --editor)
+            EDITOR="$2"
+            shift 2
+            ;;
+        *)
+            REPO_NAME="$1"
+            shift
+            ;;
+    esac
+done
+
+if [ -z "$REPO_NAME" ]; then
+    echo "Usage: ./new_repo.sh [--org <github-org>] [--editor claude|cursor|both] <repo-name>"
+    exit 1
+fi
+
+# Resolve org: flag > env var
+if [ -z "$ORG" ]; then
+    ORG="${GITHUB_ORG:-}"
+fi
+if [ -z "$ORG" ]; then
+    echo "Error: GitHub org/user not specified."
+    echo "  Set GITHUB_ORG in your environment or pass --org <github-org>"
+    exit 1
+fi
 
 # Validate repo name
 if [[ ! "$REPO_NAME" =~ ^[a-zA-Z0-9._-]+$ ]]; then
     echo "Error: Invalid repo name '$REPO_NAME'. Use only letters, numbers, hyphens, dots, and underscores."
     exit 1
 fi
+
+REPO_DIR="$HOME/work/$REPO_NAME"
 
 if [ -d "$REPO_DIR" ]; then
     echo "Error: $REPO_DIR already exists"
@@ -61,18 +96,18 @@ git init
 git add .
 git commit -m "Initial commit: project scaffold with AI toolkit"
 
-if ! gh repo create "machinedge/$REPO_NAME" --private; then
+if ! gh repo create "$ORG/$REPO_NAME" --private; then
     echo "Failed to create GitHub repo. Cleaning up local repo."
     cd "$HOME"
     rm -rf "$REPO_DIR"
     exit 1
 fi
 
-git remote add origin "git@github.com:machinedge/$REPO_NAME.git"
+git remote add origin "git@github.com:$ORG/$REPO_NAME.git"
 git branch -M main
 git push -u origin main
 
 echo ""
 echo "Done! Repo ready at: $REPO_DIR"
-echo "GitHub: https://github.com/machinedge/$REPO_NAME"
+echo "GitHub: https://github.com/$ORG/$REPO_NAME"
 echo ""
