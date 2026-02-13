@@ -9,16 +9,16 @@ The user may specify a task: $ARGUMENTS
 Read these files automatically — do not ask the user to provide them:
 1. `docs/project-brief.md`
 2. `docs/lessons-log.md`
-3. The task brief:
-   - If user specified (e.g. "TASK-03"), read `docs/tasks/task-03.md`
-   - If not, check project brief's "Next task" field
-   - If still unclear, list tasks in `docs/tasks/` and ask
+3. The task (GitHub issue):
+   - If user specified an issue number (e.g. "#42" or "42"), read it: `gh issue view 42`
+   - If not, check project brief's "Next task" field for the issue number
+   - If still unclear, list open tasks: `gh issue list --label task --state open` and ask
 4. Most recent handoff note in `docs/handoff-notes/` (if any exist)
 
 Confirm understanding with the user:
 - "Project: [1 sentence]"
 - "Last session: [1 sentence from handoff, or 'First session']"
-- "Today's task: [restate the objective in your own words]"
+- "Today's task: #[number] — [restate the user story objective in your own words]"
 - Flag anything unclear or contradictory.
 
 Wait for user confirmation before proceeding.
@@ -76,7 +76,7 @@ Now write the implementation code:
 
 - Follow the architecture from Phase 3.
 - Write code that makes the tests from Phase 4 pass.
-- Stay within the scope defined in the task brief. If you discover something out of scope, flag it — don't do it.
+- Stay within the scope defined in the issue. If you discover something out of scope, flag it — don't do it.
 - If you make a decision that wasn't covered in the architecture, note it for the handoff.
 
 ---
@@ -86,7 +86,7 @@ Now write the implementation code:
 Run verification before declaring the task complete:
 
 - **Run the tests.** All tests from Phase 4 should pass. If any fail, fix the implementation (not the tests, unless the test was wrong).
-- **Run any verification steps** listed in the task brief's "How to Verify" section.
+- **Check acceptance criteria.** Walk through each acceptance criterion from the GitHub issue. Can each one be demonstrated or verified? Check them off.
 - **Check for regressions** — does existing functionality still work?
 - **Review your own output** — read through the code or content you produced. Look for obvious issues, TODOs left behind, hardcoded values, missing error handling.
 
@@ -100,6 +100,7 @@ Summarize what was done:
 
 - What was implemented and where (file paths)
 - What tests were written and their status (all passing / any caveats)
+- Acceptance criteria status (all met / any caveats)
 - Any decisions made during implementation that weren't in the original plan
 - Any concerns, technical debt, or follow-up items
 - Anything the user should manually verify

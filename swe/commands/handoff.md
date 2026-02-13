@@ -6,7 +6,9 @@ Look at existing files in `docs/handoff-notes/`. The new file should be the next
 
 ## Step 2: Identify the task
 
-Read `docs/project-brief.md` to see what task was in progress. If unclear, ask the user.
+Determine which GitHub issue was worked on this session. Check the conversation context or read `docs/project-brief.md` to see what task was in progress. If unclear, ask the user.
+
+Read the issue to get the acceptance criteria: `gh issue view [number]`
 
 ## Step 3: Write the handoff note
 
@@ -16,10 +18,15 @@ Save to `docs/handoff-notes/session-NN.md`:
 # Handoff Note: [Task Name]
 
 **Session date:** [today's date]
-**Task completed:** [Task ID and name]
+**GitHub issue:** #[number] — [title]
 
 ## What Was Accomplished
 [2-3 sentences. What exists now that didn't before?]
+
+## Acceptance Criteria Status
+- [x] [Criterion that was met]
+- [x] [Criterion that was met]
+- [ ] [Criterion not yet met — explain why]
 
 ## Decisions Made This Session
 | Decision | Reasoning |
@@ -41,14 +48,36 @@ Save to `docs/handoff-notes/session-NN.md`:
 - [ ] [Anything unresolved]
 ```
 
-## Step 4: Update the project brief
+## Step 4: Update the GitHub issue
+
+Comment on the issue with a session summary, then close it if all acceptance criteria are met:
+
+```bash
+gh issue comment [number] --body "$(cat <<'EOF'
+## Session [NN] Summary
+
+**What was done:** [1-2 sentences]
+**Handoff note:** `docs/handoff-notes/session-NN.md`
+**All acceptance criteria met:** [Yes / No — if no, explain what remains]
+EOF
+)"
+```
+
+If all acceptance criteria are met, close the issue:
+```bash
+gh issue close [number] --reason completed
+```
+
+If acceptance criteria are NOT all met, do NOT close the issue. Instead, note in the comment what remains and leave it open for the next session.
+
+## Step 5: Update the project brief
 
 Read and update `docs/project-brief.md`:
 - Add any new decisions to the "Key Decisions Made" table
-- Update "Current Status" section: last completed task, next task, blockers
+- Update "Current Status" section: last completed issue, next issue, blockers
 - Update the "Last updated" date
 
-## Step 5: Update the lessons log
+## Step 6: Update the lessons log
 
 If anything was learned during this session (a gotcha, a prompting pattern, a technical quirk), add it to `docs/lessons-log.md`.
 

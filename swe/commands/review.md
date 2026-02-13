@@ -1,4 +1,4 @@
-Review code produced by previous sessions with fresh eyes.
+Review code produced by previous sessions with fresh eyes. Push findings as GitHub issues.
 
 The user may specify a scope: $ARGUMENTS
 
@@ -8,8 +8,8 @@ The user may specify a scope: $ARGUMENTS
 
 Figure out what to review based on what the user provides:
 
-- **Single task** (e.g. "TASK-03") — review the code produced in that task's sessions
-- **Range** (e.g. "TASK-01 through TASK-04") — review cumulative changes across those tasks
+- **Single task** (e.g. "#42" or "42") — review the code produced in that task's sessions
+- **Range** (e.g. "#38 through #42") — review cumulative changes across those tasks
 - **Nothing specified** — ask the user: review the latest task, or review everything since the last milestone?
 
 ## Step 2: Load Context
@@ -17,7 +17,7 @@ Figure out what to review based on what the user provides:
 Read these files:
 1. `docs/project-brief.md` — understand the project goals and constraints
 2. `docs/lessons-log.md` — know what gotchas have already been identified
-3. The relevant task brief(s) in `docs/tasks/`
+3. The relevant GitHub issue(s): `gh issue view [number]` for each task in scope
 4. The relevant handoff note(s) in `docs/handoff-notes/` — understand what was done and what decisions were made
 
 Do NOT read the code yet. Understand the intent first so you can evaluate the code against what it was supposed to do, not just what it happens to do.
@@ -31,7 +31,7 @@ Now read the files that were created or modified (listed in the handoff notes un
 Assess the code across these dimensions. Be critical, not polite. The goal is to catch problems before they compound.
 
 **Correctness**
-- Does the code do what the task brief asked for?
+- Does the code do what the user story and acceptance criteria asked for?
 - Are there edge cases that aren't handled?
 - Are there logic errors, off-by-one mistakes, or incorrect assumptions?
 
@@ -81,11 +81,53 @@ For each finding:
 - Explain why it matters (not just "this is bad" — say what goes wrong if it's not fixed)
 - Suggest a specific fix
 
-## Step 6: Update Documents
+## Step 6: Create GitHub Issues for Findings
 
-After presenting findings:
+After the user reviews and approves the findings, create GitHub issues for **Must Fix** and **Should Fix** items. Do NOT create issues for Nits — those are informational only.
+
+Identify the persona who is affected by each finding. Then create issues:
+
+```bash
+gh issue create \
+  --title "[Short descriptive title]" \
+  --label "must-fix" \
+  --body "$(cat <<'EOF'
+## User Story
+
+As a [persona], I [need | want] [what the fix provides] so that I can [why it matters — what goes wrong without the fix].
+
+## Description
+
+[What's wrong, where it is (file paths), and what needs to change.]
+
+**Found by:** `/review` of #[original task issue number]
+**Severity:** Must Fix
+
+## Acceptance Criteria
+
+- [ ] [What "fixed" looks like from the persona's perspective]
+- [ ] [Another verifiable criterion]
+
+## Technical Notes
+
+**Estimated effort:** [Small / Medium / Large session]
+**File(s):** [affected file paths]
+EOF
+)"
+```
+
+Use `--label "must-fix"` or `--label "should-fix"` accordingly. Create these labels if they don't exist:
+
+```bash
+gh label create must-fix --description "Review finding: must fix before moving on" --color D93F0B
+gh label create should-fix --description "Review finding: fix within current milestone" --color FBCA04
+```
+
+## Step 7: Update Documents
+
+After creating issues:
 - Add any new lessons to `docs/lessons-log.md` (patterns that should be caught earlier next time)
 - If the review found scope drift or incorrect decisions, flag these for the user to update in `docs/project-brief.md`
-- If "Must Fix" items exist, ask the user if they want to create a follow-up task brief in `docs/tasks/` to address them
+- List the created issue numbers so the user has a clear action list
 
 Do not auto-fix the code. This is a review, not a refactoring session. Fixes should happen in a dedicated `/start` session so they go through the full plan → architect → test → implement → verify loop.

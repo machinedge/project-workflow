@@ -1,6 +1,6 @@
 # Software Engineering (SWE) Project Workflow
 
-MachinEdge's system for running big projects with AI coding assistants across multiple sessions. Works with both **Claude Code** and **Cursor**.
+MachinEdge's system for running big projects with AI coding assistants across multiple sessions. Works with both **Claude Code** and **Cursor**. Tasks are tracked as **GitHub Issues** with user stories and acceptance criteria.
 
 ## How It Works
 
@@ -12,6 +12,8 @@ Both Claude Code and Cursor support two features that support this automated wor
 | Slash commands | `.claude/commands/*.md` | `.cursor/commands/*.md` |
 
 The rules file tells the AI where all project documents live and how to behave. The slash commands automate each phase of the workflow. Everything is maintained once — `editor.md` for the rules, `commands/` for the commands — and the setup script copies them to the right place for each editor (prepending Cursor's YAML frontmatter automatically).
+
+Tasks are GitHub Issues, not local markdown files. `/decompose` creates them, `/start` reads them, `/handoff` closes them, `/review` creates new ones for findings. All via `gh` CLI.
 
 ## Quick Start
 
@@ -72,10 +74,10 @@ Then open the project in your editor and run `/brainstorm`.
 | 1 | `/brainstorm` | AI interviews you, saves notes to `docs/brainstorm-notes.md` |
 | 2 | `/vision` | AI reads the notes, creates `docs/project-brief.md` |
 | 3 | `/roadmap` | AI reads the brief, creates `docs/roadmap.md` with milestones |
-| 4 | `/decompose` | AI breaks a milestone into tasks in `docs/tasks/` |
-| 5 | `/start TASK-01` | AI loads context, plans, architects, tests, implements, verifies |
-| 6 | `/handoff` | AI writes handoff note, updates brief and lessons log |
-| 7 | `/review TASK-01` | *(Optional)* Fresh-eyes code review in a new session |
+| 4 | `/decompose` | AI breaks a milestone into GitHub Issues with user stories |
+| 5 | `/start #42` | AI loads context + issue, plans, architects, tests, implements, verifies |
+| 6 | `/handoff` | AI writes handoff note, updates brief, comments on + closes issue |
+| 7 | `/review #42` | *(Optional)* Fresh-eyes code review in a new session, findings → issues |
 | 8 | `/postmortem` | After a milestone: AI reviews everything, updates roadmap |
 
 Repeat steps 5-6 for each task. Run step 7 occasionally — after a tricky task, or before a milestone review. Run step 8 after completing a milestone.
@@ -84,12 +86,12 @@ Repeat steps 5-6 for each task. Run step 7 occasionally — after a tricky task,
 
 `/start` isn't just "load context and go." It enforces a structured development process:
 
-1. **Load Context** — Reads project brief, lessons log, task brief, last handoff (automatically)
+1. **Load Context** — Reads project brief, lessons log, GitHub issue, last handoff (automatically)
 2. **Plan** — Presents approach, waits for approval
 3. **Architect** — Designs the solution, waits for approval
 4. **Test First** — Writes unit + integration tests (expected to fail)
 5. **Implement** — Writes code to make the tests pass
-6. **Verify** — Runs tests, checks regressions, self-reviews
+6. **Verify** — Runs tests, checks acceptance criteria, checks regressions, self-reviews
 7. **Report** — Summarizes what was done, prompts for `/handoff`
 
 Phases 2 and 3 have approval gates. Phases 4-6 flow continuously.
@@ -99,18 +101,39 @@ Phases 2 and 3 have approval gates. Phases 4-6 flow continuously.
 `/review` is designed to run in a **separate session** from the one that wrote the code. This gives you genuine fresh-eyes review — the AI has no memory of the implementation decisions, shortcuts, or context from the original session.
 
 Run it one of two ways:
-- **Single task:** `/review TASK-03` — focused review of one task's output
-- **Cumulative:** `/review TASK-01 through TASK-04` — cross-task consistency check
+- **Single task:** `/review #42` — focused review of one task's output
+- **Cumulative:** `/review #38 through #42` — cross-task consistency check
 
-It evaluates: correctness, test coverage, security, consistency with the rest of the codebase, technical debt, and architecture fit. Findings are categorized as Must Fix / Should Fix / Nits. It does not auto-fix — fixes go through a proper `/start` session.
+It evaluates: correctness, test coverage, security, consistency with the rest of the codebase, technical debt, and architecture fit. Findings are categorized as Must Fix / Should Fix / Nits. Must Fix and Should Fix items are pushed as GitHub Issues with user stories. It does not auto-fix — fixes go through a proper `/start` session.
+
+### GitHub Issue format
+
+Every task and review finding follows the same structure:
+
+```markdown
+## User Story
+As a [persona], I [need | want | desire] [feature / capability] so that I can [value proposition].
+
+## Description
+[Short description]
+
+## Acceptance Criteria
+- [ ] [Verifiable criterion from the persona's perspective]
+- [ ] [Another criterion]
+```
+
+This keeps requirements persona-centric, testable, and consistent across the project.
 
 ## What You No Longer Have to Do
 
 - Copy-paste the project brief into every session — **auto-loaded by rules**
 - Copy-paste handoff notes — **`/start` finds and reads the latest one**
-- Remember which task is next — **`/start` checks the project brief's status**
+- Remember which task is next — **`/start` checks the project brief or lists open issues**
 - Manually update the project brief — **`/handoff` does it**
 - Remember to log lessons — **`/handoff` prompts for them**
+- Write task specs from scratch — **`/decompose` creates issues with user stories**
+- Manually close issues — **`/handoff` closes them when acceptance criteria are met**
+- Create bug tickets from code review — **`/review` pushes findings as issues**
 
 ## What You Still Have to Do
 
@@ -129,10 +152,10 @@ ai-project-toolkit/
 │   ├── brainstorm.md
 │   ├── vision.md
 │   ├── roadmap.md
-│   ├── decompose.md
+│   ├── decompose.md                     ← Creates GitHub Issues with user stories
 │   ├── start.md                         ← The key one (7-phase execution loop)
-│   ├── review.md                        ← Fresh-eyes code review (separate session)
-│   ├── handoff.md
+│   ├── review.md                        ← Fresh-eyes review → findings as issues
+│   ├── handoff.md                       ← Closes issues when acceptance criteria met
 │   └── postmortem.md
 ├── setup.sh                             ← Set up an existing project (macOS/Linux)
 ├── setup.ps1                            ← Set up an existing project (Windows)
@@ -155,21 +178,19 @@ my-project/
 ├── .cursor/                             ← Cursor config
 │   ├── rules/project-os.mdc            ← Auto-loaded rules
 │   └── commands/*.md                    ← Copied from toolkit (identical files)
-├── docs/                                ← Shared — works with either editor
+├── docs/                                ← Local project docs
 │   ├── project-brief.md                 ← Source of truth (auto-updated)
 │   ├── roadmap.md                       ← Milestones and risks
 │   ├── lessons-log.md                   ← Running gotchas
 │   ├── brainstorm-notes.md              ← Raw brainstorm output
-│   ├── tasks/
-│   │   ├── task-01.md
-│   │   └── task-02.md
 │   └── handoff-notes/
 │       ├── session-01.md
 │       └── session-02.md
-└── src/                                 ← Your actual project files
+├── src/                                 ← Your actual project files
+└── (GitHub Issues)                      ← Tasks + review findings (not in repo)
 ```
 
-The `docs/` folder is editor-agnostic. Team members can use different editors on the same project.
+The `docs/` folder is editor-agnostic. Team members can use different editors on the same project. Tasks live on GitHub, visible to everyone without pulling the repo.
 
 ## Editor-Specific Notes
 
@@ -190,7 +211,7 @@ The `docs/` folder is editor-agnostic. Team members can use different editors on
    - **Windows:** `.\setup.ps1 -Editor [your-editor] -Target [project-folder]`
 3. Share this README.
 
-The `docs/` folder is the same regardless of editor, so mixed teams work fine.
+The `docs/` folder is the same regardless of editor, so mixed teams work fine. Tasks on GitHub are visible to everyone.
 
 ## Prerequisites
 
@@ -205,5 +226,6 @@ The `docs/` folder is the same regardless of editor, so mixed teams work fine.
 - **`/start` is the most important command.** It loads context and enforces plan → architect → test → implement → verify. Use it every execution session.
 - **`/handoff` is the most important habit.** Always run it before closing. 2 minutes now saves 20 minutes next session.
 - **`/review` works best in a fresh session.** Don't run it in the same session that wrote the code — the whole point is fresh eyes without implementation bias.
+- **Write user stories from the persona's perspective, not the developer's.** "As a warehouse manager, I need..." not "As a developer, I need to create a SQL query..."
 - **The project brief is the single source of truth.** If it's wrong, everything downstream is wrong. Review carefully after `/vision` and `/postmortem`.
 - **Keep sessions short.** One task, one session. If you're tempted to squeeze in "one more thing," start a new session instead.

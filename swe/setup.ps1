@@ -33,7 +33,6 @@ Write-Host "Setting up project toolkit in: $Target (editor: $Editor)"
 # Shared docs directory
 # ─────────────────────────────────────────────
 
-New-Item -ItemType Directory -Path "$Target/docs/tasks" -Force | Out-Null
 New-Item -ItemType Directory -Path "$Target/docs/handoff-notes" -Force | Out-Null
 
 if (-not (Test-Path "$Target/docs/lessons-log.md")) {
