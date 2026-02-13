@@ -11,11 +11,12 @@ This command produces the analysis equivalent of a completed milestone review. I
 Read ALL of these:
 
 1. `docs/analysis-brief.md` — goals, questions, success criteria
-2. `docs/scope.md` — planned phases and their status
-3. `docs/data-profile.md` — everything known about the data
-4. **ALL handoff notes** in `docs/handoff-notes/` — read every file
-5. `docs/lessons-log.md` — gotchas and domain knowledge
-6. All notebooks in `notebooks/` — review the actual analysis work
+2. `docs/domain-context.md` — application domain constraints, success criteria, and recommended deliverable formats
+3. `docs/scope.md` — planned phases and their status
+4. `docs/data-profile.md` — everything known about the data
+5. **ALL handoff notes** in `docs/handoff-notes/` — read every file
+6. `docs/lessons-log.md` — gotchas and domain knowledge
+7. All notebooks in `notebooks/` — review the actual analysis work
 
 Pull the phase's issues from GitHub:
 ```bash

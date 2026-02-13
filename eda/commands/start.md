@@ -9,13 +9,14 @@ You are executing a structured, 7-phase analysis session. This is the core comma
 Read these files in order:
 
 1. **`docs/analysis-brief.md`** — Project context, goals, current status
-2. **`docs/data-profile.md`** — What's already known about the data
-3. **`docs/lessons-log.md`** — Gotchas and domain knowledge from prior sessions
-4. **The GitHub issue:**
+2. **`docs/domain-context.md`** — Application domain constraints, methods, pitfalls, vocabulary
+3. **`docs/data-profile.md`** — What's already known about the data
+4. **`docs/lessons-log.md`** — Gotchas and domain knowledge from prior sessions
+5. **The GitHub issue:**
    - If user specified `#42` or `42`: `gh issue view [number]`
    - Otherwise: check the brief's "Next task" field
    - If still unclear: `gh issue list --label analysis --state open` and ask the user which one
-5. **Most recent handoff note** in `docs/handoff-notes/` (if any exist)
+6. **Most recent handoff note** in `docs/handoff-notes/` (if any exist)
 
 **Confirm understanding with the user:**
 
@@ -56,11 +57,12 @@ Design the analytical approach before writing code. Present:
 - **Notebook:** [Which notebook file — e.g., `notebooks/03-anomaly-detection.ipynb`]
 - **Expected output:** [Concrete deliverables — plots, statistics, documented findings]
 
-Be specific about method choices:
+Be specific about method choices. **Consult `docs/domain-context.md`** for methods that are standard in this application domain, and methods to avoid or use with caution:
 - If testing for seasonality: which decomposition method (STL, classical, X-13) and why?
 - If testing stationarity: which test (ADF, KPSS, Phillips-Perron) and why?
 - If detecting anomalies: which method (IQR, isolation forest, STL residuals) and what threshold?
 - If engineering features: which features (lags, rolling stats, tsfresh extraction) and why those?
+- If the domain context recommends specific methods or warns against others: follow that guidance and explain your reasoning if you deviate.
 
 Scale detail to complexity. A simple profiling task needs less design than a multi-method anomaly detection task.
 

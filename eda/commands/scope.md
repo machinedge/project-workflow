@@ -4,11 +4,13 @@ You are creating the analysis scope — the phased plan for how this time series
 
 ## Process
 
-### Step 1: Read the analysis brief
-Read `docs/analysis-brief.md`. Fail if it doesn't exist — the user needs to run `/brief` first.
+### Step 1: Read context
+Read `docs/analysis-brief.md` and `docs/domain-context.md`. Fail if the analysis brief doesn't exist — the user needs to run `/brief` first.
+
+The domain context is especially important here — its "Recommended Analysis Sequence for This Domain" section should inform your choice and ordering of phases.
 
 ### Step 2: Determine analysis phases
-Based on the analysis questions and data characteristics, define 3–6 phases. Typical time series EDA phases include:
+Based on the analysis questions, data characteristics, and domain context, define 3–6 phases. Typical time series EDA phases include:
 
 - **Data Profiling** — Understand the dataset: schema, quality, distributions, temporal characteristics. Almost always Phase 1.
 - **Temporal Pattern Analysis** — Trend decomposition, seasonality detection, cyclicality. The core of time series EDA.

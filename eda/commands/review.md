@@ -17,10 +17,11 @@ This is designed to run in a separate session from the one that performed the an
 ## Step 2: Load Context (DON'T read notebooks yet)
 
 1. `docs/analysis-brief.md` — understand goals, questions, constraints
-2. `docs/data-profile.md` — understand what's known about the data
-3. `docs/lessons-log.md` — know what gotchas are already documented
-4. Relevant GitHub issue(s): `gh issue view [number]` for each task
-5. Relevant handoff note(s) — understand what was done, what was found, what decisions were made
+2. `docs/domain-context.md` — understand application domain constraints, appropriate methods, and common pitfalls
+3. `docs/data-profile.md` — understand what's known about the data
+4. `docs/lessons-log.md` — know what gotchas are already documented
+5. Relevant GitHub issue(s): `gh issue view [number]` for each task
+6. Relevant handoff note(s) — understand what was done, what was found, what decisions were made
 
 Understand the intent first. You need to evaluate analysis against what it was supposed to answer, not just whether the code runs.
 
@@ -56,6 +57,15 @@ Assess across these dimensions. Be critical, not polite.
 - If anomalies were detected: is the threshold justified or arbitrary?
 - If features were engineered: are they meaningful or just numerology?
 - Could an alternative method produce different conclusions? If so, was this acknowledged?
+
+### Domain Appropriateness
+Check against `docs/domain-context.md`:
+- Are the methods used consistent with what's standard in this application domain?
+- Were any methods used that the domain context warns against? If so, was this deviation justified?
+- Do the findings align with known domain patterns, or if they diverge, is the divergence explored?
+- Are domain-specific pitfalls (from the "Common Pitfalls" section) avoided?
+- Is domain vocabulary used correctly and consistently?
+- Would a domain expert find the analysis approach credible?
 
 ### Data Handling
 - Was the data validated before analysis? (Phase 4 of `/start`)

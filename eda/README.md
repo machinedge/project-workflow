@@ -26,7 +26,7 @@ Maintain files once in this toolkit, deploy to both editors automatically.
 
 | Step | Command | What It Does | Output |
 |------|---------|-------------|--------|
-| 1 | `/intake` | Structured interview — data, domain, questions, constraints | `docs/intake-notes.md` |
+| 1 | `/intake` | Generate domain context + structured interview | `docs/domain-context.md` + `docs/intake-notes.md` |
 | 2 | `/brief` | Generate the analysis brief from intake notes | `docs/analysis-brief.md` |
 | 3 | `/scope` | Define analysis phases, dependencies, risks | `docs/scope.md` |
 | 4 | `/decompose` | Break phase into hypothesis-driven GitHub Issues | GitHub Issues with user stories |
@@ -47,7 +47,7 @@ Maintain files once in this toolkit, deploy to both editors automatically.
 
 ### What `/start` Does (7 Phases)
 
-1. **Load Context** — Reads analysis brief, data profile, lessons log, GitHub issue, prior handoff notes (automatic)
+1. **Load Context** — Reads analysis brief, domain context, data profile, lessons log, GitHub issue, prior handoff notes (automatic)
 2. **Hypothesize** — State what you expect to find BEFORE looking at the data (approval gate)
 3. **Design Analysis** — Choose methods, plan visualizations, define expected outputs (approval gate)
 4. **Validate Data** — Check data quality and fitness for the planned analysis
@@ -112,6 +112,7 @@ my-analysis/
 │   └── commands/*.md                # Slash commands
 ├── docs/
 │   ├── analysis-brief.md            # Source of truth — goals, questions, status
+│   ├── domain-context.md            # Application domain — constraints, methods, pitfalls
 │   ├── scope.md                     # Analysis phases and sequence
 │   ├── data-profile.md              # Living dataset characterization
 │   ├── intake-notes.md              # Raw interview notes
@@ -139,6 +140,8 @@ The toolkit prescribes a Python stack to avoid tool-choice paralysis:
 | Package management | uv (default), conda (alternative) |
 
 ## Key Design Decisions
+
+**Dynamic domain context.** When you run `/intake`, the AI first generates `docs/domain-context.md` — a comprehensive document encoding the application domain's constraints, typical data characteristics, appropriate statistical methods, common pitfalls, and domain vocabulary. This isn't a static template — it's dynamically generated based on the specific application area (predictive maintenance, demand forecasting, anomaly detection, etc.) and refined with user feedback. Every downstream command reads it, which means the AI shows up to every session already knowing the domain.
 
 **Hypothesis-driven analysis.** Every `/start` session begins by stating what you expect to find before looking at the data. This prevents confirmation bias and makes surprising results visible.
 

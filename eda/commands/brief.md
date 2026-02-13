@@ -4,8 +4,10 @@ You are creating the analysis brief — the single source of truth for this anal
 
 ## Process
 
-### Step 1: Read the intake notes
-Read `docs/intake-notes.md`. If it doesn't exist, tell the user to run `/intake` first.
+### Step 1: Read the intake notes and domain context
+Read `docs/intake-notes.md` and `docs/domain-context.md`. If they don't exist, tell the user to run `/intake` first.
+
+Use the domain context to inform how you frame the analysis goals, choose appropriate success criteria, and identify constraints that are standard in this application domain.
 
 ### Step 2: Create the analysis brief
 Create `docs/analysis-brief.md` with this exact structure:
