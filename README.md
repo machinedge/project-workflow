@@ -11,24 +11,38 @@ Both Claude Code and Cursor support two features that support this automated wor
 | Auto-loaded rules | `.claude/CLAUDE.md` | `.cursor/rules/project-os.mdc` |
 | Slash commands | `.claude/commands/*.md` | `.cursor/commands/*.md` |
 
-The rules file tells the AI where all project documents live and how to behave. The slash commands automate each phase of the workflow. Everything is maintained once — `editor.md` for the rules, `commands/` for the commands — and `setup.sh` copies them to the right place for each editor (prepending Cursor's YAML frontmatter automatically).
+The rules file tells the AI where all project documents live and how to behave. The slash commands automate each phase of the workflow. Everything is maintained once — `editor.md` for the rules, `commands/` for the commands — and the setup script copies them to the right place for each editor (prepending Cursor's YAML frontmatter automatically).
 
 ## Quick Start
 
 ### Existing project
-```bash
-# Both editors (default)
-./setup.sh ~/projects/my-existing-project
 
-# Single editor
-./setup.sh --editor claude ~/projects/my-existing-project
-./setup.sh --editor cursor ~/projects/my-existing-project
+**macOS / Linux:**
+```bash
+./setup.sh ~/projects/my-existing-project                       # Both editors (default)
+./setup.sh --editor claude ~/projects/my-existing-project       # Claude Code only
+./setup.sh --editor cursor ~/projects/my-existing-project       # Cursor only
+```
+
+**Windows (PowerShell):**
+```powershell
+.\setup.ps1 -Target ~\projects\my-existing-project                            # Both editors (default)
+.\setup.ps1 -Editor claude -Target ~\projects\my-existing-project             # Claude Code only
+.\setup.ps1 -Editor cursor -Target ~\projects\my-existing-project             # Cursor only
 ```
 
 ### New repo (creates GitHub repo under machinedge/)
+
+**macOS / Linux:**
 ```bash
 ./new_repo.sh my-new-project            # Both editors
 ./new_repo.sh my-new-project cursor     # Cursor only
+```
+
+**Windows (PowerShell):**
+```powershell
+.\new_repo.ps1 my-new-project           # Both editors
+.\new_repo.ps1 my-new-project cursor    # Cursor only
 ```
 
 Then open the project in your editor and run `/brainstorm`.
@@ -90,16 +104,18 @@ ai-project-toolkit/
 │   ├── start.md                         ← The key one (7-phase execution loop)
 │   ├── handoff.md
 │   └── postmortem.md
-├── setup.sh                             ← Set up an existing project
-├── new_repo.sh                          ← Create a new GitHub repo with toolkit
+├── setup.sh                             ← Set up an existing project (macOS/Linux)
+├── setup.ps1                            ← Set up an existing project (Windows)
+├── new_repo.sh                          ← Create a new GitHub repo with toolkit (macOS/Linux)
+├── new_repo.ps1                         ← Create a new GitHub repo with toolkit (Windows)
 └── README.md                            ← This file
 ```
 
-`setup.sh` copies `editor.md` as-is to `.claude/CLAUDE.md`, and prepends Cursor's YAML frontmatter to produce `.cursor/rules/project-os.mdc`. No duplication in the toolkit itself.
+`setup.sh` (or `setup.ps1` on Windows) copies `editor.md` as-is to `.claude/CLAUDE.md`, and prepends Cursor's YAML frontmatter to produce `.cursor/rules/project-os.mdc`. No duplication in the toolkit itself.
 
 ## Project Structure (after setup)
 
-After running `setup.sh --editor both` and a few sessions:
+After running `setup.sh --editor both` (or `setup.ps1 -Editor both` on Windows) and a few sessions:
 
 ```
 my-project/
@@ -139,10 +155,19 @@ The `docs/` folder is editor-agnostic. Team members can use different editors on
 ## Sharing With Your Team
 
 1. Put this toolkit somewhere everyone can access (shared drive, internal repo, etc.)
-2. Tell them: run `./setup.sh --editor [your-editor] [project-folder]` before starting a project.
+2. Tell them to run the setup script before starting a project:
+   - **macOS / Linux:** `./setup.sh --editor [your-editor] [project-folder]`
+   - **Windows:** `.\setup.ps1 -Editor [your-editor] -Target [project-folder]`
 3. Share this README.
 
 The `docs/` folder is the same regardless of editor, so mixed teams work fine.
+
+## Prerequisites
+
+- **Git** — installed and configured
+- **GitHub CLI (`gh`)** — required for `new_repo` scripts ([install](https://cli.github.com/))
+- **macOS / Linux:** Bash
+- **Windows:** PowerShell 5.1+ (ships with Windows 10/11) or PowerShell 7+
 
 ## Tips
 
