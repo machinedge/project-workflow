@@ -1,10 +1,11 @@
 #!/bin/bash
 
-# Project Toolkit — Project Scaffolder
+# AI Project Toolkit — Setup
 # Usage: ./setup.sh [--editor claude|cursor|both] [project-directory]
 #
-# Creates the full project structure with editor config,
-# commands, and empty docs ready to go.
+# Copies editor config and commands into a project directory.
+# Commands are maintained once in this toolkit and copied to the
+# right location for each editor.
 #
 # Examples:
 #   ./setup.sh                          # Both editors, current directory
@@ -13,6 +14,9 @@
 #   ./setup.sh ~/myproj                 # Both editors (default)
 
 set -e
+
+# Resolve the directory where this script lives (the toolkit root)
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
 # Parse arguments
 EDITOR="both"
@@ -37,36 +41,14 @@ fi
 
 echo "Setting up project toolkit in: $TARGET (editor: $EDITOR)"
 
-# Create shared directory structure
+# ─────────────────────────────────────────────
+# Shared docs directory
+# ─────────────────────────────────────────────
+
 mkdir -p "$TARGET/docs/tasks"
 mkdir -p "$TARGET/docs/handoff-notes"
 
-# ─────────────────────────────────────────────
-# Claude Code setup
-# ─────────────────────────────────────────────
-
-if [ "$EDITOR" = "claude" ] || [ "$EDITOR" = "both" ]; then
-    echo "  Setting up Claude Code (.claude/)..."
-    mkdir -p "$TARGET/.claude/commands"
-    cp -r ./.claude "$TARGET/.claude"
-    cp -r ./commands "$TARGET/.claude/commands"
-fi
-
-# ─────────────────────────────────────────────
-# Cursor setup
-# ─────────────────────────────────────────────
-
-if [ "$EDITOR" = "cursor" ] || [ "$EDITOR" = "both" ]; then
-    echo "  Setting up Cursor (.cursor/)..."
-    mkdir -p "$TARGET/.cursor/commands"
-    cp -r ./.cursor "$TARGET/.cursor"
-    cp -r ./cursor "$TARGET/.cursor/commands"
-fi
-
-# ─────────────────────────────────────────────
-# Shared docs
-# ─────────────────────────────────────────────
-
+if [ ! -f "$TARGET/docs/lessons-log.md" ]; then
 cat > "$TARGET/docs/lessons-log.md" << 'DOC_EOF'
 # Lessons Log
 
@@ -85,20 +67,48 @@ cat > "$TARGET/docs/lessons-log.md" << 'DOC_EOF'
 ## Process Adjustments
 - [changes to how you run sessions]
 DOC_EOF
+fi
+
+# ─────────────────────────────────────────────
+# Claude Code setup
+# ─────────────────────────────────────────────
+
+if [ "$EDITOR" = "claude" ] || [ "$EDITOR" = "both" ]; then
+    echo "  Setting up Claude Code (.claude/)..."
+    mkdir -p "$TARGET/.claude/commands"
+    cp "$SCRIPT_DIR/.claude/CLAUDE.md" "$TARGET/.claude/CLAUDE.md"
+    cp "$SCRIPT_DIR"/commands/*.md "$TARGET/.claude/commands/"
+fi
+
+# ─────────────────────────────────────────────
+# Cursor setup
+# ─────────────────────────────────────────────
+
+if [ "$EDITOR" = "cursor" ] || [ "$EDITOR" = "both" ]; then
+    echo "  Setting up Cursor (.cursor/)..."
+    mkdir -p "$TARGET/.cursor/rules"
+    mkdir -p "$TARGET/.cursor/commands"
+    cp "$SCRIPT_DIR/.cursor/rules/project-os.mdc" "$TARGET/.cursor/rules/project-os.mdc"
+    cp "$SCRIPT_DIR"/commands/*.md "$TARGET/.cursor/commands/"
+fi
+
+# ─────────────────────────────────────────────
+# Summary
+# ─────────────────────────────────────────────
 
 echo ""
 echo "Done! Project structure created:"
 echo ""
-find "$TARGET/docs" -type f | sort | while read f; do
+find "$TARGET/docs" -type f 2>/dev/null | sort | while read f; do
     echo "  $f"
 done
 if [ "$EDITOR" = "claude" ] || [ "$EDITOR" = "both" ]; then
-    find "$TARGET/.claude" -type f | sort | while read f; do
+    find "$TARGET/.claude" -type f 2>/dev/null | sort | while read f; do
         echo "  $f"
     done
 fi
 if [ "$EDITOR" = "cursor" ] || [ "$EDITOR" = "both" ]; then
-    find "$TARGET/.cursor" -type f | sort | while read f; do
+    find "$TARGET/.cursor" -type f 2>/dev/null | sort | while read f; do
         echo "  $f"
     done
 fi

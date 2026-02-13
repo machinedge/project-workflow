@@ -11,31 +11,25 @@ Both Claude Code and Cursor support two features that eliminate manual copy-past
 | Auto-loaded rules | `.claude/CLAUDE.md` | `.cursor/rules/project-os.mdc` |
 | Slash commands | `.claude/commands/*.md` | `.cursor/commands/*.md` |
 
-The rules file tells the AI where all project documents live and how to behave. The slash commands automate each phase of the workflow. The command format is identical for both editors.
+The rules file tells the AI where all project documents live and how to behave. The slash commands automate each phase of the workflow. The command files are identical for both editors — they're maintained once in `commands/` and copied to the right place at setup time.
 
 ## Quick Start
 
+### Existing project
 ```bash
 # Both editors (default)
-./setup.sh ~/projects/my-new-project
+./setup.sh ~/projects/my-existing-project
 
-# Claude Code only
-./setup.sh --editor claude ~/projects/my-new-project
-
-# Cursor only
-./setup.sh --editor cursor ~/projects/my-new-project
+# Single editor
+./setup.sh --editor claude ~/projects/my-existing-project
+./setup.sh --editor cursor ~/projects/my-existing-project
 ```
 
-## Creating a new repo
-The following extends `setup.sh` to help automate the creation of a new repo, where the workflow is already setup
-
-this does require that `gh` and `git` be installed in your environment. For more info see:
-
+### New repo (creates GitHub repo under machinedge/)
 ```bash
-# Both Editors
-
+./new_repo.sh my-new-project            # Both editors
+./new_repo.sh my-new-project cursor     # Cursor only
 ```
-
 
 Then open the project in your editor and run `/brainstorm`.
 
@@ -47,11 +41,25 @@ Then open the project in your editor and run `/brainstorm`.
 | 2 | `/vision` | AI reads the notes, creates `docs/project-brief.md` |
 | 3 | `/roadmap` | AI reads the brief, creates `docs/roadmap.md` with milestones |
 | 4 | `/decompose` | AI breaks a milestone into tasks in `docs/tasks/` |
-| 5 | `/start TASK-01` | AI reads brief + task + last handoff, begins working |
+| 5 | `/start TASK-01` | AI loads context, plans, architects, tests, implements, verifies |
 | 6 | `/handoff` | AI writes handoff note, updates brief and lessons log |
 | 7 | `/postmortem` | After a milestone: AI reviews everything, updates roadmap |
 
 Repeat steps 5-6 for each task. Run step 7 after completing a milestone.
+
+### What `/start` does (the execution loop)
+
+`/start` isn't just "load context and go." It enforces a structured development process:
+
+1. **Load Context** — Reads project brief, lessons log, task brief, last handoff (automatically)
+2. **Plan** — Presents approach, waits for approval
+3. **Architect** — Designs the solution, waits for approval
+4. **Test First** — Writes unit + integration tests (expected to fail)
+5. **Implement** — Writes code to make the tests pass
+6. **Verify** — Runs tests, checks regressions, self-reviews
+7. **Report** — Summarizes what was done, prompts for `/handoff`
+
+Phases 2 and 3 have approval gates. Phases 4-6 flow continuously.
 
 ## What You No Longer Have to Do
 
@@ -67,33 +75,42 @@ Repeat steps 5-6 for each task. Run step 7 after completing a milestone.
 - Make decisions when the AI flags uncertainties
 - Run `/handoff` before closing a session (this is the one habit that matters)
 
-## File Structure
+## Toolkit Structure
 
-After setup with `--editor both` and a few sessions:
+This is what the toolkit itself looks like. You clone/download this once and use it to set up projects:
+
+```
+ai-project-toolkit/
+├── commands/                            ← Single source of truth for all commands
+│   ├── brainstorm.md
+│   ├── vision.md
+│   ├── roadmap.md
+│   ├── decompose.md
+│   ├── start.md                         ← The key one (7-phase execution loop)
+│   ├── handoff.md
+│   └── postmortem.md
+├── .claude/
+│   └── CLAUDE.md                        ← Claude Code rules (auto-loaded)
+├── .cursor/
+│   └── rules/
+│       └── project-os.mdc              ← Cursor rules (same content + frontmatter)
+├── setup.sh                             ← Set up an existing project
+├── new_repo.sh                          ← Create a new GitHub repo with toolkit
+└── README.md                            ← This file
+```
+
+## Project Structure (after setup)
+
+After running `setup.sh --editor both` and a few sessions:
 
 ```
 my-project/
 ├── .claude/                             ← Claude Code config
 │   ├── CLAUDE.md                        ← Auto-loaded rules
-│   └── commands/
-│       ├── brainstorm.md
-│       ├── vision.md
-│       ├── roadmap.md
-│       ├── decompose.md
-│       ├── start.md                     ← The key one
-│       ├── handoff.md
-│       └── postmortem.md
+│   └── commands/*.md                    ← Copied from toolkit
 ├── .cursor/                             ← Cursor config
-│   ├── rules/
-│   │   └── project-os.mdc              ← Auto-loaded rules (alwaysApply: true)
-│   └── commands/
-│       ├── brainstorm.md
-│       ├── vision.md
-│       ├── roadmap.md
-│       ├── decompose.md
-│       ├── start.md
-│       ├── handoff.md
-│       └── postmortem.md
+│   ├── rules/project-os.mdc            ← Auto-loaded rules
+│   └── commands/*.md                    ← Copied from toolkit (identical files)
 ├── docs/                                ← Shared — works with either editor
 │   ├── project-brief.md                 ← Source of truth (auto-updated)
 │   ├── roadmap.md                       ← Milestones and risks
@@ -101,12 +118,10 @@ my-project/
 │   ├── brainstorm-notes.md              ← Raw brainstorm output
 │   ├── tasks/
 │   │   ├── task-01.md
-│   │   ├── task-02.md
-│   │   └── task-03.md
+│   │   └── task-02.md
 │   └── handoff-notes/
 │       ├── session-01.md
-│       ├── session-02.md
-│       └── session-03.md
+│       └── session-02.md
 └── src/                                 ← Your actual project files
 ```
 
@@ -117,25 +132,23 @@ The `docs/` folder is editor-agnostic. Team members can use different editors on
 ### Claude Code
 - `CLAUDE.md` is auto-loaded every session — no configuration needed
 - Commands appear when you type `/` in the CLI
-- Use in Agent mode for best results
 
 ### Cursor
 - Rules use `.mdc` files with frontmatter for scoping (`alwaysApply: true`)
 - Commands appear in the `/` menu in chat
 - Use in **Agent mode** (not Ask or Edit mode) for the commands to work properly
-- Cursor also supports `Agent Requested` scoping if you want the rules to only load when relevant — but `alwaysApply` is simpler to start
 
 ## Sharing With Your Team
 
-1. Put `setup.sh` somewhere everyone can access (shared drive, internal repo, etc.)
-2. Tell them: "Before starting a project, run `./setup.sh --editor [your-editor] [project-folder]`."
+1. Put this toolkit somewhere everyone can access (shared drive, internal repo, etc.)
+2. Tell them: run `./setup.sh --editor [your-editor] [project-folder]` before starting a project.
 3. Share this README.
 
-The `docs/` folder is the same regardless of editor, so mixed teams work fine. Everyone reads and writes the same project brief, roadmap, task briefs, and handoff notes.
+The `docs/` folder is the same regardless of editor, so mixed teams work fine.
 
 ## Tips
 
-- **`/start` is the most important command.** It handles all the context-loading that used to be manual. Use it at the start of every execution session.
-- **`/handoff` is the most important habit.** Always run it before closing. The 2 minutes it takes saves 20 minutes next session.
-- **The project brief is the single source of truth.** If it's wrong, everything downstream is wrong. Review it carefully after `/vision` and after each `/postmortem`.
+- **`/start` is the most important command.** It loads context and enforces plan → architect → test → implement → verify. Use it every execution session.
+- **`/handoff` is the most important habit.** Always run it before closing. 2 minutes now saves 20 minutes next session.
+- **The project brief is the single source of truth.** If it's wrong, everything downstream is wrong. Review carefully after `/vision` and `/postmortem`.
 - **Keep sessions short.** One task, one session. If you're tempted to squeeze in "one more thing," start a new session instead.
