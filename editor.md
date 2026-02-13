@@ -40,6 +40,7 @@ The following custom commands are available:
 - `/roadmap` — Create the milestone plan
 - `/decompose` — Break a milestone into session-sized task briefs
 - `/start` — Begin an execution session (reads all context automatically)
+- `/review` — Fresh-eyes code review (run in a separate session from `/start`)
 - `/handoff` — End a session and produce the handoff note
 - `/postmortem` — Review a completed milestone and update the plan
 
