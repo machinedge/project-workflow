@@ -1,128 +1,141 @@
-# Project Workflow Template
+# AI Project Toolkit
 
-A structured workflow system for collaborative project planning and execution with Claude.
+A zero-copy-paste system for running big projects with AI coding assistants across multiple sessions. Works with both **Claude Code** and **Cursor**.
 
-## Directory Structure
+## How It Works
 
-```
-project-workflow/
-├── .claude/                    # Workflow guides for Claude
-│   ├── CLAUDE.md               # Master orchestrator - start here
-│   └── phases/                 # Phase-specific instructions
-│       ├── 01-ideation.md      # Extract ideas from your head
-│       ├── 02-vision.md        # Define vision & architecture
-│       ├── 03-roadmap.md       # Plan MVP & milestones
-│       ├── 04-sprint-planning.md # Break into stories
-│       ├── 05-execution.md     # Implement (Claude Code)
-│       ├── 06-code-review.md   # Multi-model review
-│       └── 07-retrospective.md # Synthesize learnings
-├── docs/                       # Planning documents (generated)
-│   ├── ideation.md             # Phase 1 output
-│   ├── vision.md               # Phase 2 output
-│   ├── architecture.md         # Phase 2 output
-│   └── roadmap.md              # Phase 3 output
-├── sprints/                    # Sprint artifacts
-│   └── sprint-01/
-│       ├── STORIES_INDEX.md    # Sprint overview
-│       ├── stories/            # Individual story files
-│       ├── POSTMORTEM.md       # Per-story learnings
-│       ├── CODE_REVIEW.md      # Multi-model review (generated)
-│       └── sprint-learnings.md # Retrospective output (generated)
-├── src/                        # Your code
-├── init-project-workflow.sh    # Standalone bootstrap script
-└── newrepo-enhanced.zsh        # Enhanced newrepo function
-```
+Both Claude Code and Cursor support two features that eliminate manual copy-paste:
 
-## Setup
+| Feature | Claude Code | Cursor |
+|---------|-------------|--------|
+| Auto-loaded rules | `.claude/CLAUDE.md` | `.cursor/rules/project-os.mdc` |
+| Slash commands | `.claude/commands/*.md` | `.cursor/commands/*.md` |
 
-### Option 1: Use with newrepo function
+The rules file tells the AI where all project documents live and how to behave. The slash commands automate each phase of the workflow. The command format is identical for both editors.
 
-1. Copy templates to your config directory:
-   ```bash
-   mkdir -p ~/.config/claude-workflow
-   cp -r .claude ~/.config/claude-workflow/
-   ```
-
-2. Add to your `.zshrc`:
-   ```bash
-   source /path/to/newrepo-enhanced.zsh
-   ```
-
-3. Create new projects:
-   ```bash
-   newrepo my-project
-   ```
-
-### Option 2: Bootstrap existing directory
+## Quick Start
 
 ```bash
-./init-project-workflow.sh /path/to/project
+# Both editors (default)
+./setup.sh ~/projects/my-new-project
+
+# Claude Code only
+./setup.sh --editor claude ~/projects/my-new-project
+
+# Cursor only
+./setup.sh --editor cursor ~/projects/my-new-project
 ```
 
-### Option 3: Manual copy
+## Creating a new repo
+The following extends `setup.sh` to help automate the creation of a new repo, where the workflow is already setup
 
-Copy the `.claude/` directory into your project root.
+this does require that `gh` and `git` be installed in your environment. For more info see:
 
-## Usage
+```bash
+# Both Editors
 
-### Starting a Project
+```
 
-1. Open a new Claude chat (Cowork or claude.ai)
-2. Add `.claude/phases/01-ideation.md` as context
-3. Share your rough idea
-4. Claude asks questions one at a time to extract your thinking
-5. Review and approve the generated `ideation.md`
 
-### Phase Transitions
+Then open the project in your editor and run `/brainstorm`.
 
-Each phase produces artifacts that become input to the next:
+## The Workflow
 
-| Phase | You Provide | Claude Produces |
-|-------|-------------|-----------------|
-| 1. Ideation | Rough thoughts | `docs/ideation.md` |
-| 2. Vision | Ideation doc | `docs/vision.md`, `docs/architecture.md` |
-| 3. Roadmap | Vision + Architecture | `docs/roadmap.md` |
-| 4. Sprint Planning | Roadmap milestone | `sprints/sprint-XX/*` |
-| 5. Execution | Story file | Code + POSTMORTEM entry |
-| 6. Code Review | Completed code | `CODE_REVIEW.md` |
-| 7. Retrospective | Sprint artifacts | `sprint-learnings.md` |
+| Step | Command | What Happens |
+|------|---------|--------------|
+| 1 | `/brainstorm` | AI interviews you, saves notes to `docs/brainstorm-notes.md` |
+| 2 | `/vision` | AI reads the notes, creates `docs/project-brief.md` |
+| 3 | `/roadmap` | AI reads the brief, creates `docs/roadmap.md` with milestones |
+| 4 | `/decompose` | AI breaks a milestone into tasks in `docs/tasks/` |
+| 5 | `/start TASK-01` | AI reads brief + task + last handoff, begins working |
+| 6 | `/handoff` | AI writes handoff note, updates brief and lessons log |
+| 7 | `/postmortem` | After a milestone: AI reviews everything, updates roadmap |
 
-**Important:** Start a new chat session for each phase to manage context window.
+Repeat steps 5-6 for each task. Run step 7 after completing a milestone.
 
-### Working with Claude
+## What You No Longer Have to Do
 
-- Claude asks **one question at a time** to extract information
-- Claude generates **drafts** for your review
-- You **iterate** until satisfied
-- Say **"ok, it looks good"** to finalize
+- Copy-paste the project brief into every session — **auto-loaded by rules**
+- Copy-paste handoff notes — **`/start` finds and reads the latest one**
+- Remember which task is next — **`/start` checks the project brief's status**
+- Manually update the project brief — **`/handoff` does it**
+- Remember to log lessons — **`/handoff` prompts for them**
 
-## Phase Details
+## What You Still Have to Do
 
-### Phase 1-3: Planning (Cowork/Claude.ai)
-Collaborative document generation through Socratic questioning.
+- Review the AI's output (always)
+- Make decisions when the AI flags uncertainties
+- Run `/handoff` before closing a session (this is the one habit that matters)
 
-### Phase 4: Sprint Planning (Cowork/Claude.ai)
-Break roadmap milestones into executable stories with acceptance criteria.
+## File Structure
 
-### Phase 5: Execution (Claude Code / IDE)
-Implement stories with Claude as pair programming partner.
+After setup with `--editor both` and a few sessions:
 
-### Phase 6: Code Review
-Run reviews through multiple AI models, then synthesize with independent review.
+```
+my-project/
+├── .claude/                             ← Claude Code config
+│   ├── CLAUDE.md                        ← Auto-loaded rules
+│   └── commands/
+│       ├── brainstorm.md
+│       ├── vision.md
+│       ├── roadmap.md
+│       ├── decompose.md
+│       ├── start.md                     ← The key one
+│       ├── handoff.md
+│       └── postmortem.md
+├── .cursor/                             ← Cursor config
+│   ├── rules/
+│   │   └── project-os.mdc              ← Auto-loaded rules (alwaysApply: true)
+│   └── commands/
+│       ├── brainstorm.md
+│       ├── vision.md
+│       ├── roadmap.md
+│       ├── decompose.md
+│       ├── start.md
+│       ├── handoff.md
+│       └── postmortem.md
+├── docs/                                ← Shared — works with either editor
+│   ├── project-brief.md                 ← Source of truth (auto-updated)
+│   ├── roadmap.md                       ← Milestones and risks
+│   ├── lessons-log.md                   ← Running gotchas
+│   ├── brainstorm-notes.md              ← Raw brainstorm output
+│   ├── tasks/
+│   │   ├── task-01.md
+│   │   ├── task-02.md
+│   │   └── task-03.md
+│   └── handoff-notes/
+│       ├── session-01.md
+│       ├── session-02.md
+│       └── session-03.md
+└── src/                                 ← Your actual project files
+```
 
-### Phase 7: Retrospective (Cowork/Claude.ai)
-Extract learnings, update planning docs, prepare for next sprint.
+The `docs/` folder is editor-agnostic. Team members can use different editors on the same project.
 
-## Sprint Lifecycle
+## Editor-Specific Notes
 
-**Active Sprint:** Full documentation in `sprints/sprint-XX/`
+### Claude Code
+- `CLAUDE.md` is auto-loaded every session — no configuration needed
+- Commands appear when you type `/` in the CLI
+- Use in Agent mode for best results
 
-**Sprint Closure:**
-1. Complete retrospective
-2. Generate `sprint-learnings.md`
-3. Archive or delete full sprint folder
-4. Only learnings persist long-term
+### Cursor
+- Rules use `.mdc` files with frontmatter for scoping (`alwaysApply: true`)
+- Commands appear in the `/` menu in chat
+- Use in **Agent mode** (not Ask or Edit mode) for the commands to work properly
+- Cursor also supports `Agent Requested` scoping if you want the rules to only load when relevant — but `alwaysApply` is simpler to start
 
-## License
+## Sharing With Your Team
 
-MIT - Use freely, attribution appreciated.
+1. Put `setup.sh` somewhere everyone can access (shared drive, internal repo, etc.)
+2. Tell them: "Before starting a project, run `./setup.sh --editor [your-editor] [project-folder]`."
+3. Share this README.
+
+The `docs/` folder is the same regardless of editor, so mixed teams work fine. Everyone reads and writes the same project brief, roadmap, task briefs, and handoff notes.
+
+## Tips
+
+- **`/start` is the most important command.** It handles all the context-loading that used to be manual. Use it at the start of every execution session.
+- **`/handoff` is the most important habit.** Always run it before closing. The 2 minutes it takes saves 20 minutes next session.
+- **The project brief is the single source of truth.** If it's wrong, everything downstream is wrong. Review it carefully after `/vision` and after each `/postmortem`.
+- **Keep sessions short.** One task, one session. If you're tempted to squeeze in "one more thing," start a new session instead.
