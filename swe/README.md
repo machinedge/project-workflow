@@ -1,4 +1,4 @@
-# AI Project Workflow
+# Software Engineering (SWE) Project Workflow
 
 MachinEdge's system for running big projects with AI coding assistants across multiple sessions. Works with both **Claude Code** and **Cursor**.
 
