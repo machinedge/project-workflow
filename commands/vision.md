@@ -42,7 +42,7 @@ Create `docs/project-brief.md` using this exact structure:
 **Next task:** Create project roadmap
 **Blockers:** None
 
-## Notes for Claude
+## Notes for AI
 - [Anything that consistently matters across sessions]
 ```
 
