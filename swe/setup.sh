@@ -35,6 +35,18 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
+# Validate editor value
+if [[ ! "$EDITOR" =~ ^(claude|cursor|both)$ ]]; then
+    echo "Error: --editor must be 'claude', 'cursor', or 'both' (got '$EDITOR')"
+    exit 1
+fi
+
+# Validate commands source directory exists
+if [ ! -d "$SCRIPT_DIR/commands" ]; then
+    echo "Error: commands directory not found at $SCRIPT_DIR/commands"
+    exit 1
+fi
+
 if [ "$TARGET" != "." ]; then
     mkdir -p "$TARGET"
 fi

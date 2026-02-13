@@ -20,10 +20,26 @@ param(
 
 $ErrorActionPreference = "Stop"
 
+# Check prerequisites
+if (-not (Get-Command git -ErrorAction SilentlyContinue)) {
+    Write-Error "Error: git is not installed"
+    exit 1
+}
+if (-not (Get-Command gh -ErrorAction SilentlyContinue)) {
+    Write-Error "Error: gh CLI is not installed (https://cli.github.com)"
+    exit 1
+}
+
+# Validate repo name
+if ($RepoName -notmatch '^[a-zA-Z0-9._-]+$') {
+    Write-Error "Error: Invalid repo name '$RepoName'. Use only letters, numbers, hyphens, dots, and underscores."
+    exit 1
+}
+
 # Resolve the directory where this script lives (the toolkit root)
 $ScriptDir = $PSScriptRoot
 
-$RepoDir = Join-Path $HOME "work/$RepoName"
+$RepoDir = Join-Path $HOME "work" $RepoName
 
 if (Test-Path $RepoDir) {
     Write-Error "Error: $RepoDir already exists"
@@ -48,7 +64,9 @@ try {
 
     gh repo create "machinedge/$RepoName" --private
     if ($LASTEXITCODE -ne 0) {
-        Write-Warning "Failed to create GitHub repo. Local repo is ready at $RepoDir"
+        Write-Warning "Failed to create GitHub repo. Cleaning up local repo."
+        Pop-Location
+        Remove-Item -Recurse -Force $RepoDir
         exit 1
     }
 

@@ -18,12 +18,28 @@ if [ -z "$1" ]; then
     exit 1
 fi
 
+# Check prerequisites
+if ! command -v git &> /dev/null; then
+    echo "Error: git is not installed"
+    exit 1
+fi
+if ! command -v gh &> /dev/null; then
+    echo "Error: gh CLI is not installed (https://cli.github.com)"
+    exit 1
+fi
+
 # Resolve the directory where this script lives (the toolkit root)
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
 REPO_NAME="$1"
 EDITOR="${2:-both}"
 REPO_DIR="$HOME/work/$REPO_NAME"
+
+# Validate repo name
+if [[ ! "$REPO_NAME" =~ ^[a-zA-Z0-9._-]+$ ]]; then
+    echo "Error: Invalid repo name '$REPO_NAME'. Use only letters, numbers, hyphens, dots, and underscores."
+    exit 1
+fi
 
 if [ -d "$REPO_DIR" ]; then
     echo "Error: $REPO_DIR already exists"
@@ -45,10 +61,12 @@ git init
 git add .
 git commit -m "Initial commit: project scaffold with AI toolkit"
 
-gh repo create "machinedge/$REPO_NAME" --private || {
-    echo "Failed to create GitHub repo. Local repo is ready at $REPO_DIR"
+if ! gh repo create "machinedge/$REPO_NAME" --private; then
+    echo "Failed to create GitHub repo. Cleaning up local repo."
+    cd "$HOME"
+    rm -rf "$REPO_DIR"
     exit 1
-}
+fi
 
 git remote add origin "git@github.com:machinedge/$REPO_NAME.git"
 git branch -M main
