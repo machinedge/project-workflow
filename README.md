@@ -6,8 +6,8 @@ This repo contains two workflow toolkits:
 
 | Workflow | Purpose | Location |
 |----------|---------|----------|
-| **SWE** | Software engineering projects — plan, build, test, review | [`swe/`](swe/) |
-| **EDA** | Time series exploratory data analysis — hypothesize, analyze, synthesize | [`eda/`](eda/) |
+| **SWE** | Software engineering projects — plan, build, test, review | [`workflows/swe/`](workflows/swe/) |
+| **EDA** | Time series exploratory data analysis — hypothesize, analyze, synthesize | [`workflows/eda/`](workflows/eda/) |
 
 Both toolkits solve the same core problem: AI assistants have no memory between sessions. These workflows give them a protocol — what to read, how to work, what to produce — so context is preserved and work is structured across as many sessions as a project needs.
 
@@ -17,14 +17,14 @@ Pick a workflow, then set up a project:
 
 ```bash
 # Software engineering project
-./swe/setup.sh ~/projects/my-app
+./workflows/swe/setup.sh ~/projects/my-app
 
 # Time series analysis project
-./eda/setup.sh ~/projects/my-analysis
+./workflows/eda/setup.sh ~/projects/my-analysis
 
 # Create a new GitHub repo instead
-./swe/new_repo.sh my-app
-./eda/new_repo.sh my-analysis
+./workflows/swe/new_repo.sh my-app
+./workflows/eda/new_repo.sh my-analysis
 ```
 
 Then open the project in your editor and run the first command (`/brainstorm` for SWE, `/intake` for EDA).
@@ -40,8 +40,8 @@ Then open the project in your editor and run the first command (`/brainstorm` fo
 
 Each workflow also has its own detailed README:
 
-- [SWE Workflow README](swe/README.md)
-- [EDA Workflow README](eda/README.md)
+- [SWE Workflow README](workflows/swe/README.md)
+- [EDA Workflow README](workflows/eda/README.md)
 
 ## Creating Your Own Workflow
 

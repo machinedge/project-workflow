@@ -22,7 +22,7 @@ if [ -z "$1" ]; then
     echo "Usage: ./validate.sh <workflow-directory-name>"
     echo ""
     echo "Validates a workflow for completeness and consistency."
-    echo "Pass the directory name relative to the repo root (e.g., 'swe', 'eda')."
+    echo "Pass the workflow name (e.g., 'swe', 'eda'). Looks in the workflows/ directory."
     exit 1
 fi
 
@@ -30,7 +30,7 @@ WORKFLOW_NAME="$1"
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
-WORKFLOW_DIR="$REPO_ROOT/$WORKFLOW_NAME"
+WORKFLOW_DIR="$REPO_ROOT/workflows/$WORKFLOW_NAME"
 
 if [ ! -d "$WORKFLOW_DIR" ]; then
     echo "Error: Directory not found: $WORKFLOW_DIR"

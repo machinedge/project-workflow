@@ -1,7 +1,7 @@
 # Create a new workflow from templates (Windows)
 # Usage: .\create-workflow.ps1 <workflow-name>
 #
-# Generates a new workflow directory at the repo root with all the necessary
+# Generates a new workflow directory under workflows/ with all the necessary
 # files pre-populated from templates.
 #
 # Examples:
@@ -26,7 +26,7 @@ if ($WorkflowName -notmatch '^[a-z0-9-]+$') {
 $ScriptDir = $PSScriptRoot
 $RepoRoot = Split-Path $ScriptDir -Parent
 $TemplateDir = Join-Path $ScriptDir "templates"
-$TargetDir = Join-Path $RepoRoot $WorkflowName
+$TargetDir = Join-Path $RepoRoot "workflows" $WorkflowName
 
 if (Test-Path $TargetDir) {
     Write-Error "Error: $TargetDir already exists."
@@ -128,9 +128,9 @@ Get-ChildItem $TargetDir -Recurse -File | Sort-Object FullName | ForEach-Object 
 }
 Write-Host ""
 Write-Host "Next steps:"
-Write-Host "  1. Edit $WorkflowName/editor.md - customize the operating rules"
-Write-Host "  2. Edit $WorkflowName/commands/*.md - customize each command"
-Write-Host "  3. Edit $WorkflowName/README.md - write the workflow documentation"
+Write-Host "  1. Edit workflows/$WorkflowName/editor.md - customize the operating rules"
+Write-Host "  2. Edit workflows/$WorkflowName/commands/*.md - customize each command"
+Write-Host "  3. Edit workflows/$WorkflowName/README.md - write the workflow documentation"
 Write-Host "  4. Remove <!-- GUIDE: ... --> comments as you fill in real content"
 Write-Host "  5. Run: .\framework\validate.ps1 $WorkflowName"
 Write-Host ""
