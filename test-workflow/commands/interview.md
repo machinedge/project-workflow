@@ -1,0 +1,39 @@
+<!-- TEMPLATE: Interview Command
+     This is the first command in your workflow. It pulls context from the user's
+     head through a structured interview. The output becomes the raw material for
+     the /brief command.
+
+     Customize the categories below to match your domain. The existing workflows
+     use 5-7 categories. Each category should probe a different dimension of the
+     project/task.
+
+     Examples:
+       SWE uses: Problem, Audience, Success, Scope, Constraints, Prior Art, Risks
+       EDA uses: Application Domain, then interview about Data, Questions, Goals
+
+     Replace interview with your command name (e.g., "brainstorm", "intake").
+     Replace interview-notes.md with the output file (e.g., "brainstorm-notes.md", "intake-notes.md").
+     Delete these comments when done.
+-->
+The user is starting a new test-workflow project and needs help defining what they want to accomplish.
+
+If the user provided a description: $ARGUMENTS
+
+Interview them about this project, one category at a time, in this order:
+
+<!-- GUIDE: Replace these categories with ones appropriate to your domain.
+     Keep 5-7 categories. Order them from big-picture to specific. -->
+
+1. **Goals** — What are you trying to achieve? What does success look like?
+2. **Context** — What's the current situation? What exists already?
+3. **Audience** — Who is this for? What do they care about?
+4. **Scope** — What's in and what's explicitly out?
+5. **Constraints** — Timeline, budget, tools, skills, organizational limitations?
+6. **Prior Art** — What's been tried? What similar things exist? What can we learn from them?
+7. **Risks** — What could go wrong? What's most uncertain?
+
+Rules:
+- Ask questions one-at-a-time per category, then WAIT for answers before moving on.
+- If an answer is vague, push back and ask for specifics.
+- After all categories, produce a structured summary and flag any contradictions or gaps.
+- Save the summary to `docs/interview-notes.md`.

@@ -36,11 +36,28 @@ Then open the project in your editor and run the first command (`/brainstorm` fo
 | [Overview](docs/overview.md) | Everyone | What this toolkit is, how the two workflows compare, and the design philosophy |
 | [Getting Started](docs/getting-started.md) | Users | Installation, setup, first session walkthrough for both workflows |
 | [Agent Reference](docs/agent-reference.md) | AI agents | How agents should orient themselves, which documents to read, and how commands interact |
+| [Workflow Anatomy](docs/workflow-anatomy.md) | Contributors | Deep-dive reference on patterns, conventions, and how to customize |
 
 Each workflow also has its own detailed README:
 
 - [SWE Workflow README](swe/README.md)
 - [EDA Workflow README](eda/README.md)
+
+## Creating Your Own Workflow
+
+Want to build a workflow for a different domain? The framework makes it straightforward:
+
+```bash
+# Scaffold a new workflow from templates
+./framework/create-workflow.sh devops
+
+# Customize the generated files, then validate
+./framework/validate.sh devops
+```
+
+The scaffold generates a complete workflow skeleton — editor rules, 8 command files, setup scripts, and a README — all pre-populated with the structural patterns from the existing workflows and guidance comments explaining what to customize.
+
+See [framework/CONTRIBUTING.md](framework/CONTRIBUTING.md) for the full contributor guide.
 
 ## How the Workflows Operate
 

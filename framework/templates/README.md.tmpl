@@ -1,0 +1,111 @@
+# {{WORKFLOW_DISPLAY_NAME}} Workflow
+
+<!-- GUIDE: Write a 1-2 sentence description of what this workflow is for. -->
+A structured workflow for running {{WORKFLOW_NAME}} projects with AI coding assistants. Works with **Claude Code** and **Cursor**.
+
+## Why This Exists
+
+<!-- GUIDE: Explain the problem this workflow solves. What goes wrong without structure?
+     What makes this type of work multi-session? Why does the AI need a protocol? -->
+
+## How It Works
+
+Both editors use the same underlying system:
+
+- **`editor.md`** contains the operating rules (copied to `.claude/CLAUDE.md` and `.cursor/rules/{{CURSOR_RULES_FILE}}`)
+- **`commands/*.md`** define the slash commands (copied to both editors)
+- **`setup.sh`** / **`setup.ps1`** handles the copying
+
+Maintain files once in this toolkit, deploy to both editors automatically.
+
+## Workflow
+
+### Planning Phase
+
+| Step | Command | What It Does | Output |
+|------|---------|-------------|--------|
+| 1 | `/{{INTERVIEW_COMMAND}}` | {{INTERVIEW_DESCRIPTION}} | `docs/{{NOTES_DOC}}` |
+| 2 | `/{{BRIEF_COMMAND}}` | {{BRIEF_DESCRIPTION}} | `docs/{{BRIEF_DOC}}` |
+| 3 | `/{{PLAN_COMMAND}}` | {{PLAN_DESCRIPTION}} | `docs/{{PLAN_DOC}}` |
+| 4 | `/decompose` | Break {{WORK_UNIT}} into GitHub Issues | GitHub Issues |
+
+### Execution Phase
+
+| Step | Command | What It Does | Output |
+|------|---------|-------------|--------|
+| 5 | `/start #N` | Run a 7-phase execution session | Work products + updated docs |
+| 6 | `/handoff` | Close session, document what was done | Handoff note + issue updates |
+
+### Review & Synthesis
+
+| Step | Command | What It Does | Output |
+|------|---------|-------------|--------|
+| 7 | `/review #N` | Fresh-eyes review (separate session) | Must-fix / should-fix issues |
+| 8 | `/{{SYNTHESIS_COMMAND}}` | {{SYNTHESIS_DESCRIPTION}} | Final output |
+
+## Setup
+
+### Add to an existing project
+
+```bash
+# Both editors (default)
+./setup.sh ~/my-project
+
+# Claude Code only
+./setup.sh --editor claude ~/my-project
+
+# Cursor only
+./setup.sh --editor cursor ~/my-project
+```
+
+Windows:
+```powershell
+.\setup.ps1 -Target ~\my-project
+.\setup.ps1 -Editor claude -Target ~\my-project
+```
+
+### Create a new repo
+
+```bash
+# Requires: git, gh CLI, GITHUB_ORG env var (or --org flag)
+./new_repo.sh my-project
+./new_repo.sh --org mycompany --editor claude my-project
+```
+
+Windows:
+```powershell
+.\new_repo.ps1 my-project
+.\new_repo.ps1 -Org mycompany -Editor claude my-project
+```
+
+## Project Structure (After Setup)
+
+```
+my-project/
+├── .claude/
+│   ├── CLAUDE.md                    # Auto-loaded rules for Claude Code
+│   └── commands/*.md                # Slash commands
+├── .cursor/
+│   ├── rules/{{CURSOR_RULES_FILE}} # Auto-loaded rules for Cursor
+│   └── commands/*.md                # Slash commands
+├── docs/
+│   ├── {{BRIEF_DOC}}               # Source of truth
+│   ├── {{PLAN_DOC}}                # {{WORK_UNIT_PLURAL}} and risks
+│   ├── lessons-log.md               # Running gotchas
+│   ├── {{NOTES_DOC}}               # Interview notes
+│   └── handoff-notes/
+│       ├── session-01.md
+│       └── session-02.md
+└── (GitHub Issues)                  # Tasks + review findings
+```
+
+## Prerequisites
+
+- Git (installed and configured)
+- GitHub CLI (`gh`) — required for issue tracking ([install](https://cli.github.com/))
+- `GITHUB_ORG` environment variable set (or pass `--org` each time)
+<!-- GUIDE: Add domain-specific prerequisites here (Python, Node, etc.) -->
+
+## License
+
+Apache 2.0 — see [LICENSE](../LICENSE).
