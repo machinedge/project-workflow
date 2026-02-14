@@ -107,7 +107,7 @@ If your workflow needs domain-specific directories or files created at setup tim
 
 ### 5. Write the README
 
-Replace the template content with actual documentation for your workflow. Follow the pattern of the [SWE README](../swe/README.md) or [EDA README](../eda/README.md).
+Replace the template content with actual documentation for your workflow. Follow the pattern of the [SWE README](../workflows/swe/README.md) or [EDA README](../workflows/eda/README.md).
 
 ## Validation
 
@@ -143,5 +143,5 @@ Before submitting a pull request for a new workflow:
 For a deep-dive into the structural patterns, conventions, and the reasoning behind them, see [docs/workflow-anatomy.md](../docs/workflow-anatomy.md).
 
 For examples of completed workflows, look at:
-- [swe/](../swe/) — Software engineering workflow
-- [eda/](../eda/) — Time series analysis workflow
+- [swe/](../workflows/swe/) — Software engineering workflow
+- [eda/](../workflows/eda/) — Time series analysis workflow

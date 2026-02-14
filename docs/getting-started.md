@@ -20,22 +20,22 @@ If you already have a project repo and want to add the workflow to it:
 **macOS / Linux:**
 ```bash
 # SWE workflow — both editors (default)
-./swe/setup.sh ~/projects/my-app
+./workflows/swe/setup.sh ~/projects/my-app
 
 # SWE workflow — Claude Code only
-./swe/setup.sh --editor claude ~/projects/my-app
+./workflows/swe/setup.sh --editor claude ~/projects/my-app
 
 # EDA workflow — Cursor only
-./eda/setup.sh --editor cursor ~/projects/my-analysis
+./workflows/eda/setup.sh --editor cursor ~/projects/my-analysis
 ```
 
 **Windows (PowerShell):**
 ```powershell
 # SWE workflow
-.\swe\setup.ps1 -Target ~\projects\my-app
+.\workflows\swe\setup.ps1 -Target ~\projects\my-app
 
 # EDA workflow, Claude Code only
-.\eda\setup.ps1 -Editor claude -Target ~\projects\my-analysis
+.\workflows\eda\setup.ps1 -Editor claude -Target ~\projects\my-analysis
 ```
 
 The setup script creates the necessary directory structure, copies the rules file to the editor's config location, and copies all slash commands. It does not touch your existing code.
@@ -47,17 +47,17 @@ If you're starting fresh and want a new repo with the workflow already installed
 **macOS / Linux:**
 ```bash
 # SWE workflow — new repo under your org
-./swe/new_repo.sh my-app
-./swe/new_repo.sh --org mycompany --editor claude my-app
+./workflows/swe/new_repo.sh my-app
+./workflows/swe/new_repo.sh --org mycompany --editor claude my-app
 
 # EDA workflow — new repo
-./eda/new_repo.sh my-analysis
+./workflows/eda/new_repo.sh my-analysis
 ```
 
 **Windows (PowerShell):**
 ```powershell
-.\swe\new_repo.ps1 my-app
-.\eda\new_repo.ps1 -Org mycompany my-analysis
+.\workflows\swe\new_repo.ps1 my-app
+.\workflows\eda\new_repo.ps1 -Org mycompany my-analysis
 ```
 
 This creates the GitHub repo, clones it locally, runs the setup, and commits the initial structure.

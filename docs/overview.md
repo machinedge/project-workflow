@@ -14,7 +14,7 @@ For building software across multiple sessions. The workflow moves through brain
 
 Tasks are tracked as GitHub Issues with user stories and acceptance criteria. The `/start` command enforces a test-first development process: plan → architect → write tests → implement → verify. The `/review` command runs in a separate session to provide fresh-eyes code review without implementation bias.
 
-See the [SWE README](../swe/README.md) for full details.
+See the [SWE README](../workflows/swe/README.md) for full details.
 
 ### EDA (Time Series Analysis)
 
@@ -22,7 +22,7 @@ For multi-session exploratory data analysis on time series data. The workflow mo
 
 What makes this different from ad-hoc analysis: every session starts by stating hypotheses *before* looking at the data, a living data profile accumulates knowledge across sessions, and domain context is dynamically generated (not templated) for the specific application area. The deliverable is a synthesis report with recommendations, not a pile of notebooks.
 
-See the [EDA README](../eda/README.md) for full details.
+See the [EDA README](../workflows/eda/README.md) for full details.
 
 ## How They Compare
 
@@ -62,16 +62,17 @@ project-workflow/
 │   ├── overview.md          ← What this toolkit is (this file)
 │   ├── getting-started.md   ← Installation and first session walkthrough
 │   └── agent-reference.md   ← Reference for AI agents working within the workflows
-├── swe/                     ← Software engineering workflow
-│   ├── README.md
-│   ├── editor.md            ← Operating rules (single source)
-│   ├── commands/            ← Slash command definitions
-│   ├── setup.sh / setup.ps1
-│   └── new_repo.sh / new_repo.ps1
-└── eda/                     ← Time series analysis workflow
-    ├── README.md
-    ├── editor.md            ← Operating rules (single source)
-    ├── commands/            ← Slash command definitions
-    ├── setup.sh / setup.ps1
-    └── new_repo.sh / new_repo.ps1
+└── workflows/               ← All workflow toolkits
+    ├── swe/                 ← Software engineering workflow
+    │   ├── README.md
+    │   ├── editor.md        ← Operating rules (single source)
+    │   ├── commands/        ← Slash command definitions
+    │   ├── setup.sh / setup.ps1
+    │   └── new_repo.sh / new_repo.ps1
+    └── eda/                 ← Time series analysis workflow
+        ├── README.md
+        ├── editor.md        ← Operating rules (single source)
+        ├── commands/        ← Slash command definitions
+        ├── setup.sh / setup.ps1
+        └── new_repo.sh / new_repo.ps1
 ```

@@ -3,7 +3,7 @@
 # Create a new workflow from templates
 # Usage: ./create-workflow.sh <workflow-name>
 #
-# Generates a new workflow directory at the repo root with all the necessary
+# Generates a new workflow directory under workflows/ with all the necessary
 # files pre-populated from templates. Template placeholders are replaced with
 # sensible defaults based on the workflow name, and guidance comments are
 # included to help you customize each file.
@@ -41,7 +41,7 @@ fi
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 TEMPLATE_DIR="$SCRIPT_DIR/templates"
-TARGET_DIR="$REPO_ROOT/$WORKFLOW_NAME"
+TARGET_DIR="$REPO_ROOT/workflows/$WORKFLOW_NAME"
 
 if [ -d "$TARGET_DIR" ]; then
     echo "Error: $TARGET_DIR already exists."
@@ -173,9 +173,9 @@ find "$TARGET_DIR" -type f | sort | while read f; do
 done
 echo ""
 echo "Next steps:"
-echo "  1. Edit $WORKFLOW_NAME/editor.md — customize the operating rules"
-echo "  2. Edit $WORKFLOW_NAME/commands/*.md — customize each command"
-echo "  3. Edit $WORKFLOW_NAME/README.md — write the workflow documentation"
+echo "  1. Edit workflows/$WORKFLOW_NAME/editor.md — customize the operating rules"
+echo "  2. Edit workflows/$WORKFLOW_NAME/commands/*.md — customize each command"
+echo "  3. Edit workflows/$WORKFLOW_NAME/README.md — write the workflow documentation"
 echo "  4. Remove <!-- GUIDE: ... --> comments as you fill in real content"
 echo "  5. Run: ./framework/validate.sh $WORKFLOW_NAME"
 echo ""
