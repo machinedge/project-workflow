@@ -127,11 +127,11 @@ echo ""
 echo "Next steps:"
 echo "  1. cd $TARGET"
 if [ "$EDITOR" = "claude" ]; then
-    echo "  2. Open Claude Code and run /brainstorm"
+    echo "  2. Open Claude Code and run /interview"
 elif [ "$EDITOR" = "cursor" ]; then
-    echo "  2. Open Cursor and run /brainstorm in Agent mode"
+    echo "  2. Open Cursor and run /interview in Agent mode"
 else
-    echo "  2. Open Claude Code or Cursor and run /brainstorm"
+    echo "  2. Open Claude Code or Cursor and run /interview"
 fi
 echo "  3. Follow the workflow: /vision → /roadmap → /decompose → /start"
 echo ""

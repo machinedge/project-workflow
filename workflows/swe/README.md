@@ -1,15 +1,16 @@
 # Software Engineering (SWE) Project Workflow
 
-MachinEdge's system for running big projects with AI coding assistants across multiple sessions. Works with both **Claude Code** and **Cursor**. Tasks are tracked as **GitHub Issues** with user stories and acceptance criteria.
+MachinEdge's system for running big projects with AI coding assistants across multiple sessions. Works with **Claude Code** and **Cursor**. Tasks are tracked as **GitHub Issues** with user stories and acceptance criteria.
 
 ## How It Works
 
-Both Claude Code and Cursor support two features that support this automated workflow:
+Claude Code and Cursor both support auto-loaded rules and commands that power this workflow:
 
 | Feature | Claude Code | Cursor |
 |---------|-------------|--------|
 | Auto-loaded rules | `.claude/CLAUDE.md` | `.cursor/rules/project-os.mdc` |
 | Slash commands | `.claude/commands/*.md` | `.cursor/commands/*.md` |
+| Best for | All phases | All phases |
 
 The rules file tells the AI where all project documents live and how to behave. The slash commands automate each phase of the workflow. Everything is maintained once — `editor.md` for the rules, `commands/` for the commands — and the setup script copies them to the right place for each editor (prepending Cursor's YAML frontmatter automatically).
 
@@ -21,16 +22,16 @@ Tasks are GitHub Issues, not local markdown files. `/decompose` creates them, `/
 
 **macOS / Linux:**
 ```bash
-./setup.sh ~/projects/my-existing-project                       # Both editors (default)
-./setup.sh --editor claude ~/projects/my-existing-project       # Claude Code only
-./setup.sh --editor cursor ~/projects/my-existing-project       # Cursor only
+./setup.sh ~/projects/my-existing-project                        # Both editors (default)
+./setup.sh --editor claude ~/projects/my-existing-project        # Claude Code only
+./setup.sh --editor cursor ~/projects/my-existing-project        # Cursor only
 ```
 
 **Windows (PowerShell):**
 ```powershell
-.\setup.ps1 -Target ~\projects\my-existing-project                            # Both editors (default)
-.\setup.ps1 -Editor claude -Target ~\projects\my-existing-project             # Claude Code only
-.\setup.ps1 -Editor cursor -Target ~\projects\my-existing-project             # Cursor only
+.\setup.ps1 -Target ~\projects\my-existing-project                             # Both editors (default)
+.\setup.ps1 -Editor claude -Target ~\projects\my-existing-project              # Claude Code only
+.\setup.ps1 -Editor cursor -Target ~\projects\my-existing-project              # Cursor only
 ```
 
 ### New repo (creates GitHub repo under your org/user)
@@ -65,13 +66,13 @@ Or pass it per-invocation with `--org` / `-Org`.
 .\new_repo.ps1 -Org mycompany -Editor claude app    # All flags
 ```
 
-Then open the project in your editor and run `/brainstorm`.
+Then open the project in your editor and run `/interview`.
 
 ## The Workflow
 
 | Step | Command | What Happens |
 |------|---------|--------------|
-| 1 | `/brainstorm` | AI interviews you, saves notes to `docs/brainstorm-notes.md` |
+| 1 | `/interview` | AI interviews you, saves notes to `docs/interview-notes.md` |
 | 2 | `/vision` | AI reads the notes, creates `docs/project-brief.md` |
 | 3 | `/roadmap` | AI reads the brief, creates `docs/roadmap.md` with milestones |
 | 4 | `/decompose` | AI breaks a milestone into GitHub Issues with user stories |
@@ -149,7 +150,7 @@ This is what the toolkit itself looks like. You clone/download this once and use
 ai-project-toolkit/
 ├── editor.md                            ← Single source: AI rules (both editors)
 ├── commands/                            ← Single source: all slash commands
-│   ├── brainstorm.md
+│   ├── interview.md
 │   ├── vision.md
 │   ├── roadmap.md
 │   ├── decompose.md                     ← Creates GitHub Issues with user stories
@@ -164,7 +165,7 @@ ai-project-toolkit/
 └── README.md                            ← This file
 ```
 
-`setup.sh` (or `setup.ps1` on Windows) copies `editor.md` as-is to `.claude/CLAUDE.md`, and prepends Cursor's YAML frontmatter to produce `.cursor/rules/project-os.mdc`. No duplication in the toolkit itself.
+`setup.sh` (or `setup.ps1` on Windows) copies `editor.md` as-is to `.claude/CLAUDE.md` and prepends Cursor's YAML frontmatter to produce `.cursor/rules/project-os.mdc`. No duplication in the toolkit itself.
 
 ## Project Structure (after setup)
 
@@ -182,7 +183,7 @@ my-project/
 │   ├── project-brief.md                 ← Source of truth (auto-updated)
 │   ├── roadmap.md                       ← Milestones and risks
 │   ├── lessons-log.md                   ← Running gotchas
-│   ├── brainstorm-notes.md              ← Raw brainstorm output
+│   ├── interview-notes.md               ← Raw interview output
 │   └── handoff-notes/
 │       ├── session-01.md
 │       └── session-02.md
@@ -223,6 +224,7 @@ The `docs/` folder is the same regardless of editor, so mixed teams work fine. T
 
 ## Tips
 
+- **`/interview` works great with voice.** With OS dictation — speak naturally, don't worry about typos.
 - **`/start` is the most important command.** It loads context and enforces plan → architect → test → implement → verify. Use it every execution session.
 - **`/handoff` is the most important habit.** Always run it before closing. 2 minutes now saves 20 minutes next session.
 - **`/review` works best in a fresh session.** Don't run it in the same session that wrote the code — the whole point is fresh eyes without implementation bias.
