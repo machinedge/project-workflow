@@ -35,7 +35,8 @@ When told to wrap up (or when you finish the task), produce a handoff note and s
 
 The following custom commands are available:
 
-- `/interview` — Structured interview to pull project ideas out of the user's head
+- `/interview` — Structured interview to pull project ideas out of the user's head (new projects)
+- `/add_feature` — Scope new work for an existing project (reads project brief, lighter interview)
 - `/vision` — Generate the project brief from interview notes
 - `/roadmap` — Create the milestone plan
 - `/decompose` — Break a milestone into session-sized task briefs
