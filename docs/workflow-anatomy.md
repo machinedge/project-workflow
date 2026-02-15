@@ -4,6 +4,8 @@ This document is a deep-dive reference for contributors who want to understand, 
 
 If you just want to create a new workflow quickly, start with [CONTRIBUTING.md](../framework/CONTRIBUTING.md) and the scaffold script. Come back here when you need to understand *why* things work the way they do.
 
+Note: Workflow definitions live inside the skill package at `skills/machinedge-workflows/workflows/`. This document uses relative references like `commands/*.md` and `editor.md` — these refer to files within a workflow directory (e.g., `skills/machinedge-workflows/workflows/swe/`).
+
 ## The Big Picture
 
 Every workflow in this repo follows the same arc:

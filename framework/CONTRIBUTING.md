@@ -124,6 +124,35 @@ Run `./framework/validate.sh my-workflow` to check your workflow. It verifies:
 
 Passing validation doesn't mean the workflow is good — it means the structure is complete. The content quality is up to you.
 
+## Packaging the Skill
+
+After making changes to workflows or the skill, rebuild the distributable `.skill` file:
+
+```bash
+./framework/package_skill.sh
+```
+
+This script:
+
+1. Creates a `build/` directory
+2. Copies `skills/` into `build/skills/`
+3. Copies `workflows/` into `build/skills/machinedge-workflows/workflows/` (assembling the nested structure the skill expects)
+4. Downloads `package_skill.py` and `quick_validate.py` from the [anthropics/skills](https://github.com/anthropics/skills) repo if not already present
+5. Validates the skill structure and produces `build/machinedge-workflows.skill`
+
+The assembled build directory mirrors the structure SKILL.md references:
+
+```
+build/
+├── machinedge-workflows.skill    # The distributable package
+└── skills/
+    └── machinedge-workflows/
+        ├── SKILL.md
+        └── workflows/
+            ├── swe/
+            └── eda/
+```
+
 ## PR Checklist
 
 Before submitting a pull request for a new workflow:

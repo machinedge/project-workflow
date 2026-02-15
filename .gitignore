@@ -27,3 +27,12 @@ Desktop.ini
 # Environment
 .env
 .env.*
+
+# builds
+build
+*.skill
+package_skill.py
+quick_validate.py
+
+# Python
+__pycache__
