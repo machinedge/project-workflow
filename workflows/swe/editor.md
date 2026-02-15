@@ -35,14 +35,19 @@ When told to wrap up (or when you finish the task), produce a handoff note and s
 
 The following custom commands are available:
 
-- `/brainstorm` — Structured interview to pull project ideas out of the user's head
-- `/vision` — Generate the project brief from brainstorm notes
+- `/interview` — Structured interview to pull project ideas out of the user's head (new projects)
+- `/add_feature` — Scope new work for an existing project (reads project brief, lighter interview)
+- `/vision` — Generate the project brief from interview notes
 - `/roadmap` — Create the milestone plan
 - `/decompose` — Break a milestone into session-sized task briefs
 - `/start` — Begin an execution session (reads all context automatically)
 - `/review` — Fresh-eyes code review (run in a separate session from `/start`)
 - `/handoff` — End a session and produce the handoff note
 - `/postmortem` — Review a completed milestone and update the plan
+
+### Using these commands by platform
+- **Claude Code:** Type `/command` (e.g. `/interview`) in the chat.
+- **Cursor:** Type `/command` in the chat (use Agent mode).
 
 ## Principles
 - You have no memory between sessions. These documents ARE your memory. Trust them.

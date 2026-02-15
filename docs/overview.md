@@ -2,7 +2,7 @@
 
 ## What This Is
 
-This repository contains two structured workflow toolkits that enable AI coding assistants (Claude Code and Cursor) to manage complex, multi-session work. One toolkit is for software engineering projects, the other for time series exploratory data analysis.
+This repository contains two structured workflow toolkits that enable AI coding assistants (Claude Code, Cowork, and Cursor) to manage complex, multi-session work. One toolkit is for software engineering projects, the other for time series exploratory data analysis. Both are distributed as a single installable Claude skill (`machinedge-workflows.skill`).
 
 The fundamental problem both toolkits solve: AI assistants start every session with a blank slate. Without structure, they lose context between sessions, re-litigate past decisions, and produce work that doesn't connect to what came before. These workflows fix that by giving the AI a protocol — documents to read, a process to follow, and artifacts to produce — so each session picks up exactly where the last one left off.
 
@@ -14,7 +14,7 @@ For building software across multiple sessions. The workflow moves through brain
 
 Tasks are tracked as GitHub Issues with user stories and acceptance criteria. The `/start` command enforces a test-first development process: plan → architect → write tests → implement → verify. The `/review` command runs in a separate session to provide fresh-eyes code review without implementation bias.
 
-See the [SWE README](../workflows/swe/README.md) for full details.
+See the [SWE README](../skills/machinedge-workflows/workflows/swe/README.md) for full details.
 
 ### EDA (Time Series Analysis)
 
@@ -22,7 +22,7 @@ For multi-session exploratory data analysis on time series data. The workflow mo
 
 What makes this different from ad-hoc analysis: every session starts by stating hypotheses *before* looking at the data, a living data profile accumulates knowledge across sessions, and domain context is dynamically generated (not templated) for the specific application area. The deliverable is a synthesis report with recommendations, not a pile of notebooks.
 
-See the [EDA README](../workflows/eda/README.md) for full details.
+See the [EDA README](../skills/machinedge-workflows/workflows/eda/README.md) for full details.
 
 ## How They Compare
 
@@ -52,27 +52,36 @@ Both use GitHub Issues for task tracking, enforce approval gates during executio
 
 **The toolkit is editor-agnostic.** Both workflows maintain a single source for rules (`editor.md`) and commands (`commands/*.md`). The setup script copies these to the appropriate locations for Claude Code (`.claude/`) and Cursor (`.cursor/`), with Cursor's YAML frontmatter auto-prepended. The `docs/` folder works identically regardless of editor.
 
+**Distribution is built-in.** The workflows are packaged as a Claude skill (`machinedge-workflows.skill`) that can be installed in Claude Code or Cowork. Once installed, users can set up a workflow by simply asking Claude — no terminal commands, no cloning repos, no reading documentation. The skill walks them through choosing a workflow, selecting editors, and configuring the project.
+
 ## Repository Structure
 
 ```
 project-workflow/
-├── README.md               ← You are here (top-level overview)
-├── LICENSE                  ← Apache 2.0
-├── docs/                    ← This documentation folder
-│   ├── overview.md          ← What this toolkit is (this file)
-│   ├── getting-started.md   ← Installation and first session walkthrough
-│   └── agent-reference.md   ← Reference for AI agents working within the workflows
-└── workflows/               ← All workflow toolkits
-    ├── swe/                 ← Software engineering workflow
-    │   ├── README.md
-    │   ├── editor.md        ← Operating rules (single source)
-    │   ├── commands/        ← Slash command definitions
-    │   ├── setup.sh / setup.ps1
-    │   └── new_repo.sh / new_repo.ps1
-    └── eda/                 ← Time series analysis workflow
-        ├── README.md
-        ├── editor.md        ← Operating rules (single source)
-        ├── commands/        ← Slash command definitions
-        ├── setup.sh / setup.ps1
-        └── new_repo.sh / new_repo.ps1
+├── README.md                       ← Top-level overview
+├── LICENSE                         ← Apache 2.0
+├── docs/                           ← Documentation
+│   ├── overview.md                 ← What this toolkit is (this file)
+│   ├── getting-started.md          ← Installation and first session walkthrough
+│   ├── agent-reference.md          ← Reference for AI agents
+│   └── workflow-anatomy.md         ← Deep-dive on patterns and conventions
+├── skills/
+│   └── machinedge-workflows/       ← The distributable skill package
+│       ├── SKILL.md                ← Skill entry point (Claude reads this)
+│       └── workflows/
+│           ├── swe/                ← Software engineering workflow
+│           │   ├── editor.md       ← Operating rules (single source)
+│           │   ├── commands/       ← Slash command definitions
+│           │   ├── setup.sh / setup.ps1
+│           │   └── new_repo.sh / new_repo.ps1
+│           └── eda/                ← Time series analysis workflow
+│               ├── editor.md
+│               ├── commands/
+│               ├── setup.sh / setup.ps1
+│               └── new_repo.sh / new_repo.ps1
+└── framework/                      ← Scaffolding tools for new workflows
+    ├── create-workflow.sh
+    ├── validate.sh
+    ├── CONTRIBUTING.md
+    └── templates/
 ```

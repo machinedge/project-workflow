@@ -1,6 +1,6 @@
-Generate the project brief from brainstorm notes.
+Generate the project brief from interview notes.
 
-First, read `docs/brainstorm-notes.md`. If it doesn't exist, ask the user to run `/brainstorm` first or provide project details.
+First, read `docs/interview-notes.md`. If it doesn't exist, ask the user to run `/interview` first or provide project details.
 
 Create `docs/project-brief.md` using this exact structure:
 
@@ -49,7 +49,7 @@ Create `docs/project-brief.md` using this exact structure:
 Rules:
 - Keep it under 1,000 words total. Every word costs context window in future sessions.
 - Be specific, not aspirational. Measurable outcomes, not vibes.
-- Flag anything from the brainstorm that was vague as a decision that still needs to be made.
+- Flag anything from the interview that was vague as a decision that still needs to be made.
 - Show the draft to the user for review. Don't save until they approve it.
 
 Also create an empty `docs/lessons-log.md` from the template if it doesn't exist.

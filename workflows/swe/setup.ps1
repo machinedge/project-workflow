@@ -118,11 +118,11 @@ Write-Host ""
 Write-Host "Next steps:"
 Write-Host "  1. cd $Target"
 if ($Editor -eq "claude") {
-    Write-Host "  2. Open Claude Code and run /brainstorm"
+    Write-Host "  2. Open Claude Code and run /interview"
 } elseif ($Editor -eq "cursor") {
-    Write-Host "  2. Open Cursor and run /brainstorm in Agent mode"
+    Write-Host "  2. Open Cursor and run /interview in Agent mode"
 } else {
-    Write-Host "  2. Open Claude Code or Cursor and run /brainstorm"
+    Write-Host "  2. Open Claude Code or Cursor and run /interview"
 }
 Write-Host "  3. Follow the workflow: /vision -> /roadmap -> /decompose -> /start"
 Write-Host ""

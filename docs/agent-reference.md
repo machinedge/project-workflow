@@ -1,6 +1,8 @@
 # Agent Reference
 
-This document is for AI agents (Claude Code, Cursor, or other LLM-based coding assistants) working within projects that use these workflows. It explains how to orient yourself, what to read, and how the command system works.
+This document is for AI agents (Claude Code, Cowork, Cursor, or other LLM-based coding assistants) working within projects that use these workflows. It explains how to orient yourself, what to read, and how the command system works.
+
+If you arrived here via the `machinedge-workflows` skill, the skill's SKILL.md handles initial project setup. This document covers how to operate *within* an already-configured project.
 
 ## Orienting Yourself in a Project
 

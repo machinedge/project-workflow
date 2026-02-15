@@ -2,9 +2,40 @@
 
 This guide walks through setting up a project with either the SWE or EDA workflow, from installation through your first session.
 
-## Prerequisites
+## Option A: Install the Skill (recommended)
 
-Before you begin, make sure you have:
+The easiest way to get started is to install the MachinEdge skill. No terminal expertise needed — Claude handles everything.
+
+### In Cowork (Claude Desktop App)
+
+1. Install the `machinedge-workflows.skill` file
+2. Select a folder for your project (or create a new one)
+3. Tell Claude: "Set up an SWE workflow" or "Set up an EDA workflow"
+4. Claude walks you through the rest — choosing editors, naming the project, configuring GitHub
+
+### In Claude Code
+
+```bash
+claude install-skill machinedge-workflows.skill
+```
+
+Then in a Claude Code session, say "set up a workflow" and follow the prompts.
+
+### What the Skill Does
+
+When triggered, the skill asks you three things:
+
+1. **Which workflow?** SWE (software engineering) or EDA (time series analysis)
+2. **New project or existing?** Create fresh or add to an existing codebase
+3. **Which editor(s)?** Claude Code, Cursor, or both
+
+Then it runs the setup automatically and tells you what to do next.
+
+## Option B: Run Setup Scripts
+
+If you prefer the command line, you can run the setup scripts directly.
+
+### Prerequisites
 
 - **Git** installed and configured
 - **GitHub CLI (`gh`)** installed and authenticated — [install here](https://cli.github.com/)
@@ -13,51 +44,47 @@ Before you begin, make sure you have:
 
 For EDA projects, you also need Python 3.10+ with [uv](https://github.com/astral-sh/uv) (recommended) or pip.
 
-## Option A: Add to an Existing Project
-
-If you already have a project repo and want to add the workflow to it:
+### Add to an Existing Project
 
 **macOS / Linux:**
 ```bash
 # SWE workflow — both editors (default)
-./workflows/swe/setup.sh ~/projects/my-app
+./skills/machinedge-workflows/workflows/swe/setup.sh ~/projects/my-app
 
 # SWE workflow — Claude Code only
-./workflows/swe/setup.sh --editor claude ~/projects/my-app
+./skills/machinedge-workflows/workflows/swe/setup.sh --editor claude ~/projects/my-app
 
 # EDA workflow — Cursor only
-./workflows/eda/setup.sh --editor cursor ~/projects/my-analysis
+./skills/machinedge-workflows/workflows/eda/setup.sh --editor cursor ~/projects/my-analysis
 ```
 
 **Windows (PowerShell):**
 ```powershell
 # SWE workflow
-.\workflows\swe\setup.ps1 -Target ~\projects\my-app
+.\skills\machinedge-workflows\workflows\swe\setup.ps1 -Target ~\projects\my-app
 
 # EDA workflow, Claude Code only
-.\workflows\eda\setup.ps1 -Editor claude -Target ~\projects\my-analysis
+.\skills\machinedge-workflows\workflows\eda\setup.ps1 -Editor claude -Target ~\projects\my-analysis
 ```
 
 The setup script creates the necessary directory structure, copies the rules file to the editor's config location, and copies all slash commands. It does not touch your existing code.
 
-## Option B: Create a New GitHub Repo
-
-If you're starting fresh and want a new repo with the workflow already installed:
+### Create a New GitHub Repo
 
 **macOS / Linux:**
 ```bash
 # SWE workflow — new repo under your org
-./workflows/swe/new_repo.sh my-app
-./workflows/swe/new_repo.sh --org mycompany --editor claude my-app
+./skills/machinedge-workflows/workflows/swe/new_repo.sh my-app
+./skills/machinedge-workflows/workflows/swe/new_repo.sh --org mycompany --editor claude my-app
 
 # EDA workflow — new repo
-./workflows/eda/new_repo.sh my-analysis
+./skills/machinedge-workflows/workflows/eda/new_repo.sh my-analysis
 ```
 
 **Windows (PowerShell):**
 ```powershell
-.\workflows\swe\new_repo.ps1 my-app
-.\workflows\eda\new_repo.ps1 -Org mycompany my-analysis
+.\skills\machinedge-workflows\workflows\swe\new_repo.ps1 my-app
+.\skills\machinedge-workflows\workflows\eda\new_repo.ps1 -Org mycompany my-analysis
 ```
 
 This creates the GitHub repo, clones it locally, runs the setup, and commits the initial structure.
@@ -103,9 +130,9 @@ my-analysis/
 
 Open your project in Claude Code or Cursor and run these commands in order:
 
-1. **`/brainstorm`** — The AI conducts a structured interview to pull your project ideas out. It asks about goals, users, constraints, and scope. Output: `docs/brainstorm-notes.md`.
+1. **`/interview`** — The AI conducts a structured interview to pull your project ideas out. It asks about goals, users, constraints, and scope. Output: `docs/interview-notes.md`.
 
-2. **`/vision`** — The AI reads your brainstorm notes and drafts a concise project brief. Review it carefully — this becomes the source of truth for every future session. Output: `docs/project-brief.md`.
+2. **`/vision`** — The AI reads your interview notes and drafts a concise project brief. Review it carefully — this becomes the source of truth for every future session. Output: `docs/project-brief.md`.
 
 3. **`/roadmap`** — The AI reads the brief and creates a milestone plan with dependencies and risks. Output: `docs/roadmap.md`.
 
@@ -157,3 +184,7 @@ Repeat steps 5-6 for each task. Run `/review #N` in a fresh session for methodol
 - Rules use `.mdc` files with frontmatter (`alwaysApply: true`) for automatic loading.
 - Commands appear in the `/` menu in chat.
 - Use **Agent mode** (not Ask or Edit mode) for commands to work properly.
+
+### Cowork (Claude Desktop App)
+- Install the skill, select a folder, and ask Claude to set up a workflow.
+- Once set up, open the project in Claude Code or Cursor to use the slash commands.
