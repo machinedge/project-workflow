@@ -36,3 +36,6 @@ quick_validate.py
 
 # Python
 __pycache__
+
+# other
+.claude/
