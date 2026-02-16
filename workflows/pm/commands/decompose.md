@@ -14,7 +14,10 @@ Before writing tasks, identify the relevant personas for this milestone. These a
 
 ## Create GitHub issues
 
-For each task in the milestone, create a GitHub issue using the `gh` CLI:
+For each task in the milestone, create a GitHub issue using the `gh` CLI. Tasks fall into three categories:
+
+### SWE tasks (label: `task`)
+Implementation work — building features, writing code, fixing bugs.
 
 ```bash
 gh issue create \
@@ -46,6 +49,61 @@ EOF
 )"
 ```
 
+### QA tasks (label: `qa`)
+Quality assurance work — writing test plans, running reviews, regression testing.
+
+```bash
+gh issue create \
+  --title "QA: [Short descriptive title]" \
+  --label "qa" \
+  --milestone "[Milestone name]" \
+  --body "$(cat <<'EOF'
+## Description
+
+[What needs to be reviewed, tested, or validated.]
+
+## Scope
+
+- [What to cover]
+- [What to cover]
+
+## Acceptance Criteria
+
+- [ ] [What "done" looks like for this QA task]
+
+## Notes
+
+**Depends on:** [SWE issues that must be completed first]
+**Inputs:** [handoff notes, test plan, code to review]
+EOF
+)"
+```
+
+### DevOps tasks (label: `devops`)
+Infrastructure and deployment work — setting up pipelines, configuring environments, preparing releases.
+
+```bash
+gh issue create \
+  --title "DevOps: [Short descriptive title]" \
+  --label "devops" \
+  --milestone "[Milestone name]" \
+  --body "$(cat <<'EOF'
+## Description
+
+[What infrastructure, pipeline, or deployment work is needed.]
+
+## Acceptance Criteria
+
+- [ ] [What "done" looks like]
+
+## Notes
+
+**Depends on:** [Issues that must be completed first]
+**Inputs:** [env-context, project brief, etc.]
+EOF
+)"
+```
+
 ### Writing good user stories
 
 - The persona should be specific, not generic. "As a **warehouse manager**" not "As a **user**."
@@ -69,11 +127,15 @@ Bad: "- [ ] Input validation is implemented"
 - Order by dependency — what has to happen first. Use `**Dependencies:**` to link issue numbers.
 - Every task MUST have acceptance criteria. No "trust me."
 - Reference specific file paths in Inputs so the AI can read them directly (no copy-paste).
-- Create a `task` label if it doesn't exist: `gh label create task --description "Session-sized work item" --color 0E8A16`
+- Create labels if they don't exist:
+  - `gh label create task --description "SWE session-sized work item" --color 0E8A16`
+  - `gh label create qa --description "QA work item" --color D93F0B`
+  - `gh label create devops --description "DevOps work item" --color 1D76DB`
 - Create the milestone if it doesn't exist: `gh api repos/{owner}/{repo}/milestones -f title="[Milestone name]"`
+- Not every milestone needs QA or DevOps tasks. Only create them when the milestone genuinely requires that work.
 
 ## After creating all issues
 
-1. List the created issues with `gh issue list --label task --milestone "[Milestone name]"` and present them to the user for review.
+1. List the created issues with `gh issue list --milestone "[Milestone name]"` and present them to the user for review.
 2. Update `docs/roadmap.md` to note that the milestone has been decomposed. Log the issue numbers in the roadmap's change log.
 3. Update `docs/project-brief.md` "Current Status" with the first task's issue number as "Next task."

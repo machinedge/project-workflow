@@ -1,7 +1,7 @@
 # AI Project Toolkit — New Repo Scaffolder (Windows)
-# Usage: .\new_repo.ps1 [-Org <github-org>] [-Editor claude|cursor|both] <repo-name>
+# Usage: .\new_repo.ps1 [-Org <github-org>] [-Editor claude|cursor|both] [-Workflows pm,swe,qa,devops] <repo-name>
 #
-# Creates a new git repo with the toolkit pre-configured,
+# Creates a new git repo with selected workflows pre-configured,
 # and pushes it to GitHub under the specified org/user.
 #
 # The GitHub org/user can be set via:
@@ -9,10 +9,10 @@
 #   2. GITHUB_ORG environment variable
 #
 # Examples:
-#   .\new_repo.ps1 my-app                          # Uses $env:GITHUB_ORG, both editors
-#   .\new_repo.ps1 -Org mycompany my-app           # Explicit org
-#   .\new_repo.ps1 -Editor cursor my-app           # Cursor only
-#   .\new_repo.ps1 -Org myco -Editor claude app    # All flags
+#   .\new_repo.ps1 my-app                                          # Uses $env:GITHUB_ORG, all workflows, both editors
+#   .\new_repo.ps1 -Org mycompany my-app                           # Explicit org
+#   .\new_repo.ps1 -Workflows "pm,swe" my-app                      # Just PM and SWE
+#   .\new_repo.ps1 -Workflows "pm,swe,qa" -Editor cursor app       # PM+SWE+QA, Cursor only
 
 param(
     [Parameter(Mandatory = $true, Position = 0)]
@@ -23,7 +23,10 @@ param(
 
     [Parameter()]
     [ValidateSet("claude", "cursor", "both")]
-    [string]$Editor = "both"
+    [string]$Editor = "both",
+
+    [Parameter()]
+    [string]$Workflows = "pm,swe,qa,devops"
 )
 
 $ErrorActionPreference = "Stop"
@@ -53,8 +56,19 @@ if ($RepoName -notmatch '^[a-zA-Z0-9._-]+$') {
     exit 1
 }
 
-# Resolve the directory where this script lives (the toolkit root)
+# Validate workflow names
+$ValidWorkflows = @("pm", "swe", "qa", "devops")
+$WorkflowList = $Workflows -split ',' | ForEach-Object { $_.Trim() }
+foreach ($wf in $WorkflowList) {
+    if ($wf -notin $ValidWorkflows) {
+        Write-Error "Error: Unknown workflow '$wf'. Valid workflows: pm, swe, qa, devops"
+        exit 1
+    }
+}
+
+# Resolve the directory where this script lives (workflows/shared/)
 $ScriptDir = $PSScriptRoot
+$WorkflowsDir = Split-Path $ScriptDir -Parent
 
 $RepoDir = Join-Path $HOME "work" $RepoName
 
@@ -69,15 +83,23 @@ New-Item -ItemType Directory -Path $RepoDir -Force | Out-Null
 New-Item -ItemType File -Path "$RepoDir/README.md" -Force | Out-Null
 New-Item -ItemType File -Path "$RepoDir/.gitignore" -Force | Out-Null
 
-# Run the toolkit setup (using absolute path to setup.ps1)
-& "$ScriptDir/setup.ps1" -Editor $Editor -Target $RepoDir
+# Run each workflow's setup script
+foreach ($wf in $WorkflowList) {
+    $SetupScript = Join-Path $WorkflowsDir $wf "setup.ps1"
+    if (Test-Path $SetupScript) {
+        Write-Host "Installing $wf workflow..."
+        & $SetupScript -Editor $Editor -Target $RepoDir
+    } else {
+        Write-Warning "No setup script found for '$wf' workflow at $SetupScript"
+    }
+}
 
 # Git init and push
 Push-Location $RepoDir
 try {
     git init
     git add .
-    git commit -m "Initial commit: project scaffold with AI toolkit"
+    git commit -m "Initial commit: project scaffold with AI toolkit (workflows: $Workflows)"
 
     gh repo create "$Org/$RepoName" --private
     if ($LASTEXITCODE -ne 0) {
@@ -97,4 +119,5 @@ try {
 Write-Host ""
 Write-Host "Done! Repo ready at: $RepoDir"
 Write-Host "GitHub: https://github.com/$Org/$RepoName"
+Write-Host "Workflows installed: $Workflows"
 Write-Host ""

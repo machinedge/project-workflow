@@ -13,7 +13,9 @@ Read these files automatically — do not ask the user to provide them:
    - If user specified an issue number (e.g. "#42" or "42"), read it: `gh issue view 42`
    - If not, check project brief's "Next task" field for the issue number
    - If still unclear, list open tasks: `gh issue list --label task --state open` and ask
-4. Most recent handoff note in `docs/handoff-notes/` (if any exist)
+4. Most recent handoff note in `docs/handoff-notes/swe/` (if any exist)
+5. `docs/test-plan.md` (if it exists) — skim for test requirements relevant to this task
+6. `docs/env-context.md` (if it exists) — skim for environment constraints relevant to this task
 
 Confirm understanding with the user:
 - "Project: [1 sentence]"
@@ -62,6 +64,8 @@ Write test code before implementation code:
 - **Unit tests** for the core logic (individual functions, edge cases, error handling)
 - **Integration tests** for how components interact (API calls, data flow, end-to-end paths)
 
+If `docs/test-plan.md` exists and covers this task, implement the test requirements QA defined — don't invent different ones. Use QA's test plan as the specification for what to test and at what level.
+
 If the project has an existing test framework, use it. If not, choose one that fits the stack and note the decision.
 
 Tests should be runnable but expected to fail at this point (they test code that doesn't exist yet). Save the test files.
@@ -76,6 +80,7 @@ Now write the implementation code:
 
 - Follow the architecture from Phase 3.
 - Write code that makes the tests from Phase 4 pass.
+- If `docs/env-context.md` exists, respect its constraints (target architecture, memory limits, toolchain requirements, etc.).
 - Stay within the scope defined in the issue. If you discover something out of scope, flag it — don't do it.
 - If you make a decision that wasn't covered in the architecture, note it for the handoff.
 
@@ -88,7 +93,6 @@ Run verification before declaring the task complete:
 - **Run the tests.** All tests from Phase 4 should pass. If any fail, fix the implementation (not the tests, unless the test was wrong).
 - **Check acceptance criteria.** Walk through each acceptance criterion from the GitHub issue. Can each one be demonstrated or verified? Check them off.
 - **Check for regressions** — does existing functionality still work?
-- **Review your own output** — read through the code or content you produced. Look for obvious issues, TODOs left behind, hardcoded values, missing error handling.
 
 If verification fails, go back to Phase 5 and fix. Do not proceed until verification passes.
 

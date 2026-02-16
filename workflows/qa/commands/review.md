@@ -18,7 +18,9 @@ Read these files:
 1. `docs/project-brief.md` — understand the project goals and constraints
 2. `docs/lessons-log.md` — know what gotchas have already been identified
 3. The relevant GitHub issue(s): `gh issue view [number]` for each task in scope
-4. The relevant handoff note(s) in `docs/handoff-notes/` — understand what was done and what decisions were made
+4. The relevant SWE handoff note(s) in `docs/handoff-notes/swe/` — understand what was done and what decisions were made
+5. `docs/test-plan.md` (if it exists) — understand what QA has defined as test requirements
+6. `docs/env-context.md` (if it exists) — understand environment-specific constraints
 
 Do NOT read the code yet. Understand the intent first so you can evaluate the code against what it was supposed to do, not just what it happens to do.
 
@@ -39,6 +41,7 @@ Assess the code across these dimensions. Be critical, not polite. The goal is to
 - Do the tests actually test the important behavior, or do they just test the happy path?
 - Are there missing edge case tests?
 - Could the tests pass even if the implementation were subtly wrong? (Tests that are too tightly coupled to implementation details are a smell.)
+- If `docs/test-plan.md` exists: evaluate coverage against the test plan, not just against "does it test the happy path." Are QA's defined test requirements implemented?
 
 **Security & Error Handling**
 - Input validation — is user/external input trusted where it shouldn't be?
@@ -50,6 +53,15 @@ Assess the code across these dimensions. Be critical, not polite. The goal is to
 - Does the new code follow the same patterns, naming conventions, and style as the rest of the project?
 - Are there naming mismatches between this code and existing code?
 - If multiple tasks are being reviewed: do the pieces fit together coherently, or do they look like they were written by different people with different assumptions?
+
+**Environment-Specific Concerns**
+If `docs/env-context.md` exists, also evaluate:
+- Memory constraints — any unbounded allocations, large buffers, or memory leaks?
+- Target architecture — endianness assumptions, word size, alignment?
+- Peripheral or hardware assumptions — hardcoded addresses, timing assumptions?
+- Deployment constraints — binary size, startup time, resource limits?
+
+Skip this section if no env-context exists or if it's not relevant (e.g., pure web app with no special constraints).
 
 **Technical Debt**
 - TODOs or FIXMEs left behind — are they tracked or forgotten?

@@ -1,9 +1,9 @@
 #!/bin/bash
 
-# SWE Workflow — Setup
+# PM Workflow — Setup
 # Usage: ./setup.sh [--editor claude|cursor|both] [project-directory]
 #
-# Installs SWE workflow commands and editor config into a project directory.
+# Installs PM workflow commands and editor config into a project directory.
 #
 # Examples:
 #   ./setup.sh                          # Both editors, current directory
@@ -13,7 +13,7 @@
 
 set -e
 
-# Resolve the directory where this script lives (workflows/swe/)
+# Resolve the directory where this script lives (workflows/pm/)
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
 # Parse arguments
@@ -37,7 +37,7 @@ if [ "$TARGET" != "." ]; then
     mkdir -p "$TARGET"
 fi
 
-echo "  [swe] Installing SWE workflow in: $TARGET (editor: $EDITOR)"
+echo "  [pm] Installing PM workflow in: $TARGET (editor: $EDITOR)"
 
 # ─────────────────────────────────────────────
 # Shared docs directory
@@ -71,26 +71,22 @@ fi
 
 # ─────────────────────────────────────────────
 # Claude Code setup
-# editor.md → .claude/roles/swe.md
-# Only SWE commands → .claude/commands/
+# editor.md → .claude/roles/pm.md
+# commands → .claude/commands/
 # ─────────────────────────────────────────────
 
 if [ "$EDITOR" = "claude" ] || [ "$EDITOR" = "both" ]; then
     echo "    Setting up Claude Code (.claude/)..."
     mkdir -p "$TARGET/.claude/commands"
     mkdir -p "$TARGET/.claude/roles"
-    cp "$SCRIPT_DIR/editor.md" "$TARGET/.claude/roles/swe.md"
-
-    # Only install SWE commands (start, handoff)
-    for cmd in start handoff; do
-        cp "$SCRIPT_DIR/commands/$cmd.md" "$TARGET/.claude/commands/"
-    done
+    cp "$SCRIPT_DIR/editor.md" "$TARGET/.claude/roles/pm.md"
+    cp "$SCRIPT_DIR"/commands/*.md "$TARGET/.claude/commands/"
 fi
 
 # ─────────────────────────────────────────────
 # Cursor setup
-# editor.md + YAML frontmatter → .cursor/rules/swe-os.mdc
-# Only SWE commands → .cursor/commands/
+# editor.md + YAML frontmatter → .cursor/rules/pm-os.mdc
+# commands → .cursor/commands/
 # ─────────────────────────────────────────────
 
 if [ "$EDITOR" = "cursor" ] || [ "$EDITOR" = "both" ]; then
@@ -98,24 +94,21 @@ if [ "$EDITOR" = "cursor" ] || [ "$EDITOR" = "both" ]; then
     mkdir -p "$TARGET/.cursor/rules"
     mkdir -p "$TARGET/.cursor/commands"
 
-    # Prepend Cursor's frontmatter to the SWE editor rules
+    # Prepend Cursor's frontmatter to the PM editor rules
     {
         printf '%s\n' "---"
-        printf '%s\n' "description: SWE operating system — software engineering execution protocol"
+        printf '%s\n' "description: PM operating system — product/project management protocol"
         printf '%s\n' "alwaysApply: false"
         printf '%s\n' "---"
         printf '\n'
         cat "$SCRIPT_DIR/editor.md"
-    } > "$TARGET/.cursor/rules/swe-os.mdc"
+    } > "$TARGET/.cursor/rules/pm-os.mdc"
 
-    # Only install SWE commands (start, handoff)
-    for cmd in start handoff; do
-        cp "$SCRIPT_DIR/commands/$cmd.md" "$TARGET/.cursor/commands/"
-    done
+    cp "$SCRIPT_DIR"/commands/*.md "$TARGET/.cursor/commands/"
 fi
 
 # ─────────────────────────────────────────────
 # Summary
 # ─────────────────────────────────────────────
 
-echo "    SWE commands installed: /start, /handoff"
+echo "    PM commands installed: /interview, /add_feature, /vision, /roadmap, /decompose, /postmortem"

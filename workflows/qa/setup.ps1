@@ -1,7 +1,7 @@
-# SWE Workflow — Setup (Windows)
+# QA Workflow — Setup (Windows)
 # Usage: .\setup.ps1 [-Editor claude|cursor|both] [-Target <project-directory>]
 #
-# Installs SWE workflow commands and editor config into a project directory.
+# Installs QA workflow commands and editor config into a project directory.
 #
 # Examples:
 #   .\setup.ps1                              # Both editors, current directory
@@ -18,14 +18,14 @@ param(
 
 $ErrorActionPreference = "Stop"
 
-# Resolve the directory where this script lives (workflows/swe/)
+# Resolve the directory where this script lives (workflows/qa/)
 $ScriptDir = $PSScriptRoot
 
 if ($Target -ne ".") {
     New-Item -ItemType Directory -Path $Target -Force | Out-Null
 }
 
-Write-Host "  [swe] Installing SWE workflow in: $Target (editor: $Editor)"
+Write-Host "  [qa] Installing QA workflow in: $Target (editor: $Editor)"
 
 # ─────────────────────────────────────────────
 # Shared docs directory
@@ -59,26 +59,22 @@ if (-not (Test-Path "$Target/docs/lessons-log.md")) {
 
 # ─────────────────────────────────────────────
 # Claude Code setup
-# editor.md → .claude/roles/swe.md
-# Only SWE commands → .claude/commands/
+# editor.md → .claude/roles/qa.md
+# commands → .claude/commands/
 # ─────────────────────────────────────────────
 
 if ($Editor -eq "claude" -or $Editor -eq "both") {
     Write-Host "    Setting up Claude Code (.claude/)..."
     New-Item -ItemType Directory -Path "$Target/.claude/commands" -Force | Out-Null
     New-Item -ItemType Directory -Path "$Target/.claude/roles" -Force | Out-Null
-    Copy-Item "$ScriptDir/editor.md" -Destination "$Target/.claude/roles/swe.md" -Force
-
-    # Only install SWE commands (start, handoff)
-    foreach ($cmd in @("start", "handoff")) {
-        Copy-Item "$ScriptDir/commands/$cmd.md" -Destination "$Target/.claude/commands/" -Force
-    }
+    Copy-Item "$ScriptDir/editor.md" -Destination "$Target/.claude/roles/qa.md" -Force
+    Copy-Item "$ScriptDir/commands/*.md" -Destination "$Target/.claude/commands/" -Force
 }
 
 # ─────────────────────────────────────────────
 # Cursor setup
-# editor.md + YAML frontmatter → .cursor/rules/swe-os.mdc
-# Only SWE commands → .cursor/commands/
+# editor.md + YAML frontmatter → .cursor/rules/qa-os.mdc
+# commands → .cursor/commands/
 # ─────────────────────────────────────────────
 
 if ($Editor -eq "cursor" -or $Editor -eq "both") {
@@ -86,25 +82,22 @@ if ($Editor -eq "cursor" -or $Editor -eq "both") {
     New-Item -ItemType Directory -Path "$Target/.cursor/rules" -Force | Out-Null
     New-Item -ItemType Directory -Path "$Target/.cursor/commands" -Force | Out-Null
 
-    # Prepend Cursor's frontmatter to the SWE editor rules
+    # Prepend Cursor's frontmatter to the QA editor rules
     $frontmatter = @"
 ---
-description: SWE operating system — software engineering execution protocol
+description: QA operating system — quality assurance validation protocol
 alwaysApply: false
 ---
 
 "@
     $editorContent = Get-Content "$ScriptDir/editor.md" -Raw
-    ($frontmatter + $editorContent) | Set-Content -Path "$Target/.cursor/rules/swe-os.mdc" -Encoding UTF8
+    ($frontmatter + $editorContent) | Set-Content -Path "$Target/.cursor/rules/qa-os.mdc" -Encoding UTF8
 
-    # Only install SWE commands (start, handoff)
-    foreach ($cmd in @("start", "handoff")) {
-        Copy-Item "$ScriptDir/commands/$cmd.md" -Destination "$Target/.cursor/commands/" -Force
-    }
+    Copy-Item "$ScriptDir/commands/*.md" -Destination "$Target/.cursor/commands/" -Force
 }
 
 # ─────────────────────────────────────────────
 # Summary
 # ─────────────────────────────────────────────
 
-Write-Host "    SWE commands installed: /start, /handoff"
+Write-Host "    QA commands installed: /review, /test-plan, /regression, /bug-triage"

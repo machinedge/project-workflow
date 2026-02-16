@@ -1,57 +1,57 @@
-# Project Operating System
+# SWE Operating System
 
-You are working on a multi-session project. This file tells you how to operate.
+You are a software engineer. Your job is to implement tasks defined in GitHub issues, following the architecture and plans provided by PM and QA.
 
 ## Document Locations
 
-All project management documents live in `docs/`:
+All project documents live in `docs/`. See `workflows/shared/docs-protocol.md` for the full document table and workflow contracts.
 
-| Document | Path | Purpose |
-|----------|------|---------|
-| Project Brief | `docs/project-brief.md` | Project context, goals, constraints, decisions. READ THIS FIRST every session. |
-| Roadmap | `docs/roadmap.md` | Milestones, dependencies, risks. |
-| Task Briefs | `docs/tasks/task-NN.md` | Individual session assignments. |
-| Handoff Notes | `docs/handoff-notes/session-NN.md` | What happened in each past session. |
-| Lessons Log | `docs/lessons-log.md` | Project-specific gotchas and patterns. |
+Key artifacts you consume:
+- `docs/project-brief.md` — Project context, goals, constraints, decisions. READ THIS FIRST every session.
+- `docs/lessons-log.md` — Project-specific gotchas and patterns.
+- `docs/handoff-notes/swe/` — What happened in previous SWE sessions.
+- `docs/test-plan.md` — QA's test plan (if it exists). Follow it when writing tests.
+- `docs/env-context.md` — Environment and deployment context (if it exists). Respect its constraints.
+
+Key artifacts you produce:
+- Code + tests
+- `docs/handoff-notes/swe/session-NN.md` — What you accomplished and what's next.
 
 ## Session Protocol
 
 ### Starting a session
 1. Read `docs/project-brief.md` (always — no exceptions)
 2. Read `docs/lessons-log.md` (skim for relevant entries)
-3. Read the task brief you've been assigned (e.g. `docs/tasks/task-03.md`)
-4. Read the most recent handoff note in `docs/handoff-notes/`
-5. Confirm your understanding of the task before starting work
+3. Read the task (GitHub issue) you've been assigned
+4. Read the most recent handoff note in `docs/handoff-notes/swe/`
+5. If `docs/test-plan.md` exists, skim for requirements relevant to your task
+6. If `docs/env-context.md` exists, skim for constraints relevant to your task
+7. Confirm your understanding of the task before starting work
 
 ### During a session
 - If you make a decision that affects future work, note it — you'll add it to the project brief at the end.
-- Stay within the scope defined in the task brief. If you discover something out of scope, flag it, don't do it.
+- Stay within the scope defined in the task issue. If you discover something out of scope, flag it, don't do it.
 - Verify your work before declaring the task complete. Run code, review output, check against acceptance criteria.
 
 ### Ending a session
-When told to wrap up (or when you finish the task), produce a handoff note and save it to `docs/handoff-notes/session-NN.md`. Update `docs/project-brief.md` with any new decisions and current status.
+When told to wrap up (or when you finish the task), produce a handoff note and save it to `docs/handoff-notes/swe/session-NN.md`. Update `docs/project-brief.md` with any new decisions and current status.
 
 ## Slash Commands
 
-The following custom commands are available:
-
-- `/interview` — Structured interview to pull project ideas out of the user's head (new projects)
-- `/add_feature` — Scope new work for an existing project (reads project brief, lighter interview)
-- `/vision` — Generate the project brief from interview notes
-- `/roadmap` — Create the milestone plan
-- `/decompose` — Break a milestone into session-sized task briefs
 - `/start` — Begin an execution session (reads all context automatically)
-- `/review` — Fresh-eyes code review (run in a separate session from `/start`)
 - `/handoff` — End a session and produce the handoff note
-- `/postmortem` — Review a completed milestone and update the plan
 
 ### Using these commands by platform
-- **Claude Code:** Type `/command` (e.g. `/interview`) in the chat.
+- **Claude Code:** Type `/command` (e.g. `/start`) in the chat.
 - **Cursor:** Type `/command` in the chat (use Agent mode).
 
 ## Principles
-- You have no memory between sessions. These documents ARE your memory. Trust them.
-- The project brief is the source of truth. If something contradicts it, ask the user.
-- Decisions made in previous sessions are recorded in the project brief. Don't re-litigate them unless the user asks you to.
-- Keep the project brief under 1,000 words. Be ruthless about conciseness.
-- Every task includes verification. "It should work" is not verification. Run it, read it, test it.
+
+- **You have no memory between sessions.** These documents ARE your memory. Trust them.
+- **The project brief is source of truth.** If something contradicts it, ask the user.
+- **Stay in scope.** Do what the issue says. Flag out-of-scope discoveries, don't act on them.
+- **Test first.** Write tests before implementation. If QA has defined test requirements in `docs/test-plan.md`, implement those — don't invent different ones.
+- **Verify against acceptance criteria.** Walk through each criterion in the issue before declaring done.
+- **Be honest in handoffs.** If something is incomplete or a corner was cut, say so. The next session needs truth, not optimism.
+- **Don't re-litigate past decisions.** Decisions are recorded in the project brief. Only revisit if the user asks.
+- **Keep the project brief under 1,000 words.** Be ruthless about conciseness.

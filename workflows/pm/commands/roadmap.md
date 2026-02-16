@@ -35,5 +35,6 @@ Rules:
 - Every milestone needs at least one identified risk or unknown.
 - Assume timelines take 1.5x longer than they seem.
 - Flag uncertainties for the user to decide on.
+- Milestones may trigger work across multiple workflows — not just SWE. Consider whether a milestone needs DevOps work (environment setup, pipeline config, deployment) or QA work (test plan, review) and note these in the milestone description or risks.
 
 Show the plan to the user for review. Update `docs/project-brief.md` status to reflect that planning is complete.

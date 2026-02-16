@@ -2,7 +2,7 @@ End the current session and produce a handoff note.
 
 ## Step 1: Determine session number
 
-Look at existing files in `docs/handoff-notes/`. The new file should be the next number in sequence (e.g., if `session-02.md` is the latest, create `session-03.md`). If no handoff notes exist, create `session-01.md`.
+Look at existing files in `docs/handoff-notes/swe/`. The new file should be the next number in sequence (e.g., if `session-02.md` is the latest, create `session-03.md`). If no handoff notes exist, create `session-01.md`.
 
 ## Step 2: Identify the task
 
@@ -12,7 +12,7 @@ Read the issue to get the acceptance criteria: `gh issue view [number]`
 
 ## Step 3: Write the handoff note
 
-Save to `docs/handoff-notes/session-NN.md`:
+Save to `docs/handoff-notes/swe/session-NN.md`:
 
 ```markdown
 # Handoff Note: [Task Name]
@@ -57,7 +57,7 @@ gh issue comment [number] --body "$(cat <<'EOF'
 ## Session [NN] Summary
 
 **What was done:** [1-2 sentences]
-**Handoff note:** `docs/handoff-notes/session-NN.md`
+**Handoff note:** `docs/handoff-notes/swe/session-NN.md`
 **All acceptance criteria met:** [Yes / No — if no, explain what remains]
 EOF
 )"
