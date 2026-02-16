@@ -38,4 +38,5 @@ quick_validate.py
 __pycache__
 
 # other
-.claude/
+.claude
+.cursor
