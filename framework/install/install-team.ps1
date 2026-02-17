@@ -137,7 +137,7 @@ function Render-ComposeTemplate {
         } elseif ($line -match '{{EXPERT_VOLUMES}}') {
             $result.AddRange($Volumes -split "`n")
         } elseif ($line -match '{{EXPERT_LIST_CSV}}') {
-            $result.Add($line -replace '{{EXPERT_LIST_CSV}}', $ExpertsCsv)
+            $result.Add(($line -replace '{{EXPERT_LIST_CSV}}', $ExpertsCsv))
         } else {
             $result.Add($line)
         }
