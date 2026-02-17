@@ -16,7 +16,10 @@ experts/technical/          ← Expert definitions (the core of this repo)
 framework/                  ← Framework tooling
   scaffold/                 ← Expert authoring (create-expert scripts, templates)
   validate/                 ← Validation (validate.sh)
-  install/                  ← Project installation (install.sh/ps1, targets/)
+  install/                  ← Project installation
+    install.sh/ps1          ← Standalone mode (Claude Code, Cursor)
+    install-team.sh         ← Team mode (Docker + Matrix + OpenClaw)
+    targets/                ← Per-platform translation docs
   package/                  ← Build & distribution (package.sh, SKILL.md)
   docs/                     ← Framework documentation (agent-reference.md, CONTRIBUTING.md)
 docs/                       ← Vision, architecture, guides

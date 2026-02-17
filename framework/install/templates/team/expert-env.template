@@ -1,0 +1,6 @@
+# Per-expert environment overrides for: {{EXPERT_NAME}}
+# These override the project-level .env values for this expert only.
+# Uncomment and modify as needed.
+
+# LLM_MODEL=
+# OPENAI_API_KEY=
