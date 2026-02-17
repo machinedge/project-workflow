@@ -33,19 +33,24 @@ Or run setup directly:
 ./workflows/setup.sh --expert swe ~/projects/my-app
 ```
 
-### Team Mode (Coordinated Experts)
-
-> **Status:** Under active development.
+### Team Mode (Coordinated Experts in Docker)
 
 ```bash
-# cd into the project directory of your choice
-cd my-project
-# Spin up a full dev team for a project
-machinedge init software
+# Generate Docker infrastructure for a full expert team
+./framework/install/install-team.sh ~/projects/my-app
 
-# Opens a Matrix room with PM, SWE, QA, DevOps
-# Talk to the PM to get started
+# Configure your API keys and git URL
+vi ~/projects/my-app/.octeam/.env
+
+# Start the team
+cd ~/projects/my-app/.octeam
+docker compose up -d
+
+# Open Element Web in your browser to talk to the team
+open http://localhost:8009
 ```
+
+Each expert runs in its own container with its own git clone. Communication happens through Matrix (Conduit). You interact with the PM through Element Web in your browser.
 
 ## How It Works
 
@@ -82,12 +87,12 @@ These definitions are platform-agnostic. A translation layer generates configs f
 
 ```
 ┌──────────┐
-│  Human   │  ← You. Talk to the PM.
+│  Human   │  ← You. Talk to the PM via Element Web.
 └────┬─────┘
-     │
+     │  http://localhost:8009
 ┌────▼──────────────────────────────────┐
-│         Matrix (Dendrite)             │
-│  Routing · Security · Audit trails   │
+│         Matrix (Conduit)              │
+│  Lightweight · On-prem · No federation│
 └──┬────────┬────────┬────────┬────────┘
    │        │        │        │
 ┌──▼──┐ ┌──▼──┐ ┌──▼──┐ ┌──▼──┐
@@ -95,9 +100,8 @@ These definitions are platform-agnostic. A translation layer generates configs f
 │     │ │     │ │     │ │  s  │ ... [others]
 └─────┘ └─────┘ └─────┘ └─────┘
 Docker   Docker   Docker   Docker
-   │        │        │        │
-   └────────┴────────┴────────┘
-            Shared Git Repo
+(own     (own     (own     (own
+ clone)   clone)   clone)   clone)
 ```
 
 The PM is the orchestrator and the human's single point of contact. It breaks down work, delegates to experts, enforces process rigor, and pulls the human in only for reviews and approvals.
@@ -173,15 +177,16 @@ project-workflow/
 │       ├── data-analyst/           ← Data analysis (under development)
 │       ├── user-experience/        ← UX design (under development)
 │       └── shared/                 ← Cross-expert protocols and shared skills
-├── skills/
-│   └── machinedge-workflows/       ← Distributable skill package
-├── build/                          ← Build tooling
+├── build/                          ← Build output (gitignored)
 └── framework/                      ← Setup scripts, scaffolding, validation
-    ├── setup.sh / setup.ps1
-    ├── create-expert.sh
-    ├── validate.sh
-    ├── CONTRIBUTING.md
-    └── templates/
+    ├── install/
+    │   ├── install.sh / install.ps1          ← Standalone mode setup
+    │   ├── install-team.sh                   ← Team mode setup (Docker)
+    │   └── targets/                          ← Per-platform translation docs
+    ├── scaffold/                             ← Expert authoring tools
+    ├── validate/                             ← Validation (validate.sh)
+    ├── package/                              ← Build & distribution
+    └── docs/                                 ← Framework docs
 ```
 
 ## Prerequisites
@@ -191,10 +196,11 @@ project-workflow/
 - Claude Code, Cursor, or Cowork
 - For EDA: Python 3.10+
 
-**Team mode (coming):**
-- OpenClaw ([openclaw.ai](https://openclaw.ai/))
+**Team mode:**
 - Docker + Docker Compose
-- OpenAI API key
+- OpenAI-compatible API key (or any LLM provider)
+- A git repo URL and token for the project
+- OpenClaw ([openclaw.ai](https://openclaw.ai/))
 
 ## License
 

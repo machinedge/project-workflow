@@ -83,6 +83,7 @@ echo "Copying framework install scripts..."
 mkdir -p "$SKILL_BUILD/framework/install"
 cp "$REPO_ROOT/framework/install/install.sh" "$SKILL_BUILD/framework/install/"
 cp "$REPO_ROOT/framework/install/install.ps1" "$SKILL_BUILD/framework/install/"
+cp "$REPO_ROOT/framework/install/install-team.sh" "$SKILL_BUILD/framework/install/"
 
 # ─────────────────────────────────────────────
 # Ensure packaging tools are available
