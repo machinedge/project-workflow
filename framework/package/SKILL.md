@@ -32,11 +32,11 @@ than open-ended questions. You can ask them all at once.
 
 | Expert | Best For | Key Skills |
 |--------|----------|------------|
-| **Project Manager** | Orchestration, planning, scoping | `/interview` → `/vision` → `/roadmap` → `/decompose` → `/postmortem` |
-| **SWE** (Software Engineering) | Building software — apps, APIs, libraries, tools | `/start` → `/handoff` |
-| **QA** (Quality Assurance) | Testing, code review, regression | `/review` → `/test-plan` → `/regression` → `/bug-triage` |
-| **DevOps** | Build, deploy, environments | `/env-discovery` → `/pipeline` → `/release-plan` → `/deploy` |
-| **Data Analyst** | Time series analysis, data exploration | `/intake` → `/brief` → `/scope` → `/start` → `/synthesize` |
+| **Project Manager** | Orchestration, planning, scoping | `/pm-interview` → `/pm-vision` → `/pm-roadmap` → `/pm-decompose` → `/pm-postmortem` |
+| **SWE** (Software Engineering) | Building software — apps, APIs, libraries, tools | `/swe-start` → `/swe-handoff` |
+| **QA** (Quality Assurance) | Testing, code review, regression | `/qa-review` → `/qa-test-plan` → `/qa-regression` → `/qa-bug-triage` |
+| **DevOps** | Build, deploy, environments | `/ops-env-discovery` → `/ops-pipeline` → `/ops-release-plan` → `/ops-deploy` |
+| **Data Analyst** | Time series analysis, data exploration | `/da-intake` → `/da-brief` → `/da-scope` → `/da-start` → `/da-synthesize` |
 
 The default is all core experts: PM, SWE, QA, DevOps. Users can also pick a subset.
 
@@ -160,10 +160,10 @@ Tell them:
 >
 > 1. Open the project in Claude Code or Cursor
 > 2. The AI will ask which expert role you want for this session
-> 3. Start with the **Project Manager** role and run `/interview` to capture your project idea
-> 4. Then follow the lifecycle: `/vision` → `/roadmap` → `/decompose`
-> 5. Switch to the **SWE** role for implementation: `/start` → `/handoff`
-> 6. Use **QA** for reviews: `/review` → `/test-plan`
+> 3. Start with the **Project Manager** role and run `/pm-interview` to capture your project idea
+> 4. Then follow the lifecycle: `/pm-vision` → `/pm-roadmap` → `/pm-decompose`
+> 5. Switch to the **SWE** role for implementation: `/swe-start` → `/swe-handoff`
+> 6. Use **QA** for reviews: `/qa-review` → `/qa-test-plan`
 >
 > Each expert builds on shared project documents in `docs/`. The handoff notes carry
 > context across sessions so you never have to re-explain your project.

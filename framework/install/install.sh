@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# MachinEdge Expert Teams — Setup
-# Usage: ./setup.sh [--editor claude|cursor|both] [--experts pm,swe,qa,devops] [--domain technical] [project-directory]
+# MachinEdge Expert Teams — Install
+# Usage: ./install.sh [--editor claude|cursor|both] [--experts pm,swe,qa,devops] [--domain technical] [project-directory]
 #
 # Installs one or more experts into a project directory by translating
 # platform-agnostic expert definitions into editor-specific configurations.
@@ -9,11 +9,15 @@
 # Expert short names are mapped to their full directory names:
 #   pm → project-manager, swe → swe, qa → qa, devops → devops, data-analyst → data-analyst
 #
+# Skill prefix mapping (for flat command namespaces):
+#   pm- → project-manager, swe- → swe, qa- → qa, ops- → devops
+#   da- → data-analyst, ux- → user-experience, team- → shared
+#
 # Examples:
-#   ./setup.sh ~/myproj                                    # All core experts, both editors
-#   ./setup.sh --experts pm,swe ~/myproj                   # Just PM and SWE
-#   ./setup.sh --experts pm,swe,qa --editor cursor .       # PM+SWE+QA, Cursor only
-#   ./setup.sh --editor claude ~/myproj                    # All core experts, Claude only
+#   ./install.sh ~/myproj                                    # All core experts, both editors
+#   ./install.sh --experts pm,swe ~/myproj                   # Just PM and SWE
+#   ./install.sh --experts pm,swe,qa --editor cursor .       # PM+SWE+QA, Cursor only
+#   ./install.sh --editor claude ~/myproj                    # All core experts, Claude only
 
 set -e
 
@@ -83,6 +87,24 @@ resolve_expert_name() {
     esac
 }
 
+# ─────────────────────────────────────────────
+# Map expert directory names to short prefixes
+# Used to namespace skills in flat command directories
+# ─────────────────────────────────────────────
+
+resolve_expert_prefix() {
+    local name="$1"
+    case "$name" in
+        project-manager) echo "pm" ;;
+        swe)             echo "swe" ;;
+        qa)              echo "qa" ;;
+        devops)          echo "ops" ;;
+        data-analyst)    echo "da" ;;
+        user-experience) echo "ux" ;;
+        *)               echo "$name" ;;
+    esac
+}
+
 # Parse and validate expert names
 IFS=',' read -ra RAW_EXPERTS <<< "$EXPERT_LIST"
 EXPERTS=()
@@ -127,6 +149,32 @@ for expert in "${EXPERTS[@]}"; do
 done
 
 # ─────────────────────────────────────────────
+# Clean previous installation (managed files only)
+# Preserves user content in docs/, issues/, and
+# any custom commands without our known prefixes
+# ─────────────────────────────────────────────
+
+if [ "$EDITOR" = "claude" ] || [ "$EDITOR" = "both" ]; then
+    # Remove managed commands (known prefixes only)
+    for prefix in pm swe qa ops da ux team; do
+        rm -f "$TARGET/.claude/commands/${prefix}"-*.md 2>/dev/null
+    done
+    # Remove managed roles and generated root config
+    rm -rf "$TARGET/.claude/roles" 2>/dev/null
+    rm -f "$TARGET/.claude/CLAUDE.md" 2>/dev/null
+fi
+
+if [ "$EDITOR" = "cursor" ] || [ "$EDITOR" = "both" ]; then
+    # Remove managed commands (known prefixes only)
+    for prefix in pm swe qa ops da ux team; do
+        rm -f "$TARGET/.cursor/commands/${prefix}"-*.md 2>/dev/null
+    done
+    # Remove managed rules and generated root config
+    rm -f "$TARGET/.cursor/rules/"*-os.mdc 2>/dev/null
+    rm -f "$TARGET/.cursor/rules/project-os.mdc" 2>/dev/null
+fi
+
+# ─────────────────────────────────────────────
 # Install each expert's definition
 # ─────────────────────────────────────────────
 
@@ -143,11 +191,13 @@ for expert in "${EXPERTS[@]}"; do
             cp "$EXPERT_SRC/role.md" "$TARGET/.claude/roles/$expert.md"
         fi
 
-        # Copy skills as slash commands
+        # Copy skills as slash commands (prefixed and normalized)
         if [ -d "$EXPERT_SRC/skills" ]; then
+            PREFIX=$(resolve_expert_prefix "$expert")
             for skill_file in "$EXPERT_SRC"/skills/*.md; do
                 if [ -f "$skill_file" ]; then
-                    cp "$skill_file" "$TARGET/.claude/commands/"
+                    skill_basename=$(basename "$skill_file" | tr '_' '-')
+                    cp "$skill_file" "$TARGET/.claude/commands/${PREFIX}-${skill_basename}"
                 fi
             done
         fi
@@ -170,11 +220,13 @@ for expert in "${EXPERTS[@]}"; do
             } > "$TARGET/.cursor/rules/${expert}-os.mdc"
         fi
 
-        # Copy skills as commands
+        # Copy skills as commands (prefixed and normalized)
         if [ -d "$EXPERT_SRC/skills" ]; then
+            PREFIX=$(resolve_expert_prefix "$expert")
             for skill_file in "$EXPERT_SRC"/skills/*.md; do
                 if [ -f "$skill_file" ]; then
-                    cp "$skill_file" "$TARGET/.cursor/commands/"
+                    skill_basename=$(basename "$skill_file" | tr '_' '-')
+                    cp "$skill_file" "$TARGET/.cursor/commands/${PREFIX}-${skill_basename}"
                 fi
             done
         fi
@@ -203,7 +255,8 @@ if [ -d "$SHARED_DIR/skills" ]; then
     if [ "$EDITOR" = "claude" ] || [ "$EDITOR" = "both" ]; then
         for skill_file in "$SHARED_DIR"/skills/*.md; do
             if [ -f "$skill_file" ]; then
-                cp "$skill_file" "$TARGET/.claude/commands/"
+                skill_basename=$(basename "$skill_file" | tr '_' '-')
+                cp "$skill_file" "$TARGET/.claude/commands/team-${skill_basename}"
             fi
         done
     fi
@@ -211,7 +264,8 @@ if [ -d "$SHARED_DIR/skills" ]; then
     if [ "$EDITOR" = "cursor" ] || [ "$EDITOR" = "both" ]; then
         for skill_file in "$SHARED_DIR"/skills/*.md; do
             if [ -f "$skill_file" ]; then
-                cp "$skill_file" "$TARGET/.cursor/commands/"
+                skill_basename=$(basename "$skill_file" | tr '_' '-')
+                cp "$skill_file" "$TARGET/.cursor/commands/team-${skill_basename}"
             fi
         done
     fi
@@ -236,12 +290,13 @@ for expert in "${EXPERTS[@]}"; do
 
     ROLE_LIST="$ROLE_LIST\n- **$DISPLAY_NAME** (\`.claude/roles/$expert.md\`)"
 
-    # List skills from the expert
+    # List skills from the expert (prefixed and normalized)
     if [ -d "$EXPERT_SRC/skills" ]; then
+        PREFIX=$(resolve_expert_prefix "$expert")
         for skill_file in "$EXPERT_SRC"/skills/*.md; do
             if [ -f "$skill_file" ]; then
-                skill_name=$(basename "$skill_file" .md)
-                SKILL_LIST="$SKILL_LIST\n- \`/$skill_name\` ($DISPLAY_NAME)"
+                skill_name=$(basename "$skill_file" .md | tr '_' '-')
+                SKILL_LIST="$SKILL_LIST\n- \`/${PREFIX}-${skill_name}\` ($DISPLAY_NAME)"
             fi
         done
     fi
@@ -251,8 +306,8 @@ done
 if [ -d "$SHARED_DIR/skills" ]; then
     for skill_file in "$SHARED_DIR"/skills/*.md; do
         if [ -f "$skill_file" ]; then
-            skill_name=$(basename "$skill_file" .md)
-            SKILL_LIST="$SKILL_LIST\n- \`/$skill_name\` (Shared)"
+            skill_name=$(basename "$skill_file" .md | tr '_' '-')
+            SKILL_LIST="$SKILL_LIST\n- \`/team-${skill_name}\` (Shared)"
         fi
     done
 fi
@@ -276,7 +331,7 @@ $(echo -e "$ROLE_LIST")
 2. Read the corresponding role file from \`.claude/roles/\`.
 3. Follow that expert's session protocol.
 
-If the user jumps straight into a skill (e.g. \`/start\`), infer the expert from the skill and load the appropriate role file automatically.
+If the user jumps straight into a skill (e.g. \`/swe-start\`), infer the expert from the skill prefix and load the appropriate role file automatically. Skill prefixes: pm=Project Manager, swe=SWE, qa=QA, ops=DevOps, da=Data Analyst, ux=User Experience, team=Shared.
 
 ## Available Skills
 $(echo -e "$SKILL_LIST")
@@ -316,7 +371,7 @@ Role files are in \`.cursor/rules/\` as \`<expert>-os.mdc\`.
 2. Read the corresponding role rules file.
 3. Follow that expert's session protocol.
 
-If the user jumps straight into a skill (e.g. \`/start\`), infer the expert from the skill and load the appropriate role file automatically.
+If the user jumps straight into a skill (e.g. \`/swe-start\`), infer the expert from the skill prefix and load the appropriate role file automatically. Skill prefixes: pm=Project Manager, swe=SWE, qa=QA, ops=DevOps, da=Data Analyst, ux=User Experience, team=Shared.
 
 ## Available Skills
 $(echo -e "$SKILL_LIST")
@@ -355,11 +410,11 @@ echo ""
 echo "Next steps:"
 echo "  1. cd $TARGET"
 if [ "$EDITOR" = "claude" ]; then
-    echo "  2. Open Claude Code and run /interview to start a new project"
+    echo "  2. Open Claude Code and run /pm-interview to start a new project"
 elif [ "$EDITOR" = "cursor" ]; then
-    echo "  2. Open Cursor and run /interview in Agent mode to start a new project"
+    echo "  2. Open Cursor and run /pm-interview in Agent mode to start a new project"
 else
-    echo "  2. Open Claude Code or Cursor and run /interview to start a new project"
+    echo "  2. Open Claude Code or Cursor and run /pm-interview to start a new project"
 fi
-echo "  3. Or run /status to see the project health summary"
+echo "  3. Or run /team-status to see the project health summary"
 echo ""

@@ -139,6 +139,8 @@ Expert definitions in this repo are platform-agnostic. The framework translates 
 | Claude Code (standalone) | `.claude/CLAUDE.md` | `.claude/commands/*.md` | Copied to project |
 | Cursor (standalone) | `.cursor/rules/{name}.mdc` (+ YAML frontmatter) | `.cursor/commands/*.md` | Copied to project |
 
+In Claude Code and Cursor standalone targets, skill filenames are prefixed with a short expert alias (e.g., `swe-start.md`, `pm-interview.md`) to avoid collisions in the flat command directory. Underscores are normalized to hyphens. The source skill files in `experts/` remain unprefixed and platform-agnostic.
+
 When modifying expert definitions, keep them platform-neutral. Don't include OpenClaw-specific, Claude Code-specific, or Cursor-specific syntax in `role.md` or skill files — the translation layer handles that.
 
 ### OpenClaw Translation Notes

@@ -38,6 +38,8 @@ In **team mode** (coordinated experts on the MachinEdge platform), the PM expert
 
 The skill definitions are identical in both modes. The difference is who triggers them and how.
 
+In standalone mode, the install script prefixes each skill with a short expert alias to avoid filename collisions in the editor's flat command directory. For example, the SWE expert's `start` skill becomes `/swe-start`, and the PM's `interview` skill becomes `/pm-interview`. The prefixes are: `pm` (Project Manager), `swe` (SWE), `qa` (QA), `ops` (DevOps), `da` (Data Analyst), `ux` (User Experience), and `team` (shared skills). Underscores in source filenames are normalized to hyphens.
+
 ## The 8-Skill Lifecycle
 
 Each expert defines up to 8 skills that cover the full project lifecycle. They fall into four groups:

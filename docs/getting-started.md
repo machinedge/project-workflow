@@ -54,7 +54,7 @@ Setup scripts live in `framework/install/` and install expert definitions into y
 .\framework\install\install.ps1 -Expert swe -Target ~\projects\my-app
 ```
 
-Then open the project in your editor and run the first skill (`/interview` for project-manager, `/start` for SWE, `/intake` for data-analyst).
+Then open the project in your editor and run the first skill (`/pm-interview` for project-manager, `/swe-start` for SWE, `/da-intake` for data-analyst).
 
 ### What Setup Creates
 
@@ -150,29 +150,29 @@ You can also monitor individual expert activity, interject at any point, or step
 
 ### With the PM Expert
 
-1. **`/interview`** — The PM conducts a structured interview to pull your project ideas out. Asks about goals, users, constraints, and scope. Output: `docs/interview-notes.md`.
-2. **`/vision`** — Reads interview notes and drafts a concise project brief. Review carefully — this becomes the source of truth. Output: `docs/project-brief.md`.
-3. **`/roadmap`** — Creates a milestone plan with dependencies and risks. Output: `docs/roadmap.md`.
-4. **`/decompose`** — Pick a milestone. Breaks it into session-sized issues (tracked in `issues/`) with user stories and acceptance criteria.
+1. **`/pm-interview`** — The PM conducts a structured interview to pull your project ideas out. Asks about goals, users, constraints, and scope. Output: `docs/interview-notes.md`.
+2. **`/pm-vision`** — Reads interview notes and drafts a concise project brief. Review carefully — this becomes the source of truth. Output: `docs/project-brief.md`.
+3. **`/pm-roadmap`** — Creates a milestone plan with dependencies and risks. Output: `docs/roadmap.md`.
+4. **`/pm-decompose`** — Pick a milestone. Breaks it into session-sized issues (tracked in `issues/`) with user stories and acceptance criteria.
 
 ### With the SWE Expert
 
-5. **`/start #N`** — Pick an issue number. Loads all context, presents a plan (approval gate), designs architecture (approval gate), writes tests, implements, verifies, and reports.
-6. **`/handoff`** — Run before closing the session. Documents what was done, updates the brief, closes the issue.
+5. **`/swe-start #N`** — Pick an issue number. Loads all context, presents a plan (approval gate), designs architecture (approval gate), writes tests, implements, verifies, and reports.
+6. **`/swe-handoff`** — Run before closing the session. Documents what was done, updates the brief, closes the issue.
 
 Repeat steps 5-6 for each task.
 
 ### With the QA Expert
 
-- **`/review #N`** — Fresh-eyes evaluation in a separate session.
-- **`/test-plan`** — Creates a test plan based on the project brief and roadmap.
-- **`/regression`** — Runs regression analysis against existing test coverage.
+- **`/qa-review #N`** — Fresh-eyes evaluation in a separate session.
+- **`/qa-test-plan`** — Creates a test plan based on the project brief and roadmap.
+- **`/qa-regression`** — Runs regression analysis against existing test coverage.
 
 ### With the DevOps Expert
 
-- **`/env-discovery`** — Discovers and documents the deployment environment.
-- **`/pipeline`** — Sets up CI/CD pipeline configuration.
-- **`/deploy`** — Executes deployment following the release plan.
+- **`/ops-env-discovery`** — Discovers and documents the deployment environment.
+- **`/ops-pipeline`** — Sets up CI/CD pipeline configuration.
+- **`/ops-deploy`** — Executes deployment following the release plan.
 
 ## Your First Session (Team Mode)
 
@@ -191,12 +191,12 @@ In team mode, your interaction is simpler:
 
 ## Tips
 
-**Always run `/handoff` before closing a session (standalone mode).** This is the single most important habit. The handoff note is how the next session knows what happened.
+**Always run the handoff skill (e.g. `/swe-handoff`) before closing a session (standalone mode).** This is the single most important habit. The handoff note is how the next session knows what happened.
 
 **Keep sessions focused.** One task per session. If you're tempted to squeeze in "one more thing," start a new session instead.
 
 **Review the brief after `/vision` or `/brief`.** The project brief becomes the source of truth for every downstream action. If it's wrong, everything built on it will be wrong.
 
-**Use `/review` in a fresh session (standalone mode).** The whole point of fresh-eyes review is the absence of implementation memory. Running it in the same session that wrote the code defeats the purpose.
+**Use `/qa-review` in a fresh session (standalone mode).** The whole point of fresh-eyes review is the absence of implementation memory. Running it in the same session that wrote the code defeats the purpose.
 
 **`docs/` and `issues/` are your team's shared context.** They're editor-agnostic and expert-agnostic. All experts read from the same document and issue pool. The PM manages the issue lifecycle — creating, assigning, and closing issues as work progresses.

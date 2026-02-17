@@ -1,5 +1,5 @@
-# MachinEdge Expert Teams — Setup (Windows)
-# Usage: .\setup.ps1 [-Editor claude|cursor|both] [-Experts pm,swe,qa,devops] [-Domain technical] [-Target <project-directory>]
+# MachinEdge Expert Teams — Install (Windows)
+# Usage: .\install.ps1 [-Editor claude|cursor|both] [-Experts pm,swe,qa,devops] [-Domain technical] [-Target <project-directory>]
 #
 # Installs one or more experts into a project directory by translating
 # platform-agnostic expert definitions into editor-specific configurations.
@@ -7,11 +7,15 @@
 # Expert short names are mapped to their full directory names:
 #   pm → project-manager, swe → swe, qa → qa, devops → devops, data-analyst → data-analyst
 #
+# Skill prefix mapping (for flat command namespaces):
+#   pm- → project-manager, swe- → swe, qa- → qa, ops- → devops
+#   da- → data-analyst, ux- → user-experience, team- → shared
+#
 # Examples:
-#   .\setup.ps1 -Target ~\myproj                                      # All core experts, both editors
-#   .\setup.ps1 -Experts "pm,swe" -Target ~\myproj                    # Just PM and SWE
-#   .\setup.ps1 -Experts "pm,swe,qa" -Editor cursor -Target .         # PM+SWE+QA, Cursor only
-#   .\setup.ps1 -Editor claude -Target ~\myproj                       # All core experts, Claude only
+#   .\install.ps1 -Target ~\myproj                                      # All core experts, both editors
+#   .\install.ps1 -Experts "pm,swe" -Target ~\myproj                    # Just PM and SWE
+#   .\install.ps1 -Experts "pm,swe,qa" -Editor cursor -Target .         # PM+SWE+QA, Cursor only
+#   .\install.ps1 -Editor claude -Target ~\myproj                       # All core experts, Claude only
 
 param(
     [ValidateSet("claude", "cursor", "both")]
@@ -65,6 +69,24 @@ function Resolve-ExpertName {
     }
 }
 
+# ─────────────────────────────────────────────
+# Map expert directory names to short prefixes
+# Used to namespace skills in flat command directories
+# ─────────────────────────────────────────────
+
+function Resolve-ExpertPrefix {
+    param([string]$Name)
+    switch ($Name) {
+        "project-manager" { return "pm" }
+        "swe"             { return "swe" }
+        "qa"              { return "qa" }
+        "devops"          { return "ops" }
+        "data-analyst"    { return "da" }
+        "user-experience" { return "ux" }
+        default           { return $Name }
+    }
+}
+
 $ExpertList = $Experts -split ',' | ForEach-Object {
     $resolved = Resolve-ExpertName $_.Trim()
     $expertDir = Join-Path $RepoRoot "experts" $Domain $resolved
@@ -105,6 +127,32 @@ foreach ($expert in $ExpertList) {
 }
 
 # ─────────────────────────────────────────────
+# Clean previous installation (managed files only)
+# Preserves user content in docs/, issues/, and
+# any custom commands without our known prefixes
+# ─────────────────────────────────────────────
+
+if ($Editor -eq "claude" -or $Editor -eq "both") {
+    # Remove managed commands (known prefixes only)
+    foreach ($prefix in @("pm", "swe", "qa", "ops", "da", "ux", "team")) {
+        Get-ChildItem "$Target/.claude/commands/${prefix}-*.md" -ErrorAction SilentlyContinue | Remove-Item -Force
+    }
+    # Remove managed roles and generated root config
+    if (Test-Path "$Target/.claude/roles") { Remove-Item "$Target/.claude/roles" -Recurse -Force }
+    Remove-Item "$Target/.claude/CLAUDE.md" -ErrorAction SilentlyContinue -Force
+}
+
+if ($Editor -eq "cursor" -or $Editor -eq "both") {
+    # Remove managed commands (known prefixes only)
+    foreach ($prefix in @("pm", "swe", "qa", "ops", "da", "ux", "team")) {
+        Get-ChildItem "$Target/.cursor/commands/${prefix}-*.md" -ErrorAction SilentlyContinue | Remove-Item -Force
+    }
+    # Remove managed rules and generated root config
+    Get-ChildItem "$Target/.cursor/rules/*-os.mdc" -ErrorAction SilentlyContinue | Remove-Item -Force
+    Remove-Item "$Target/.cursor/rules/project-os.mdc" -ErrorAction SilentlyContinue -Force
+}
+
+# ─────────────────────────────────────────────
 # Install each expert's definition
 # ─────────────────────────────────────────────
 
@@ -124,8 +172,10 @@ foreach ($expert in $ExpertList) {
 
         $skillsDir = Join-Path $ExpertSrc "skills"
         if (Test-Path $skillsDir) {
+            $prefix = Resolve-ExpertPrefix $expert
             Get-ChildItem "$skillsDir/*.md" -ErrorAction SilentlyContinue | ForEach-Object {
-                Copy-Item $_.FullName -Destination "$Target/.claude/commands/" -Force
+                $normalizedName = $_.Name -replace '_', '-'
+                Copy-Item $_.FullName -Destination "$Target/.claude/commands/${prefix}-${normalizedName}" -Force
             }
         }
     }
@@ -150,8 +200,10 @@ alwaysApply: true
 
         $skillsDir = Join-Path $ExpertSrc "skills"
         if (Test-Path $skillsDir) {
+            $prefix = Resolve-ExpertPrefix $expert
             Get-ChildItem "$skillsDir/*.md" -ErrorAction SilentlyContinue | ForEach-Object {
-                Copy-Item $_.FullName -Destination "$Target/.cursor/commands/" -Force
+                $normalizedName = $_.Name -replace '_', '-'
+                Copy-Item $_.FullName -Destination "$Target/.cursor/commands/${prefix}-${normalizedName}" -Force
             }
         }
     }
@@ -180,13 +232,15 @@ if (Test-Path $SharedSkillsDir) {
 
     if ($Editor -eq "claude" -or $Editor -eq "both") {
         Get-ChildItem "$SharedSkillsDir/*.md" -ErrorAction SilentlyContinue | ForEach-Object {
-            Copy-Item $_.FullName -Destination "$Target/.claude/commands/" -Force
+            $normalizedName = $_.Name -replace '_', '-'
+            Copy-Item $_.FullName -Destination "$Target/.claude/commands/team-${normalizedName}" -Force
         }
     }
 
     if ($Editor -eq "cursor" -or $Editor -eq "both") {
         Get-ChildItem "$SharedSkillsDir/*.md" -ErrorAction SilentlyContinue | ForEach-Object {
-            Copy-Item $_.FullName -Destination "$Target/.cursor/commands/" -Force
+            $normalizedName = $_.Name -replace '_', '-'
+            Copy-Item $_.FullName -Destination "$Target/.cursor/commands/team-${normalizedName}" -Force
         }
     }
 }
@@ -214,9 +268,10 @@ foreach ($expert in $ExpertList) {
 
     $skillsDir = Join-Path $ExpertSrc "skills"
     if (Test-Path $skillsDir) {
+        $prefix = Resolve-ExpertPrefix $expert
         Get-ChildItem "$skillsDir/*.md" -ErrorAction SilentlyContinue | ForEach-Object {
-            $skillName = $_.BaseName
-            $SkillLines += "- ``/$skillName`` ($DisplayName)"
+            $skillName = $_.BaseName -replace '_', '-'
+            $SkillLines += "- ``/${prefix}-${skillName}`` ($DisplayName)"
         }
     }
 }
@@ -224,8 +279,8 @@ foreach ($expert in $ExpertList) {
 # Add shared skills
 if (Test-Path $SharedSkillsDir) {
     Get-ChildItem "$SharedSkillsDir/*.md" -ErrorAction SilentlyContinue | ForEach-Object {
-        $skillName = $_.BaseName
-        $SkillLines += "- ``/$skillName`` (Shared)"
+        $skillName = $_.BaseName -replace '_', '-'
+        $SkillLines += "- ``/team-${skillName}`` (Shared)"
     }
 }
 
@@ -251,7 +306,7 @@ $RolesBlock
 2. Read the corresponding role file from ``.claude/roles/``.
 3. Follow that expert's session protocol.
 
-If the user jumps straight into a skill (e.g. ``/start``), infer the expert from the skill and load the appropriate role file automatically.
+If the user jumps straight into a skill (e.g. ``/swe-start``), infer the expert from the skill prefix and load the appropriate role file automatically. Skill prefixes: pm=Project Manager, swe=SWE, qa=QA, ops=DevOps, da=Data Analyst, ux=User Experience, team=Shared.
 
 ## Available Skills
 $SkillsBlock
@@ -291,7 +346,7 @@ Role files are in ``.cursor/rules/`` as ``<expert>-os.mdc``.
 2. Read the corresponding role rules file.
 3. Follow that expert's session protocol.
 
-If the user jumps straight into a skill (e.g. ``/start``), infer the expert from the skill and load the appropriate role file automatically.
+If the user jumps straight into a skill (e.g. ``/swe-start``), infer the expert from the skill prefix and load the appropriate role file automatically. Skill prefixes: pm=Project Manager, swe=SWE, qa=QA, ops=DevOps, da=Data Analyst, ux=User Experience, team=Shared.
 
 ## Available Skills
 $SkillsBlock
@@ -332,11 +387,11 @@ Write-Host ""
 Write-Host "Next steps:"
 Write-Host "  1. cd $Target"
 if ($Editor -eq "claude") {
-    Write-Host "  2. Open Claude Code and run /interview to start a new project"
+    Write-Host "  2. Open Claude Code and run /pm-interview to start a new project"
 } elseif ($Editor -eq "cursor") {
-    Write-Host "  2. Open Cursor and run /interview in Agent mode to start a new project"
+    Write-Host "  2. Open Cursor and run /pm-interview in Agent mode to start a new project"
 } else {
-    Write-Host "  2. Open Claude Code or Cursor and run /interview to start a new project"
+    Write-Host "  2. Open Claude Code or Cursor and run /pm-interview to start a new project"
 }
-Write-Host "  3. Or run /status to see the project health summary"
+Write-Host "  3. Or run /team-status to see the project health summary"
 Write-Host ""
