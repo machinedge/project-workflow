@@ -3,8 +3,8 @@
 # Package the machinedge-workflows skill into a distributable .skill file
 # Usage: ./framework/package_skill.sh
 #
-# Assembles the skill directory structure (copying workflows/ into
-# skills/machinedge-workflows/workflows/), downloads packaging tools
+# Assembles the skill directory structure (copying experts/ into
+# skills/machinedge-workflows/experts/), downloads packaging tools
 # from GitHub if needed, validates, and produces machinedge-workflows.skill
 # in the build/ directory.
 #
@@ -22,8 +22,8 @@ REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 
 BUILD_DIR="$REPO_ROOT/build"
 SKILL_NAME="machinedge-workflows"
-SKILL_SRC="$REPO_ROOT/skills/$SKILL_NAME"
-WORKFLOWS_SRC="$REPO_ROOT/workflows"
+SKILL_SRC="$REPO_ROOT/framework/skills/$SKILL_NAME"
+EXPERTS_SRC="$REPO_ROOT/experts"
 SKILL_BUILD="$BUILD_DIR/skills/$SKILL_NAME"
 
 # ─────────────────────────────────────────────
@@ -36,8 +36,8 @@ if [ ! -f "$SKILL_SRC/SKILL.md" ]; then
     exit 1
 fi
 
-if [ ! -d "$WORKFLOWS_SRC" ]; then
-    echo "Error: workflows/ directory not found at $WORKFLOWS_SRC"
+if [ ! -d "$EXPERTS_SRC" ]; then
+    echo "Error: experts/ directory not found at $EXPERTS_SRC"
     exit 1
 fi
 
@@ -61,8 +61,14 @@ mkdir -p "$SKILL_BUILD"
 echo "Copying skill files..."
 cp -R "$SKILL_SRC"/. "$SKILL_BUILD/"
 
-echo "Copying workflows into skill package..."
-cp -R "$WORKFLOWS_SRC" "$SKILL_BUILD/workflows"
+echo "Copying experts into skill package..."
+cp -R "$EXPERTS_SRC" "$SKILL_BUILD/experts"
+
+# Also include the framework setup script for installation
+echo "Copying framework setup scripts..."
+mkdir -p "$SKILL_BUILD/framework"
+cp "$REPO_ROOT/framework/setup.sh" "$SKILL_BUILD/framework/"
+cp "$REPO_ROOT/framework/setup.ps1" "$SKILL_BUILD/framework/"
 
 # ─────────────────────────────────────────────
 # Ensure packaging tools are available

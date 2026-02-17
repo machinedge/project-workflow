@@ -1,25 +1,30 @@
 #!/bin/bash
 
-# AI Project Toolkit — Top-Level Setup
-# Usage: ./setup.sh [--editor claude|cursor|both] [--workflows pm,swe,qa,devops] [project-directory]
+# MachinEdge Expert Teams — Setup
+# Usage: ./setup.sh [--editor claude|cursor|both] [--experts pm,swe,qa,devops] [--domain technical] [project-directory]
 #
-# Installs one or more workflows into a project directory.
-# Delegates to each workflow's individual setup.sh.
+# Installs one or more experts into a project directory by translating
+# platform-agnostic expert definitions into editor-specific configurations.
+#
+# Expert short names are mapped to their full directory names:
+#   pm → project-manager, swe → swe, qa → qa, devops → devops, data-analyst → data-analyst
 #
 # Examples:
-#   ./setup.sh ~/myproj                                  # All workflows, both editors
-#   ./setup.sh --workflows pm,swe ~/myproj               # Just PM and SWE
-#   ./setup.sh --workflows pm,swe,qa --editor cursor .   # PM+SWE+QA, Cursor only
-#   ./setup.sh --editor claude ~/myproj                  # All workflows, Claude only
+#   ./setup.sh ~/myproj                                    # All core experts, both editors
+#   ./setup.sh --experts pm,swe ~/myproj                   # Just PM and SWE
+#   ./setup.sh --experts pm,swe,qa --editor cursor .       # PM+SWE+QA, Cursor only
+#   ./setup.sh --editor claude ~/myproj                    # All core experts, Claude only
 
 set -e
 
-# Resolve the directory where this script lives (workflows/)
+# Resolve the directory where this script lives (framework/)
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 
 # Parse arguments
 EDITOR="both"
-WORKFLOW_LIST="pm,swe,qa,devops"
+EXPERT_LIST="project-manager,swe,qa,devops"
+DOMAIN="technical"
 TARGET="."
 
 while [[ $# -gt 0 ]]; do
@@ -28,8 +33,12 @@ while [[ $# -gt 0 ]]; do
             EDITOR="$2"
             shift 2
             ;;
-        --workflows)
-            WORKFLOW_LIST="$2"
+        --experts|--workflows)
+            EXPERT_LIST="$2"
+            shift 2
+            ;;
+        --domain)
+            DOMAIN="$2"
             shift 2
             ;;
         *)
@@ -43,106 +52,196 @@ if [ "$TARGET" != "." ]; then
     mkdir -p "$TARGET"
 fi
 
-# Validate workflow names
-IFS=',' read -ra WORKFLOWS <<< "$WORKFLOW_LIST"
-VALID_WORKFLOWS=("pm" "swe" "qa" "devops")
-for wf in "${WORKFLOWS[@]}"; do
-    wf=$(echo "$wf" | tr -d ' ')
-    found=false
-    for valid in "${VALID_WORKFLOWS[@]}"; do
-        if [ "$wf" = "$valid" ]; then
-            found=true
-            break
-        fi
-    done
-    if [ "$found" = false ]; then
-        echo "Error: Unknown workflow '$wf'. Valid workflows: pm, swe, qa, devops"
+# ─────────────────────────────────────────────
+# Map short names to full expert directory names
+# ─────────────────────────────────────────────
+
+resolve_expert_name() {
+    local name="$1"
+    case "$name" in
+        pm|project-manager) echo "project-manager" ;;
+        swe)                echo "swe" ;;
+        qa)                 echo "qa" ;;
+        devops)             echo "devops" ;;
+        data-analyst|eda)   echo "data-analyst" ;;
+        user-experience|ux) echo "user-experience" ;;
+        *)                  echo "$name" ;;
+    esac
+}
+
+# Parse and validate expert names
+IFS=',' read -ra RAW_EXPERTS <<< "$EXPERT_LIST"
+EXPERTS=()
+for raw in "${RAW_EXPERTS[@]}"; do
+    raw=$(echo "$raw" | tr -d ' ')
+    resolved=$(resolve_expert_name "$raw")
+    EXPERT_DIR="$REPO_ROOT/experts/$DOMAIN/$resolved"
+    if [ ! -d "$EXPERT_DIR" ]; then
+        echo "Error: Expert '$raw' (resolved to '$resolved') not found at $EXPERT_DIR"
         exit 1
     fi
+    EXPERTS+=("$resolved")
 done
 
-echo "Setting up project toolkit in: $TARGET"
-echo "  Workflows: $WORKFLOW_LIST"
+echo "Setting up expert team in: $TARGET"
+echo "  Experts: ${EXPERTS[*]}"
+echo "  Domain: $DOMAIN"
 echo "  Editor: $EDITOR"
 echo ""
 
 # ─────────────────────────────────────────────
-# Run each workflow's setup script
+# Create shared project structure
 # ─────────────────────────────────────────────
 
-for wf in "${WORKFLOWS[@]}"; do
-    wf=$(echo "$wf" | tr -d ' ')
-    SETUP_SCRIPT="$SCRIPT_DIR/$wf/setup.sh"
-    if [ -f "$SETUP_SCRIPT" ]; then
-        "$SETUP_SCRIPT" --editor "$EDITOR" "$TARGET"
-    else
-        echo "  Warning: No setup script found for '$wf' workflow at $SETUP_SCRIPT"
+mkdir -p "$TARGET/docs/handoff-notes"
+mkdir -p "$TARGET/issues"
+
+if [ ! -f "$TARGET/docs/lessons-log.md" ]; then
+cat > "$TARGET/docs/lessons-log.md" << 'DOC_EOF'
+# Lessons Log
+
+Record project-specific gotchas, patterns, and knowledge here. Future sessions will read this to avoid repeating mistakes.
+
+| Date | Lesson | Context |
+|------|--------|---------|
+DOC_EOF
+fi
+
+# Create handoff-notes subdirectories for each expert
+for expert in "${EXPERTS[@]}"; do
+    mkdir -p "$TARGET/docs/handoff-notes/$expert"
+done
+
+# ─────────────────────────────────────────────
+# Install each expert's definition
+# ─────────────────────────────────────────────
+
+for expert in "${EXPERTS[@]}"; do
+    EXPERT_SRC="$REPO_ROOT/experts/$DOMAIN/$expert"
+    echo "  [$expert] Installing expert definition..."
+
+    # Claude Code: role.md → .claude/roles/<expert>.md, skills → .claude/commands/
+    if [ "$EDITOR" = "claude" ] || [ "$EDITOR" = "both" ]; then
+        mkdir -p "$TARGET/.claude/roles"
+        mkdir -p "$TARGET/.claude/commands"
+
+        if [ -f "$EXPERT_SRC/role.md" ]; then
+            cp "$EXPERT_SRC/role.md" "$TARGET/.claude/roles/$expert.md"
+        fi
+
+        # Copy skills as slash commands
+        if [ -d "$EXPERT_SRC/skills" ]; then
+            for skill_file in "$EXPERT_SRC"/skills/*.md; do
+                if [ -f "$skill_file" ]; then
+                    cp "$skill_file" "$TARGET/.claude/commands/"
+                fi
+            done
+        fi
+    fi
+
+    # Cursor: role.md → .cursor/rules/<expert>-os.mdc (with frontmatter), skills → .cursor/commands/
+    if [ "$EDITOR" = "cursor" ] || [ "$EDITOR" = "both" ]; then
+        mkdir -p "$TARGET/.cursor/rules"
+        mkdir -p "$TARGET/.cursor/commands"
+
+        if [ -f "$EXPERT_SRC/role.md" ]; then
+            # Prepend Cursor's YAML frontmatter
+            {
+                printf '%s\n' "---"
+                printf '%s\n' "description: $expert expert — operating rules"
+                printf '%s\n' "alwaysApply: true"
+                printf '%s\n' "---"
+                printf '\n'
+                cat "$EXPERT_SRC/role.md"
+            } > "$TARGET/.cursor/rules/${expert}-os.mdc"
+        fi
+
+        # Copy skills as commands
+        if [ -d "$EXPERT_SRC/skills" ]; then
+            for skill_file in "$EXPERT_SRC"/skills/*.md; do
+                if [ -f "$skill_file" ]; then
+                    cp "$skill_file" "$TARGET/.cursor/commands/"
+                fi
+            done
+        fi
+    fi
+
+    # Copy expert tools to project if any exist (beyond .gitkeep)
+    if [ -d "$EXPERT_SRC/tools" ]; then
+        TOOL_COUNT=$(find "$EXPERT_SRC/tools" -type f ! -name ".gitkeep" 2>/dev/null | wc -l | tr -d ' ')
+        if [ "$TOOL_COUNT" -gt 0 ]; then
+            mkdir -p "$TARGET/tools/$expert"
+            find "$EXPERT_SRC/tools" -type f ! -name ".gitkeep" -exec cp {} "$TARGET/tools/$expert/" \;
+            echo "    Copied $TOOL_COUNT tool(s) to tools/$expert/"
+        fi
     fi
 done
 
 # ─────────────────────────────────────────────
-# Install shared commands (/status)
+# Install shared skills (e.g., /status)
 # ─────────────────────────────────────────────
 
-echo ""
-echo "  [shared] Installing shared commands..."
+SHARED_DIR="$REPO_ROOT/experts/$DOMAIN/shared"
+if [ -d "$SHARED_DIR/skills" ]; then
+    echo ""
+    echo "  [shared] Installing shared skills..."
 
-if [ "$EDITOR" = "claude" ] || [ "$EDITOR" = "both" ]; then
-    mkdir -p "$TARGET/.claude/commands"
-    cp "$SCRIPT_DIR"/shared/commands/*.md "$TARGET/.claude/commands/"
+    if [ "$EDITOR" = "claude" ] || [ "$EDITOR" = "both" ]; then
+        for skill_file in "$SHARED_DIR"/skills/*.md; do
+            if [ -f "$skill_file" ]; then
+                cp "$skill_file" "$TARGET/.claude/commands/"
+            fi
+        done
+    fi
+
+    if [ "$EDITOR" = "cursor" ] || [ "$EDITOR" = "both" ]; then
+        for skill_file in "$SHARED_DIR"/skills/*.md; do
+            if [ -f "$skill_file" ]; then
+                cp "$skill_file" "$TARGET/.cursor/commands/"
+            fi
+        done
+    fi
 fi
-
-if [ "$EDITOR" = "cursor" ] || [ "$EDITOR" = "both" ]; then
-    mkdir -p "$TARGET/.cursor/commands"
-    cp "$SCRIPT_DIR"/shared/commands/*.md "$TARGET/.cursor/commands/"
-fi
-
-echo "    Shared commands installed: /status"
 
 # ─────────────────────────────────────────────
 # Generate the root CLAUDE.md / Cursor rules
-# that explains the roles system
 # ─────────────────────────────────────────────
 
-# Build the list of installed roles and their commands
+# Build the list of installed experts and their skills
 ROLE_LIST=""
-COMMAND_LIST=""
-for wf in "${WORKFLOWS[@]}"; do
-    wf=$(echo "$wf" | tr -d ' ')
-    case $wf in
-        pm)
-            ROLE_LIST="$ROLE_LIST\n- **PM** (\`.claude/roles/pm.md\`) — Product/project management: discovery, planning, scoping"
-            COMMAND_LIST="$COMMAND_LIST\n- \`/interview\` — Structured interview for new projects (PM)"
-            COMMAND_LIST="$COMMAND_LIST\n- \`/add_feature\` — Scope new work for existing project (PM)"
-            COMMAND_LIST="$COMMAND_LIST\n- \`/vision\` — Generate project brief from interview (PM)"
-            COMMAND_LIST="$COMMAND_LIST\n- \`/roadmap\` — Create milestone plan (PM)"
-            COMMAND_LIST="$COMMAND_LIST\n- \`/decompose\` — Break milestone into tasks (PM)"
-            COMMAND_LIST="$COMMAND_LIST\n- \`/postmortem\` — Review completed milestone (PM)"
-            ;;
-        swe)
-            ROLE_LIST="$ROLE_LIST\n- **SWE** (\`.claude/roles/swe.md\`) — Software engineering: implementation, testing, verification"
-            COMMAND_LIST="$COMMAND_LIST\n- \`/start\` — Begin execution session (SWE)"
-            COMMAND_LIST="$COMMAND_LIST\n- \`/handoff\` — End session, produce handoff note (SWE)"
-            ;;
-        qa)
-            ROLE_LIST="$ROLE_LIST\n- **QA** (\`.claude/roles/qa.md\`) — Quality assurance: review, test planning, regression"
-            COMMAND_LIST="$COMMAND_LIST\n- \`/review\` — Fresh-eyes code review (QA)"
-            COMMAND_LIST="$COMMAND_LIST\n- \`/test-plan\` — Generate test plan (QA)"
-            COMMAND_LIST="$COMMAND_LIST\n- \`/regression\` — Run regression check (QA)"
-            COMMAND_LIST="$COMMAND_LIST\n- \`/bug-triage\` — Prioritize bug backlog (QA)"
-            ;;
-        devops)
-            ROLE_LIST="$ROLE_LIST\n- **DevOps** (\`.claude/roles/devops.md\`) — Build, test, deploy: environments, pipelines, releases"
-            COMMAND_LIST="$COMMAND_LIST\n- \`/env-discovery\` — Capture environment context (DevOps)"
-            COMMAND_LIST="$COMMAND_LIST\n- \`/pipeline\` — Define build/test/deploy pipeline (DevOps)"
-            COMMAND_LIST="$COMMAND_LIST\n- \`/release-plan\` — Define release gates and rollback (DevOps)"
-            COMMAND_LIST="$COMMAND_LIST\n- \`/deploy\` — Execute release with verification (DevOps)"
-            ;;
-    esac
+SKILL_LIST=""
+for expert in "${EXPERTS[@]}"; do
+    EXPERT_SRC="$REPO_ROOT/experts/$DOMAIN/$expert"
+
+    # Extract the first line of role.md as the display name
+    if [ -f "$EXPERT_SRC/role.md" ]; then
+        DISPLAY_NAME=$(head -1 "$EXPERT_SRC/role.md" | sed 's/^#\s*//' | sed 's/ Operating System$//')
+    else
+        DISPLAY_NAME="$expert"
+    fi
+
+    ROLE_LIST="$ROLE_LIST\n- **$DISPLAY_NAME** (\`.claude/roles/$expert.md\`)"
+
+    # List skills from the expert
+    if [ -d "$EXPERT_SRC/skills" ]; then
+        for skill_file in "$EXPERT_SRC"/skills/*.md; do
+            if [ -f "$skill_file" ]; then
+                skill_name=$(basename "$skill_file" .md)
+                SKILL_LIST="$SKILL_LIST\n- \`/$skill_name\` ($DISPLAY_NAME)"
+            fi
+        done
+    fi
 done
 
-# Always include /status
-COMMAND_LIST="$COMMAND_LIST\n- \`/status\` — Cross-workflow project health summary (Shared)"
+# Add shared skills
+if [ -d "$SHARED_DIR/skills" ]; then
+    for skill_file in "$SHARED_DIR"/skills/*.md; do
+        if [ -f "$skill_file" ]; then
+            skill_name=$(basename "$skill_file" .md)
+            SKILL_LIST="$SKILL_LIST\n- \`/$skill_name\` (Shared)"
+        fi
+    done
+fi
 
 if [ "$EDITOR" = "claude" ] || [ "$EDITOR" = "both" ]; then
     echo ""
@@ -150,23 +249,23 @@ if [ "$EDITOR" = "claude" ] || [ "$EDITOR" = "both" ]; then
     cat > "$TARGET/.claude/CLAUDE.md" << CLAUDE_EOF
 # Project Operating System
 
-This project uses a multi-workflow AI toolkit. Each session, you operate in a specific role.
+This project uses the MachinEdge Expert Teams toolkit. Each session, you operate as a specific expert.
 
-## Roles
+## Experts
 
-Read the role file for your active role at the start of every session:
+Read the role file for your active expert at the start of every session:
 $(echo -e "$ROLE_LIST")
 
 ## Starting a Session
 
-1. Ask the user which role they want for this session (PM, SWE, QA, or DevOps).
+1. Ask the user which expert role they want for this session.
 2. Read the corresponding role file from \`.claude/roles/\`.
-3. Follow that role's session protocol.
+3. Follow that expert's session protocol.
 
-If the user jumps straight into a command (e.g. \`/start\`), infer the role from the command and load the appropriate role file automatically.
+If the user jumps straight into a skill (e.g. \`/start\`), infer the expert from the skill and load the appropriate role file automatically.
 
-## Available Commands
-$(echo -e "$COMMAND_LIST")
+## Available Skills
+$(echo -e "$SKILL_LIST")
 
 ## Shared Principles
 
@@ -174,6 +273,7 @@ $(echo -e "$COMMAND_LIST")
 - The project brief (\`docs/project-brief.md\`) is the source of truth.
 - Keep the project brief under 1,000 words.
 - Verify your work. "It should work" is not verification.
+- Issues are tracked in \`issues/\`, not external services.
 CLAUDE_EOF
 fi
 
@@ -181,31 +281,31 @@ if [ "$EDITOR" = "cursor" ] || [ "$EDITOR" = "both" ]; then
     echo "  [cursor] Generating .cursor/rules/project-os.mdc..."
     cat > "$TARGET/.cursor/rules/project-os.mdc" << CURSOR_EOF
 ---
-description: Project operating system — multi-workflow AI toolkit
+description: Project operating system — MachinEdge Expert Teams
 alwaysApply: true
 ---
 
 # Project Operating System
 
-This project uses a multi-workflow AI toolkit. Each session, you operate in a specific role.
+This project uses the MachinEdge Expert Teams toolkit. Each session, you operate as a specific expert.
 
-## Roles
+## Experts
 
-Read the role file for your active role at the start of every session:
+Read the role file for your active expert at the start of every session:
 $(echo -e "$ROLE_LIST")
 
-Role files are in \`.cursor/rules/\` as \`<workflow>-os.mdc\`.
+Role files are in \`.cursor/rules/\` as \`<expert>-os.mdc\`.
 
 ## Starting a Session
 
-1. Ask the user which role they want for this session (PM, SWE, QA, or DevOps).
+1. Ask the user which expert role they want for this session.
 2. Read the corresponding role rules file.
-3. Follow that role's session protocol.
+3. Follow that expert's session protocol.
 
-If the user jumps straight into a command (e.g. \`/start\`), infer the role from the command and load the appropriate role file automatically.
+If the user jumps straight into a skill (e.g. \`/start\`), infer the expert from the skill and load the appropriate role file automatically.
 
-## Available Commands
-$(echo -e "$COMMAND_LIST")
+## Available Skills
+$(echo -e "$SKILL_LIST")
 
 ## Shared Principles
 
@@ -213,6 +313,7 @@ $(echo -e "$COMMAND_LIST")
 - The project brief (\`docs/project-brief.md\`) is the source of truth.
 - Keep the project brief under 1,000 words.
 - Verify your work. "It should work" is not verification.
+- Issues are tracked in \`issues/\`, not external services.
 CURSOR_EOF
 fi
 

@@ -1,5 +1,5 @@
-<!-- TEMPLATE: Synthesis Command
-     This command runs at the end of a major work unit (milestone/phase).
+<!-- TEMPLATE: Synthesis Skill
+     This skill runs at the end of a major work unit (milestone/phase).
      It pulls together everything that happened and produces a final assessment
      or deliverable.
 
@@ -7,9 +7,9 @@
      EDA calls this "/synthesize" — pulls findings into a recommendations report.
 
      The output depends on your domain:
-       - For SWE-like workflows: a retrospective that updates the roadmap
-       - For EDA-like workflows: a deliverable report for stakeholders
-       - For other workflows: whatever the appropriate capstone is
+       - For SWE-like experts: a retrospective that updates the roadmap
+       - For EDA-like experts: a deliverable report for stakeholders
+       - For other experts: whatever the appropriate capstone is
 
      Replace all {{PLACEHOLDER}} markers.
      Delete these comments when done.
@@ -26,11 +26,11 @@ Read:
 1. `docs/{{BRIEF_DOC}}`
 2. `docs/{{PLAN_DOC}}`
 3. All handoff notes for sessions in this {{WORK_UNIT}}
-4. All GitHub issues for this {{WORK_UNIT}} (including review findings)
+4. All issues in `issues/` for this {{WORK_UNIT}} (including review findings)
 5. The work products produced
 
 <!-- GUIDE: Add domain-specific inputs. EDA reads notebooks and data profiles.
-     SWE reads the codebase. Your workflow might have its own. -->
+     SWE reads the codebase. Your expert might have its own. -->
 
 ---
 
@@ -38,17 +38,17 @@ Read:
 
 <!-- GUIDE: Customize these assessment questions for your domain.
 
-     For SWE-like workflows, ask:
+     For SWE-like experts, ask:
        - What was planned vs. what was delivered?
        - What was learned that changes downstream plans?
        - What technical debt was incurred?
 
-     For EDA-like workflows, ask:
+     For EDA-like experts, ask:
        - What did we find?
        - What are the recommendations?
        - What's the confidence level?
 
-     For other workflows, ask:
+     For other experts, ask:
        - Did we achieve the {{WORK_UNIT}} goal?
        - What surprised us?
        - What should change going forward? -->

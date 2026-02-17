@@ -1,126 +1,225 @@
-# AI Project Toolkit — Top-Level Setup (Windows)
-# Usage: .\setup.ps1 [-Editor claude|cursor|both] [-Workflows pm,swe,qa,devops] [-Target <project-directory>]
+# MachinEdge Expert Teams — Setup (Windows)
+# Usage: .\setup.ps1 [-Editor claude|cursor|both] [-Experts pm,swe,qa,devops] [-Domain technical] [-Target <project-directory>]
 #
-# Installs one or more workflows into a project directory.
-# Delegates to each workflow's individual setup.ps1.
+# Installs one or more experts into a project directory by translating
+# platform-agnostic expert definitions into editor-specific configurations.
+#
+# Expert short names are mapped to their full directory names:
+#   pm → project-manager, swe → swe, qa → qa, devops → devops, data-analyst → data-analyst
 #
 # Examples:
-#   .\setup.ps1 -Target ~\myproj                                    # All workflows, both editors
-#   .\setup.ps1 -Workflows "pm,swe" -Target ~\myproj                # Just PM and SWE
-#   .\setup.ps1 -Workflows "pm,swe,qa" -Editor cursor -Target .     # PM+SWE+QA, Cursor only
-#   .\setup.ps1 -Editor claude -Target ~\myproj                     # All workflows, Claude only
+#   .\setup.ps1 -Target ~\myproj                                      # All core experts, both editors
+#   .\setup.ps1 -Experts "pm,swe" -Target ~\myproj                    # Just PM and SWE
+#   .\setup.ps1 -Experts "pm,swe,qa" -Editor cursor -Target .         # PM+SWE+QA, Cursor only
+#   .\setup.ps1 -Editor claude -Target ~\myproj                       # All core experts, Claude only
 
 param(
     [ValidateSet("claude", "cursor", "both")]
     [string]$Editor = "both",
 
-    [string]$Workflows = "pm,swe,qa,devops",
+    [string]$Experts = "project-manager,swe,qa,devops",
+
+    [string]$Domain = "technical",
 
     [string]$Target = "."
 )
 
 $ErrorActionPreference = "Stop"
 
-# Resolve the directory where this script lives (workflows/)
+# Resolve paths
 $ScriptDir = $PSScriptRoot
+$RepoRoot = Split-Path $ScriptDir -Parent
 
 if ($Target -ne ".") {
     New-Item -ItemType Directory -Path $Target -Force | Out-Null
 }
 
-# Validate workflow names
-$ValidWorkflows = @("pm", "swe", "qa", "devops")
-$WorkflowList = $Workflows -split ',' | ForEach-Object { $_.Trim() }
-foreach ($wf in $WorkflowList) {
-    if ($wf -notin $ValidWorkflows) {
-        Write-Error "Error: Unknown workflow '$wf'. Valid workflows: pm, swe, qa, devops"
-        exit 1
+# ─────────────────────────────────────────────
+# Map short names to full expert directory names
+# ─────────────────────────────────────────────
+
+function Resolve-ExpertName {
+    param([string]$Name)
+    switch ($Name) {
+        "pm"              { return "project-manager" }
+        "project-manager" { return "project-manager" }
+        "swe"             { return "swe" }
+        "qa"              { return "qa" }
+        "devops"          { return "devops" }
+        "eda"             { return "data-analyst" }
+        "data-analyst"    { return "data-analyst" }
+        "ux"              { return "user-experience" }
+        "user-experience" { return "user-experience" }
+        default           { return $Name }
     }
 }
 
-Write-Host "Setting up project toolkit in: $Target"
-Write-Host "  Workflows: $Workflows"
+$ExpertList = $Experts -split ',' | ForEach-Object {
+    $resolved = Resolve-ExpertName $_.Trim()
+    $expertDir = Join-Path $RepoRoot "experts" $Domain $resolved
+    if (-not (Test-Path $expertDir)) {
+        Write-Error "Error: Expert '$_' (resolved to '$resolved') not found at $expertDir"
+        exit 1
+    }
+    $resolved
+}
+
+Write-Host "Setting up expert team in: $Target"
+Write-Host "  Experts: $($ExpertList -join ', ')"
+Write-Host "  Domain: $Domain"
 Write-Host "  Editor: $Editor"
 Write-Host ""
 
 # ─────────────────────────────────────────────
-# Run each workflow's setup script
+# Create shared project structure
 # ─────────────────────────────────────────────
 
-foreach ($wf in $WorkflowList) {
-    $SetupScript = Join-Path $ScriptDir $wf "setup.ps1"
-    if (Test-Path $SetupScript) {
-        & $SetupScript -Editor $Editor -Target $Target
-    } else {
-        Write-Warning "No setup script found for '$wf' workflow at $SetupScript"
+New-Item -ItemType Directory -Path "$Target/docs/handoff-notes" -Force | Out-Null
+New-Item -ItemType Directory -Path "$Target/issues" -Force | Out-Null
+
+if (-not (Test-Path "$Target/docs/lessons-log.md")) {
+    @"
+# Lessons Log
+
+Record project-specific gotchas, patterns, and knowledge here. Future sessions will read this to avoid repeating mistakes.
+
+| Date | Lesson | Context |
+|------|--------|---------|
+"@ | Set-Content -Path "$Target/docs/lessons-log.md" -Encoding UTF8
+}
+
+# Create handoff-notes subdirectories for each expert
+foreach ($expert in $ExpertList) {
+    New-Item -ItemType Directory -Path "$Target/docs/handoff-notes/$expert" -Force | Out-Null
+}
+
+# ─────────────────────────────────────────────
+# Install each expert's definition
+# ─────────────────────────────────────────────
+
+foreach ($expert in $ExpertList) {
+    $ExpertSrc = Join-Path $RepoRoot "experts" $Domain $expert
+    Write-Host "  [$expert] Installing expert definition..."
+
+    # Claude Code: role.md → .claude/roles/<expert>.md, skills → .claude/commands/
+    if ($Editor -eq "claude" -or $Editor -eq "both") {
+        New-Item -ItemType Directory -Path "$Target/.claude/roles" -Force | Out-Null
+        New-Item -ItemType Directory -Path "$Target/.claude/commands" -Force | Out-Null
+
+        $roleFile = Join-Path $ExpertSrc "role.md"
+        if (Test-Path $roleFile) {
+            Copy-Item $roleFile -Destination "$Target/.claude/roles/$expert.md" -Force
+        }
+
+        $skillsDir = Join-Path $ExpertSrc "skills"
+        if (Test-Path $skillsDir) {
+            Get-ChildItem "$skillsDir/*.md" -ErrorAction SilentlyContinue | ForEach-Object {
+                Copy-Item $_.FullName -Destination "$Target/.claude/commands/" -Force
+            }
+        }
+    }
+
+    # Cursor: role.md → .cursor/rules/<expert>-os.mdc (with frontmatter), skills → .cursor/commands/
+    if ($Editor -eq "cursor" -or $Editor -eq "both") {
+        New-Item -ItemType Directory -Path "$Target/.cursor/rules" -Force | Out-Null
+        New-Item -ItemType Directory -Path "$Target/.cursor/commands" -Force | Out-Null
+
+        $roleFile = Join-Path $ExpertSrc "role.md"
+        if (Test-Path $roleFile) {
+            $frontmatter = @"
+---
+description: $expert expert --- operating rules
+alwaysApply: true
+---
+
+"@
+            $roleContent = Get-Content $roleFile -Raw
+            ($frontmatter + $roleContent) | Set-Content -Path "$Target/.cursor/rules/${expert}-os.mdc" -Encoding UTF8
+        }
+
+        $skillsDir = Join-Path $ExpertSrc "skills"
+        if (Test-Path $skillsDir) {
+            Get-ChildItem "$skillsDir/*.md" -ErrorAction SilentlyContinue | ForEach-Object {
+                Copy-Item $_.FullName -Destination "$Target/.cursor/commands/" -Force
+            }
+        }
+    }
+
+    # Copy expert tools to project if any exist (beyond .gitkeep)
+    $toolsDir = Join-Path $ExpertSrc "tools"
+    if (Test-Path $toolsDir) {
+        $tools = Get-ChildItem $toolsDir -File -ErrorAction SilentlyContinue | Where-Object { $_.Name -ne ".gitkeep" }
+        if ($tools) {
+            New-Item -ItemType Directory -Path "$Target/tools/$expert" -Force | Out-Null
+            $tools | ForEach-Object { Copy-Item $_.FullName -Destination "$Target/tools/$expert/" -Force }
+            Write-Host "    Copied $($tools.Count) tool(s) to tools/$expert/"
+        }
     }
 }
 
 # ─────────────────────────────────────────────
-# Install shared commands (/status)
+# Install shared skills (e.g., /status)
 # ─────────────────────────────────────────────
 
-Write-Host ""
-Write-Host "  [shared] Installing shared commands..."
+$SharedDir = Join-Path $RepoRoot "experts" $Domain "shared"
+$SharedSkillsDir = Join-Path $SharedDir "skills"
+if (Test-Path $SharedSkillsDir) {
+    Write-Host ""
+    Write-Host "  [shared] Installing shared skills..."
 
-if ($Editor -eq "claude" -or $Editor -eq "both") {
-    New-Item -ItemType Directory -Path "$Target/.claude/commands" -Force | Out-Null
-    Copy-Item "$ScriptDir/shared/commands/*.md" -Destination "$Target/.claude/commands/" -Force
+    if ($Editor -eq "claude" -or $Editor -eq "both") {
+        Get-ChildItem "$SharedSkillsDir/*.md" -ErrorAction SilentlyContinue | ForEach-Object {
+            Copy-Item $_.FullName -Destination "$Target/.claude/commands/" -Force
+        }
+    }
+
+    if ($Editor -eq "cursor" -or $Editor -eq "both") {
+        Get-ChildItem "$SharedSkillsDir/*.md" -ErrorAction SilentlyContinue | ForEach-Object {
+            Copy-Item $_.FullName -Destination "$Target/.cursor/commands/" -Force
+        }
+    }
 }
-
-if ($Editor -eq "cursor" -or $Editor -eq "both") {
-    New-Item -ItemType Directory -Path "$Target/.cursor/commands" -Force | Out-Null
-    Copy-Item "$ScriptDir/shared/commands/*.md" -Destination "$Target/.cursor/commands/" -Force
-}
-
-Write-Host "    Shared commands installed: /status"
 
 # ─────────────────────────────────────────────
 # Generate the root CLAUDE.md / Cursor rules
 # ─────────────────────────────────────────────
 
-# Build the list of installed roles and their commands
 $RoleLines = @()
-$CommandLines = @()
+$SkillLines = @()
 
-foreach ($wf in $WorkflowList) {
-    switch ($wf) {
-        "pm" {
-            $RoleLines += "- **PM** (``.claude/roles/pm.md``) --- Product/project management: discovery, planning, scoping"
-            $CommandLines += "- ``/interview`` --- Structured interview for new projects (PM)"
-            $CommandLines += "- ``/add_feature`` --- Scope new work for existing project (PM)"
-            $CommandLines += "- ``/vision`` --- Generate project brief from interview (PM)"
-            $CommandLines += "- ``/roadmap`` --- Create milestone plan (PM)"
-            $CommandLines += "- ``/decompose`` --- Break milestone into tasks (PM)"
-            $CommandLines += "- ``/postmortem`` --- Review completed milestone (PM)"
-        }
-        "swe" {
-            $RoleLines += "- **SWE** (``.claude/roles/swe.md``) --- Software engineering: implementation, testing, verification"
-            $CommandLines += "- ``/start`` --- Begin execution session (SWE)"
-            $CommandLines += "- ``/handoff`` --- End session, produce handoff note (SWE)"
-        }
-        "qa" {
-            $RoleLines += "- **QA** (``.claude/roles/qa.md``) --- Quality assurance: review, test planning, regression"
-            $CommandLines += "- ``/review`` --- Fresh-eyes code review (QA)"
-            $CommandLines += "- ``/test-plan`` --- Generate test plan (QA)"
-            $CommandLines += "- ``/regression`` --- Run regression check (QA)"
-            $CommandLines += "- ``/bug-triage`` --- Prioritize bug backlog (QA)"
-        }
-        "devops" {
-            $RoleLines += "- **DevOps** (``.claude/roles/devops.md``) --- Build, test, deploy: environments, pipelines, releases"
-            $CommandLines += "- ``/env-discovery`` --- Capture environment context (DevOps)"
-            $CommandLines += "- ``/pipeline`` --- Define build/test/deploy pipeline (DevOps)"
-            $CommandLines += "- ``/release-plan`` --- Define release gates and rollback (DevOps)"
-            $CommandLines += "- ``/deploy`` --- Execute release with verification (DevOps)"
+foreach ($expert in $ExpertList) {
+    $ExpertSrc = Join-Path $RepoRoot "experts" $Domain $expert
+
+    # Extract display name from first line of role.md
+    $roleFile = Join-Path $ExpertSrc "role.md"
+    if (Test-Path $roleFile) {
+        $firstLine = (Get-Content $roleFile -TotalCount 1) -replace '^#\s*', '' -replace ' Operating System$', ''
+        $DisplayName = $firstLine
+    } else {
+        $DisplayName = $expert
+    }
+
+    $RoleLines += "- **$DisplayName** (``.claude/roles/$expert.md``)"
+
+    $skillsDir = Join-Path $ExpertSrc "skills"
+    if (Test-Path $skillsDir) {
+        Get-ChildItem "$skillsDir/*.md" -ErrorAction SilentlyContinue | ForEach-Object {
+            $skillName = $_.BaseName
+            $SkillLines += "- ``/$skillName`` ($DisplayName)"
         }
     }
 }
 
-# Always include /status
-$CommandLines += "- ``/status`` --- Cross-workflow project health summary (Shared)"
+# Add shared skills
+if (Test-Path $SharedSkillsDir) {
+    Get-ChildItem "$SharedSkillsDir/*.md" -ErrorAction SilentlyContinue | ForEach-Object {
+        $skillName = $_.BaseName
+        $SkillLines += "- ``/$skillName`` (Shared)"
+    }
+}
 
 $RolesBlock = $RoleLines -join "`n"
-$CommandsBlock = $CommandLines -join "`n"
+$SkillsBlock = $SkillLines -join "`n"
 
 if ($Editor -eq "claude" -or $Editor -eq "both") {
     Write-Host ""
@@ -128,23 +227,23 @@ if ($Editor -eq "claude" -or $Editor -eq "both") {
     @"
 # Project Operating System
 
-This project uses a multi-workflow AI toolkit. Each session, you operate in a specific role.
+This project uses the MachinEdge Expert Teams toolkit. Each session, you operate as a specific expert.
 
-## Roles
+## Experts
 
-Read the role file for your active role at the start of every session:
+Read the role file for your active expert at the start of every session:
 $RolesBlock
 
 ## Starting a Session
 
-1. Ask the user which role they want for this session (PM, SWE, QA, or DevOps).
+1. Ask the user which expert role they want for this session.
 2. Read the corresponding role file from ``.claude/roles/``.
-3. Follow that role's session protocol.
+3. Follow that expert's session protocol.
 
-If the user jumps straight into a command (e.g. ``/start``), infer the role from the command and load the appropriate role file automatically.
+If the user jumps straight into a skill (e.g. ``/start``), infer the expert from the skill and load the appropriate role file automatically.
 
-## Available Commands
-$CommandsBlock
+## Available Skills
+$SkillsBlock
 
 ## Shared Principles
 
@@ -152,6 +251,7 @@ $CommandsBlock
 - The project brief (``docs/project-brief.md``) is the source of truth.
 - Keep the project brief under 1,000 words.
 - Verify your work. "It should work" is not verification.
+- Issues are tracked in ``issues/``, not external services.
 "@ | Set-Content -Path "$Target/.claude/CLAUDE.md" -Encoding UTF8
 }
 
@@ -159,31 +259,31 @@ if ($Editor -eq "cursor" -or $Editor -eq "both") {
     Write-Host "  [cursor] Generating .cursor/rules/project-os.mdc..."
     @"
 ---
-description: Project operating system --- multi-workflow AI toolkit
+description: Project operating system --- MachinEdge Expert Teams
 alwaysApply: true
 ---
 
 # Project Operating System
 
-This project uses a multi-workflow AI toolkit. Each session, you operate in a specific role.
+This project uses the MachinEdge Expert Teams toolkit. Each session, you operate as a specific expert.
 
-## Roles
+## Experts
 
-Read the role file for your active role at the start of every session:
+Read the role file for your active expert at the start of every session:
 $RolesBlock
 
-Role files are in ``.cursor/rules/`` as ``<workflow>-os.mdc``.
+Role files are in ``.cursor/rules/`` as ``<expert>-os.mdc``.
 
 ## Starting a Session
 
-1. Ask the user which role they want for this session (PM, SWE, QA, or DevOps).
+1. Ask the user which expert role they want for this session.
 2. Read the corresponding role rules file.
-3. Follow that role's session protocol.
+3. Follow that expert's session protocol.
 
-If the user jumps straight into a command (e.g. ``/start``), infer the role from the command and load the appropriate role file automatically.
+If the user jumps straight into a skill (e.g. ``/start``), infer the expert from the skill and load the appropriate role file automatically.
 
-## Available Commands
-$CommandsBlock
+## Available Skills
+$SkillsBlock
 
 ## Shared Principles
 
@@ -191,6 +291,7 @@ $CommandsBlock
 - The project brief (``docs/project-brief.md``) is the source of truth.
 - Keep the project brief under 1,000 words.
 - Verify your work. "It should work" is not verification.
+- Issues are tracked in ``issues/``, not external services.
 "@ | Set-Content -Path "$Target/.cursor/rules/project-os.mdc" -Encoding UTF8
 }
 

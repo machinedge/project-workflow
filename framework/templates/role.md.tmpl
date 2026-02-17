@@ -1,6 +1,6 @@
-# {{WORKFLOW_DISPLAY_NAME}} Operating System
+# {{EXPERT_DISPLAY_NAME}} Operating System
 
-You are working on a multi-session {{WORKFLOW_NAME}} project. This file tells you how to operate.
+You are working as the {{EXPERT_DISPLAY_NAME}} expert on a coordinated team. This file tells you how to operate.
 
 ## Document Locations
 
@@ -10,19 +10,12 @@ All project management documents live in `docs/`:
 |----------|------|---------|
 | {{BRIEF_DISPLAY_NAME}} | `docs/{{BRIEF_DOC}}` | Goals, constraints, decisions, status. READ THIS FIRST every session. |
 | {{PLAN_DISPLAY_NAME}} | `docs/{{PLAN_DOC}}` | {{WORK_UNIT_PLURAL}}, dependencies, risks. |
-| Handoff Notes | `docs/handoff-notes/session-NN.md` | What happened in each past session. |
+| Handoff Notes | `docs/handoff-notes/{{EXPERT_NAME}}/session-NN.md` | What happened in each past session. |
 | Lessons Log | `docs/lessons-log.md` | Project-specific gotchas and patterns. |
+| Docs Protocol | `experts/{{DOMAIN}}/shared/docs-protocol.md` | Cross-expert document contracts. |
 <!-- GUIDE: Add domain-specific documents here. Examples:
      | Domain Context | `docs/domain-context.md` | Application-specific constraints and methods. |
      | Data Profile | `docs/data-profile.md` | Living dataset characterization. |
-     Delete this comment when done. -->
-
-<!-- GUIDE: If your workflow produces work products in specific locations, add a
-     second table here. Example:
-     | Location | Purpose |
-     |----------|---------|
-     | `notebooks/` | Working surface for analysis |
-     | `reports/` | Final deliverables |
      Delete this comment when done. -->
 
 ## Session Protocol
@@ -31,35 +24,35 @@ All project management documents live in `docs/`:
 1. Read `docs/{{BRIEF_DOC}}` (always — no exceptions)
 <!-- GUIDE: Add domain-specific documents to read here. -->
 2. Read `docs/lessons-log.md` (skim for relevant entries)
-3. Read the GitHub issue you've been assigned (or check the brief's "Next task" field)
-4. Read the most recent handoff note in `docs/handoff-notes/`
+3. Read the issue or task you've been assigned (check `issues/` or the brief's "Next task" field)
+4. Read the most recent handoff note in `docs/handoff-notes/{{EXPERT_NAME}}/`
 5. Confirm your understanding of the task before starting work
 
 ### During a session
 - If you make a decision that affects future work, note it — you'll add it to the brief at the end.
-- Stay within the scope defined in the GitHub issue. If you discover something out of scope, flag it, don't do it.
+- Stay within the scope defined in the issue. If you discover something out of scope, flag it, don't do it.
 - Verify your work before declaring the task complete.
 <!-- GUIDE: Add domain-specific session rules here. Example:
      "If you discover something new about the data, update data-profile.md immediately."
      Delete this comment when done. -->
 
 ### Ending a session
-When told to wrap up (or when you finish the task), produce a handoff note and save it to `docs/handoff-notes/session-NN.md`. Update `docs/{{BRIEF_DOC}}` with any new decisions and current status.
+When told to wrap up (or when you finish the task), produce a handoff note and save it to `docs/handoff-notes/{{EXPERT_NAME}}/session-NN.md`. Update `docs/{{BRIEF_DOC}}` with any new decisions and current status.
 
-## Slash Commands
+## Skills
 
-The following custom commands are available:
+The following skills are available:
 
-- `/{{INTERVIEW_COMMAND}}` — {{INTERVIEW_DESCRIPTION}}
-- `/{{BRIEF_COMMAND}}` — {{BRIEF_DESCRIPTION}}
-- `/{{PLAN_COMMAND}}` — {{PLAN_DESCRIPTION}}
-- `/decompose` — Break a {{WORK_UNIT}} into session-sized GitHub Issues
-- `/start` — Begin an execution session (7-phase structured process)
-- `/review` — Fresh-eyes review (run in a separate session from `/start`)
-- `/handoff` — End a session and produce the handoff note
-- `/{{SYNTHESIS_COMMAND}}` — {{SYNTHESIS_DESCRIPTION}}
+- `{{INTERVIEW_SKILL}}` — {{INTERVIEW_DESCRIPTION}}
+- `{{BRIEF_SKILL}}` — {{BRIEF_DESCRIPTION}}
+- `{{PLAN_SKILL}}` — {{PLAN_DESCRIPTION}}
+- `decompose` — Break a {{WORK_UNIT}} into session-sized tasks in `issues/`
+- `start` — Begin an execution session (7-phase structured process)
+- `review` — Fresh-eyes review (run in a separate session from `start`)
+- `handoff` — End a session and produce the handoff note
+- `{{SYNTHESIS_SKILL}}` — {{SYNTHESIS_DESCRIPTION}}
 
-<!-- GUIDE: If your workflow has an opinionated tool stack, add it here:
+<!-- GUIDE: If your expert has an opinionated tool stack, add it here:
 
 ## Opinionated Stack
 

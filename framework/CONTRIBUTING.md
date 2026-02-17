@@ -1,132 +1,94 @@
-# Contributing a Workflow
+# Contributing an Expert
 
-This guide walks through creating a new workflow for this toolkit. Whether you're building a DevOps pipeline workflow, a research methodology, or something else entirely, the process is the same.
+This guide walks through creating a new expert definition for this toolkit. Whether you're building a DevOps expert, a research analyst, or something else entirely, the process is the same.
 
 ## Quick Start
 
 ```bash
-# 1. Scaffold a new workflow
-./framework/create-workflow.sh my-workflow
+# 1. Scaffold a new expert
+./framework/create-expert.sh --domain technical my-expert
 
-# 2. Customize the generated files
+# 2. Customize role.md and add skills
 #    (see "What to Customize" below)
 
-# 3. Validate your workflow
-./framework/validate.sh my-workflow
+# 3. Validate your expert
+./framework/validate.sh technical/my-expert
 ```
 
 On Windows:
 ```powershell
-.\framework\create-workflow.ps1 my-workflow
-.\framework\validate.sh my-workflow   # validation is bash-only for now
+.\framework\create-expert.ps1 -Domain technical my-expert
+.\framework\validate.sh technical/my-expert   # validation is bash-only for now
 ```
 
 ## What the Scaffold Creates
 
-Running `create-workflow.sh my-workflow` generates:
+Running `create-expert.sh --domain technical my-expert` generates:
 
 ```
-my-workflow/
-├── editor.md                  # Operating rules for the AI
-├── README.md                  # Workflow documentation
-├── setup.sh / setup.ps1       # Install scripts
-├── new_repo.sh / new_repo.ps1 # New repo scripts
-└── commands/
-    ├── interview.md           # Structured interview
-    ├── brief.md               # Synthesize into source-of-truth
-    ├── plan.md                # Define work structure
-    ├── decompose.md           # Break into GitHub Issues
-    ├── start.md               # 7-phase execution
-    ├── review.md              # Fresh-eyes review
-    ├── handoff.md             # Session close + handoff note
-    └── synthesis.md           # Milestone/phase capstone
+experts/technical/my-expert/
+├── role.md         # Identity, operating rules, session protocols
+├── skills/         # Markdown skill definitions (empty — add as you go)
+│   └── (empty)
+└── tools/          # Executable scripts for this expert
+    └── .gitkeep
 ```
 
-Every file is pre-populated with structural patterns and `<!-- GUIDE: ... -->` comments explaining what to put where. Delete the guide comments as you fill in real content.
+To also scaffold the 8 default skill files from templates, use `--with-skills`:
+
+```bash
+./framework/create-expert.sh --domain technical --with-skills my-expert
+```
+
+This adds starter skill files to `skills/` with structural patterns and `<!-- GUIDE: ... -->` comments. Delete the guide comments as you fill in real content.
 
 ## What to Customize
 
-### 1. Rename Commands (optional)
+### 1. Define `role.md`
 
-The scaffold uses generic names (`interview`, `brief`, `plan`, `synthesis`). Rename them to match your domain:
+This is the expert's identity — what it reads, how it operates, what it produces. Focus on:
 
-| Generic | SWE Equivalent | EDA Equivalent | Your Workflow |
-|---------|----------------|----------------|---------------|
-| `interview` | `brainstorm` | `intake` | ? |
-| `brief` | `vision` | `brief` | ? |
-| `plan` | `roadmap` | `scope` | ? |
-| `synthesis` | `postmortem` | `synthesize` | ? |
+**Document Locations** — What documents does your expert read and produce? Every expert needs a brief and handoff notes. Add domain-specific documents as needed.
 
-If you rename a command file, update the command list in `editor.md` to match.
+**Session Protocol** — What should the expert read at session start? What should it produce at the end?
 
-### 2. Customize `editor.md`
+**Skills** — List each skill with a 1-line description.
 
-This is the operating rules file that the AI reads every session. Focus on:
+**Principles** — Non-negotiable behavioral rules. Keep the universal ones (no memory, brief is source of truth, verification required) and add domain-specific ones.
 
-**Document Locations** — What documents does your workflow need? Every workflow needs a brief, lessons log, and handoff notes. Add domain-specific documents (data profiles, domain context, technical specs, etc.).
+### 2. Add Skills
 
-**Session Protocol** — What should the AI read at the start of every session? What should it do during? What should it produce at the end?
+Skills are markdown files in `skills/` that define what the expert does when triggered. Every skill file should have:
 
-**Slash Commands** — List every command with a 1-line description.
+1. **Opening context** — What is happening and why
+2. **Steps or phases** — The actual work, numbered and self-contained
+3. **Approval gates** — Explicit "wait for confirmation" at decision points
+4. **Output specification** — What gets produced, where, in what format
+5. **Rules section** — Constraints and edge case handling
 
-**Principles** — What are the non-negotiable behavioral rules? Keep the universal ones (no memory, brief is source of truth, verification required) and add domain-specific ones.
+The 8-skill lifecycle (interview, brief, plan, decompose, start, review, handoff, synthesis) is a starting framework — not every expert needs all 8. See [workflow-anatomy.md](../docs/workflow-anatomy.md) for which slots each expert typically fills.
 
-**Opinionated Stack** (optional) — Does your workflow prescribe specific tools? List them.
+### 3. Add Tools (optional)
 
-### 3. Customize the Commands
-
-Each command file has `<!-- GUIDE: ... -->` comments explaining what to customize. The key decisions for each:
-
-**Interview command** — What categories do you interview about? SWE asks about Problem, Audience, Scope. EDA asks about Application Domain, Data, Questions. What does your domain need?
-
-**Brief command** — What sections should the source-of-truth document have? What's the right structure for your domain?
-
-**Plan command** — What do you call a chunk of work? (Milestone, phase, sprint, cycle?) How many is typical? What risks matter in your domain?
-
-**Start command** — This is the most important one. The 7-phase structure should stay, but rename and customize the phases:
-
-| Phase | Purpose | Customize |
-|-------|---------|-----------|
-| 1. Load Context | Read all documents | Add domain-specific docs to read |
-| 2. Plan/Hypothesize | State approach before working | Rename; adjust what the AI presents |
-| 3. Design/Architect | Design the solution | Rename; adjust level of detail |
-| 4. Prepare/Validate | Pre-work validation | What does "validate inputs" mean in your domain? |
-| 5. Execute | Do the main work | What instructions does the AI need? |
-| 6. Verify | Check the work | What does verification look like? |
-| 7. Report | Summarize and prompt handoff | Mostly stays the same |
-
-**Review command** — What categories does the reviewer evaluate? SWE checks correctness, tests, security. EDA checks statistics, methodology, data handling. What matters in your domain?
-
-**Handoff command** — This is mostly universal. The handoff note format rarely needs changing.
-
-**Synthesis command** — What's the capstone for your domain? A retrospective? A deliverable report? A status briefing?
-
-### 4. Customize `setup.sh`
-
-If your workflow needs domain-specific directories or files created at setup time, add them. Look at how the EDA setup creates `notebooks/`, `data/`, `reports/`, and a `pyproject.toml`.
-
-### 5. Write the README
-
-Replace the template content with actual documentation for your workflow. Follow the pattern of the [SWE README](../workflows/swe/README.md) or [EDA README](../workflows/eda/README.md).
+Tools go in `tools/` and are executable scripts (`.sh`, `.ps1`, `.py`) that the expert can invoke at runtime. Unlike skills (which are LLM-executed markdown), tools enforce capability boundaries. If your expert doesn't need tools, keep the directory with `.gitkeep`.
 
 ## Validation
 
-Run `./framework/validate.sh my-workflow` to check your workflow. It verifies:
+Run `./framework/validate.sh technical/my-expert` to check your expert. It verifies:
 
-- All required files exist (`editor.md`, `setup.sh`, commands)
-- Commands referenced in `editor.md` have matching files
-- `editor.md` has the required sections (Document Locations, Session Protocol, Slash Commands, Principles)
-- `/start` has the 7-phase structure with approval gates
-- `/handoff` produces handoff notes with the standard format
-- `/decompose` uses GitHub Issues with user stories
-- `/review` mentions separate session / fresh eyes
+- All required files exist (`role.md`, `skills/`, `tools/`)
+- Skills referenced in `role.md` have matching files
+- `role.md` has the required sections (Document Locations, Session Protocol, Skills, Principles)
+- `start` skill has the 7-phase structure with approval gates (if present)
+- `handoff` skill produces handoff notes (if present)
+- `decompose` skill references in-repo `issues/` (if present)
 - No leftover `{{PLACEHOLDER}}` markers or `<!-- GUIDE: -->` comments
 
-Passing validation doesn't mean the workflow is good — it means the structure is complete. The content quality is up to you.
+Passing validation doesn't mean the expert is good — it means the structure is complete. The content quality is up to you.
 
 ## Packaging the Skill
 
-After making changes to workflows or the skill, rebuild the distributable `.skill` file:
+After making changes to experts or the skill, rebuild the distributable `.skill` file:
 
 ```bash
 ./framework/package_skill.sh
@@ -135,42 +97,28 @@ After making changes to workflows or the skill, rebuild the distributable `.skil
 This script:
 
 1. Creates a `build/` directory
-2. Copies `skills/` into `build/skills/`
-3. Copies `workflows/` into `build/skills/machinedge-workflows/workflows/` (assembling the nested structure the skill expects)
+2. Copies `framework/skills/` into `build/skills/`
+3. Copies `experts/` into `build/skills/machinedge-workflows/experts/` (assembling the nested structure the skill expects)
 4. Downloads `package_skill.py` and `quick_validate.py` from the [anthropics/skills](https://github.com/anthropics/skills) repo if not already present
 5. Validates the skill structure and produces `build/machinedge-workflows.skill`
 
-The assembled build directory mirrors the structure SKILL.md references:
-
-```
-build/
-├── machinedge-workflows.skill    # The distributable package
-└── skills/
-    └── machinedge-workflows/
-        ├── SKILL.md
-        └── workflows/
-            ├── swe/
-            └── eda/
-```
-
 ## PR Checklist
 
-Before submitting a pull request for a new workflow:
+Before submitting a pull request for a new expert:
 
-- [ ] `./framework/validate.sh my-workflow` passes with no failures
-- [ ] All `<!-- GUIDE: ... -->` comments removed
+- [ ] `./framework/validate.sh technical/my-expert` passes with no failures
+- [ ] All `<!-- GUIDE: ... -->` comments removed (if using `--with-skills`)
 - [ ] All `{{PLACEHOLDER}}` markers replaced
-- [ ] `editor.md` has at least 5 principles (including the universal ones)
-- [ ] `/start` has 7 phases with approval gates at phases 2 and 3
-- [ ] `/handoff` produces handoff notes with "What the Next Session Needs to Know"
-- [ ] `README.md` has setup instructions, workflow table, and project structure
-- [ ] `setup.sh` and `setup.ps1` both work
-- [ ] Tested the workflow end-to-end: scaffold a project, run through at least the interview and brief commands
+- [ ] `role.md` has at least 5 principles (including the universal ones)
+- [ ] `start` skill has 7 phases with approval gates at phases 2 and 3 (if present)
+- [ ] `handoff` skill produces handoff notes with "What the Next Session Needs to Know" (if present)
+- [ ] Tested the expert end-to-end: set up a project, run through at least the interview and brief skills
 
 ## Reference
 
 For a deep-dive into the structural patterns, conventions, and the reasoning behind them, see [docs/workflow-anatomy.md](../docs/workflow-anatomy.md).
 
-For examples of completed workflows, look at:
-- [swe/](../workflows/swe/) — Software engineering workflow
-- [eda/](../workflows/eda/) — Time series analysis workflow
+For examples of completed experts, look at:
+- [project-manager/](../experts/technical/project-manager/) — Orchestrator and team lead
+- [swe/](../experts/technical/swe/) — Software engineering
+- [data-analyst/](../experts/technical/data-analyst/) — Time series data analysis

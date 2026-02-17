@@ -1,5 +1,5 @@
-<!-- TEMPLATE: Start/Execute Command
-     This is the MOST IMPORTANT command. It enforces a 7-phase structured
+<!-- TEMPLATE: Start/Execute Skill
+     This is the MOST IMPORTANT skill. It enforces a 7-phase structured
      execution session with approval gates. The phases prevent the AI from
      jumping ahead without understanding the task and getting user alignment.
 
@@ -13,7 +13,7 @@
        Phase 6: Verify the work
        Phase 7: Report and prompt for handoff
 
-     Replace all {{PLACEHOLDER}} markers with your workflow's specifics.
+     Replace all {{PLACEHOLDER}} markers with your expert's specifics.
      Delete these comments when done.
 -->
 Begin an execution session. This is the most important command.
@@ -27,12 +27,12 @@ The user may specify a task: $ARGUMENTS
 Read these files automatically — do not ask the user to provide them:
 1. `docs/{{BRIEF_DOC}}`
 <!-- GUIDE: Add domain-specific documents here. EDA reads domain-context.md and
-     data-profile.md. Your workflow might have its own equivalent. -->
+     data-profile.md. Your expert might have its own equivalent. -->
 2. `docs/lessons-log.md`
-3. The task (GitHub issue):
-   - If user specified an issue number (e.g. "#42" or "42"), read it: `gh issue view 42`
+3. The task (from `issues/`):
+   - If user specified an issue number (e.g. "#42" or "42"), read it from `issues/`
    - If not, check the brief's "Next task" field for the issue number
-   - If still unclear, list open tasks: `gh issue list --label {{ISSUE_LABEL}} --state open` and ask
+   - If still unclear, list open issues in `issues/` (those with **Status:** `open`) and ask
 4. Most recent handoff note in `docs/handoff-notes/` (if any exist)
 
 Confirm understanding with the user:
@@ -142,7 +142,7 @@ Now do the work:
 
 Verify the work before declaring it complete:
 
-- Check each acceptance criterion from the GitHub issue. Can each one be demonstrated?
+- Check each acceptance criterion from the issue. Can each one be demonstrated?
 - Review your own output — look for obvious issues, gaps, or incomplete work.
 <!-- GUIDE: Add domain-specific verification steps here. -->
 

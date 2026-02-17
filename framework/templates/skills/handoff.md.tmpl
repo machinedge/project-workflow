@@ -1,6 +1,6 @@
-<!-- TEMPLATE: Handoff Command
-     This command closes a session and transfers context to the next one.
-     It's the MOST IMPORTANT HABIT in the workflow. Without it, the next
+<!-- TEMPLATE: Handoff Skill
+     This skill closes a session and transfers context to the next one.
+     It's the MOST IMPORTANT HABIT in the expert. Without it, the next
      session starts cold.
 
      The handoff note format is highly standardized — don't deviate much.
@@ -28,7 +28,7 @@ Save to `docs/handoff-notes/session-NN.md` (zero-padded):
 # Handoff Note: [Descriptive Title of What Was Done]
 
 **Session date:** [Today's date]
-**GitHub issue:** #[Number] — [Issue title]
+**Issue:** [Number] — [Issue title] (see `issues/`)
 
 ## What Was Accomplished
 [2-3 sentences summarizing the session's work]
@@ -78,15 +78,15 @@ If anything was learned this session that future sessions should know (a gotcha,
 
 ---
 
-## Step 5: Close the GitHub Issue
+## Step 5: Close the Issue
 
-If all acceptance criteria are met:
-```bash
-gh issue comment [number] --body "Completed in session [NN]. See docs/handoff-notes/session-[NN].md"
-gh issue close [number]
+If all acceptance criteria are met, update the issue file in `issues/` to set **Status:** to `closed` and add a completion note:
+
+```
+**Completed:** Session [NN]. See docs/handoff-notes/session-[NN].md
 ```
 
-If acceptance criteria are NOT all met, comment with status but leave the issue open.
+If acceptance criteria are NOT all met, add a status note to the issue file but leave the status as `open`.
 
 ---
 

@@ -1,5 +1,5 @@
-<!-- TEMPLATE: Review Command
-     This command runs a "fresh-eyes" review. It MUST be run in a separate
+<!-- TEMPLATE: Review Skill
+     This skill runs a "fresh-eyes" review. It MUST be run in a separate
      session from the one that did the original work. The whole point is
      that the reviewing AI has no memory of implementation decisions.
 
@@ -21,7 +21,7 @@ The user specifies what to review: $ARGUMENTS
 
 ## Step 1: Load Context
 
-Read the project brief (`docs/{{BRIEF_DOC}}`), then read the GitHub issue(s) being reviewed.
+Read the project brief (`docs/{{BRIEF_DOC}}`), then read the issue(s) being reviewed from `issues/`.
 
 For each issue, examine:
 - The acceptance criteria
@@ -54,34 +54,35 @@ Evaluate the work against these criteria:
 
 For each finding, categorize it:
 
-- **Must Fix** — Incorrect behavior, broken acceptance criteria, or significant risk. Creates a GitHub issue.
-- **Should Fix** — Quality concern, missing edge case, or inconsistency. Creates a GitHub issue.
-- **Nit** — Style, naming, or minor improvement. Mentioned in the review summary but not a GitHub issue.
+- **Must Fix** — Incorrect behavior, broken acceptance criteria, or significant risk. Creates an issue in `issues/`.
+- **Should Fix** — Quality concern, missing edge case, or inconsistency. Creates an issue in `issues/`.
+- **Nit** — Style, naming, or minor improvement. Mentioned in the review summary but not tracked as an issue.
 
 ---
 
 ## Step 4: Create Issues for Findings
 
-For each Must Fix and Should Fix finding, create a GitHub issue:
+For each Must Fix and Should Fix finding, create an issue file in `issues/`:
 
-```bash
-gh issue create \
-  --title "[Review] [Short description of finding]" \
-  --label "{{ISSUE_LABEL}}" \
-  --body "$(cat <<'EOF'
+Save to `issues/NNN-review-[short-slug].md`:
+
+```markdown
+# [Review] [Short description of finding]
+
+**Label:** {{ISSUE_LABEL}}
+**Status:** open
+
 ## User Story
 As a [persona], I [need] [what this fix enables] so that [value].
 
 ## Description
-**Found in:** #[original issue number]
+**Found in:** issue [original issue number]
 **Severity:** [Must Fix / Should Fix]
 
 [Description of the finding and why it matters]
 
 ## Acceptance Criteria
 - [ ] [What "fixed" looks like]
-EOF
-)"
 ```
 
 ---
