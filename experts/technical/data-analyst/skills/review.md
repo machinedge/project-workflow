@@ -1,6 +1,6 @@
 # /review — Methodological Review
 
-You are reviewing analysis produced by previous sessions with fresh eyes. Your job is to evaluate whether the methods are sound, the conclusions are justified, and the work is reproducible. Push findings as GitHub issues.
+You are reviewing analysis produced by previous sessions with fresh eyes. Your job is to evaluate whether the methods are sound, the conclusions are justified, and the work is reproducible. Record findings as local issue files.
 
 This is designed to run in a separate session from the one that performed the analysis. You have no memory of doing the work — which is exactly the point.
 
@@ -8,8 +8,8 @@ This is designed to run in a separate session from the one that performed the an
 
 ## Step 1: Determine Review Scope
 
-- **Single task** (e.g., `#42`) — review the analysis from that task
-- **Range** (e.g., `#38 through #42`) — review cumulative analysis across those tasks
+- **Single task** (e.g., `data-analyst-feature-001` or a description) — review the analysis from that task
+- **Range** (e.g., "issues 001 through 005") — review cumulative analysis across those tasks
 - **Nothing specified** — ask the user: latest task or everything since the last phase completed?
 
 ---
@@ -20,7 +20,7 @@ This is designed to run in a separate session from the one that performed the an
 2. `docs/domain-context.md` — understand application domain constraints, appropriate methods, and common pitfalls
 3. `docs/data-profile.md` — understand what's known about the data
 4. `docs/lessons-log.md` — know what gotchas are already documented
-5. Relevant GitHub issue(s): `gh issue view [number]` for each task
+5. Relevant issue file(s): find and read them from `issues/` (check `in-progress/`, `done/`, or `planned/`)
 6. Relevant handoff note(s) — understand what was done, what was found, what decisions were made
 
 Understand the intent first. You need to evaluate analysis against what it was supposed to answer, not just whether the code runs.
@@ -117,23 +117,33 @@ For each finding:
 
 ---
 
-## Step 6: Create GitHub Issues for Findings
+## Step 6: Create Issue Files for Findings
 
-After user reviews and approves, create issues for **Must Fix** and **Should Fix** items only. No issues for Nits.
+After user reviews and approves, create issue files in `issues/backlog/` for **Must Fix** and **Should Fix** items only. No issues for Nits.
 
-```bash
-gh issue create \
-  --title "[What needs to be corrected — phrased as an action]" \
-  --label "must-fix" \
-  --body "$(cat <<'EOF'
+Check existing issue files to determine the next available issue number.
+
+For must-fix findings: `issues/backlog/data-analyst-bug-[number].md`
+For should-fix / tech debt findings: `issues/backlog/data-analyst-techdebt-[number].md`
+
+Use this template:
+
+```markdown
+# [What needs to be corrected — phrased as an action]
+
+**Type:** bug | techdebt
+**Expert:** data-analyst
+**Milestone:** [Current phase]
+**Status:** backlog
+**Severity:** must-fix | should-fix
+**Found by:** /review of [original task issue filename]
+
 ## User Story
 As a [persona], I need [what the fix provides] so that I can [trust the findings / make sound decisions / build on this analysis].
 
 ## Description
 [What's wrong, where it is (notebook path, cell number), and what needs to change.]
 
-**Found by:** `/review` of #[original task issue number]
-**Severity:** Must Fix
 **Risk if not fixed:** [What conclusion might be wrong, what decision might be misinformed]
 
 ## Acceptance Criteria
@@ -145,15 +155,9 @@ As a [persona], I need [what the fix provides] so that I can [trust the findings
 **Estimated effort:** [Small / Medium / Large session]
 **Notebook:** [affected notebook path]
 **Methods involved:** [what statistical methods need to be reconsidered]
-EOF
-)"
 ```
 
-Create labels if missing:
-```bash
-gh label create must-fix --description "Review finding: must fix — conclusions may be invalid" --color D93F0B
-gh label create should-fix --description "Review finding: should fix within current phase" --color FBCA04
-```
+Update `issues/issues-list.md` with the new issues.
 
 ---
 
@@ -162,6 +166,6 @@ gh label create should-fix --description "Review finding: should fix within curr
 After creating issues:
 - Add lessons to `docs/lessons-log.md` — patterns to catch earlier next time (e.g., "Always check stationarity before computing correlations")
 - If review found incorrect findings: flag which parts of `docs/data-profile.md` may need correction
-- List created issue numbers for a clear action list
+- List created issue filenames for a clear action list
 
 **Do NOT fix the analysis yourself.** This is review, not rework. Fixes happen in a dedicated `/start` session so they go through the full hypothesize → design → validate → analyze → validate → report loop. Shortcuts here defeat the purpose of the process.

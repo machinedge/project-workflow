@@ -13,12 +13,15 @@ Read these if they exist:
 
 If `docs/project-brief.md` doesn't exist, tell the user: "No project brief found. Run `/interview` and `/vision` to get started." and stop.
 
-### 2. Check GitHub issues
+### 2. Check issues
 
-Run: `gh issue list --state open --limit 50`
-Run: `gh issue list --state closed --limit 20`
+Read `issues/issues-list.md` for an overview. Then count issue files in each status folder:
+- `issues/backlog/` — items not yet scheduled
+- `issues/planned/` — items scheduled for work
+- `issues/in-progress/` — items currently being worked on
+- `issues/done/` — completed items
 
-Summarize: total open, total closed, any labeled as bugs or blockers.
+Summarize: total by status, any with severity `must-fix` or `blocker`, any bugs (files with `-bug-` in the name).
 
 ### 3. Check handoff notes
 
@@ -45,8 +48,10 @@ Format:
 **Overall progress:** [X of Y milestones complete]
 
 ### Issue Tracker
-- Open: N (M bugs, K blockers)
-- Closed: N
+- Backlog: N
+- Planned: N
+- In Progress: N (M bugs, K blockers)
+- Done: N
 
 ### Workflow Activity
 - **PM:** [N sessions | No sessions yet]

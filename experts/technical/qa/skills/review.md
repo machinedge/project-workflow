@@ -1,4 +1,4 @@
-Review code produced by previous sessions with fresh eyes. Push findings as GitHub issues.
+Review code produced by previous sessions with fresh eyes. Record findings as local issue files.
 
 The user may specify a scope: $ARGUMENTS
 
@@ -8,8 +8,8 @@ The user may specify a scope: $ARGUMENTS
 
 Figure out what to review based on what the user provides:
 
-- **Single task** (e.g. "#42" or "42") — review the code produced in that task's sessions
-- **Range** (e.g. "#38 through #42") — review cumulative changes across those tasks
+- **Single task** (e.g. "swe-feature-001" or a description) — review the code produced in that task's sessions
+- **Range** (e.g. "issues 001 through 005") — review cumulative changes across those tasks
 - **Nothing specified** — ask the user: review the latest task, or review everything since the last milestone?
 
 ## Step 2: Load Context
@@ -17,7 +17,7 @@ Figure out what to review based on what the user provides:
 Read these files:
 1. `docs/project-brief.md` — understand the project goals and constraints
 2. `docs/lessons-log.md` — know what gotchas have already been identified
-3. The relevant GitHub issue(s): `gh issue view [number]` for each task in scope
+3. The relevant issue file(s) from `issues/` — find them in `in-progress/`, `done/`, or `planned/` and read each one for acceptance criteria and scope
 4. The relevant SWE handoff note(s) in `docs/handoff-notes/swe/` — understand what was done and what decisions were made
 5. `docs/test-plan.md` (if it exists) — understand what QA has defined as test requirements
 6. `docs/env-context.md` (if it exists) — understand environment-specific constraints
@@ -93,17 +93,29 @@ For each finding:
 - Explain why it matters (not just "this is bad" — say what goes wrong if it's not fixed)
 - Suggest a specific fix
 
-## Step 6: Create GitHub Issues for Findings
+## Step 6: Create Issue Files for Findings
 
-After the user reviews and approves the findings, create GitHub issues for **Must Fix** and **Should Fix** items. Do NOT create issues for Nits — those are informational only.
+After the user reviews and approves the findings, create issue files in `issues/backlog/` for **Must Fix** and **Should Fix** items. Do NOT create issues for Nits — those are informational only.
 
-Identify the persona who is affected by each finding. Then create issues:
+Check existing issue files to determine the next available issue number.
 
-```bash
-gh issue create \
-  --title "[Short descriptive title]" \
-  --label "must-fix" \
-  --body "$(cat <<'EOF'
+Identify the persona who is affected by each finding. Then create files following the naming convention:
+
+For must-fix findings: `issues/backlog/qa-bug-[number].md`
+For should-fix / tech debt findings: `issues/backlog/qa-techdebt-[number].md`
+
+Use this template:
+
+```markdown
+# [Short descriptive title]
+
+**Type:** bug | techdebt
+**Expert:** swe
+**Milestone:** [Current milestone]
+**Status:** backlog
+**Severity:** must-fix | should-fix
+**Found by:** /review of [original task issue filename]
+
 ## User Story
 
 As a [persona], I [need | want] [what the fix provides] so that I can [why it matters — what goes wrong without the fix].
@@ -111,9 +123,6 @@ As a [persona], I [need | want] [what the fix provides] so that I can [why it ma
 ## Description
 
 [What's wrong, where it is (file paths), and what needs to change.]
-
-**Found by:** `/review` of #[original task issue number]
-**Severity:** Must Fix
 
 ## Acceptance Criteria
 
@@ -124,22 +133,14 @@ As a [persona], I [need | want] [what the fix provides] so that I can [why it ma
 
 **Estimated effort:** [Small / Medium / Large session]
 **File(s):** [affected file paths]
-EOF
-)"
-```
-
-Use `--label "must-fix"` or `--label "should-fix"` accordingly. Create these labels if they don't exist:
-
-```bash
-gh label create must-fix --description "Review finding: must fix before moving on" --color D93F0B
-gh label create should-fix --description "Review finding: fix within current milestone" --color FBCA04
 ```
 
 ## Step 7: Update Documents
 
-After creating issues:
+After creating issue files:
+- Update `issues/issues-list.md` with the new issues
 - Add any new lessons to `docs/lessons-log.md` (patterns that should be caught earlier next time)
 - If the review found scope drift or incorrect decisions, flag these for the user to update in `docs/project-brief.md`
-- List the created issue numbers so the user has a clear action list
+- List the created issue filenames so the user has a clear action list
 
 Do not auto-fix the code. This is a review, not a refactoring session. Fixes should happen in a dedicated `/start` session so they go through the full plan → architect → test → implement → verify loop.

@@ -132,13 +132,27 @@ After user approval, discuss how to implement this pipeline:
 - Should we generate CI config files (GitHub Actions, Makefile, scripts)?
 - Are there existing pipeline configs to modify?
 
-If CI config generation is needed, that's an SWE task — create a GitHub issue for it via `/decompose` or directly:
+If CI config generation is needed, that's an SWE task — create an issue file for it in `issues/backlog/`. Check existing files for the next available issue number.
 
-```bash
-gh issue create \
-  --title "DevOps: Implement CI pipeline from pipeline definition" \
-  --label "devops" \
-  --body "Implement the pipeline defined in docs/pipeline.md. See docs/env-context.md for environment details."
+Create `issues/backlog/devops-feature-[number].md`:
+
+```markdown
+# DevOps: Implement CI pipeline from pipeline definition
+
+**Type:** feature
+**Expert:** swe
+**Status:** backlog
+
+## Description
+
+Implement the pipeline defined in docs/pipeline.md. See docs/env-context.md for environment details.
+
+## Acceptance Criteria
+
+- [ ] CI pipeline implemented matching the pipeline definition
+- [ ] All pipeline stages operational
 ```
+
+Update `issues/issues-list.md` with the new issue.
 
 The pipeline definition document describes *what* the pipeline does. Actual CI config files are implementation — they go through the SWE workflow.

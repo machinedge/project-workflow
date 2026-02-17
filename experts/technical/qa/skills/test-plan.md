@@ -10,9 +10,9 @@ Read these files:
 1. `docs/project-brief.md` — understand the project goals and constraints
 2. `docs/roadmap.md` — understand the milestone structure
 3. `docs/env-context.md` (if it exists) — understand environment constraints, test infrastructure, and hardware requirements
-4. The relevant GitHub issues:
-   - If a milestone was specified: `gh issue list --milestone "[Milestone name]" --state all`
-   - If a task was specified: `gh issue view [number]`
+4. The relevant issue files:
+   - If a milestone was specified: scan all `issues/` subdirectories for files matching that milestone
+   - If a task was specified: find and read the issue file from `issues/`
    - If nothing specified: ask the user what to scope the test plan to
 
 For each issue in scope, read the acceptance criteria carefully — these are the behaviors that must be tested.
@@ -59,9 +59,9 @@ Save to `docs/test-plan.md`:
 
 | # | Behavior | Source | Test Level | Approach | Infrastructure | Priority |
 |---|----------|--------|-----------|----------|---------------|----------|
-| 1 | [What to test] | Issue #N, AC 1 | Unit | [How to verify] | Local | P1 |
-| 2 | [What to test] | Issue #N, AC 2 | Integration | [How to verify] | Local | P1 |
-| 3 | [What to test] | Issue #N, AC 3 | System | [How to verify] | [Emulator/HW] | P2 |
+| 1 | [What to test] | [issue filename], AC 1 | Unit | [How to verify] | Local | P1 |
+| 2 | [What to test] | [issue filename], AC 2 | Integration | [How to verify] | Local | P1 |
+| 3 | [What to test] | [issue filename], AC 3 | System | [How to verify] | [Emulator/HW] | P2 |
 
 ### Priority Key
 - **P1** — Must test. Core functionality, high risk, or blocking.

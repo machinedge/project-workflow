@@ -12,10 +12,7 @@ Read these files:
 5. `docs/test-plan.md` (if it exists — QA's test plan)
 6. `docs/release-plan.md` (if it exists — DevOps release plan)
 
-Also pull the milestone's issues from GitHub:
-```bash
-gh issue list --milestone "[Milestone name]" --state all --json number,title,state,labels
-```
+Also read the milestone's issues: scan all `issues/` subdirectories for files matching the milestone (check the **Milestone** field in each file). Read `issues/issues-list.md` for a quick overview.
 
 If the user didn't specify a milestone, determine which one was most recently completed based on the handoff notes and roadmap.
 
@@ -24,7 +21,7 @@ If the user didn't specify a milestone, determine which one was most recently co
 Analyze and present:
 
 **1. Progress Assessment**
-Is the milestone actually done? Compare what was planned vs. what was delivered. Check the GitHub issues — are all tasks closed? Any still open? Any review findings (`must-fix`, `should-fix`) unresolved?
+Is the milestone actually done? Compare what was planned vs. what was delivered. Check the issue files — are all tasks in `issues/done/`? Any still in `backlog/`, `planned/`, or `in-progress/`? Any review findings (`must-fix`, `should-fix`) unresolved?
 
 **2. Plan Impact**
 Based on what we learned, do remaining milestones need to change? New risks? Timeline shifts? Scope adjustments?

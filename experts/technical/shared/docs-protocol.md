@@ -10,13 +10,13 @@ All project documents live in `docs/`:
 |----------|------|---------|
 | Project Brief | `docs/project-brief.md` | Project context, goals, constraints, decisions. READ THIS FIRST every session. |
 | Roadmap | `docs/roadmap.md` | Milestones, dependencies, risks. |
-| Task Briefs | `docs/tasks/task-NN.md` | Individual session assignments (GitHub issues are the source of truth; these are local copies). |
 | Handoff Notes | `docs/handoff-notes/<workflow>/session-NN.md` | What happened in each past session, organized by workflow (swe/, qa/, devops/, pm/). |
 | Lessons Log | `docs/lessons-log.md` | Project-specific gotchas and patterns. |
 | Interview Notes | `docs/interview-notes*.md` | Raw interview transcripts from PM discovery. |
 | Environment Context | `docs/env-context.md` | Build targets, deployment mechanisms, test infrastructure. |
 | Test Plan | `docs/test-plan.md` | What to test, at what level, with what infrastructure. |
 | Release Plan | `docs/release-plan.md` | Release gates, rollback procedures, artifact definitions. |
+| Issues List | `issues/issues-list.md` | Overview list of reported or captured issues and their current status |
 
 ## Workflow Contracts
 
@@ -24,9 +24,9 @@ Each workflow produces artifacts that other workflows consume. If an upstream ar
 
 | Producer | Artifact | Consumer(s) |
 |----------|----------|-------------|
-| PM | `docs/project-brief.md` | SWE, QA, DevOps |
+| PM | `docs/project-brief.md` | SWE, QA, DevOps, UX and other experts|
 | PM | `docs/roadmap.md` | SWE, QA, DevOps |
-| PM | GitHub issues (tasks) | SWE, QA |
+| PM | `issues/issues-list.md` | SWE, QA, DevOps, UX and other experts|
 | PM | `docs/interview-notes*.md` | PM (internal) |
 | SWE | Code + tests | QA, DevOps |
 | SWE | `docs/handoff-notes/swe/session-NN.md` | PM, QA, SWE (next session) |
@@ -41,7 +41,7 @@ Each workflow produces artifacts that other workflows consume. If an upstream ar
 
 ## Handoff Note Conventions
 
-Handoff notes are organized by workflow in subdirectories:
+Handoff notes are organized by expert in subdirectories:
 
 ```
 docs/handoff-notes/
@@ -56,11 +56,29 @@ docs/handoff-notes/
     └── session-01.md
 ```
 
-Every workflow can **read** all handoff notes. Each workflow **writes** only to its own subdirectory. Session numbers are sequential within each workflow.
+
+Every expert can **read** all handoff notes. Each workflow **writes** only to its own subdirectory. Session numbers are sequential within each workflow.
+
+## Issues Conventions
+Issues are organized by the report and status
+
+```
+issues/
+    issues-list.md
+    backlog/
+        [expert]-[feature | bug | techdebt]-[issue number].md
+    planned/
+        [expert]-[feature | bug | techdebt]-[issue number].md
+    in-progress/
+        [expert]-[feature | bug | techdebt]-[issue number].md
+    done/
+        [expert]-[feature | bug | techdebt]-[issue number].md
+```
+Every expert can **read** all issues and the `issues-list.md`. All experts can create issues in `backlog`, but only PM can move them from `backlog`, 
 
 ## Principles
 
-These apply to all workflows:
+These apply to all experts:
 
 - **No memory between sessions.** These documents ARE your memory. Trust them.
 - **Project brief is source of truth.** If something contradicts it, ask the user.
@@ -72,9 +90,9 @@ These apply to all workflows:
 
 ## Editor Configuration
 
-Each workflow has its own `editor.md` that defines the AI's role and available commands. When installing workflows into a project:
+Each workflow has its own `role.md` that defines the AI's role and available commands. When installing workflows into a project:
 
-- **Claude Code:** Each workflow's editor.md is installed as `.claude/roles/<workflow>.md`. The user selects which role to activate at the start of a session.
-- **Cursor:** Each workflow's editor.md is installed as `.cursor/rules/<workflow>-os.mdc` with appropriate frontmatter.
+- **Claude Code:** Each workflow's role.md is installed as `.claude/roles/<workflow>.md`. The user selects which role to activate at the start of a session.
+- **Cursor:** Each workflow's role.md is installed as `.cursor/rules/<workflow>-os.mdc` with appropriate frontmatter.
 
 Commands from all installed workflows are available regardless of which role is active. The role determines the AI's persona, session protocol, and priorities — not which commands exist.

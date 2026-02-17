@@ -18,14 +18,10 @@ If `docs/release-plan.md` doesn't exist, tell the user: "No release plan found. 
 Walk through every gate in `docs/release-plan.md` and verify it's met:
 
 **Code gates:**
-```bash
-# Check for open must-fix issues
-gh issue list --label must-fix --state open
-# Check for open blockers
-gh issue list --label blocker --state open
-# Check milestone completion
-gh issue list --milestone "[Milestone name]" --state open --json number,title,labels
-```
+Check the local issue files:
+- Scan `issues/backlog/`, `issues/planned/`, and `issues/in-progress/` for any issues with **Severity: must-fix** — these must be resolved
+- Scan for any issues with **Severity: blocker** — these must be resolved
+- Check that all issues for the milestone are in `issues/done/` (none remaining in other status folders)
 
 **Test gates:**
 - Verify test results (run tests or check most recent results)
@@ -60,7 +56,7 @@ Present the gate check results:
 **Overall: READY / NOT READY**
 ```
 
-**If any gate FAILS: STOP.** Report what's not met and what needs to happen to fix it. Do NOT proceed with deployment. Create GitHub issues for any blocking items if they don't already exist.
+**If any gate FAILS: STOP.** Report what's not met and what needs to happen to fix it. Do NOT proceed with deployment. Create issue files in `issues/backlog/` for any blocking items if they don't already exist, and update `issues/issues-list.md`.
 
 **If all gates PASS:** Confirm with the user before proceeding to deployment.
 
@@ -127,13 +123,19 @@ After deployment completes:
 [Was rollback needed? If so, what triggered it and was it successful?]
 ```
 
-If the deployment failed or was rolled back, create a GitHub issue:
+If the deployment failed or was rolled back, create an issue file in `issues/backlog/`. Check existing files to determine the next available issue number.
 
-```bash
-gh issue create \
-  --title "Deployment failure: [Milestone name] — [brief description]" \
-  --label "bug" \
-  --body "$(cat <<'EOF'
+Create `issues/backlog/devops-bug-[number].md`:
+
+```markdown
+# Deployment failure: [Milestone name] — [brief description]
+
+**Type:** bug
+**Expert:** devops
+**Milestone:** [Milestone name]
+**Status:** backlog
+**Severity:** blocker
+
 ## Description
 
 [What failed during deployment of [Milestone name].]
@@ -148,8 +150,8 @@ gh issue create \
 ## Next Steps
 
 - [ ] [What needs to happen before re-attempting deployment]
-EOF
-)"
 ```
+
+Update `issues/issues-list.md` with the new issue.
 
 Save the deployment report as part of the DevOps handoff note for this session.

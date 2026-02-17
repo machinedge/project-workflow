@@ -1,6 +1,6 @@
 # /decompose — Break Analysis Phase into Hypothesis-Driven Tasks
 
-You are breaking an analysis phase into session-sized tasks and creating them as GitHub Issues. Each issue is framed as a hypothesis or question to answer, with acceptance criteria that specify the analytical activities needed.
+You are breaking an analysis phase into session-sized tasks and creating them as local issue files. Each issue is framed as a hypothesis or question to answer, with acceptance criteria that specify the analytical activities needed.
 
 ## Process
 
@@ -19,16 +19,29 @@ Identify who will consume the findings from this phase. These are the personas f
 
 Use these personas consistently in the issue user stories.
 
-### Step 3: Create GitHub Issues
+### Step 3: Determine the next issue number
 
-For each task, the title is the **hypothesis or question**. The acceptance criteria are the **analytical activities** needed to answer it.
+Check the existing issue files across all `issues/` subdirectories (`backlog/`, `planned/`, `in-progress/`, `done/`) to find the highest issue number in use. Start numbering new issues from the next number.
 
-```bash
-gh issue create \
-  --title "[Hypothesis or question — phrased as something testable]" \
-  --label "analysis" \
-  --milestone "[Phase name]" \
-  --body "$(cat <<'EOF'
+### Step 4: Create issue files
+
+For each task, create a markdown file in `issues/backlog/`. The title is the **hypothesis or question**. The acceptance criteria are the **analytical activities** needed to answer it.
+
+Files follow the naming convention:
+```
+issues/backlog/data-analyst-feature-[number].md
+```
+
+Use this template:
+
+```markdown
+# [Hypothesis or question — phrased as something testable]
+
+**Type:** feature
+**Expert:** data-analyst
+**Milestone:** [Phase name]
+**Status:** backlog
+
 ## User Story
 As a [persona], I want to know [what the analysis reveals] so that I can [decision or action this enables].
 
@@ -52,13 +65,11 @@ As a [persona], I want to know [what the analysis reveals] so that I can [decisi
 
 ## Technical Notes
 **Estimated effort:** [Small / Medium / Large session]
-**Dependencies:** [Issues that must be completed first, e.g. #12, #13]
+**Dependencies:** [Issue files that must be completed first, e.g. data-analyst-feature-001]
 **Data inputs:** [Specific files or data sources needed]
 **Methods:** [Statistical methods and libraries to use]
 **Notebook:** [Suggested notebook name, e.g. `notebooks/02-seasonality-analysis.ipynb`]
 **Out of scope:** [What NOT to investigate — prevents rabbit holes]
-EOF
-)"
 ```
 
 ### Writing Good Analysis Hypotheses
@@ -96,20 +107,9 @@ Each criterion should be independently verifiable. Aim for a mix of:
 - If a phase has more than 8 tasks, it's too big — split the phase.
 - Reference specific data files and column names in Technical Notes where possible.
 
-### Step 4: Cleanup
-
-Create labels if they don't exist:
-```bash
-gh label create analysis --description "Analysis task — hypothesis to test or question to answer" --color 1D76DB
-```
-
-Create milestone if it doesn't exist:
-```bash
-gh api repos/{owner}/{repo}/milestones -f title="[Phase name]"
-```
-
 ### Step 5: Output
 
-1. List created issues for user review: `gh issue list --label analysis --milestone "[Phase name]"`
-2. Update `docs/scope.md` to note the phase has been decomposed (log issue numbers)
-3. Update `docs/analysis-brief.md` "Current Status" with the first task's issue number as "Next task"
+1. List created issue files and present them to the user for review.
+2. Update `issues/issues-list.md` with the new issues.
+3. Update `docs/scope.md` to note the phase has been decomposed (log issue filenames).
+4. Update `docs/analysis-brief.md` "Current Status" with the first task's issue filename as "Next task."

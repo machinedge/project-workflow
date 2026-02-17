@@ -1,7 +1,7 @@
-# AI Project Toolkit — New Repo Scaffolder (Windows)
-# Usage: .\new_repo.ps1 [-Org <github-org>] [-Editor claude|cursor|both] [-Workflows pm,swe,qa,devops] <repo-name>
+# MachinEdge Expert Teams — New Repo Scaffolder (Windows)
+# Usage: .\new_repo.ps1 [-Org <github-org>] [-Editor claude|cursor|both] [-Experts pm,swe,qa,devops] <repo-name>
 #
-# Creates a new git repo with selected workflows pre-configured,
+# Creates a new git repo with selected experts pre-configured,
 # and pushes it to GitHub under the specified org/user.
 #
 # The GitHub org/user can be set via:
@@ -9,10 +9,10 @@
 #   2. GITHUB_ORG environment variable
 #
 # Examples:
-#   .\new_repo.ps1 my-app                                          # Uses $env:GITHUB_ORG, all workflows, both editors
-#   .\new_repo.ps1 -Org mycompany my-app                           # Explicit org
-#   .\new_repo.ps1 -Workflows "pm,swe" my-app                      # Just PM and SWE
-#   .\new_repo.ps1 -Workflows "pm,swe,qa" -Editor cursor app       # PM+SWE+QA, Cursor only
+#   .\new_repo.ps1 my-app                                            # Uses $env:GITHUB_ORG, all experts, both editors
+#   .\new_repo.ps1 -Org mycompany my-app                             # Explicit org
+#   .\new_repo.ps1 -Experts "pm,swe" my-app                          # Just PM and SWE
+#   .\new_repo.ps1 -Experts "pm,swe,qa" -Editor cursor app           # PM+SWE+QA, Cursor only
 
 param(
     [Parameter(Mandatory = $true, Position = 0)]
@@ -26,7 +26,7 @@ param(
     [string]$Editor = "both",
 
     [Parameter()]
-    [string]$Workflows = "pm,swe,qa,devops"
+    [string]$Experts = "project-manager,swe,qa,devops"
 )
 
 $ErrorActionPreference = "Stop"
@@ -56,19 +56,15 @@ if ($RepoName -notmatch '^[a-zA-Z0-9._-]+$') {
     exit 1
 }
 
-# Validate workflow names
-$ValidWorkflows = @("pm", "swe", "qa", "devops")
-$WorkflowList = $Workflows -split ',' | ForEach-Object { $_.Trim() }
-foreach ($wf in $WorkflowList) {
-    if ($wf -notin $ValidWorkflows) {
-        Write-Error "Error: Unknown workflow '$wf'. Valid workflows: pm, swe, qa, devops"
-        exit 1
-    }
-}
-
-# Resolve the directory where this script lives (workflows/shared/)
+# Resolve paths: this script lives in experts/technical/project-manager/tools/
 $ScriptDir = $PSScriptRoot
-$WorkflowsDir = Split-Path $ScriptDir -Parent
+$RepoRoot = Split-Path (Split-Path (Split-Path (Split-Path $ScriptDir -Parent) -Parent) -Parent) -Parent
+$SetupScript = Join-Path $RepoRoot "framework" "setup.ps1"
+
+if (-not (Test-Path $SetupScript)) {
+    Write-Error "Error: framework/setup.ps1 not found at $SetupScript"
+    exit 1
+}
 
 $RepoDir = Join-Path $HOME "work" $RepoName
 
@@ -83,23 +79,16 @@ New-Item -ItemType Directory -Path $RepoDir -Force | Out-Null
 New-Item -ItemType File -Path "$RepoDir/README.md" -Force | Out-Null
 New-Item -ItemType File -Path "$RepoDir/.gitignore" -Force | Out-Null
 
-# Run each workflow's setup script
-foreach ($wf in $WorkflowList) {
-    $SetupScript = Join-Path $WorkflowsDir $wf "setup.ps1"
-    if (Test-Path $SetupScript) {
-        Write-Host "Installing $wf workflow..."
-        & $SetupScript -Editor $Editor -Target $RepoDir
-    } else {
-        Write-Warning "No setup script found for '$wf' workflow at $SetupScript"
-    }
-}
+# Run the framework setup script
+Write-Host "Installing expert team..."
+& $SetupScript -Editor $Editor -Experts $Experts -Target $RepoDir
 
 # Git init and push
 Push-Location $RepoDir
 try {
     git init
     git add .
-    git commit -m "Initial commit: project scaffold with AI toolkit (workflows: $Workflows)"
+    git commit -m "Initial commit: project scaffold with MachinEdge Expert Teams (experts: $Experts)"
 
     gh repo create "$Org/$RepoName" --private
     if ($LASTEXITCODE -ne 0) {
@@ -119,5 +108,5 @@ try {
 Write-Host ""
 Write-Host "Done! Repo ready at: $RepoDir"
 Write-Host "GitHub: https://github.com/$Org/$RepoName"
-Write-Host "Workflows installed: $Workflows"
+Write-Host "Experts installed: $Experts"
 Write-Host ""

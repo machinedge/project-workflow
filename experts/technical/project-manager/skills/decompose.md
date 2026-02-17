@@ -1,10 +1,11 @@
-Break a milestone into session-sized tasks and create them as GitHub issues.
+Break a milestone into session-sized tasks and create them as local issue files in `issues/backlog/`.
 
 The user may specify which milestone: $ARGUMENTS
 
 First, read these files:
 1. `docs/project-brief.md`
 2. `docs/roadmap.md`
+3. `issues/issues-list.md` (if it exists — to know what issue numbers are already used)
 
 If the user didn't specify a milestone, look at the roadmap and identify the next milestone that hasn't been started. Confirm with the user before proceeding.
 
@@ -12,19 +13,37 @@ If the user didn't specify a milestone, look at the roadmap and identify the nex
 
 Before writing tasks, identify the relevant personas for this milestone. These are the people who will use or benefit from the work — end users, developers, admins, etc. Use these personas consistently in the user stories below.
 
-## Create GitHub issues
+## Determine the next issue number
 
-For each task in the milestone, create a GitHub issue using the `gh` CLI. Tasks fall into three categories:
+Check the existing issue files across all `issues/` subdirectories (`backlog/`, `planned/`, `in-progress/`, `done/`) to find the highest issue number in use. Start numbering new issues from the next number.
 
-### SWE tasks (label: `task`)
+## Create issue files
+
+For each task in the milestone, create a markdown file in `issues/backlog/`. Files follow the naming convention:
+
+```
+issues/backlog/[expert]-[type]-[number].md
+```
+
+Where:
+- `[expert]` = the workflow that will execute this task (`swe`, `qa`, `devops`, etc.)
+- `[type]` = `feature`, `bug`, or `techdebt`
+- `[number]` = sequential issue number (zero-padded to 3 digits, e.g. `001`)
+
+### SWE tasks
+
 Implementation work — building features, writing code, fixing bugs.
 
-```bash
-gh issue create \
-  --title "[Short descriptive title]" \
-  --label "task" \
-  --milestone "[Milestone name]" \
-  --body "$(cat <<'EOF'
+Create a file like `issues/backlog/swe-feature-001.md`:
+
+```markdown
+# [Short descriptive title]
+
+**Type:** feature
+**Expert:** swe
+**Milestone:** [Milestone name]
+**Status:** backlog
+
 ## User Story
 
 As a [persona], I [need | want | desire] [feature / capability] so that I can [value proposition].
@@ -42,22 +61,25 @@ As a [persona], I [need | want | desire] [feature / capability] so that I can [v
 ## Technical Notes
 
 **Estimated effort:** [Small / Medium / Large session]
-**Dependencies:** [Issues that must be completed first, e.g. #12, #13]
+**Dependencies:** [Issues that must be completed first, e.g. swe-feature-001, qa-feature-003]
 **Inputs:** project brief (always), [other files or resources needed — give paths]
 **Out of scope:** [What NOT to do — prevents scope creep]
-EOF
-)"
 ```
 
-### QA tasks (label: `qa`)
+### QA tasks
+
 Quality assurance work — writing test plans, running reviews, regression testing.
 
-```bash
-gh issue create \
-  --title "QA: [Short descriptive title]" \
-  --label "qa" \
-  --milestone "[Milestone name]" \
-  --body "$(cat <<'EOF'
+Create a file like `issues/backlog/qa-feature-004.md`:
+
+```markdown
+# QA: [Short descriptive title]
+
+**Type:** feature
+**Expert:** qa
+**Milestone:** [Milestone name]
+**Status:** backlog
+
 ## Description
 
 [What needs to be reviewed, tested, or validated.]
@@ -73,21 +95,24 @@ gh issue create \
 
 ## Notes
 
-**Depends on:** [SWE issues that must be completed first]
+**Depends on:** [Issue files that must be completed first]
 **Inputs:** [handoff notes, test plan, code to review]
-EOF
-)"
 ```
 
-### DevOps tasks (label: `devops`)
+### DevOps tasks
+
 Infrastructure and deployment work — setting up pipelines, configuring environments, preparing releases.
 
-```bash
-gh issue create \
-  --title "DevOps: [Short descriptive title]" \
-  --label "devops" \
-  --milestone "[Milestone name]" \
-  --body "$(cat <<'EOF'
+Create a file like `issues/backlog/devops-feature-005.md`:
+
+```markdown
+# DevOps: [Short descriptive title]
+
+**Type:** feature
+**Expert:** devops
+**Milestone:** [Milestone name]
+**Status:** backlog
+
 ## Description
 
 [What infrastructure, pipeline, or deployment work is needed.]
@@ -98,10 +123,8 @@ gh issue create \
 
 ## Notes
 
-**Depends on:** [Issues that must be completed first]
+**Depends on:** [Issue files that must be completed first]
 **Inputs:** [env-context, project brief, etc.]
-EOF
-)"
 ```
 
 ### Writing good user stories
@@ -124,18 +147,14 @@ Bad: "- [ ] Input validation is implemented"
 ## Rules
 
 - Each task must be completable in ONE session (~10 substantive exchanges). If it would take more, split it. If it takes fewer than 3 exchanges, batch with a neighbor.
-- Order by dependency — what has to happen first. Use `**Dependencies:**` to link issue numbers.
+- Order by dependency — what has to happen first. Use `**Dependencies:**` to link issue filenames.
 - Every task MUST have acceptance criteria. No "trust me."
 - Reference specific file paths in Inputs so the AI can read them directly (no copy-paste).
-- Create labels if they don't exist:
-  - `gh label create task --description "SWE session-sized work item" --color 0E8A16`
-  - `gh label create qa --description "QA work item" --color D93F0B`
-  - `gh label create devops --description "DevOps work item" --color 1D76DB`
-- Create the milestone if it doesn't exist: `gh api repos/{owner}/{repo}/milestones -f title="[Milestone name]"`
 - Not every milestone needs QA or DevOps tasks. Only create them when the milestone genuinely requires that work.
 
-## After creating all issues
+## After creating all issue files
 
-1. List the created issues with `gh issue list --milestone "[Milestone name]"` and present them to the user for review.
-2. Update `docs/roadmap.md` to note that the milestone has been decomposed. Log the issue numbers in the roadmap's change log.
-3. Update `docs/project-brief.md` "Current Status" with the first task's issue number as "Next task."
+1. List the created issue files and present them to the user for review.
+2. Update `issues/issues-list.md` with the new issues — add each one with its filename, title, expert, type, milestone, and status.
+3. Update `docs/roadmap.md` to note that the milestone has been decomposed. Log the issue filenames in the roadmap's change log.
+4. Update `docs/project-brief.md` "Current Status" with the first task's issue filename as "Next task."

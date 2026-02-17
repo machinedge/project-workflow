@@ -14,12 +14,12 @@ Look at existing files in `docs/handoff-notes/`. The new file should be the next
 
 ## Step 2: Identify the Task
 
-Determine which GitHub issue was worked on this session:
+Determine which issue was worked on this session:
 - Check conversation context
 - Read `docs/analysis-brief.md`
 - If unclear: ask the user
 
-Read the issue to get the hypothesis and acceptance criteria: `gh issue view [number]`
+Read the issue file from `issues/` (check `in-progress/`, `planned/`, or `backlog/`) to get the hypothesis and acceptance criteria.
 
 ---
 
@@ -31,7 +31,7 @@ Save to `docs/handoff-notes/session-NN.md`:
 # Handoff Note: [Hypothesis or question — from issue title]
 
 **Session date:** [today's date]
-**GitHub issue:** #[number] — [title]
+**Issue:** [filename] — [title]
 
 ## What Was Analyzed
 [2-3 sentences. What analysis was performed? What question was being answered?]
@@ -85,12 +85,11 @@ Save to `docs/handoff-notes/session-NN.md`:
 
 ---
 
-## Step 4: Update the GitHub Issue
+## Step 4: Update the Issue File
 
-Comment on the issue with a session summary:
+Add a session summary section to the issue file:
 
-```bash
-gh issue comment [number] --body "$(cat <<'EOF'
+```markdown
 ## Session [NN] Summary
 
 **Hypothesis:** [What was tested]
@@ -99,16 +98,11 @@ gh issue comment [number] --body "$(cat <<'EOF'
 **Confidence:** [High / Medium / Low]
 **Handoff note:** `docs/handoff-notes/session-NN.md`
 **All acceptance criteria met:** [Yes / No — if no, what remains]
-EOF
-)"
 ```
 
-If all acceptance criteria met: close the issue:
-```bash
-gh issue close [number] --reason completed
-```
+If all acceptance criteria met: move the issue file from its current folder to `issues/done/` and update `issues/issues-list.md` to reflect the new status.
 
-If NOT all met: do NOT close. Note what remains and leave open for the next session.
+If NOT all met: leave the issue file in `issues/in-progress/` and note what remains in the session summary.
 
 ---
 

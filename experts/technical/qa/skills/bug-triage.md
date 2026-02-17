@@ -8,10 +8,7 @@ Read these files:
 1. `docs/project-brief.md` — understand the project goals, constraints, and current status
 2. `docs/roadmap.md` — understand the current milestone and what's planned
 
-Pull all open issues from GitHub:
-```bash
-gh issue list --state open --json number,title,labels,milestone,createdAt,body --limit 100
-```
+Read `issues/issues-list.md` for an overview, then scan `issues/backlog/`, `issues/planned/`, and `issues/in-progress/` to read all open issue files.
 
 ## Step 2: Categorize Issues
 
@@ -51,50 +48,37 @@ Present findings:
 ### Blockers (fix immediately)
 | Issue | Title | Impact | Effort |
 |-------|-------|--------|--------|
-| #N | [title] | [what it blocks] | [Small/Med/Large] |
+| [filename] | [title] | [what it blocks] | [Small/Med/Large] |
 
 ### High Priority (fix this milestone)
 | Issue | Title | Impact | Effort |
 |-------|-------|--------|--------|
-| #N | [title] | [what's affected] | [Small/Med/Large] |
+| [filename] | [title] | [what's affected] | [Small/Med/Large] |
 
 ### Medium Priority (schedule soon)
 | Issue | Title | Impact | Effort |
 |-------|-------|--------|--------|
-| #N | [title] | [what's affected] | [Small/Med/Large] |
+| [filename] | [title] | [what's affected] | [Small/Med/Large] |
 
 ### Low Priority (backlog)
 | Issue | Title | Impact | Effort |
 |-------|-------|--------|--------|
-| #N | [title] | [what's affected] | [Small/Med/Large] |
+| [filename] | [title] | [what's affected] | [Small/Med/Large] |
 
 ### Recommended Order of Work
-1. [Issue #N — why first]
-2. [Issue #N — why next]
-3. [Issue #N — ...]
+1. [[filename] — why first]
+2. [[filename] — why next]
+3. [[filename] — ...]
 
 ### Assessment
 [1-3 sentences. Overall bug health — is the backlog growing, shrinking, or stable? Are bugs being caught early or late? Any systemic patterns?]
 ```
 
-## Step 4: Update Labels
+## Step 4: Update Issue Files
 
-Apply severity labels to issues that don't have them:
+For each issue, update the **Severity** field in the issue file's metadata to reflect the triage assessment (blocker, high, medium, or low). If the issue file doesn't have a Severity field, add one.
 
-```bash
-gh issue edit [number] --add-label "blocker"
-gh issue edit [number] --add-label "high"
-gh issue edit [number] --add-label "medium"
-gh issue edit [number] --add-label "low"
-```
-
-Create labels if they don't exist:
-```bash
-gh label create blocker --description "Blocks core functionality" --color B60205
-gh label create high --description "High priority bug" --color D93F0B
-gh label create medium --description "Medium priority bug" --color FBCA04
-gh label create low --description "Low priority bug" --color 0E8A16
-```
+Update `issues/issues-list.md` to reflect the current severity assignments.
 
 ## Step 5: Recommend Next Actions
 

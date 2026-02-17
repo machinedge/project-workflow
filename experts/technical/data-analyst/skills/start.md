@@ -12,10 +12,10 @@ Read these files in order:
 2. **`docs/domain-context.md`** — Application domain constraints, methods, pitfalls, vocabulary
 3. **`docs/data-profile.md`** — What's already known about the data
 4. **`docs/lessons-log.md`** — Gotchas and domain knowledge from prior sessions
-5. **The GitHub issue:**
-   - If user specified `#42` or `42`: `gh issue view [number]`
-   - Otherwise: check the brief's "Next task" field
-   - If still unclear: `gh issue list --label analysis --state open` and ask the user which one
+5. **The task issue:**
+   - If user specified an issue (e.g., "data-analyst-feature-001" or a description): find and read it from `issues/`
+   - Otherwise: check the brief's "Next task" field for the issue filename
+   - If still unclear: scan `issues/planned/` and `issues/in-progress/` for data-analyst tasks and ask the user which one
 6. **Most recent handoff note** in `docs/handoff-notes/` (if any exist)
 
 **Confirm understanding with the user:**
@@ -23,7 +23,7 @@ Read these files in order:
 > **Project:** [1 sentence — what we're analyzing and why]
 > **Data state:** [What's known so far — profiled? cleaned? patterns found?]
 > **Last session:** [1 sentence from handoff, or "First session"]
-> **Today's task:** #[number] — [restate the hypothesis or question in your own words]
+> **Today's task:** [issue filename] — [restate the hypothesis or question in your own words]
 
 Flag anything unclear or contradictory. Wait for user confirmation before proceeding.
 
@@ -143,7 +143,7 @@ Before reporting findings, verify they're sound. This is the analysis equivalent
 - Are data file paths correct and data accessible?
 
 **Acceptance criteria:**
-Walk through each acceptance criterion from the GitHub issue. Can each be demonstrated?
+Walk through each acceptance criterion from the issue file. Can each be demonstrated?
 
 If validation fails: go back to Phase 5 and fix. If the data genuinely doesn't support the hypothesis, that's a valid finding — document it clearly.
 

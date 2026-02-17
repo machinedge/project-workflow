@@ -6,9 +6,9 @@ Look at existing files in `docs/handoff-notes/swe/`. The new file should be the 
 
 ## Step 2: Identify the task
 
-Determine which GitHub issue was worked on this session. Check the conversation context or read `docs/project-brief.md` to see what task was in progress. If unclear, ask the user.
+Determine which issue was worked on this session. Check the conversation context or read `docs/project-brief.md` to see what task was in progress. If unclear, ask the user.
 
-Read the issue to get the acceptance criteria: `gh issue view [number]`
+Read the issue file from `issues/` (check `in-progress/`, `planned/`, or `backlog/`) to get the acceptance criteria.
 
 ## Step 3: Write the handoff note
 
@@ -18,7 +18,7 @@ Save to `docs/handoff-notes/swe/session-NN.md`:
 # Handoff Note: [Task Name]
 
 **Session date:** [today's date]
-**GitHub issue:** #[number] — [title]
+**Issue:** [filename] — [title]
 
 ## What Was Accomplished
 [2-3 sentences. What exists now that didn't before?]
@@ -48,27 +48,21 @@ Save to `docs/handoff-notes/swe/session-NN.md`:
 - [ ] [Anything unresolved]
 ```
 
-## Step 4: Update the GitHub issue
+## Step 4: Update the issue file
 
-Comment on the issue with a session summary, then close it if all acceptance criteria are met:
+Add a session summary section to the issue file:
 
-```bash
-gh issue comment [number] --body "$(cat <<'EOF'
+```markdown
 ## Session [NN] Summary
 
 **What was done:** [1-2 sentences]
 **Handoff note:** `docs/handoff-notes/swe/session-NN.md`
 **All acceptance criteria met:** [Yes / No — if no, explain what remains]
-EOF
-)"
 ```
 
-If all acceptance criteria are met, close the issue:
-```bash
-gh issue close [number] --reason completed
-```
+If all acceptance criteria are met, move the issue file from its current folder to `issues/done/` and update `issues/issues-list.md` to reflect the new status.
 
-If acceptance criteria are NOT all met, do NOT close the issue. Instead, note in the comment what remains and leave it open for the next session.
+If acceptance criteria are NOT all met, leave the issue file in `issues/in-progress/` and note what remains in the session summary.
 
 ## Step 5: Update the project brief
 

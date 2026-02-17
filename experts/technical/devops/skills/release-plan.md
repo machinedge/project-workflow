@@ -14,10 +14,7 @@ Read these files:
 
 If `docs/env-context.md` doesn't exist, tell the user: "No environment context found. Run `/env-discovery` first so I understand your deployment targets and failure/recovery characteristics."
 
-Pull the milestone's issues:
-```bash
-gh issue list --milestone "[Milestone name]" --state all --json number,title,state,labels
-```
+Scan all `issues/` subdirectories for files matching the milestone (check the **Milestone** field in each file). Read `issues/issues-list.md` for a quick overview.
 
 If the user didn't specify a milestone, determine the current or next milestone from the roadmap. Confirm with the user.
 
@@ -26,9 +23,9 @@ If the user didn't specify a milestone, determine the current or next milestone 
 Based on the project context, define the gates that must pass before release:
 
 **Code gates:**
-- All must-fix issues resolved (check: `gh issue list --label must-fix --state open`)
-- All acceptance criteria verified (check SWE handoff notes and issue states)
-- No open blocker issues (check: `gh issue list --label blocker --state open`)
+- All must-fix issues resolved (check: scan `issues/backlog/`, `issues/planned/`, `issues/in-progress/` for files with **Severity: must-fix**)
+- All acceptance criteria verified (check SWE handoff notes and issue files in `issues/done/`)
+- No open blocker issues (check: scan open issue folders for files with **Severity: blocker**)
 
 **Test gates:**
 - If `docs/test-plan.md` exists: all P1 test matrix rows passing

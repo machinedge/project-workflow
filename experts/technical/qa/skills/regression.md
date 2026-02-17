@@ -14,10 +14,7 @@ Read these files:
 5. `docs/test-plan.md` (if it exists) — the defined test requirements
 6. `docs/lessons-log.md` — known gotchas
 
-Pull the milestone's issues from GitHub:
-```bash
-gh issue list --milestone "[Milestone name]" --state all --json number,title,state,labels,body
-```
+Scan all `issues/` subdirectories for files matching the milestone (check the **Milestone** field in each file). Read each issue to get its acceptance criteria and scope.
 
 If the user didn't specify a milestone, determine which one was most recently completed based on the roadmap. Confirm with the user before proceeding.
 
@@ -55,7 +52,7 @@ Present findings:
 ## Regression Report: [Milestone Name]
 
 **Date:** [today]
-**Issues in scope:** #N, #N, #N, ...
+**Issues in scope:** [issue filenames]
 **Total acceptance criteria:** [N]
 
 ### Summary
@@ -66,12 +63,12 @@ Present findings:
 ### Passing Criteria
 | Issue | Criterion | Evidence |
 |-------|-----------|----------|
-| #N | [criterion] | [test name / manual check] |
+| [filename] | [criterion] | [test name / manual check] |
 
 ### Failing Criteria
 | Issue | Criterion | Details | Severity |
 |-------|-----------|---------|----------|
-| #N | [criterion] | [what's broken and why] | [blocker / high / medium] |
+| [filename] | [criterion] | [what's broken and why] | [blocker / high / medium] |
 
 ### Cross-Task Interference
 [Any cases where a later task broke an earlier task's work.]
@@ -87,22 +84,29 @@ Present findings:
 [Anything found that wasn't in the original acceptance criteria.]
 ```
 
-## Step 5: Create GitHub Issues
+## Step 5: Create Issue Files
 
-For each regression failure, create a GitHub issue:
+For each regression failure, create an issue file in `issues/backlog/`. Check existing issue files to determine the next available issue number.
 
-```bash
-gh issue create \
-  --title "Regression: [Short descriptive title]" \
-  --label "bug" \
-  --milestone "[Milestone name]" \
-  --body "$(cat <<'EOF'
+Use the naming convention: `issues/backlog/qa-bug-[number].md`
+
+Template:
+
+```markdown
+# Regression: [Short descriptive title]
+
+**Type:** bug
+**Expert:** swe
+**Milestone:** [Milestone name]
+**Status:** backlog
+**Severity:** [blocker / high / medium]
+
 ## Description
 
 [What's broken, when it was introduced, and what the expected behavior should be.]
 
-**Regression from:** #[original task that built this]
-**Broken by:** #[task that likely caused the regression, if identifiable]
+**Regression from:** [original task issue filename]
+**Broken by:** [task that likely caused the regression, if identifiable]
 **Found by:** `/regression` check of [Milestone name]
 
 ## Acceptance Criteria
@@ -111,16 +115,10 @@ gh issue create \
 
 ## Technical Notes
 
-**Severity:** [blocker / high / medium]
 **File(s):** [affected file paths]
-EOF
-)"
 ```
 
-Create the `bug` label if it doesn't exist:
-```bash
-gh label create bug --description "Bug or regression" --color D73A4A
-```
+Update `issues/issues-list.md` with the new issues.
 
 ## Step 6: Update Documents
 

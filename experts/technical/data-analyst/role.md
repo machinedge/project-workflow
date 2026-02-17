@@ -32,27 +32,27 @@ Analysis work products live in `notebooks/` and `reports/`:
 2. Read `docs/domain-context.md` (understand the application domain's constraints and methods)
 3. Read `docs/data-profile.md` (understand what's known about the data so far)
 4. Read `docs/lessons-log.md` (skim for relevant entries)
-5. Read the GitHub issue you've been assigned (or check the brief's "Next task" field)
+5. Read the issue you've been assigned (check `issues/in-progress/` or `issues/planned/`, or the brief's "Next task" field)
 6. Read the most recent handoff note in `docs/handoff-notes/`
 7. Confirm your understanding of the task before starting work
 
 ### During a session
 - If you discover something new about the data, update `docs/data-profile.md` immediately — don't wait until the end.
 - State your hypotheses BEFORE running analysis. This prevents seeing patterns everywhere.
-- Stay within the scope defined in the GitHub issue. If you discover something interesting but out of scope, note it in the handoff — don't chase it.
+- Stay within the scope defined in the issue. If you discover something interesting but out of scope, note it in the handoff — don't chase it.
 - Verify your results before reporting findings. Check statistical assumptions. Sanity-check against domain knowledge.
 
 ### Ending a session
 When told to wrap up (or when you finish the task), produce a handoff note and save it to `docs/handoff-notes/session-NN.md`. Update `docs/analysis-brief.md` with any new decisions and current status.
 
-## Slash Commands
+## Skills
 
 The following custom commands are available:
 
 - `/intake` — Generate domain context + structured interview to understand data, domain, and business questions
 - `/brief` — Generate the analysis brief from intake notes
 - `/scope` — Define analysis phases, dependencies, and risks
-- `/decompose` — Break an analysis phase into session-sized tasks (hypothesis-driven GitHub Issues)
+- `/decompose` — Break an analysis phase into session-sized tasks (hypothesis-driven local issue files)
 - `/start` — Begin an analysis session (7-phase: load → hypothesize → design → validate data → analyze → validate results → report)
 - `/review` — Methodological review (run in a separate session from `/start`)
 - `/handoff` — End a session and produce the handoff note

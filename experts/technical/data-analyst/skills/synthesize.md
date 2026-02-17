@@ -18,10 +18,7 @@ Read ALL of these:
 6. `docs/lessons-log.md` — gotchas and domain knowledge
 7. All notebooks in `notebooks/` — review the actual analysis work
 
-Pull the phase's issues from GitHub:
-```bash
-gh issue list --milestone "[Phase name]" --state all --json number,title,state,labels
-```
+Scan all `issues/` subdirectories for files matching the phase (check the **Milestone** field in each file). Read `issues/issues-list.md` for a quick overview.
 
 If the user didn't specify a phase: determine which one was most recently completed based on handoff notes and scope document.
 
@@ -37,8 +34,8 @@ Compile every finding from every session in the phase:
 
 | Session | Issue | Hypothesis | Outcome | Key Finding | Confidence |
 |---------|-------|-----------|---------|-------------|------------|
-| 01 | #12 | Weekly seasonality exists | Confirmed | 23% amplitude, Monday trough | High |
-| 02 | #13 | Upward trend is real | Modified | Trend exists but is stepwise, not linear | Medium |
+| 01 | data-analyst-feature-001 | Weekly seasonality exists | Confirmed | 23% amplitude, Monday trough | High |
+| 02 | data-analyst-feature-002 | Upward trend is real | Modified | Trend exists but is stepwise, not linear | Medium |
 
 ### 2b. Answer the Analysis Questions
 
@@ -71,7 +68,7 @@ Save to `reports/[phase-name]-synthesis.md` (or `reports/final-synthesis.md` for
 **Analysis brief:** `docs/analysis-brief.md`
 **Phase:** [Phase name and number]
 **Sessions covered:** [session range]
-**Issues covered:** [#12, #13, #14, ...]
+**Issues covered:** [data-analyst-feature-001, data-analyst-feature-002, ...]
 
 ## Executive Summary
 [3-5 sentences maximum. What was the question, what did we find, what should happen next. Written for the decision maker, not the analyst.]
@@ -139,7 +136,7 @@ Save to `reports/[phase-name]-synthesis.md` (or `reports/final-synthesis.md` for
 ## Step 4: Assess Phase Completion
 
 ### Progress Check
-- Are all issues in this phase closed?
+- Are all issues for this phase in `issues/done/`?
 - Are there unresolved `must-fix` or `should-fix` issues from `/review`?
 - Do the success criteria from the analysis brief have answers?
 
