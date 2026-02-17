@@ -1,0 +1,29 @@
+  {{EXPERT_NAME}}:
+    image: ${OPENCLAW_SANDBOX_IMAGE:-openclaw-sandbox:bookworm-slim}
+    container_name: ${COMPOSE_PROJECT_NAME}-{{EXPERT_NAME}}
+    entrypoint: ["/bin/bash", "/scripts/expert-entrypoint.sh"]
+    command: ["sleep", "infinity"]
+    environment:
+      - EXPERT_NAME={{EXPERT_NAME}}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - LLM_MODEL=${LLM_MODEL:-gpt-4o}
+      - LLM_API_BASE=${LLM_API_BASE:-https://api.openai.com/v1}
+      - GIT_REPO_URL=${GIT_REPO_URL}
+      - GIT_TOKEN=${GIT_TOKEN}
+      - GIT_USER_NAME=${GIT_USER_NAME:-machinedge-team}
+      - GIT_USER_EMAIL=${GIT_USER_EMAIL:-team@machinedge.local}
+      - CONDUIT_URL=http://conduit:6167
+      - MATRIX_SERVER_NAME=${MATRIX_SERVER_NAME}
+    volumes:
+      - {{EXPERT_NAME}}-workspace:/workspace
+      - ./configs/{{EXPERT_NAME}}:/agent:ro
+      - ./scripts:/scripts:ro
+    networks:
+      - octeam
+    depends_on:
+      conduit:
+        condition: service_healthy
+    restart: unless-stopped
+    env_file:
+      - .env
+      - ./configs/{{EXPERT_NAME}}/env

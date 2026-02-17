@@ -42,6 +42,12 @@ if [ -z "$REPO_ROOT" ]; then
     exit 1
 fi
 
+TEMPLATE_DIR="$SCRIPT_DIR/templates/team"
+if [ ! -d "$TEMPLATE_DIR" ]; then
+    echo "Error: Template directory not found at $TEMPLATE_DIR"
+    exit 1
+fi
+
 # ─────────────────────────────────────────────
 # Parse arguments
 # ─────────────────────────────────────────────
@@ -131,6 +137,42 @@ if ! docker compose version &>/dev/null; then
 fi
 
 # ─────────────────────────────────────────────
+# Template helpers
+# ─────────────────────────────────────────────
+
+# Replace {{PROJECT_NAME}} in a template file and write to destination
+render_simple_template() {
+    local template="$1"
+    local output="$2"
+    sed "s/{{PROJECT_NAME}}/$PROJECT_NAME/g" "$template" > "$output"
+}
+
+# Replace {{EXPERT_NAME}} in a template file and write to destination
+render_expert_template() {
+    local template="$1"
+    local output="$2"
+    local expert_name="$3"
+    sed "s/{{EXPERT_NAME}}/$expert_name/g" "$template" > "$output"
+}
+
+# Render docker-compose.yml template with dynamic expert blocks
+render_compose_template() {
+    local template="$1"
+    local output="$2"
+    while IFS= read -r line || [[ -n "$line" ]]; do
+        if [[ "$line" == *'{{EXPERT_SERVICES}}'* ]]; then
+            printf '%s\n' "$EXPERT_SERVICES"
+        elif [[ "$line" == *'{{EXPERT_VOLUMES}}'* ]]; then
+            printf '%s\n' "$EXPERT_VOLUMES"
+        elif [[ "$line" == *'{{EXPERT_LIST_CSV}}'* ]]; then
+            printf '%s\n' "${line//\{\{EXPERT_LIST_CSV\}\}/$EXPERT_LIST_CSV}"
+        else
+            printf '%s\n' "$line"
+        fi
+    done < "$template" > "$output"
+}
+
+# ─────────────────────────────────────────────
 # Status banner
 # ─────────────────────────────────────────────
 
@@ -155,150 +197,23 @@ for expert in "${EXPERTS[@]}"; do
 done
 
 # ─────────────────────────────────────────────
-# Generate .gitignore
+# Generate static and templated config files
 # ─────────────────────────────────────────────
 
-cat > "$OCTEAM_DIR/.gitignore" << 'GITIGNORE_EOF'
-# Runtime data (volumes, databases, logs)
-data/
-
-# Sensitive configuration
-.env
-
-# Docker runtime
-*.log
-GITIGNORE_EOF
+cp "$TEMPLATE_DIR/gitignore" "$OCTEAM_DIR/.gitignore"
 echo "  Generated .gitignore"
 
-# ─────────────────────────────────────────────
-# Generate .env template
-# Only created if not already present (preserves user edits)
-# ─────────────────────────────────────────────
-
 if [ ! -f "$OCTEAM_DIR/.env" ]; then
-    cat > "$OCTEAM_DIR/.env" << ENV_EOF
-# ─────────────────────────────────────────────
-# MachinEdge Expert Teams — Environment
-# ─────────────────────────────────────────────
-# Edit this file with your project-specific values.
-# This file is gitignored and will not be overwritten by re-running install-team.sh.
-
-# ── LLM Configuration ──
-
-# Required: API key for the LLM provider
-OPENAI_API_KEY=sk-your-key-here
-
-# Model to use (default: gpt-4o)
-LLM_MODEL=gpt-4o
-
-# API base URL (change for local/alternative providers)
-LLM_API_BASE=https://api.openai.com/v1
-
-# ── Git Configuration ──
-
-# Repository URL for the project (experts clone this into their workspaces)
-GIT_REPO_URL=
-
-# Auth token for git operations (shared across all experts)
-GIT_TOKEN=
-
-# Git identity for expert commits
-GIT_USER_NAME=machinedge-team
-GIT_USER_EMAIL=team@machinedge.local
-
-# ── Docker Configuration ──
-
-# Project name (used to namespace containers, networks, volumes)
-COMPOSE_PROJECT_NAME=${PROJECT_NAME}
-
-# ── Matrix Configuration ──
-
-# Matrix homeserver domain (changing this after first start requires wiping data/)
-MATRIX_SERVER_NAME=${PROJECT_NAME}.local
-
-# Admin password for the Matrix homeserver
-MATRIX_ADMIN_PASSWORD=admin-changeme
-
-# ── Port Configuration ──
-
-# Conduit Matrix homeserver (must match configs/element/config.json)
-CONDUIT_PORT=6167
-
-# Element Web browser UI
-ELEMENT_PORT=8009
-
-# OpenClaw gateway control UI
-OPENCLAW_PORT=18789
-
-# ── Image Configuration (override to use custom images) ──
-
-OPENCLAW_IMAGE=alpine/openclaw
-OPENCLAW_SANDBOX_IMAGE=openclaw-sandbox:bookworm-slim
-ENV_EOF
+    render_simple_template "$TEMPLATE_DIR/env.template" "$OCTEAM_DIR/.env"
     echo "  Created .env template (edit with your API keys and git URL)"
 else
     echo "  .env already exists, preserving"
 fi
 
-# ─────────────────────────────────────────────
-# Generate Conduit (Matrix homeserver) config
-# ─────────────────────────────────────────────
-
-cat > "$OCTEAM_DIR/configs/conduit/conduit.toml" << CONDUIT_EOF
-[global]
-server_name = "${PROJECT_NAME}.local"
-database_backend = "rocksdb"
-database_path = "/var/lib/matrix-conduit/"
-port = 6167
-address = "0.0.0.0"
-
-max_request_size = 20_000_000
-allow_registration = true
-registration_token = ""
-allow_federation = false
-allow_check_for_updates = false
-enable_lightning_bolt = false
-
-trusted_servers = []
-log = "warn"
-CONDUIT_EOF
+render_simple_template "$TEMPLATE_DIR/conduit.toml.template" "$OCTEAM_DIR/configs/conduit/conduit.toml"
 echo "  Generated configs/conduit/conduit.toml"
 
-# ─────────────────────────────────────────────
-# Generate Element Web config
-# Note: base_url uses localhost because this config is read by the
-# user's browser, not by a container. If you change CONDUIT_PORT
-# in .env, update the port here too and re-run install-team.sh.
-# ─────────────────────────────────────────────
-
-cat > "$OCTEAM_DIR/configs/element/config.json" << ELEMENT_EOF
-{
-    "default_server_config": {
-        "m.homeserver": {
-            "base_url": "http://localhost:6167",
-            "server_name": "${PROJECT_NAME}.local"
-        }
-    },
-    "brand": "MachinEdge Team: ${PROJECT_NAME}",
-    "integrations_ui_url": "",
-    "integrations_rest_url": "",
-    "integrations_widgets_urls": [],
-    "disable_custom_urls": true,
-    "disable_guests": true,
-    "disable_login_language_selector": true,
-    "disable_3pid_login": true,
-    "default_theme": "dark",
-    "room_directory": {
-        "servers": []
-    },
-    "features": {
-        "feature_video_rooms": false
-    },
-    "setting_defaults": {
-        "breadcrumbs": true
-    }
-}
-ELEMENT_EOF
+render_simple_template "$TEMPLATE_DIR/element-config.json.template" "$OCTEAM_DIR/configs/element/config.json"
 echo "  Generated configs/element/config.json"
 
 # ─────────────────────────────────────────────
@@ -356,14 +271,7 @@ for expert in "${EXPERTS[@]}"; do
 
     # Per-expert env overrides (create template if not exists)
     if [ ! -f "$OCTEAM_DIR/configs/$expert/env" ]; then
-        cat > "$OCTEAM_DIR/configs/$expert/env" << EXPERT_ENV_EOF
-# Per-expert environment overrides for: $expert
-# These override the project-level .env values for this expert only.
-# Uncomment and modify as needed.
-
-# LLM_MODEL=
-# OPENAI_API_KEY=
-EXPERT_ENV_EOF
+        render_expert_template "$TEMPLATE_DIR/expert-env.template" "$OCTEAM_DIR/configs/$expert/env" "$expert"
     fi
 done
 
@@ -402,252 +310,23 @@ if [ -d "$SHARED_DIR/skills" ]; then
 fi
 
 # ─────────────────────────────────────────────
-# Generate expert-entrypoint.sh
-# Runs inside each expert container at startup
+# Generate runtime scripts from templates
 # ─────────────────────────────────────────────
 
-cat > "$OCTEAM_DIR/scripts/expert-entrypoint.sh" << 'ENTRYPOINT_EOF'
-#!/bin/bash
-set -e
-
-# MachinEdge Expert Teams — Expert Entrypoint
-# Runs inside each expert's Docker container at startup.
-# 1. Clones the project repo (or pulls if already cloned)
-# 2. Creates the shared docs/issues structure
-# 3. Waits for the Matrix homeserver to be available
-# 4. Hands off to the container command
-
-EXPERT_NAME="${EXPERT_NAME:?EXPERT_NAME environment variable not set}"
-WORKSPACE="/workspace"
-
-echo "[$EXPERT_NAME] Starting expert container..."
-
-# ── Git clone or pull ──
-if [ -n "$GIT_REPO_URL" ]; then
-    if [ ! -d "$WORKSPACE/.git" ]; then
-        echo "[$EXPERT_NAME] Cloning repository..."
-        if [ -n "$GIT_TOKEN" ]; then
-            AUTH_URL=$(echo "$GIT_REPO_URL" | sed "s|https://|https://oauth2:${GIT_TOKEN}@|")
-            git clone "$AUTH_URL" "$WORKSPACE"
-        else
-            git clone "$GIT_REPO_URL" "$WORKSPACE"
-        fi
-    else
-        echo "[$EXPERT_NAME] Repository already cloned, pulling latest..."
-        cd "$WORKSPACE"
-        git pull --ff-only || echo "[$EXPERT_NAME] Warning: pull failed, continuing with existing state"
-    fi
-    cd "$WORKSPACE"
-    git config user.name "${GIT_USER_NAME:-machinedge-$EXPERT_NAME}"
-    git config user.email "${GIT_USER_EMAIL:-$EXPERT_NAME@machinedge.local}"
-else
-    echo "[$EXPERT_NAME] No GIT_REPO_URL set, using empty workspace"
-    mkdir -p "$WORKSPACE"
-fi
-
-# ── Ensure docs/issues structure exists ──
-mkdir -p "$WORKSPACE/docs/handoff-notes/$EXPERT_NAME"
-mkdir -p "$WORKSPACE/issues"
-
-# ── Log agent config location ──
-AGENT_DIR="/agent"
-if [ -d "$AGENT_DIR" ]; then
-    echo "[$EXPERT_NAME] Agent config mounted at $AGENT_DIR"
-    if [ -f "$AGENT_DIR/AGENTS.md" ]; then
-        echo "[$EXPERT_NAME] AGENTS.md loaded"
-    fi
-fi
-
-# ── Wait for Matrix homeserver ──
-echo "[$EXPERT_NAME] Waiting for Matrix homeserver..."
-CONDUIT_URL="${CONDUIT_URL:-http://conduit:6167}"
-for i in $(seq 1 30); do
-    if curl -sf "${CONDUIT_URL}/_matrix/client/versions" > /dev/null 2>&1; then
-        echo "[$EXPERT_NAME] Matrix homeserver is ready"
-        break
-    fi
-    if [ "$i" -eq 30 ]; then
-        echo "[$EXPERT_NAME] Warning: Matrix homeserver not reachable after 30s, continuing anyway"
-    fi
-    sleep 1
-done
-
-# ── Hand off to container command ──
-echo "[$EXPERT_NAME] Ready."
-exec "$@"
-ENTRYPOINT_EOF
+cp "$TEMPLATE_DIR/expert-entrypoint.sh" "$OCTEAM_DIR/scripts/expert-entrypoint.sh"
 chmod +x "$OCTEAM_DIR/scripts/expert-entrypoint.sh"
 echo ""
 echo "  Generated scripts/expert-entrypoint.sh"
 
-# ─────────────────────────────────────────────
-# Generate setup-matrix.sh
-# One-shot script to register Matrix users and create rooms
-# ─────────────────────────────────────────────
-
-cat > "$OCTEAM_DIR/scripts/setup-matrix.sh" << 'MATRIX_EOF'
-#!/bin/bash
-set -e
-
-# MachinEdge Expert Teams — Matrix Setup
-# Runs once after docker compose up to:
-# 1. Register Matrix users for each expert
-# 2. Create the project coordination room
-# 3. Invite all experts to the room
-
-CONDUIT_URL="${CONDUIT_URL:-http://conduit:6167}"
-ADMIN_USER="admin"
-ADMIN_PASSWORD="${MATRIX_ADMIN_PASSWORD:-admin-changeme}"
-SERVER_NAME="${MATRIX_SERVER_NAME:-project.local}"
-PROJECT_ROOM_ALIAS="project"
-
-echo "Matrix Setup: Configuring team communication..."
-echo "  Homeserver: $CONDUIT_URL"
-echo "  Server name: $SERVER_NAME"
-echo ""
-
-# ── Wait for Conduit to be ready ──
-echo "  Waiting for Matrix homeserver..."
-for i in $(seq 1 60); do
-    if curl -sf "${CONDUIT_URL}/_matrix/client/versions" > /dev/null 2>&1; then
-        echo "  Matrix homeserver is ready"
-        break
-    fi
-    if [ "$i" -eq 60 ]; then
-        echo "  Error: Matrix homeserver not reachable after 60s"
-        exit 1
-    fi
-    sleep 1
-done
-
-# ── Helper: register a Matrix user ──
-register_user() {
-    local username="$1"
-    local password="$2"
-
-    echo "  Registering user: $username"
-    HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" \
-        -X POST "${CONDUIT_URL}/_matrix/client/v3/register" \
-        -H "Content-Type: application/json" \
-        -d "{
-            \"username\": \"${username}\",
-            \"password\": \"${password}\",
-            \"auth\": {\"type\": \"m.login.dummy\"},
-            \"inhibit_login\": true
-        }" 2>/dev/null)
-
-    if [ "$HTTP_CODE" = "200" ]; then
-        echo "    Registered: @${username}:${SERVER_NAME}"
-    elif [ "$HTTP_CODE" = "400" ]; then
-        echo "    Already exists: @${username}:${SERVER_NAME}"
-    else
-        echo "    Warning: registration returned HTTP $HTTP_CODE"
-    fi
-}
-
-# ── Helper: login and get access token ──
-get_token() {
-    local username="$1"
-    local password="$2"
-
-    curl -s -X POST "${CONDUIT_URL}/_matrix/client/v3/login" \
-        -H "Content-Type: application/json" \
-        -d "{
-            \"type\": \"m.login.password\",
-            \"identifier\": {\"type\": \"m.id.user\", \"user\": \"${username}\"},
-            \"password\": \"${password}\"
-        }" | grep -o '"access_token":"[^"]*"' | cut -d'"' -f4
-}
-
-# ── Register admin user ──
-register_user "$ADMIN_USER" "$ADMIN_PASSWORD"
-
-# ── Register expert users ──
-IFS=',' read -ra EXPERTS <<< "${EXPERT_LIST:-project-manager,swe,qa,devops}"
-for expert in "${EXPERTS[@]}"; do
-    expert=$(echo "$expert" | tr -d ' ')
-    register_user "$expert" "${expert}-agent"
-done
-
-# ── Login as admin and create the project room ──
-echo ""
-echo "  Creating project room..."
-ADMIN_TOKEN=$(get_token "$ADMIN_USER" "$ADMIN_PASSWORD")
-if [ -z "$ADMIN_TOKEN" ]; then
-    echo "  Error: Failed to get admin token. Room creation skipped."
-    echo "  You may need to re-run: docker compose run --rm matrix-setup"
-    exit 1
-fi
-
-ROOM_RESPONSE=$(curl -s -X POST "${CONDUIT_URL}/_matrix/client/v3/createRoom" \
-    -H "Authorization: Bearer $ADMIN_TOKEN" \
-    -H "Content-Type: application/json" \
-    -d "{
-        \"room_alias_name\": \"${PROJECT_ROOM_ALIAS}\",
-        \"name\": \"Project: ${SERVER_NAME}\",
-        \"topic\": \"MachinEdge Expert Team coordination room\",
-        \"visibility\": \"private\",
-        \"preset\": \"private_chat\"
-    }")
-
-ROOM_ID=$(echo "$ROOM_RESPONSE" | grep -o '"room_id":"[^"]*"' | cut -d'"' -f4)
-
-if [ -n "$ROOM_ID" ]; then
-    echo "    Room created: $ROOM_ID"
-else
-    echo "    Room may already exist, looking it up..."
-    ROOM_ID=$(curl -s \
-        "${CONDUIT_URL}/_matrix/client/v3/directory/room/%23${PROJECT_ROOM_ALIAS}:${SERVER_NAME}" \
-        -H "Authorization: Bearer $ADMIN_TOKEN" | grep -o '"room_id":"[^"]*"' | cut -d'"' -f4)
-    if [ -n "$ROOM_ID" ]; then
-        echo "    Found room: $ROOM_ID"
-    else
-        echo "    Warning: Could not create or find room"
-    fi
-fi
-
-# ── Invite all experts to the room ──
-if [ -n "$ROOM_ID" ]; then
-    echo ""
-    echo "  Inviting experts to project room..."
-    for expert in "${EXPERTS[@]}"; do
-        expert=$(echo "$expert" | tr -d ' ')
-
-        # Invite
-        curl -s -o /dev/null -X POST \
-            "${CONDUIT_URL}/_matrix/client/v3/rooms/${ROOM_ID}/invite" \
-            -H "Authorization: Bearer $ADMIN_TOKEN" \
-            -H "Content-Type: application/json" \
-            -d "{\"user_id\": \"@${expert}:${SERVER_NAME}\"}"
-
-        # Auto-join as the expert
-        EXPERT_TOKEN=$(get_token "$expert" "${expert}-agent")
-        if [ -n "$EXPERT_TOKEN" ]; then
-            curl -s -o /dev/null -X POST \
-                "${CONDUIT_URL}/_matrix/client/v3/join/${ROOM_ID}" \
-                -H "Authorization: Bearer $EXPERT_TOKEN"
-            echo "    Invited and joined: @${expert}:${SERVER_NAME}"
-        else
-            echo "    Warning: Could not login as $expert to auto-join"
-        fi
-    done
-fi
-
-echo ""
-echo "Matrix setup complete!"
-echo "  Project room: #${PROJECT_ROOM_ALIAS}:${SERVER_NAME}"
-echo "  Connect with Element at: http://localhost:${ELEMENT_PORT:-8009}"
-echo ""
-echo "  Login as 'admin' with your MATRIX_ADMIN_PASSWORD to interact with the team."
-MATRIX_EOF
+cp "$TEMPLATE_DIR/setup-matrix.sh" "$OCTEAM_DIR/scripts/setup-matrix.sh"
 chmod +x "$OCTEAM_DIR/scripts/setup-matrix.sh"
 echo "  Generated scripts/setup-matrix.sh"
 
 # ─────────────────────────────────────────────
-# Generate docker-compose.yml
+# Generate docker-compose.yml from template
 # ─────────────────────────────────────────────
 
-# Build expert service blocks dynamically
+# Build expert service blocks from per-expert template
 EXPERT_SERVICES=""
 EXPERT_VOLUMES=""
 EXPERT_LIST_CSV=""
@@ -659,159 +338,23 @@ for expert in "${EXPERTS[@]}"; do
         EXPERT_LIST_CSV="$expert"
     fi
 
-    EXPERT_SERVICES="$EXPERT_SERVICES
-  ${expert}:
-    image: \${OPENCLAW_SANDBOX_IMAGE:-openclaw-sandbox:bookworm-slim}
-    container_name: \${COMPOSE_PROJECT_NAME}-${expert}
-    entrypoint: [\"/bin/bash\", \"/scripts/expert-entrypoint.sh\"]
-    command: [\"sleep\", \"infinity\"]
-    environment:
-      - EXPERT_NAME=${expert}
-      - OPENAI_API_KEY=\${OPENAI_API_KEY}
-      - LLM_MODEL=\${LLM_MODEL:-gpt-4o}
-      - LLM_API_BASE=\${LLM_API_BASE:-https://api.openai.com/v1}
-      - GIT_REPO_URL=\${GIT_REPO_URL}
-      - GIT_TOKEN=\${GIT_TOKEN}
-      - GIT_USER_NAME=\${GIT_USER_NAME:-machinedge-team}
-      - GIT_USER_EMAIL=\${GIT_USER_EMAIL:-team@machinedge.local}
-      - CONDUIT_URL=http://conduit:6167
-      - MATRIX_SERVER_NAME=\${MATRIX_SERVER_NAME}
-    volumes:
-      - ${expert}-workspace:/workspace
-      - ./configs/${expert}:/agent:ro
-      - ./scripts:/scripts:ro
-    networks:
-      - octeam
-    depends_on:
-      conduit:
-        condition: service_healthy
-    restart: unless-stopped
-    env_file:
-      - .env
-      - ./configs/${expert}/env"
+    SERVICE=$(sed "s/{{EXPERT_NAME}}/$expert/g" "$TEMPLATE_DIR/expert-service.yml.template")
+    if [ -z "$EXPERT_SERVICES" ]; then
+        EXPERT_SERVICES="$SERVICE"
+    else
+        EXPERT_SERVICES="$EXPERT_SERVICES
+$SERVICE"
+    fi
 
-    EXPERT_VOLUMES="$EXPERT_VOLUMES
+    if [ -z "$EXPERT_VOLUMES" ]; then
+        EXPERT_VOLUMES="  ${expert}-workspace:"
+    else
+        EXPERT_VOLUMES="$EXPERT_VOLUMES
   ${expert}-workspace:"
+    fi
 done
 
-cat > "$OCTEAM_DIR/docker-compose.yml" << COMPOSE_EOF
-# MachinEdge Expert Teams — Docker Compose
-# Generated by install-team.sh — re-run to regenerate.
-#
-# Usage:
-#   docker compose up -d          # Start the team
-#   docker compose logs -f        # Watch all logs
-#   docker compose down           # Stop the team
-#   docker compose down -v        # Stop and remove all data
-
-services:
-
-  # ─────────────────────────────────────────────
-  # Matrix Homeserver (Conduit)
-  # Lightweight Rust-based homeserver for inter-expert communication
-  # ─────────────────────────────────────────────
-  conduit:
-    image: matrixconduit/matrix-conduit:latest
-    container_name: \${COMPOSE_PROJECT_NAME}-conduit
-    volumes:
-      - conduit-data:/var/lib/matrix-conduit
-      - ./configs/conduit/conduit.toml:/etc/conduit/conduit.toml:ro
-    environment:
-      - CONDUIT_CONFIG=/etc/conduit/conduit.toml
-    ports:
-      - "\${CONDUIT_PORT:-6167}:6167"
-    networks:
-      - octeam
-    healthcheck:
-      test: ["CMD-SHELL", "curl -sf http://localhost:6167/_matrix/client/versions || exit 1"]
-      interval: 5s
-      timeout: 3s
-      retries: 10
-      start_period: 5s
-    restart: unless-stopped
-
-  # ─────────────────────────────────────────────
-  # Element Web (Human Interface)
-  # Browser-based Matrix client for interacting with the team
-  # Open http://localhost:\${ELEMENT_PORT} in your browser
-  # ─────────────────────────────────────────────
-  element-web:
-    image: vectorim/element-web:latest
-    container_name: \${COMPOSE_PROJECT_NAME}-element
-    volumes:
-      - ./configs/element/config.json:/app/config.json:ro
-    ports:
-      - "\${ELEMENT_PORT:-8009}:80"
-    networks:
-      - octeam
-    depends_on:
-      conduit:
-        condition: service_healthy
-    restart: unless-stopped
-
-  # ─────────────────────────────────────────────
-  # OpenClaw Gateway
-  # Agent routing, tool execution, and multi-agent coordination
-  # ─────────────────────────────────────────────
-  openclaw-gateway:
-    image: \${OPENCLAW_IMAGE:-alpine/openclaw}
-    container_name: \${COMPOSE_PROJECT_NAME}-gateway
-    ports:
-      - "\${OPENCLAW_PORT:-18789}:18789"
-    volumes:
-      - openclaw-config:/home/node/.openclaw
-      - /var/run/docker.sock:/var/run/docker.sock
-    environment:
-      - OPENAI_API_KEY=\${OPENAI_API_KEY}
-    networks:
-      - octeam
-    depends_on:
-      conduit:
-        condition: service_healthy
-    restart: unless-stopped
-
-  # ─────────────────────────────────────────────
-  # Matrix Setup (one-shot)
-  # Registers users and creates rooms, then exits
-  # Re-run: docker compose run --rm matrix-setup
-  # ─────────────────────────────────────────────
-  matrix-setup:
-    image: curlimages/curl:latest
-    container_name: \${COMPOSE_PROJECT_NAME}-matrix-setup
-    entrypoint: ["/bin/sh", "-c"]
-    command:
-      - |
-        apk add --no-cache bash > /dev/null 2>&1
-        bash /scripts/setup-matrix.sh
-    volumes:
-      - ./scripts:/scripts:ro
-    environment:
-      - CONDUIT_URL=http://conduit:6167
-      - MATRIX_SERVER_NAME=\${MATRIX_SERVER_NAME}
-      - MATRIX_ADMIN_PASSWORD=\${MATRIX_ADMIN_PASSWORD:-admin-changeme}
-      - EXPERT_LIST=${EXPERT_LIST_CSV}
-      - ELEMENT_PORT=\${ELEMENT_PORT:-8009}
-    networks:
-      - octeam
-    depends_on:
-      conduit:
-        condition: service_healthy
-    restart: "no"
-
-  # ─────────────────────────────────────────────
-  # Expert Containers
-  # One container per expert, each with its own workspace clone
-  # ─────────────────────────────────────────────
-$(echo -e "$EXPERT_SERVICES")
-
-networks:
-  octeam:
-    name: \${COMPOSE_PROJECT_NAME}-network
-
-volumes:
-  conduit-data:
-  openclaw-config:$(echo -e "$EXPERT_VOLUMES")
-COMPOSE_EOF
+render_compose_template "$TEMPLATE_DIR/docker-compose.yml.template" "$OCTEAM_DIR/docker-compose.yml"
 echo ""
 echo "  Generated docker-compose.yml"
 
@@ -823,14 +366,7 @@ mkdir -p "$TARGET/docs/handoff-notes"
 mkdir -p "$TARGET/issues"
 
 if [ ! -f "$TARGET/docs/lessons-log.md" ]; then
-cat > "$TARGET/docs/lessons-log.md" << 'DOC_EOF'
-# Lessons Log
-
-Record project-specific gotchas, patterns, and knowledge here. Future sessions will read this to avoid repeating mistakes.
-
-| Date | Lesson | Context |
-|------|--------|---------|
-DOC_EOF
+    cp "$TEMPLATE_DIR/lessons-log.md" "$TARGET/docs/lessons-log.md"
 fi
 
 for expert in "${EXPERTS[@]}"; do
