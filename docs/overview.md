@@ -20,10 +20,13 @@ The human interacts primarily with the PM. They describe a feature, report a bug
 
 ### Today (MVP)
 
+The MVP uses **OpenClaw** as the agent infrastructure runtime. OpenClaw provides the gateway, multi-agent routing, Matrix integration, and container isolation out of the box. MachinEdge's contribution is the opinionated expert definitions and the translation layer that converts them into OpenClaw workspaces, agent configs, and skill files — so users don't need to understand OpenClaw's internals.
+
 The immediate goal is a CLI-driven platform that:
 
-- Provisions a Matrix room and Docker containers for each expert on a project
-- Routes messages between experts through Matrix with the PM as team lead and orchestrator
+- Translates expert definitions into OpenClaw agent configurations
+- Provisions a Matrix room and OpenClaw agent workspaces for each expert on a project
+- Routes messages between experts through Matrix with the project manager as team lead and orchestrator
 - Deploys on a single Linux box or small set of VMs (on-prem first)
 - Uses the OpenAI API for the LLM layer
 - Generates static, debuggable configuration from the canonical expert definitions
@@ -39,30 +42,50 @@ The platform evolves toward:
 
 ## The Expert Definitions
 
-Each expert is defined in a platform-agnostic format:
+Each expert is defined in a platform-agnostic format, organized by domain:
 
 ```
 experts/
-  pm/
-    role.md           # Identity, operating rules, session protocols
-    skills/           # Structured capabilities (interview, vision, decompose, etc.)
-  swe/
-    role.md
-    skills/
-  qa/
-    role.md
-    skills/
-  devops/
-    role.md
-    skills/
-  eda/
-    role.md
-    skills/
+  technical/                    # Domain: technical/software development
+    project-manager/            # Orchestrator and team lead
+      role.md                   # Identity, operating rules, session protocols
+      skills/                   # interview, vision, roadmap, decompose, postmortem
+      tools/                    # PM-only tooling (e.g., new_repo.sh)
+    swe/                        # Software engineer
+      role.md
+      skills/                   # start, handoff
+      tools/
+    qa/                         # Quality assurance
+      role.md
+      skills/                   # test-plan, review, regression, bug-triage
+      tools/
+    devops/                     # DevOps/deployment
+      role.md
+      skills/                   # env-discovery, pipeline, deploy, release-plan
+      tools/
+    data-analyst/               # Data analysis (under development)
+      role.md
+      skills/                   # intake, brief, scope, decompose, start, review, synthesize
+      tools/
+    user-experience/            # UX design (under development)
+      role.md
+      skills/
+      tools/
+    shared/                     # Cross-expert protocols and shared skills
+      docs-protocol.md
+      skills/
+      tools/
 ```
 
-`role.md` (formerly `editor.md`) defines who the expert is: its persona, what documents it reads and produces, how it starts a session, what principles it follows. This is the single file an expert author maintains.
+The domain hierarchy (`technical/`, and eventually `business/`, `operations/`, etc.) allows expert definitions to be grouped by the type of team they belong to. A software project spins up a `technical` team; a future OT maintenance project might spin up an `operations` team with different experts.
 
-`skills/` (formerly `commands/`) contains the structured capabilities the expert can execute. Each skill follows a phased lifecycle with approval gates. Skills are what the PM triggers on other experts — they are not user-facing slash commands in the team context.
+Each expert directory contains three things:
+
+`role.md` defines who the expert is: its persona, what documents it reads and produces, how it starts a session, what principles it follows. This is the single file an expert author maintains.
+
+`skills/` contains the structured capabilities the expert can execute. Each skill follows a phased lifecycle with approval gates. Skills are what the PM triggers on other experts — they are not user-facing slash commands in the team context.
+
+`tools/` contains expert-specific scripts and tooling. Unlike skills (which are LLM-executed markdown instructions), tools are executable scripts that only that expert has access to. For example, only the PM has `new_repo.sh` — other experts cannot create repositories.
 
 This format is deliberately platform-agnostic. The same expert definition can be translated into:
 
@@ -146,7 +169,7 @@ container container container container container
 
 **The PM leads the team.** The human talks to the PM; the PM talks to everyone else. This mirrors how real project teams work and keeps the human focused on the "what" and "why" rather than orchestrating AI agents.
 
-**Documents are memory.** Experts have no memory between sessions. Every decision, lesson, and session outcome is written to `docs/`. If it's not written down, it didn't happen.
+**Documents and issues are memory.** Experts have no memory between sessions. Every decision, lesson, and session outcome is written to `docs/`. Task tracking lives in `issues/` within the repo itself — no external service required. The PM manages issue lifecycle. If it's not written down, it didn't happen.
 
 **Isolation by default.** Each expert runs in its own container with its own filesystem. Code sharing happens through git, communication through Matrix. No shared mutable state.
 
@@ -156,11 +179,20 @@ container container container container container
 
 ## Relationship to Existing Platforms
 
+### OpenClaw (MVP Runtime)
+
+OpenClaw is the agent infrastructure for the MVP. It provides the gateway, multi-agent routing via bindings, Matrix channel support, container isolation, and the `AGENTS.md` / `SKILL.md` / workspace conventions. MachinEdge doesn't fork OpenClaw — it sits on top of it, translating our expert definitions into OpenClaw's expected format and providing an opinionated setup experience that hides OpenClaw's complexity from the user.
+
+What we use from OpenClaw: the gateway architecture, multi-agent routing, Matrix integration, workspace isolation, skill registry conventions, and the agent execution runtime.
+
+What we abstract away: the configuration sprawl, manual agent/binding setup, the 50+ module codebase, and the learning curve. Our users interact with `machinedge init`, not `openclaw gateway` and manual YAML editing.
+
+### Other Platforms
+
 | Platform | What we take from it | What we leave behind |
 |----------|---------------------|---------------------|
-| **NanoClaw** | Philosophy of simplicity, container isolation model, small codebase ethos | WhatsApp coupling, single-agent-per-group limitation, skills-as-installation-modification |
-| **OpenClaw** | Multi-agent routing concepts, Matrix support, skill registry ideas | Complexity, config sprawl, 50+ module architecture, inaccessible extension model |
-| **Claude Code** | `.claude/commands/` pattern, CLAUDE.md conventions | Single-agent assumption, no inter-agent coordination |
-| **Cursor** | Rules file conventions, `.mdc` frontmatter pattern | Single-agent assumption |
+| **NanoClaw** | Philosophy of simplicity, container isolation model, small codebase ethos (design inspiration, not runtime dependency) | WhatsApp coupling, single-agent-per-group limitation, skills-as-installation-modification |
+| **Claude Code** | `.claude/commands/` pattern, CLAUDE.md conventions (standalone mode) | Single-agent assumption, no inter-agent coordination |
+| **Cursor** | Rules file conventions, `.mdc` frontmatter pattern (standalone mode) | Single-agent assumption |
 
-This platform is not a fork of either NanoClaw or OpenClaw. It borrows architectural ideas from both but is its own opinionated system — purpose-built for spinning up coordinated AI expert teams with minimal setup.
+The expert definitions in this repo are platform-agnostic by design. OpenClaw is the MVP runtime, but the translation layer can target other platforms (Claude Code, Cursor, NanoClaw) for standalone mode or future runtime changes.
