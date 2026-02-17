@@ -1,55 +1,76 @@
-# Workflow Anatomy
+# Expert Anatomy
 
-This document is a deep-dive reference for contributors who want to understand, modify, or create workflows. It explains every structural pattern, how the pieces connect, and why each convention exists.
+This document is a deep-dive reference for contributors who want to understand, modify, or create experts. It explains every structural pattern, how the pieces connect, and why each convention exists.
 
-If you just want to create a new workflow quickly, start with [CONTRIBUTING.md](../framework/CONTRIBUTING.md) and the scaffold script. Come back here when you need to understand *why* things work the way they do.
+If you just want to create a new expert quickly, start with [CONTRIBUTING.md](../framework/CONTRIBUTING.md) and the scaffold script. Come back here when you need to understand *why* things work the way they do.
 
-Note: Workflow definitions live inside the skill package at `skills/machinedge-workflows/workflows/`. This document uses relative references like `commands/*.md` and `editor.md` — these refer to files within a workflow directory (e.g., `skills/machinedge-workflows/workflows/swe/`).
+Note: Expert definitions live in `experts/` (the new canonical location, formerly `workflows/` and `skills/machinedge-workflows/workflows/`). This document uses relative references like `skills/*.md` and `role.md` — these refer to files within an expert directory (e.g., `experts/swe/`).
+
+## Terminology
+
+This project has evolved its terminology. Here's the mapping:
+
+| Old Term | New Term | Rationale |
+|----------|----------|-----------|
+| Workflow | Expert | An expert is a role with skills, not just a process |
+| `editor.md` | `role.md` | Platform-neutral; describes who the agent is, not which editor it runs in |
+| `commands/` | `skills/` | Aligns with NanoClaw and OpenClaw conventions; skills are capabilities, not just slash commands |
+| Slash commands | Skills | In team mode, the PM triggers skills on other experts — they aren't user-invoked commands |
+
+The old terms may still appear in some source files during the migration period.
 
 ## The Big Picture
 
-Every workflow in this repo follows the same arc:
+Every expert in this repo follows the same lifecycle arc:
 
 ```
 Interview → Brief → Plan → Decompose → Execute → Review → Handoff → Synthesize
 ```
 
-This maps to 8 slash commands. The commands are not independent — they form a chain where each command's output becomes the next command's input. Documents accumulate in `docs/` and serve as the AI's memory between sessions.
+This maps to 8 skills. The skills are not independent — they form a chain where each skill's output becomes the next skill's input. Documents accumulate in `docs/` and serve as the expert's memory between sessions.
 
-## The 8-Command Lifecycle
+### Standalone vs. Team Context
 
-Each workflow defines 8 commands that cover the full project lifecycle. They fall into four groups:
+In **standalone mode** (single expert in an editor), the human triggers skills directly as slash commands. The human is the orchestrator.
 
-### Planning Commands (run once or rarely)
+In **team mode** (coordinated experts on the MachinEdge platform), the PM expert triggers skills on other experts through Matrix messages. The human interacts with the PM; the PM orchestrates the team. Skills become internal team operations rather than user-facing commands.
 
-| Slot | SWE Example | EDA Example | Purpose |
-|------|-------------|-------------|---------|
-| Interview | `/brainstorm` | `/intake` | Pull context from the user's head via structured interview |
-| Brief | `/vision` | `/brief` | Synthesize interview notes into a concise source-of-truth document |
-| Plan | `/roadmap` | `/scope` | Define the work structure (milestones, phases, dependencies, risks) |
-| Decompose | `/decompose` | `/decompose` | Break a work unit into session-sized GitHub Issues |
+The skill definitions are identical in both modes. The difference is who triggers them and how.
 
-### Execution Commands (run per task)
+## The 8-Skill Lifecycle
+
+Each expert defines up to 8 skills that cover the full project lifecycle. They fall into four groups:
+
+### Planning Skills (run once or rarely)
+
+| Slot | PM | SWE | QA | DevOps | EDA | Purpose |
+|------|-----|-----|-----|--------|-----|---------|
+| Interview | `/interview` | — | — | — | `/intake` | Pull context from the human via structured interview |
+| Brief | `/vision` | — | — | — | `/brief` | Synthesize notes into source-of-truth document |
+| Plan | `/roadmap` | — | `/test-plan` | `/release-plan` | `/scope` | Define work structure |
+| Decompose | `/decompose` | — | — | — | `/decompose` | Break work into session-sized GitHub Issues |
+
+### Execution Skills (run per task)
 
 | Slot | Command | Purpose |
 |------|---------|---------|
-| Execute | `/start #N` | Load context, run a structured multi-phase work session against a GitHub Issue |
-| Handoff | `/handoff` | Close the session, produce a handoff note, update the brief |
+| Execute | `/start #N` | Load context, run structured multi-phase work session against a GitHub Issue |
+| Handoff | `/handoff` | Close the session, produce handoff note, update the brief |
 
-### Review Commands (run periodically)
+### Review Skills (run periodically)
 
-| Slot | SWE Example | EDA Example | Purpose |
-|------|-------------|-------------|---------|
-| Review | `/review` | `/review` | Fresh-eyes evaluation in a separate session |
-| Synthesis | `/postmortem` | `/synthesize` | Milestone/phase-level reflection or final deliverable |
+| Slot | PM | SWE | QA | EDA | Purpose |
+|------|-----|-----|-----|-----|---------|
+| Review | — | — | `/review` | `/review` | Fresh-eyes evaluation in a separate session |
+| Synthesis | `/postmortem` | — | `/regression` | `/synthesize` | Phase-level reflection or final deliverable |
 
-### Which Commands Are Required?
+### Not All Experts Need All 8 Slots
 
-All 8 slots should have a command. The *interview*, *brief*, *execute*, and *handoff* commands are essential — without them, the workflow can't function. The *plan*, *decompose*, *review*, and *synthesis* commands can be simpler for lightweight workflows, but should still exist.
+The PM is the primary planning expert — it owns interview, brief, plan, and decompose. SWE, QA, and DevOps focus on execution and their domain-specific planning (test plans, release plans, etc.). An expert only needs the skills relevant to its role.
 
-## How Commands Chain Together
+## How Skills Chain Together
 
-Commands form a dependency chain through the documents they produce and consume:
+Skills form a dependency chain through the documents they produce and consume:
 
 ```
 /interview ──produces──→ docs/interview-notes.md
@@ -64,22 +85,44 @@ Commands form a dependency chain through the documents they produce and consume:
       │
       └──produces──→ work products + updated docs
                           │
-/handoff ─────reads───────┘──produces──→ docs/handoff-notes/session-NN.md
+/handoff ─────reads───────┘──produces──→ docs/handoff-notes/<expert>/session-NN.md
                                               │
 /review ──────reads work products─────────────┘──produces──→ new GitHub Issues (findings)
                                                                    │
 /synthesis ───reads all handoff notes + work products──────────────┘──produces──→ final report
 ```
 
-The key insight: **every command reads documents produced by earlier commands.** There is no state carried in memory — documents are the only communication channel between sessions.
+The key insight: **every skill reads documents produced by earlier skills.** There is no state carried in memory — documents are the only communication channel between sessions.
 
-## Anatomy of a Command File
+### Cross-Expert Document Flow
 
-Every command file (`commands/*.md`) follows this structure:
+In team mode, the document chain spans experts:
+
+```
+PM /interview → PM /vision → PM /roadmap → PM /decompose
+                                                    │
+                              ┌──────────────────────┘
+                              │
+                    SWE /start #N → SWE /handoff
+                              │            │
+                              │      QA /review #N → QA /handoff
+                              │                           │
+                              │                 DevOps /deploy → DevOps /handoff
+                              │                                        │
+                              └────────────────────────────────────────┘
+                                                    │
+                                              PM /postmortem
+```
+
+All experts read from and write to the shared `docs/` directory. The PM reads everyone's handoff notes to maintain project awareness.
+
+## Anatomy of a Skill File
+
+Every skill file (`skills/*.md`) follows this structure:
 
 ### 1. Opening Context (1-2 lines)
 
-A sentence describing what the user is doing and why this command exists. If the command accepts arguments, reference `$ARGUMENTS`.
+A sentence describing what is happening and why this skill exists. If the skill accepts arguments, reference `$ARGUMENTS`.
 
 ```markdown
 The user is starting a new project and needs help pulling ideas out of their head.
@@ -89,9 +132,9 @@ If the user provided a description: $ARGUMENTS
 
 ### 2. Steps or Phases (the body)
 
-The main work, organized as numbered steps or phases. Each phase should be self-contained enough that the AI knows exactly what to do.
+The main work, organized as numbered steps or phases. Each phase should be self-contained enough that the expert knows exactly what to do.
 
-For simple commands (interview, brief), these are sequential steps:
+For simple skills (interview, brief), these are sequential steps:
 ```markdown
 Interview them about this project, one category at a time, in this order:
 
@@ -100,7 +143,7 @@ Interview them about this project, one category at a time, in this order:
 ...
 ```
 
-For complex commands (execute), these are formal phases with separators:
+For complex skills (execute), these are formal phases with separators:
 ```markdown
 ## Phase 1: Load Context
 Read these files automatically...
@@ -113,13 +156,13 @@ Before writing any code, present a short plan...
 
 ### 3. Approval Gates
 
-Explicit "wait for user confirmation" statements at decision points. These prevent the AI from charging ahead with a wrong approach.
+Explicit "wait for confirmation" statements at decision points. These prevent the expert from charging ahead with a wrong approach.
 
 ```markdown
 Present the architecture to the user. Wait for approval before writing implementation code.
 ```
 
-Approval gates typically appear after planning/design phases and before execution phases. The `/start` command should have at least two: one after planning and one after design.
+In standalone mode, the "user" is the human. In team mode, approval may come from the PM or from the human (depending on the gate's importance).
 
 ### 4. Output Specification
 
@@ -129,22 +172,9 @@ What gets produced, where it goes, and in what format. Always include explicit f
 Save the summary to `docs/brainstorm-notes.md`.
 ```
 
-For commands that produce structured documents, include a template:
-```markdown
-Save to `docs/handoff-notes/session-NN.md` using this structure:
-
-# Handoff Note: [Title]
-
-**Session date:** [Date]
-**GitHub issue:** #[Number]
-
-## What Was Accomplished
-...
-```
-
 ### 5. Rules Section
 
-Bullet-point constraints that the AI must enforce. These handle edge cases and prevent common failure modes.
+Bullet-point constraints that the expert must enforce. These handle edge cases and prevent common failure modes.
 
 ```markdown
 Rules:
@@ -153,9 +183,9 @@ Rules:
 - Keep the brief under 1,000 words.
 ```
 
-## The `/start` Command: 7-Phase Execution
+## The `/start` Skill: 7-Phase Execution
 
-The `/start` command is the most important and most structured command. It enforces a 7-phase process:
+The `/start` skill is the most important and most structured skill. It enforces a 7-phase process:
 
 | Phase | Purpose | Approval Gate? |
 |-------|---------|---------------|
@@ -171,130 +201,62 @@ The phase names change by domain (SWE uses "Test First" and "Implement"; EDA use
 
 ### Phase 1: Load Context (Universal Pattern)
 
-Every `/start` command begins by reading documents in a specific order:
+Every `/start` skill begins by reading documents in a specific order:
 1. The source-of-truth brief (always first, always required)
 2. Domain-specific context documents (if any)
 3. The lessons log
 4. The GitHub issue for this task
-5. The most recent handoff note
+5. The most recent handoff note for this expert
 
-After reading, the AI confirms understanding with a brief summary and waits for the user to confirm before proceeding.
+After reading, the expert confirms understanding with a brief summary and waits for confirmation before proceeding.
 
 ### Customizing the Phases
 
-When creating a new workflow, you can rename phases and adjust their content, but preserve the structure:
+When creating a new expert, you can rename phases and adjust their content, but preserve the structure:
 
 - **Phase 1** always loads context. Don't skip this.
-- **Phases 2-3** always involve planning and get approval gates. The AI must present its approach before doing work.
-- **Phase 4** is preparation/validation — the step before the main work that ensures inputs are sound.
+- **Phases 2-3** always involve planning and get approval gates.
+- **Phase 4** is preparation/validation — the step before the main work.
 - **Phase 5** is the main work.
-- **Phase 6** is verification — checking that the work meets criteria.
+- **Phase 6** is verification.
 - **Phase 7** is reporting and prompting for handoff.
 
 ## The Document-as-Memory System
 
 ### Core Principle
 
-The AI has no memory between sessions. Documents in `docs/` are its only memory. If something isn't written down, it doesn't exist for the next session.
+Experts have no memory between sessions. Documents in `docs/` are their only memory. If something isn't written down, it doesn't exist for the next session.
 
 ### Document Types
 
-Every workflow needs these document types:
+Every project needs these document types:
 
 | Type | Example | Purpose | Update Frequency |
 |------|---------|---------|-----------------|
 | **Brief** | `project-brief.md` | Source of truth — goals, constraints, decisions, status | Every `/handoff` |
 | **Plan** | `roadmap.md` | Work structure — milestones/phases, dependencies, risks | At milestones |
 | **Lessons Log** | `lessons-log.md` | Accumulated gotchas, patterns, domain knowledge | Any session |
-| **Handoff Notes** | `handoff-notes/session-NN.md` | What happened each session | Every `/handoff` |
-| **Interview Notes** | `brainstorm-notes.md` | Raw interview output | Once (at start) |
+| **Handoff Notes** | `handoff-notes/<expert>/session-NN.md` | What happened each session, per expert | Every `/handoff` |
+| **Interview Notes** | `interview-notes.md` | Raw interview output | Once (at start) |
 
-Some workflows add domain-specific documents. EDA adds `domain-context.md` (application-specific knowledge) and `data-profile.md` (living dataset characterization). Your workflow can add whatever persistent documents its domain needs.
+Domain-specific experts add their own documents. EDA adds `domain-context.md` and `data-profile.md`. QA adds `test-plan.md`. DevOps adds `env-context.md` and `release-plan.md`.
 
-### The Brief: Source of Truth
+### Cross-Expert Document Contracts
 
-The brief is the most important document. Every session reads it first. It should contain:
+See `experts/shared/docs-protocol.md` for the full producer/consumer matrix. The key principle: every expert can read all documents, but each expert writes only to its own handoff notes subdirectory and its own domain-specific documents.
 
-- Project/analysis identity (name, owner, stakeholders)
-- Goals and non-goals
-- Constraints
-- Key decisions with dates and reasoning
-- Current status (what's done, what's next, blockers)
+## The `role.md` File
 
-Keep it under 1,000 words. Every word costs context in future sessions.
-
-### Handoff Notes: Session Memory
-
-Handoff notes transfer context from one session to the next. They follow a consistent format:
-
-```markdown
-# Handoff Note: [Descriptive Title]
-
-**Session date:** [Date]
-**GitHub issue:** #[Number] — [Title]
-
-## What Was Accomplished
-[2-3 sentences]
-
-## Acceptance Criteria Status
-- [x] [Criterion met]
-- [ ] [Criterion not yet met — explain why]
-
-## Decisions Made This Session
-| Decision | Reasoning |
-|----------|-----------|
-| [Choice] | [Why] |
-
-## Problems Encountered
-[Honest assessment — don't hide issues]
-
-## Files Created/Modified
-- `path/to/file` — [description]
-
-## What the Next Session Needs to Know
-[THE MOST IMPORTANT SECTION — what context does the next AI need?]
-
-## Open Questions
-- [ ] [Unresolved item]
-```
-
-## GitHub Issue Format
-
-All task tracking uses GitHub Issues with a consistent format:
-
-```markdown
-## User Story
-As a [specific persona], I [need/want] [capability] so that [value].
-
-## Description
-[Short description of the work]
-
-## Acceptance Criteria
-- [ ] [Criterion from the persona's perspective]
-- [ ] [Another criterion]
-
-## Technical Notes
-**Estimated effort:** [Small/Medium/Large]
-**Dependencies:** #[issue numbers]
-```
-
-Key conventions:
-- Personas are specific ("warehouse manager", not "user")
-- Acceptance criteria describe what the end user can do or see, not internal implementation
-- The `/decompose` command creates these; `/handoff` closes them; `/review` creates new ones for findings
-
-## The `editor.md` File
-
-`editor.md` is the operating rules file — the AI reads it at every session start. It gets copied to `.claude/CLAUDE.md` and `.cursor/rules/{name}.mdc` by the setup script.
+`role.md` (formerly `editor.md`) is the operating rules file — the expert reads it at every session start. In standalone mode, it gets copied to `.claude/CLAUDE.md` and `.cursor/rules/{name}.mdc` by the setup script. In team mode, it gets injected into the expert's container as part of static configuration generation.
 
 ### Required Sections
 
 | Section | Purpose |
 |---------|---------|
-| **Title** | "X Operating System" — tells the AI what kind of project this is |
+| **Title** | "X Operating System" — tells the expert what role this is |
 | **Document Locations** | Table listing every document, its path, and its purpose |
 | **Session Protocol** | What to read at start, do during, and produce at end |
-| **Slash Commands** | List of available commands with 1-line descriptions |
+| **Skills** | List of available skills with 1-line descriptions |
 | **Principles** | Non-negotiable behavioral rules (5-10 bullets) |
 
 ### Optional Sections
@@ -306,66 +268,76 @@ Key conventions:
 
 ### The Principles Section
 
-Every workflow should include these universal principles:
+Every expert should include these universal principles:
 
 - "You have no memory between sessions. These documents ARE your memory. Trust them."
 - "The [brief] is the source of truth. If something contradicts it, ask the user."
-- "Decisions made in previous sessions are recorded in the [brief]. Don't re-litigate them unless the user asks you to."
+- "Decisions made in previous sessions are recorded in the [brief]. Don't re-litigate them unless asked."
 - "Keep the [brief] under 1,000 words."
 - "Every task includes verification."
 
-Add domain-specific principles as needed (e.g., EDA adds "Hypothesize before analyzing" and "Data surprises are findings, not problems").
+Add domain-specific principles as needed.
 
-## Setup Scripts
+## The Translation Layer
 
-### `setup.sh` / `setup.ps1`
+The expert definitions in this repo are platform-agnostic. A translation layer converts them to platform-specific configurations:
 
-The setup script copies workflow files into a project directory. It follows this pattern:
+| Target Platform | `role.md` becomes | `skills/` become |
+|-----------------|-------------------|-----------------|
+| Claude Code | `.claude/CLAUDE.md` | `.claude/commands/*.md` |
+| Cursor | `.cursor/rules/{name}.mdc` (with YAML frontmatter) | `.cursor/commands/*.md` |
+| NanoClaw | `groups/{name}/CLAUDE.md` | `.claude/skills/*.md` (with YAML frontmatter) |
+| OpenClaw | Workspace `AGENTS.md` | `skills/*/SKILL.md` (with YAML frontmatter) |
+| MachinEdge Platform | Container-injected system prompt | Container-injected skill definitions |
 
-1. **Parse arguments:** `--editor claude|cursor|both` and target directory
-2. **Create shared directories:** `docs/handoff-notes/`, domain-specific dirs
-3. **Create template files:** `lessons-log.md`, any domain-specific templates
-4. **Claude Code setup:** Copy `editor.md` → `.claude/CLAUDE.md`, copy commands → `.claude/commands/`
-5. **Cursor setup:** Prepend YAML frontmatter to `editor.md` → `.cursor/rules/{name}.mdc`, copy commands → `.cursor/commands/`
-6. **Summary:** List created files and next steps
+The translation is automated and maintained by MachinEdge. Expert authors write `role.md` and `skills/*.md` in the canonical format; the translation handles the rest.
 
-The Cursor frontmatter is always:
+### Cursor-Specific Translation
+
+Cursor requires YAML frontmatter on rules files:
 ```yaml
 ---
-description: [1-line description of the workflow]
+description: [1-line description of the expert]
 alwaysApply: true
 ---
 ```
 
-### `new_repo.sh` / `new_repo.ps1`
+### NanoClaw/OpenClaw Skill Translation
 
-Creates a new GitHub repo with the workflow pre-installed:
-
-1. **Parse arguments:** repo name, `--org`, `--editor`
-2. **Create local directory** (typically under `$HOME/work/`)
-3. **Call setup.sh** to install the workflow
-4. **Initialize git** and make initial commit
-5. **Create GitHub repo** via `gh repo create`
-6. **Push** and output next steps
+Both platforms use YAML frontmatter on skill files:
+```yaml
+---
+name: [skill-name]
+description: [What this skill does]
+---
+```
 
 ## How to Customize
 
+### Creating a New Expert
+
+```bash
+# Scaffold a new expert from templates
+./framework/create-expert.sh maintenance-planner
+
+# Customize the generated files, then validate
+./framework/validate.sh maintenance-planner
+```
+
+The scaffold generates a complete expert skeleton — `role.md`, skill files, and a README — pre-populated with structural patterns and guidance comments.
+
 ### Adding a Phase to `/start`
 
-Insert a new `## Phase N:` section between existing phases. Update the phase numbers of subsequent phases. If the new phase needs an approval gate, add an explicit "Wait for user confirmation" statement.
+Insert a new `## Phase N:` section between existing phases. Update the phase numbers of subsequent phases. If the new phase needs an approval gate, add an explicit "Wait for confirmation" statement.
 
 ### Adding a New Document Type
 
-1. Add the document to the `editor.md` Document Locations table
+1. Add the document to the `role.md` Document Locations table
 2. Add it to the session protocol (when to read it, when to update it)
 3. Update the `/start` Phase 1 context loading to include it
 4. Update `/handoff` to maintain it if needed
-5. Add a template in `setup.sh` if it needs initial content
+5. Update `experts/shared/docs-protocol.md` with the new producer/consumer relationship
 
 ### Adding Domain-Specific Tooling
 
-Add an "Opinionated Stack" section to `editor.md`. List the tools/libraries the workflow prescribes. The setup script can create a `pyproject.toml`, `package.json`, or equivalent with these pre-configured.
-
-### Making a Command Optional
-
-If your workflow doesn't need a synthesis/postmortem equivalent, you can omit it. But update `editor.md` to remove it from the command list, and note its absence in the README.
+Add an "Opinionated Stack" section to `role.md`. List the tools/libraries the expert prescribes. The setup script can create a `pyproject.toml`, `package.json`, or equivalent with these pre-configured.

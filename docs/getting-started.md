@@ -1,190 +1,198 @@
 # Getting Started
 
-This guide walks through setting up a project with either the SWE or EDA workflow, from installation through your first session.
+This guide covers the two deployment modes: standalone (single expert in an editor) and team (coordinated experts on the MachinEdge platform). Most users will start with standalone mode to get familiar with the expert definitions, then move to team mode for real project work.
 
-## Option A: Install the Skill (recommended)
+## Deployment Modes
 
-The easiest way to get started is to install the MachinEdge skill. No terminal expertise needed — Claude handles everything.
+### Standalone Mode (Single Expert, Single Editor)
 
-### In Cowork (Claude Desktop App)
+Use a single expert directly in Claude Code, Cowork, or Cursor. This is the simplest way to get started — install the skill, set up a workflow, and use the slash commands interactively. You are the orchestrator, switching between experts manually as needed.
 
-1. Install the `machinedge-workflows.skill` file
-2. Select a folder for your project (or create a new one)
-3. Tell Claude: "Set up an SWE workflow" or "Set up an EDA workflow"
-4. Claude walks you through the rest — choosing editors, naming the project, configuring GitHub
+This is how the workflows have worked historically and remains a fully supported path.
 
-### In Claude Code
+### Team Mode (Coordinated Experts, MachinEdge Platform)
 
-```bash
+Spin up a full AI development team for a project. The PM leads, experts coordinate through Matrix, and you interact primarily with the PM. This is the target deployment model — see the [Overview](overview.md) for the full vision.
+
+Team mode is under active development. The rest of this guide covers both modes.
+
+---
+
+## Standalone Mode Setup
+
+### Option A: Install the Skill (recommended)
+
+Install the `.skill` package in Claude Code or Cowork. Once installed, just ask Claude to set up a workflow — no terminal commands needed.
+
+```
+# In Claude Code
 claude install-skill machinedge-workflows.skill
+
+# In Cowork
+# Just say: "Set up an SWE workflow for my project"
 ```
 
-Then in a Claude Code session, say "set up a workflow" and follow the prompts.
+The skill walks you through choosing an expert (SWE, EDA, PM, QA, or DevOps), selecting your editor(s), and configuring the project.
 
-### What the Skill Does
+### Option B: Run the Setup Scripts Directly
 
-When triggered, the skill asks you three things:
-
-1. **Which workflow?** SWE (software engineering) or EDA (time series analysis)
-2. **New project or existing?** Create fresh or add to an existing codebase
-3. **Which editor(s)?** Claude Code, Cursor, or both
-
-Then it runs the setup automatically and tells you what to do next.
-
-## Option B: Run Setup Scripts
-
-If you prefer the command line, you can run the setup scripts directly.
-
-### Prerequisites
-
-- **Git** installed and configured
-- **GitHub CLI (`gh`)** installed and authenticated — [install here](https://cli.github.com/)
-- **Claude Code** or **Cursor** (or both) installed
-- **`GITHUB_ORG`** environment variable set to your GitHub org or username (or pass `--org` per invocation)
-
-For EDA projects, you also need Python 3.10+ with [uv](https://github.com/astral-sh/uv) (recommended) or pip.
-
-### Add to an Existing Project
+If you prefer the command line:
 
 **macOS / Linux:**
 ```bash
-# SWE workflow — both editors (default)
-./skills/machinedge-workflows/workflows/swe/setup.sh ~/projects/my-app
+# Full team setup (all experts) for a new project
+./workflows/setup.sh ~/projects/my-app
 
-# SWE workflow — Claude Code only
-./skills/machinedge-workflows/workflows/swe/setup.sh --editor claude ~/projects/my-app
-
-# EDA workflow — Cursor only
-./skills/machinedge-workflows/workflows/eda/setup.sh --editor cursor ~/projects/my-analysis
+# Single expert setup
+./workflows/setup.sh --expert swe ~/projects/my-app
+./workflows/setup.sh --expert eda ~/projects/my-analysis
 ```
 
 **Windows (PowerShell):**
 ```powershell
-# SWE workflow
-.\skills\machinedge-workflows\workflows\swe\setup.ps1 -Target ~\projects\my-app
-
-# EDA workflow, Claude Code only
-.\skills\machinedge-workflows\workflows\eda\setup.ps1 -Editor claude -Target ~\projects\my-analysis
+.\workflows\setup.ps1 -Target ~\projects\my-app
+.\workflows\setup.ps1 -Expert swe -Target ~\projects\my-app
 ```
 
-The setup script creates the necessary directory structure, copies the rules file to the editor's config location, and copies all slash commands. It does not touch your existing code.
+Then open the project in your editor and run the first skill (`/interview` for PM, `/start` for SWE, `/intake` for EDA).
 
-### Create a New GitHub Repo
-
-**macOS / Linux:**
-```bash
-# SWE workflow — new repo under your org
-./skills/machinedge-workflows/workflows/swe/new_repo.sh my-app
-./skills/machinedge-workflows/workflows/swe/new_repo.sh --org mycompany --editor claude my-app
-
-# EDA workflow — new repo
-./skills/machinedge-workflows/workflows/eda/new_repo.sh my-analysis
-```
-
-**Windows (PowerShell):**
-```powershell
-.\skills\machinedge-workflows\workflows\swe\new_repo.ps1 my-app
-.\skills\machinedge-workflows\workflows\eda\new_repo.ps1 -Org mycompany my-analysis
-```
-
-This creates the GitHub repo, clones it locally, runs the setup, and commits the initial structure.
-
-## What Setup Creates
+### What Setup Creates
 
 After setup, your project will have this structure added (existing files are untouched):
 
-**SWE project:**
 ```
 my-app/
 ├── .claude/
-│   ├── CLAUDE.md                    # Auto-loaded rules for Claude Code
-│   └── commands/*.md                # Slash commands
+│   ├── CLAUDE.md                    # Auto-loaded rules (from expert's role.md)
+│   └── commands/*.md                # Skills as slash commands
 ├── .cursor/
-│   ├── rules/project-os.mdc        # Auto-loaded rules for Cursor
-│   └── commands/*.md                # Slash commands
+│   ├── rules/expert-os.mdc         # Auto-loaded rules for Cursor
+│   └── commands/*.md                # Skills as slash commands
 └── docs/
-    └── lessons-log.md               # Running gotchas (template)
+    ├── lessons-log.md               # Running gotchas (template)
+    └── handoff-notes/               # Session memory
+        ├── swe/
+        ├── qa/
+        ├── devops/
+        └── pm/
 ```
 
-**EDA project:**
+### Prerequisites (Standalone Mode)
+
+- Git (installed and configured)
+- GitHub CLI (`gh`) — [install here](https://cli.github.com/)
+- Claude Code, Cursor, or Cowork
+- For EDA: Python 3.10+ with uv or pip
+
+---
+
+## Team Mode Setup
+
+> **Status:** Under active development. The following describes the target experience.
+
+### Prerequisites (Team Mode)
+
+- Docker and Docker Compose
+- A Matrix homeserver (Dendrite recommended for single-box deployments)
+- OpenAI API key
+- A Matrix client (Element recommended) for monitoring the team
+
+### Spinning Up a Team
+
+```bash
+# Initialize a new project with a full dev team
+machinedge init my-project
+
+# This provisions:
+# - A Matrix room for the project
+# - Docker containers for each expert (PM, SWE, QA, DevOps)
+# - A shared git repo with branch-per-expert strategy
+# - Static configuration generated from the expert definitions
 ```
-my-analysis/
-├── .claude/
-│   ├── CLAUDE.md                    # Auto-loaded rules for Claude Code
-│   └── commands/*.md                # Slash commands
-├── .cursor/
-│   ├── rules/analysis-os.mdc       # Auto-loaded rules for Cursor
-│   └── commands/*.md                # Slash commands
-├── docs/
-│   └── lessons-log.md               # Running gotchas (template)
-├── notebooks/                       # Working surface for analysis
-├── data/
-│   ├── raw/                         # Untouched source data
-│   └── processed/                   # Cleaned/transformed data
-└── reports/                         # Synthesis reports (the deliverables)
+
+### Interacting with Your Team
+
+Once the team is running, you interact with it through Matrix:
+
+1. **Open your Matrix client** (Element or any Matrix-compatible client)
+2. **Join the project room** — you'll see all expert activity here
+3. **Talk to the PM** — describe what you want built, report a bug, or request a feature
+4. **The PM handles the rest** — it breaks down work, delegates to experts, and pulls you in for reviews
+
+You can also monitor individual expert activity, interject at any point, or step back and let the team work autonomously.
+
+### What Team Mode Creates
+
+```
+~/.machinedge/
+├── projects/
+│   └── my-project/
+│       ├── config.yaml              # Static team configuration
+│       ├── docker-compose.yaml      # Container definitions
+│       ├── matrix/                  # Matrix room configuration
+│       └── workspaces/              # Per-expert isolated workspaces
+│           ├── pm/
+│           ├── swe/
+│           ├── qa/
+│           └── devops/
+└── shared/
+    └── git/
+        └── my-project.git           # Shared bare repo
 ```
 
-## Your First Session
+---
 
-### SWE Workflow
+## Your First Session (Standalone Mode)
 
-Open your project in Claude Code or Cursor and run these commands in order:
+### With the PM Expert
 
-1. **`/interview`** — The AI conducts a structured interview to pull your project ideas out. It asks about goals, users, constraints, and scope. Output: `docs/interview-notes.md`.
+1. **`/interview`** — The PM conducts a structured interview to pull your project ideas out. Asks about goals, users, constraints, and scope. Output: `docs/interview-notes.md`.
+2. **`/vision`** — Reads interview notes and drafts a concise project brief. Review carefully — this becomes the source of truth. Output: `docs/project-brief.md`.
+3. **`/roadmap`** — Creates a milestone plan with dependencies and risks. Output: `docs/roadmap.md`.
+4. **`/decompose`** — Pick a milestone. Breaks it into session-sized GitHub Issues with user stories and acceptance criteria.
 
-2. **`/vision`** — The AI reads your interview notes and drafts a concise project brief. Review it carefully — this becomes the source of truth for every future session. Output: `docs/project-brief.md`.
+### With the SWE Expert
 
-3. **`/roadmap`** — The AI reads the brief and creates a milestone plan with dependencies and risks. Output: `docs/roadmap.md`.
+5. **`/start #N`** — Pick an issue number. Loads all context, presents a plan (approval gate), designs architecture (approval gate), writes tests, implements, verifies, and reports.
+6. **`/handoff`** — Run before closing the session. Documents what was done, updates the brief, closes the issue.
 
-4. **`/decompose`** — Pick a milestone. The AI breaks it into session-sized GitHub Issues, each with a user story and acceptance criteria.
+Repeat steps 5-6 for each task.
 
-5. **`/start #N`** — Pick an issue number. The AI loads all context, presents a plan (approval gate), designs the architecture (approval gate), writes tests, implements, verifies, and reports. This is where the actual coding happens.
+### With the QA Expert
 
-6. **`/handoff`** — Run this before closing the session. The AI documents what was done, updates the project brief, and closes the GitHub issue.
+- **`/review #N`** — Fresh-eyes evaluation in a separate session.
+- **`/test-plan`** — Creates a test plan based on the project brief and roadmap.
+- **`/regression`** — Runs regression analysis against existing test coverage.
 
-Repeat steps 5-6 for each task. Occasionally run `/review #N` in a fresh session for code review. After finishing a milestone, run `/postmortem`.
+### With the DevOps Expert
 
-### EDA Workflow
+- **`/env-discovery`** — Discovers and documents the deployment environment.
+- **`/pipeline`** — Sets up CI/CD pipeline configuration.
+- **`/deploy`** — Executes deployment following the release plan.
 
-Open your project in Claude Code or Cursor and run these commands in order:
+## Your First Session (Team Mode)
 
-1. **`/intake`** — The AI generates domain context for your specific application area (e.g., predictive maintenance, demand forecasting), then conducts a structured interview about your data, questions, and goals. Output: `docs/domain-context.md` + `docs/intake-notes.md`.
+> **Status:** Under active development.
 
-2. **`/brief`** — The AI synthesizes the interview into an analysis brief. Output: `docs/analysis-brief.md`.
+In team mode, your interaction is simpler:
 
-3. **`/scope`** — The AI defines 3-6 analysis phases with dependencies and risks. Output: `docs/scope.md`.
+1. **Open your Matrix client** and join the project room
+2. **Tell the PM what you want:** "I need a web app that tracks inventory for a small warehouse"
+3. **The PM interviews you** — same structured interview, but through chat
+4. **The PM spins up the work** — creates the brief, roadmap, decomposes tasks, and delegates
+5. **You review when asked** — the PM pulls you in for approval gates and decisions
+6. **Monitor progress** — watch the team work in the Matrix room, or check back later
 
-4. **`/decompose`** — Pick a phase. The AI breaks it into hypothesis-driven GitHub Issues.
+---
 
-5. **`/start #N`** — Pick an issue. The AI loads context, states hypotheses (approval gate), designs the analysis (approval gate), validates data, runs the analysis, validates results, and reports findings.
+## Tips
 
-6. **`/handoff`** — Run this before closing. The AI documents findings, updates the brief, and closes the issue.
+**Always run `/handoff` before closing a session (standalone mode).** This is the single most important habit. The handoff note is how the next session knows what happened.
 
-Repeat steps 5-6 for each task. Run `/review #N` in a fresh session for methodological review. After completing a phase, run `/synthesize` to pull findings into a recommendations report.
+**Keep sessions focused.** One task per session. If you're tempted to squeeze in "one more thing," start a new session instead.
 
-## Tips for Getting the Most Out of the Workflows
+**Review the brief after `/vision` or `/brief`.** The project brief becomes the source of truth for every downstream action. If it's wrong, everything built on it will be wrong.
 
-**Always run `/handoff` before closing a session.** This is the single most important habit. Two minutes at session end saves twenty minutes of re-orientation next session. The handoff note is how the next session knows what happened.
+**Use `/review` in a fresh session (standalone mode).** The whole point of fresh-eyes review is the absence of implementation memory. Running it in the same session that wrote the code defeats the purpose.
 
-**Keep sessions focused.** One task per session. If you're tempted to squeeze in "one more thing," start a new session instead. The overhead of loading context is minimal; the cost of a messy, multi-task session with no clear handoff is high.
-
-**Review the brief after `/vision` or `/brief`.** The project/analysis brief becomes the source of truth for every downstream command. If it's wrong, everything built on it will be wrong. Invest time reviewing it.
-
-**Use `/review` in a fresh session.** The whole point of fresh-eyes review is that the AI has no memory of implementation decisions. Running it in the same session that wrote the code defeats the purpose.
-
-**The `docs/` folder is your team's shared context.** It's editor-agnostic. Team members using different editors all read and write the same documents. Tasks on GitHub are visible to everyone.
-
-## Editor-Specific Notes
-
-### Claude Code
-- `CLAUDE.md` is automatically loaded every session — no configuration needed.
-- Commands appear when you type `/` in the CLI.
-
-### Cursor
-- Rules use `.mdc` files with frontmatter (`alwaysApply: true`) for automatic loading.
-- Commands appear in the `/` menu in chat.
-- Use **Agent mode** (not Ask or Edit mode) for commands to work properly.
-
-### Cowork (Claude Desktop App)
-- Install the skill, select a folder, and ask Claude to set up a workflow.
-- Once set up, open the project in Claude Code or Cursor to use the slash commands.
+**The `docs/` folder is your team's shared context.** It's editor-agnostic and expert-agnostic. All experts read and write the same document pool.

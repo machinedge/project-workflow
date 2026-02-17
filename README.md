@@ -1,99 +1,151 @@
-# MachinEdge Project Workflows
+# MachinEdge Expert Teams
 
-Structured workflows for running multi-session projects with AI coding assistants. Works with **Claude Code**, **Cowork** (Claude desktop app), and **Cursor**.
+Platform-agnostic expert definitions for AI development teams. Define your experts once — deploy them anywhere.
 
-This repo contains two workflow toolkits, distributed as a single installable Claude skill:
+This repo contains the canonical definitions for AI experts (PM, SWE, QA, DevOps, EDA) that can be deployed as a coordinated team on the MachinEdge platform, or used standalone in **Claude Code**, **Cowork**, and **Cursor**.
 
-| Workflow | Purpose |
-|----------|---------|
-| **SWE** | Software engineering projects — plan, build, test, review |
-| **EDA** | Time series exploratory data analysis — hypothesize, analyze, synthesize |
+## The Idea
 
-Both toolkits solve the same core problem: AI assistants have no memory between sessions. These workflows give them a protocol — what to read, how to work, what to produce — so context is preserved and work is structured across as many sessions as a project needs.
+You run a single command to spin up a full AI dev team for your project. The PM leads the team, the SWE implements, QA validates, DevOps delivers. You talk to the PM — the PM handles the rest. Experts communicate through Matrix, coordinate code through git, and each run in isolated Docker containers.
 
-## Install
+No cloud dependencies. No 50-module configuration maze. On-prem first.
 
-### Option A: Install the Skill (recommended)
+## Quick Start
 
-Install the `.skill` package in Claude Code or Cowork. Once installed, just ask Claude to set up a workflow — no terminal commands needed.
+### Standalone Mode (Single Expert in an Editor)
+
+Install the skill in Claude Code or Cowork and use one expert at a time:
 
 ```
 # In Claude Code
 claude install-skill machinedge-workflows.skill
 
-# In Cowork
-# Just say: "Set up an SWE workflow for my project"
+# Then say: "Set up a software workflow for my project"
 ```
 
-The skill walks you through choosing a workflow (SWE or EDA), selecting your editor(s), and configuring the project. Everything is handled by Claude.
-
-### Option B: Run the Setup Scripts Directly
-
-If you prefer the command line, you can run the setup scripts from the skill bundle:
+Or run setup directly:
 
 ```bash
-# Software engineering project
-./skills/machinedge-workflows/workflows/swe/setup.sh ~/projects/my-app
+# Full team setup (all experts)
+./workflows/setup.sh ~/projects/my-app
 
-# Time series analysis project
-./skills/machinedge-workflows/workflows/eda/setup.sh ~/projects/my-analysis
-
-# Create a new GitHub repo instead
-./skills/machinedge-workflows/workflows/swe/new_repo.sh my-app
-./skills/machinedge-workflows/workflows/eda/new_repo.sh my-analysis
+# Single expert
+./workflows/setup.sh --expert swe ~/projects/my-app
 ```
 
-Then open the project in your editor and run the first command (`/interview` for SWE, `/intake` for EDA).
+### Team Mode (Coordinated Experts)
 
-## Packaging the Skill
-
-To build a distributable `.skill` file from the source:
+> **Status:** Under active development.
 
 ```bash
-python framework/package_skill.py skills/machinedge-workflows
+# cd into the project directory of your choice
+cd my-project
+# Spin up a full dev team for a project
+machinedge init software
+
+# Opens a Matrix room with PM, SWE, QA, DevOps
+# Talk to the PM to get started
 ```
 
-This validates the skill structure and produces `machinedge-workflows.skill` — a single file that anyone can install.
+## How It Works
+
+### Expert Definitions
+
+Each expert is defined by a `role.md` (identity + operating rules) and a `skills/` directory (structured capabilities):
+
+```
+experts/
+  technical/
+    project-manager/    # project manager
+      role.md           # Who the PM is, what it reads/writes, how it operates
+      skills/           # interview, vision, roadmap, decompose, postmortem
+    swe/                # software engineer
+      role.md
+      skills/           # start, handoff
+    qa/                 # quality assurance
+      role.md
+      skills/           # test-plan, review, regression
+    ux/                 # user experience - under active development
+      role.md           
+      skills/       
+    devops/             # devops
+      role.md
+      skills/           # env-discovery, pipeline, deploy, release-plan
+    data-analyst/       # data analyst - under active development0
+      role.md
+      skills/           # intake, brief, scope, decompose, start, review, synthesize
+```
+
+These definitions are platform-agnostic. A translation layer generates configs for the target runtime — Claude Code, Cursor, NanoClaw, OpenClaw, or MachinEdge's own platform.
+
+### Team Architecture
+
+```
+┌──────────┐
+│  Human   │  ← You. Talk to the PM.
+└────┬─────┘
+     │
+┌────▼──────────────────────────────────┐
+│         Matrix (Dendrite)             │
+│  Routing · Security · Audit trails   │
+└──┬────────┬────────┬────────┬────────┘
+   │        │        │        │
+┌──▼──┐ ┌──▼──┐ ┌──▼──┐ ┌──▼──┐
+│ PM  │ │ SWE │ │ QA  │ │DevOp│
+│     │ │     │ │     │ │  s  │ ... [others]
+└─────┘ └─────┘ └─────┘ └─────┘
+Docker   Docker   Docker   Docker
+   │        │        │        │
+   └────────┴────────┴────────┘
+            Shared Git Repo
+```
+
+The PM is the orchestrator and the human's single point of contact. It breaks down work, delegates to experts, enforces process rigor, and pulls the human in only for reviews and approvals.
+
+### The Skill Lifecycle
+
+Every expert follows the same structured arc:
+
+```
+Interview → Brief → Plan → Decompose → Execute → Review → Handoff → Synthesize
+```
+
+In standalone mode, you trigger these as slash commands. In team mode, the PM triggers them on other experts. Documents accumulate in `docs/`, issues accumulate in `issues/` and serve as each expert's memory between sessions.
 
 ## Documentation
 
 | Guide | Audience | Description |
 |-------|----------|-------------|
-| [Overview](docs/overview.md) | Everyone | What this toolkit is, how the two workflows compare, and the design philosophy |
-| [Getting Started](docs/getting-started.md) | Users | Installation, setup, first session walkthrough for both workflows |
-| [Agent Reference](docs/agent-reference.md) | AI agents | How agents should orient themselves, which documents to read, and how commands interact |
-| [Workflow Anatomy](docs/workflow-anatomy.md) | Contributors | Deep-dive reference on patterns, conventions, and how to customize |
+| [Overview](docs/overview.md) | Everyone | Vision, architecture, design philosophy, platform comparisons |
+| [Getting Started](docs/getting-started.md) | Users | Setup for standalone and team modes |
+| [Agent Reference](docs/agent-reference.md) | AI agents | How experts orient themselves, read documents, and execute skills |
+| [Expert Anatomy](docs/workflow-anatomy.md) | Contributors | Deep-dive on expert structure, skill patterns, translation layer |
+| [Docs Protocol](workflows/shared/docs-protocol.md) | Contributors | Cross-expert document contracts and conventions |
 
-Each workflow also has its own detailed README:
+## Terminology
 
-- [SWE Workflow README](skills/machinedge-workflows/workflows/swe/README.md)
-- [EDA Workflow README](skills/machinedge-workflows/workflows/eda/README.md)
+| Term | Meaning |
+|------|---------|
+| **Expert** | An AI agent with a defined and limited role, operating rules, and skills (PM, SWE, QA, DevOps, EDA) |
+| **`role.md`** | The expert's identity file — persona, document locations, session protocol, principles |
+| **Skill** | A structured capability an expert can execute (e.g., interview, start, review, deploy) |
+| **Team** | A set of coordinated experts working on a project, led by the PM |
+| **Standalone mode** | Using a single expert in an editor (Claude Code, Cursor, Cowork) |
+| **Team mode** | Coordinated experts on the MachinEdge platform, communicating via Matrix |
 
-## Creating Your Own Workflow
+## Design Principles
 
-Want to build a workflow for a different domain? The framework makes it straightforward:
+**Experts are defined once, deployed anywhere.** The canonical format is platform-agnostic. Translation to specific runtimes is automated.
 
-```bash
-# Scaffold a new workflow from templates
-./framework/create-workflow.sh devops
+**The PM leads.** The human talks to the PM; the PM talks to everyone else.
 
-# Customize the generated files, then validate
-./framework/validate.sh devops
-```
+**Documents are memory.** No memory between sessions. If it's not written down, it didn't happen.
 
-The scaffold generates a complete workflow skeleton — editor rules, 8 command files, setup scripts, and a README — all pre-populated with the structural patterns from the existing workflows and guidance comments explaining what to customize.
+**Isolation by default.** Each expert has its own container and workspace. Code via git, communication via Matrix.
 
-See [framework/CONTRIBUTING.md](framework/CONTRIBUTING.md) for the full contributor guide.
+**On-prem first.** Single box deployment. No cloud required.
 
-## How the Workflows Operate
-
-Both workflows follow the same arc:
-
-```
-Interview → Brief → Plan → Decompose → Execute → Review → Synthesize
-```
-
-Every session is structured: load context first, work within scope, hand off at the end. Documents accumulate across sessions and serve as the AI's memory. GitHub Issues track tasks and review findings.
+**Simplicity over features.** If setup requires a PhD in configuration, it's failed.
 
 ## Repository Structure
 
@@ -102,41 +154,41 @@ project-workflow/
 ├── README.md                       ← You are here
 ├── LICENSE                         ← Apache 2.0
 ├── docs/                           ← Documentation
-│   ├── overview.md
-│   ├── getting-started.md
-│   ├── agent-reference.md
-│   └── workflow-anatomy.md
+│   ├── overview.md                 ← Vision and architecture
+│   ├── getting-started.md          ← Setup guide
+│   ├── agent-reference.md          ← Reference for AI experts
+│   └── workflow-anatomy.md         ← Deep-dive on expert structure
+├── experts/                        ← Expert definitions (current location)
+│   ├── pm/                         ← Product/project manager
+│   │   ├── role.md                 ← Operating rules (→ role.md)
+│   │   └── skills/                 ← Skills (→ skills/)
+│   ├── swe/                        ← Software engineer
+│   ├── qa/                         ← Quality assurance
+│   ├── devops/                     ← DevOps/deployment
+│   ├── eda/                        ← Exploratory data analysis
+│   └── shared/                     ← Cross-expert protocols
 ├── skills/
-│   └── machinedge-workflows/       ← The distributable skill package
-│       ├── SKILL.md                ← Skill entry point (Claude reads this)
-│       └── workflows/
-│           ├── swe/                ← Software engineering workflow
-│           │   ├── editor.md       ← Operating rules (single source)
-│           │   ├── commands/       ← Slash command definitions
-│           │   ├── setup.sh / setup.ps1
-│           │   └── new_repo.sh / new_repo.ps1
-│           └── eda/                ← Time series analysis workflow
-│               ├── editor.md
-│               ├── commands/
-│               ├── setup.sh / setup.ps1
-│               └── new_repo.sh / new_repo.ps1
-└── framework/                      ← Scaffolding tools for creating new workflows
+│   └── machinedge-workflows/       ← Distributable skill package
+├── build/                          ← Build tooling
+└── framework/                      ← Scaffolding for new experts
     ├── create-workflow.sh
     ├── validate.sh
     ├── CONTRIBUTING.md
     └── templates/
 ```
 
+> **Note:** The repo is in a transition period. Expert definitions currently live in `workflows/` with `editor.md` and `commands/` naming. These will migrate to `experts/` with `role.md` and `skills/` naming in a future release. The documentation reflects the target state.
+
 ## Prerequisites
 
-For script-based setup (Option B):
+**Standalone mode:**
+- Git + GitHub CLI (`gh`)
+- Claude Code, Cursor, or Cowork
+- For EDA: Python 3.10+
 
-- Git (installed and configured)
-- GitHub CLI (`gh`) — [install here](https://cli.github.com/)
-- `GITHUB_ORG` environment variable set (or pass `--org` per invocation)
-- For EDA: Python 3.10+ with uv or pip
-
-For skill-based setup (Option A): just Claude Code or Cowork.
+**Team mode (coming):**
+- Docker + Docker Compose
+- OpenAI API key
 
 ## License
 

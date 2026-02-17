@@ -1,144 +1,153 @@
 # Agent Reference
 
-This document is for AI agents (Claude Code, Cowork, Cursor, or other LLM-based coding assistants) working within projects that use these workflows. It explains how to orient yourself, what to read, and how the command system works.
+This document is for AI agents (Claude Code, Cowork, Cursor, or other LLM-based assistants) operating as experts within projects that use the MachinEdge expert system. It explains how to orient yourself, what to read, and how skills work — in both standalone and team deployment modes.
 
-If you arrived here via the `machinedge-workflows` skill, the skill's SKILL.md handles initial project setup. This document covers how to operate *within* an already-configured project.
+## Deployment Context
+
+> **Note:** Team mode is under active development. If you're reading this in a standalone editor session, the team mode sections describe the target behavior.
+
+You may be running in one of two modes:
+
+**Standalone mode:** You are a single expert running in an editor (Claude Code, Cursor, Cowork). The human triggers your skills directly as slash commands. You are the only expert active in this session.
+
+**Team mode:** You are one of several experts coordinated by a PM agent through Matrix. The PM triggers your skills via messages. You communicate results back through Matrix and the shared `docs/` directory. Other experts are working in parallel in their own containers.
+
+In either mode, your `role.md` (loaded as `CLAUDE.md`, `AGENTS.md`, or equivalent) tells you everything you need to know about your specific role.
 
 ## Orienting Yourself in a Project
 
-When you start a session in a project that uses one of these workflows, the rules file will be auto-loaded:
+When you start a session, your operating rules will be auto-loaded:
 
-- **Claude Code:** `.claude/CLAUDE.md` is read automatically at session start.
-- **Cursor:** `.cursor/rules/project-os.mdc` (SWE) or `.cursor/rules/analysis-os.mdc` (EDA) is read automatically.
+- **Claude Code:** `.claude/CLAUDE.md` is read automatically.
+- **Cursor:** `.cursor/rules/{expert}-os.mdc` is read automatically.
+- **Team mode (MachinEdge):** Your `role.md` is injected into your container's system context.
+- **Team mode (NanoClaw):** Your `CLAUDE.md` is loaded from your group directory.
+- **Team mode (OpenClaw):** Your `AGENTS.md` is loaded from your workspace.
 
-That rules file is your operating manual. It tells you where every document lives, what to read at session start, how to behave during a session, and what to produce at session end. Follow it.
+That rules file is your operating manual. Follow it.
 
 ## The Document System
 
-Both workflows use a `docs/` folder as the AI's persistent memory. You have no memory between sessions — these documents ARE your memory.
+All experts share a `docs/` folder as persistent memory. You have no memory between sessions — these documents ARE your memory.
 
-### SWE Projects
+### Universal Documents (All Experts Read These)
 
-| Document | Path | When to Read | When to Update |
-|----------|------|-------------|----------------|
-| Project Brief | `docs/project-brief.md` | Every session start — no exceptions | At `/handoff` — new decisions, status changes |
-| Roadmap | `docs/roadmap.md` | When planning or decomposing milestones | At `/postmortem` — revised estimates, new risks |
-| Lessons Log | `docs/lessons-log.md` | Every session start — skim for relevant entries | When you discover a gotcha, pattern, or constraint |
-| Handoff Notes | `docs/handoff-notes/session-NN.md` | Session start — read the most recent one | At `/handoff` — create a new one for the current session |
-| Brainstorm Notes | `docs/brainstorm-notes.md` | Only during `/vision` | Created by `/brainstorm` |
+| Document | Path | When to Read |
+|----------|------|-------------|
+| Project Brief | `docs/project-brief.md` | Every session start — no exceptions |
+| Lessons Log | `docs/lessons-log.md` | Every session start — skim for relevant entries |
+| Your Handoff Notes | `docs/handoff-notes/<your-role>/session-NN.md` | Session start — read the most recent one |
 
-### EDA Projects
+### Expert-Specific Documents
 
-| Document | Path | When to Read | When to Update |
-|----------|------|-------------|----------------|
-| Analysis Brief | `docs/analysis-brief.md` | Every session start — no exceptions | At `/handoff` — new decisions, status, findings |
-| Domain Context | `docs/domain-context.md` | Every session start — understand the domain | Created by `/intake`, rarely updated after |
-| Data Profile | `docs/data-profile.md` | Every session start — know what's known about the data | During any session where you learn something new about the data |
-| Scope | `docs/scope.md` | When planning or decomposing phases | When phase dependencies or risks change |
-| Lessons Log | `docs/lessons-log.md` | Every session start — skim for relevant entries | When you discover data quirks, method pitfalls, or domain knowledge |
-| Handoff Notes | `docs/handoff-notes/session-NN.md` | Session start — read the most recent one | At `/handoff` — create a new one |
-| Intake Notes | `docs/intake-notes.md` | Only during `/brief` | Created by `/intake` |
+| Expert | Also Reads | Also Produces |
+|--------|-----------|---------------|
+| **PM** | All handoff notes across all experts, `docs/roadmap.md` | `docs/project-brief.md`, `docs/roadmap.md`, `docs/interview-notes.md`, GitHub Issues |
+| **SWE** | `docs/test-plan.md`, `docs/env-context.md`, assigned GitHub Issue | Code + tests, `docs/handoff-notes/swe/session-NN.md` |
+| **QA** | Code produced by SWE, `docs/test-plan.md` | `docs/test-plan.md`, review issues, `docs/handoff-notes/qa/session-NN.md` |
+| **DevOps** | `docs/release-plan.md`, pipeline configs | `docs/env-context.md`, `docs/release-plan.md`, `docs/handoff-notes/devops/session-NN.md` |
+| **EDA** | `docs/domain-context.md`, `docs/data-profile.md`, `docs/scope.md` | Analysis notebooks, `reports/`, `docs/handoff-notes/eda/session-NN.md` |
 
-## How Commands Work
+### Document Contracts
 
-Slash commands are defined in markdown files under `.claude/commands/` and `.cursor/commands/`. Each command file contains the full instructions for what to do when invoked — you read it and execute the process described.
+See `experts/shared/docs-protocol.md` (formerly `workflows/shared/docs-protocol.md`) for the full producer/consumer matrix. The key rule: you can read any document, but you write only to your own handoff notes subdirectory and your own domain-specific documents. The PM is the exception — it maintains the project brief and roadmap.
 
-### Command Lifecycle
+## How Skills Work
 
-Commands follow a lifecycle that mirrors the project arc. You should understand where each command fits:
+Skills are defined in markdown files. In standalone mode, they live at `.claude/commands/*.md` or `.cursor/commands/*.md`. In team mode, they are injected into your container or workspace.
 
-**Planning commands** run once (or rarely) and produce foundational documents:
+Each skill file contains the full instructions for what to do when invoked — you read it and execute the process described.
 
-| SWE | EDA | Purpose |
-|-----|-----|---------|
-| `/brainstorm` | `/intake` | Interview the user, capture raw notes |
-| `/vision` | `/brief` | Synthesize notes into the source-of-truth document |
-| `/roadmap` | `/scope` | Plan the work structure |
-| `/decompose` | `/decompose` | Break a unit of work into GitHub Issues |
+### Skill Lifecycle
 
-**Execution commands** run repeatedly — once per task:
+Skills follow a lifecycle that mirrors the project arc:
 
-| Command | Purpose |
-|---------|---------|
+**Planning skills** produce foundational documents:
+
+| PM | SWE | QA | DevOps | EDA | Purpose |
+|-----|-----|-----|--------|-----|---------|
+| `/interview` | — | — | — | `/intake` | Interview the human, capture raw notes |
+| `/vision` | — | — | — | `/brief` | Synthesize notes into source-of-truth |
+| `/roadmap` | — | `/test-plan` | `/release-plan` | `/scope` | Plan the work structure |
+| `/decompose` | — | — | — | `/decompose` | Break work into GitHub Issues |
+
+**Execution skills** run repeatedly — once per task:
+
+| Skill | Purpose |
+|-------|---------|
 | `/start #N` | Load context, execute a structured work session against issue #N |
 | `/handoff` | Close the session, produce handoff note, update the brief |
 
-**Review commands** run periodically:
+**Review skills** run periodically:
 
-| SWE | EDA | Purpose |
-|-----|-----|---------|
-| `/review #N` | `/review #N` | Fresh-eyes evaluation in a separate session |
-| `/postmortem` | `/synthesize` | Milestone/phase-level reflection or synthesis |
+| PM | QA | EDA | Purpose |
+|-----|-----|-----|---------|
+| `/postmortem` | `/review #N`, `/regression` | `/review #N`, `/synthesize` | Evaluation or synthesis |
 
-### The `/start` Command in Detail
+### The `/start` Skill in Detail
 
-`/start` is the most important command. It enforces a 7-phase structure with approval gates to prevent you from jumping ahead:
+`/start` is the most important skill. It enforces a 7-phase structure with approval gates:
 
-**SWE phases:**
-1. Load Context (automatic) — Read brief, lessons log, issue, last handoff
-2. Plan (approval gate) — Present your approach, wait for user approval
-3. Architect (approval gate) — Design the solution, wait for approval
-4. Test First — Write tests that define expected behavior (they should fail)
-5. Implement — Write code to make the tests pass
-6. Verify — Run tests, check acceptance criteria, self-review
-7. Report — Summarize what was done, prompt for `/handoff`
+1. **Load Context** (automatic) — Read brief, lessons log, issue, last handoff
+2. **Plan / Hypothesize** (approval gate) — Present your approach, wait for approval
+3. **Design / Architect** (approval gate) — Design the solution, wait for approval
+4. **Test / Validate Inputs** — Write tests (SWE), validate data (EDA), or other pre-work
+5. **Implement / Analyze** — Do the main work
+6. **Verify / Validate Results** — Check work against acceptance criteria
+7. **Report** — Summarize what was done, prompt for `/handoff`
 
-**EDA phases:**
-1. Load Context (automatic) — Read brief, domain context, data profile, lessons log, issue, last handoff
-2. Hypothesize (approval gate) — State what you expect to find BEFORE looking at data
-3. Design Analysis (approval gate) — Choose methods, plan visualizations
-4. Validate Data — Check data quality and fitness for the planned analysis
-5. Analyze — Execute the analysis, create visualizations, update data profile
-6. Validate Results — Statistical checks, sanity checks, reproducibility
-7. Report Findings — Summarize findings, confidence level, implications
+Phase names vary by domain (SWE uses "Test First" and "Implement"; EDA uses "Validate Data" and "Analyze"), but the structure is constant.
 
-The approval gates at phases 2 and 3 are critical. Do not proceed past them without explicit user approval.
+The approval gates at phases 2 and 3 are critical. Do not proceed past them without explicit approval — from the human in standalone mode, or from the PM (or human, for high-stakes decisions) in team mode.
 
 ## Key Behavioral Rules
 
-These rules apply regardless of which workflow you're in:
+These rules apply regardless of which expert you are or which mode you're in:
 
-**Read the brief first.** Every session, no exceptions. The project/analysis brief is the source of truth. If your understanding of the project contradicts the brief, the brief is right — ask the user before deviating.
+**Read the brief first.** Every session, no exceptions. The project brief is the source of truth. If your understanding contradicts the brief, the brief is right — ask before deviating.
 
-**Don't re-litigate past decisions.** Decisions made in previous sessions are recorded in the brief. Trust them. If you think a past decision was wrong, flag it to the user rather than silently changing direction.
+**Don't re-litigate past decisions.** Decisions made in previous sessions are recorded in the brief. Trust them. If you think a past decision was wrong, flag it rather than silently changing direction.
 
 **Stay in scope.** Each GitHub Issue defines the scope of your `/start` session. If you discover something interesting but out of scope, note it in the handoff note — don't chase it.
 
-**Update living documents immediately.** If you learn something new about the data (EDA) or discover a gotcha (both), update `data-profile.md` or `lessons-log.md` right away. Don't wait until session end.
+**Update living documents immediately.** If you learn something new, update `lessons-log.md` or your domain-specific documents right away. Don't wait until session end.
 
-**Verify before declaring done.** "It should work" is not verification. Run tests (SWE), check statistical assumptions (EDA), and validate against acceptance criteria (both).
+**Verify before declaring done.** "It should work" is not verification. Run tests, check assumptions, validate against acceptance criteria.
 
-**Produce a handoff note every session.** The handoff note in `docs/handoff-notes/session-NN.md` is how the next session (possibly a different instance of you) will know what happened. Be thorough: what was done, what decisions were made, what's left, what the next session needs to know.
+**Produce a handoff note every session.** The handoff note in `docs/handoff-notes/<your-role>/session-NN.md` is how the next session knows what happened. Be thorough.
 
-## GitHub Integration
+## Team Mode Behavior
 
-Both workflows use GitHub Issues as the task tracking system, managed through the `gh` CLI:
+When operating in team mode, additional rules apply:
 
-- `/decompose` creates issues with user stories and acceptance criteria
-- `/start #N` reads the issue to understand the task
-- `/handoff` comments on and closes the issue when acceptance criteria are met
-- `/review` creates new issues for findings categorized as must-fix or should-fix
+**Communicate through Matrix.** Post status updates, questions, and completion notices to the project room. The PM and other experts need to see your progress.
 
-All issue operations use `gh issue create`, `gh issue view`, `gh issue comment`, and `gh issue close`. The `gh` CLI must be installed and authenticated.
+**Respect the PM's authority.** The PM assigns tasks, sets priorities, and manages the project timeline. If you disagree with a direction, raise it — but defer to the PM's decision unless safety or correctness is at stake.
 
-## Identifying Which Workflow You're In
+**Work on your branch.** Each expert has its own git branch. Commit your work there. The PM manages merges to the main branch.
 
-If you're dropped into a project and need to determine which workflow is active:
+**Don't touch other experts' workspaces.** Your container filesystem is yours. Code sharing happens through git. Document sharing happens through the shared `docs/` directory.
 
-- Check for `docs/analysis-brief.md` → EDA workflow
-- Check for `docs/project-brief.md` → SWE workflow
-- Check for `docs/domain-context.md` or `docs/data-profile.md` → EDA workflow
-- Check for `docs/roadmap.md` → SWE workflow
-- Check the rules file content — it will reference either "Analysis Operating System" (EDA) or "Project Operating System" (SWE)
+**Report blockers immediately.** If you're stuck, say so in the Matrix room. Don't spin silently.
+
+## Identifying Your Role
+
+If you're dropped into a project and need to determine which expert you are:
+
+- Check your loaded rules file — it will say "X Operating System" at the top
+- Check your handoff notes directory — it will be `docs/handoff-notes/<your-role>/`
+- Check the available slash commands — they are role-specific
+
+If you can't determine your role, check the project brief and ask the human (standalone) or PM (team mode) for clarification.
 
 ## Common Pitfalls
 
-**Skipping the brief read.** The most common failure mode is starting work without reading the brief. Even if you think you know the project, read it. Context may have changed since your last session.
+**Skipping the brief read.** The most common failure mode. Even if you think you know the project, read the brief. Context may have changed.
 
-**Treating notebooks as deliverables (EDA).** Notebooks in `notebooks/` are the working surface. The actual deliverable is the synthesis report in `reports/`. Stakeholders read reports, not notebooks.
+**Overly broad sessions.** One task, one session. If an issue is larger than expected, flag it and break it down.
 
-**Overly broad sessions.** One task, one session. If an issue turns out to be larger than expected, flag it and break it down rather than trying to do everything in one session.
+**Forgetting `/handoff`.** Every session should end with `/handoff`. Without it, the next session starts cold.
 
-**Forgetting `/handoff`.** Every session should end with `/handoff`. Without it, the next session starts cold with no record of what happened. This is the single most important habit.
+**Running `/review` in the same session as `/start` (standalone mode).** Fresh-eyes review requires absence of implementation memory. Run it in a new session.
 
-**Running `/review` in the same session as `/start`.** The point of fresh-eyes review is the absence of implementation memory. Run it in a new session.
+**Ignoring other experts' handoff notes (team mode).** Even if you're SWE, QA's findings and DevOps's environment constraints affect your work. Skim cross-expert handoffs when starting a session.
