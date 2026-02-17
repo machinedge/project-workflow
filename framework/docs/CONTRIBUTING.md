@@ -6,19 +6,19 @@ This guide walks through creating a new expert definition for this toolkit. Whet
 
 ```bash
 # 1. Scaffold a new expert
-./framework/create-expert.sh --domain technical my-expert
+./framework/scaffold/create-expert.sh --domain technical my-expert
 
 # 2. Customize role.md and add skills
 #    (see "What to Customize" below)
 
 # 3. Validate your expert
-./framework/validate.sh technical/my-expert
+./framework/validate/validate.sh technical/my-expert
 ```
 
 On Windows:
 ```powershell
-.\framework\create-expert.ps1 -Domain technical my-expert
-.\framework\validate.sh technical/my-expert   # validation is bash-only for now
+.\framework\scaffold\create-expert.ps1 -Domain technical my-expert
+.\framework\validate\validate.sh technical/my-expert   # validation is bash-only for now
 ```
 
 ## What the Scaffold Creates
@@ -37,7 +37,7 @@ experts/technical/my-expert/
 To also scaffold the 8 default skill files from templates, use `--with-skills`:
 
 ```bash
-./framework/create-expert.sh --domain technical --with-skills my-expert
+./framework/scaffold/create-expert.sh --domain technical --with-skills my-expert
 ```
 
 This adds starter skill files to `skills/` with structural patterns and `<!-- GUIDE: ... -->` comments. Delete the guide comments as you fill in real content.
@@ -74,7 +74,7 @@ Tools go in `tools/` and are executable scripts (`.sh`, `.ps1`, `.py`) that the 
 
 ## Validation
 
-Run `./framework/validate.sh technical/my-expert` to check your expert. It verifies:
+Run `./framework/validate/validate.sh technical/my-expert` to check your expert. It verifies:
 
 - All required files exist (`role.md`, `skills/`, `tools/`)
 - Skills referenced in `role.md` have matching files
@@ -91,13 +91,13 @@ Passing validation doesn't mean the expert is good — it means the structure is
 After making changes to experts or the skill, rebuild the distributable `.skill` file:
 
 ```bash
-./framework/package_skill.sh
+./framework/package/package.sh
 ```
 
 This script:
 
 1. Creates a `build/` directory
-2. Copies `framework/skills/` into `build/skills/`
+2. Copies `framework/package/` into `build/skills/`
 3. Copies `experts/` into `build/skills/machinedge-workflows/experts/` (assembling the nested structure the skill expects)
 4. Downloads `package_skill.py` and `quick_validate.py` from the [anthropics/skills](https://github.com/anthropics/skills) repo if not already present
 5. Validates the skill structure and produces `build/machinedge-workflows.skill`
@@ -106,7 +106,7 @@ This script:
 
 Before submitting a pull request for a new expert:
 
-- [ ] `./framework/validate.sh technical/my-expert` passes with no failures
+- [ ] `./framework/validate/validate.sh technical/my-expert` passes with no failures
 - [ ] All `<!-- GUIDE: ... -->` comments removed (if using `--with-skills`)
 - [ ] All `{{PLACEHOLDER}}` markers replaced
 - [ ] `role.md` has at least 5 principles (including the universal ones)

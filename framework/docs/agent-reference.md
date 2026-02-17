@@ -60,7 +60,7 @@ Current experts in `experts/technical/`:
 Use the scaffold script:
 
 ```bash
-./framework/create-expert.sh --domain technical maintenance-planner
+./framework/scaffold/create-expert.sh --domain technical maintenance-planner
 ```
 
 This creates `experts/technical/maintenance-planner/` with a skeleton `role.md`, `skills/` directory, `tools/` directory, and guidance comments. Customize from there.
@@ -160,9 +160,9 @@ alwaysApply: true
 After making changes, validate the expert definitions:
 
 ```bash
-./framework/validate.sh                              # Validate all experts
-./framework/validate.sh technical/swe                 # Validate a specific expert
-./framework/validate.sh technical/maintenance-planner # Validate a new expert
+./framework/validate/validate.sh                              # Validate all experts
+./framework/validate/validate.sh technical/swe                 # Validate a specific expert
+./framework/validate/validate.sh technical/maintenance-planner # Validate a new expert
 ```
 
 Validation checks for required sections in `role.md`, skill file structure, document contract consistency, and cross-references between experts.

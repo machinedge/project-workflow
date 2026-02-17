@@ -50,7 +50,18 @@ if ($Domain -notmatch '^[a-z0-9-]+$') {
 
 # Resolve paths
 $ScriptDir = $PSScriptRoot
-$RepoRoot = Split-Path $ScriptDir -Parent
+$RepoRoot = & git -C $ScriptDir rev-parse --show-toplevel 2>$null
+if (-not $RepoRoot) {
+    $dir = $ScriptDir
+    while ($dir -and -not (Test-Path (Join-Path $dir ".git")) -and -not (Test-Path (Join-Path $dir "SKILL.md"))) {
+        $dir = Split-Path $dir -Parent
+    }
+    $RepoRoot = $dir
+}
+if (-not $RepoRoot) {
+    Write-Error "Error: Could not find repository root from $ScriptDir"
+    exit 1
+}
 $TemplateDir = Join-Path $ScriptDir "templates"
 $TargetDir = Join-Path $RepoRoot "experts" $Domain $ExpertName
 
@@ -186,5 +197,5 @@ Write-Host ""
 Write-Host "Next steps:"
 Write-Host "  1. Edit experts/$Domain/$ExpertName/role.md - define identity and operating rules"
 Write-Host "  2. Add skills to experts/$Domain/$ExpertName/skills/"
-Write-Host "  3. Run: .\framework\validate.sh $Domain/$ExpertName"
+Write-Host "  3. Run: .\framework\validate\validate.sh $Domain/$ExpertName"
 Write-Host ""

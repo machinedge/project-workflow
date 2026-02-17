@@ -28,7 +28,18 @@ $ErrorActionPreference = "Stop"
 
 # Resolve paths
 $ScriptDir = $PSScriptRoot
-$RepoRoot = Split-Path $ScriptDir -Parent
+$RepoRoot = & git -C $ScriptDir rev-parse --show-toplevel 2>$null
+if (-not $RepoRoot) {
+    $dir = $ScriptDir
+    while ($dir -and -not (Test-Path (Join-Path $dir ".git")) -and -not (Test-Path (Join-Path $dir "SKILL.md"))) {
+        $dir = Split-Path $dir -Parent
+    }
+    $RepoRoot = $dir
+}
+if (-not $RepoRoot) {
+    Write-Error "Error: Could not find repository or skill root from $ScriptDir"
+    exit 1
+}
 
 if ($Target -ne ".") {
     New-Item -ItemType Directory -Path $Target -Force | Out-Null

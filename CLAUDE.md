@@ -13,10 +13,14 @@ experts/technical/          ← Expert definitions (the core of this repo)
   data-analyst/             ← Data analysis (under development)
   user-experience/          ← UX design (under development)
   shared/                   ← Cross-expert protocols and shared skills
-framework/                  ← Setup scripts, scaffolding, validation, agent-reference.md
+framework/                  ← Framework tooling
+  scaffold/                 ← Expert authoring (create-expert scripts, templates)
+  validate/                 ← Validation (validate.sh)
+  install/                  ← Project installation (install.sh/ps1, targets/)
+  package/                  ← Build & distribution (package.sh, SKILL.md)
+  docs/                     ← Framework documentation (agent-reference.md, CONTRIBUTING.md)
 docs/                       ← Vision, architecture, guides
-skills/                     ← Distributable skill package
-build/                      ← Build tooling
+build/                      ← Build output (gitignored)
 ```
 
 Each expert has three things: `role.md` (identity and operating rules), `skills/` (structured capabilities as markdown), and `tools/` (executable scripts).
@@ -35,7 +39,7 @@ Each expert has three things: `role.md` (identity and operating rules), `skills/
 
 ## Before Making Changes
 
-1. Read `framework/agent-reference.md` — the detailed guide for working on this repo
+1. Read `framework/docs/agent-reference.md` — the detailed guide for working on this repo
 2. Read `experts/technical/shared/docs-protocol.md` — the document contracts between experts
 3. Read the relevant expert's `role.md` and existing skills before modifying
 4. Use full expert names (`project-manager`, not `pm`; `data-analyst`, not `eda`)
@@ -43,8 +47,8 @@ Each expert has three things: `role.md` (identity and operating rules), `skills/
 ## Creating a New Expert
 
 ```bash
-./framework/create-expert.sh --domain technical <expert-name>
-./framework/validate.sh technical/<expert-name>
+./framework/scaffold/create-expert.sh --domain technical <expert-name>
+./framework/validate/validate.sh technical/<expert-name>
 ```
 
 ## Common Mistakes
@@ -62,5 +66,5 @@ Each expert has three things: `role.md` (identity and operating rules), `skills/
 | `docs/overview.md` | Vision, architecture, design philosophy |
 | `docs/getting-started.md` | Setup for standalone and team modes |
 | `docs/workflow-anatomy.md` | Deep-dive on expert structure, skill patterns, translation layer |
-| `framework/agent-reference.md` | Detailed reference for AI assistants working on this repo |
+| `framework/docs/agent-reference.md` | Detailed reference for AI assistants working on this repo |
 | `experts/technical/shared/docs-protocol.md` | Cross-expert document contracts |

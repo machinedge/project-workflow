@@ -17,9 +17,23 @@
 
 set -e
 
-# Resolve the directory where this script lives (framework/)
+# Resolve the directory where this script lives
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+REPO_ROOT="$(git -C "$SCRIPT_DIR" rev-parse --show-toplevel 2>/dev/null)"
+if [ -z "$REPO_ROOT" ]; then
+    _dir="$SCRIPT_DIR"
+    while [ "$_dir" != "/" ]; do
+        if [ -d "$_dir/.git" ] || [ -f "$_dir/SKILL.md" ]; then
+            REPO_ROOT="$_dir"
+            break
+        fi
+        _dir="$(dirname "$_dir")"
+    done
+fi
+if [ -z "$REPO_ROOT" ]; then
+    echo "Error: Could not find repository or skill root from $SCRIPT_DIR"
+    exit 1
+fi
 
 # Parse arguments
 EDITOR="both"

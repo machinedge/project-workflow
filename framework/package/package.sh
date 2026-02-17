@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Package the machinedge-workflows skill into a distributable .skill file
-# Usage: ./framework/package_skill.sh
+# Usage: ./framework/package/package.sh
 #
 # Assembles the skill directory structure (copying experts/ into
 # skills/machinedge-workflows/experts/), downloads packaging tools
@@ -9,7 +9,7 @@
 # in the build/ directory.
 #
 # Examples:
-#   ./framework/package_skill.sh
+#   ./framework/package/package.sh
 
 set -euo pipefail
 
@@ -18,11 +18,25 @@ set -euo pipefail
 # ─────────────────────────────────────────────
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+REPO_ROOT="$(git -C "$SCRIPT_DIR" rev-parse --show-toplevel 2>/dev/null)"
+if [ -z "$REPO_ROOT" ]; then
+    _dir="$SCRIPT_DIR"
+    while [ "$_dir" != "/" ]; do
+        if [ -d "$_dir/.git" ] || [ -f "$_dir/SKILL.md" ]; then
+            REPO_ROOT="$_dir"
+            break
+        fi
+        _dir="$(dirname "$_dir")"
+    done
+fi
+if [ -z "$REPO_ROOT" ]; then
+    echo "Error: Could not find repository root from $SCRIPT_DIR"
+    exit 1
+fi
 
 BUILD_DIR="$REPO_ROOT/build"
 SKILL_NAME="machinedge-workflows"
-SKILL_SRC="$REPO_ROOT/framework/skills/$SKILL_NAME"
+SKILL_SRC="$REPO_ROOT/framework/package"
 EXPERTS_SRC="$REPO_ROOT/experts"
 SKILL_BUILD="$BUILD_DIR/skills/$SKILL_NAME"
 
@@ -64,11 +78,11 @@ cp -R "$SKILL_SRC"/. "$SKILL_BUILD/"
 echo "Copying experts into skill package..."
 cp -R "$EXPERTS_SRC" "$SKILL_BUILD/experts"
 
-# Also include the framework setup script for installation
-echo "Copying framework setup scripts..."
-mkdir -p "$SKILL_BUILD/framework"
-cp "$REPO_ROOT/framework/setup.sh" "$SKILL_BUILD/framework/"
-cp "$REPO_ROOT/framework/setup.ps1" "$SKILL_BUILD/framework/"
+# Also include the framework install scripts for installation
+echo "Copying framework install scripts..."
+mkdir -p "$SKILL_BUILD/framework/install"
+cp "$REPO_ROOT/framework/install/install.sh" "$SKILL_BUILD/framework/install/"
+cp "$REPO_ROOT/framework/install/install.ps1" "$SKILL_BUILD/framework/install/"
 
 # ─────────────────────────────────────────────
 # Ensure packaging tools are available

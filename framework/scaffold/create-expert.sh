@@ -81,7 +81,21 @@ fi
 
 # Resolve paths
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+REPO_ROOT="$(git -C "$SCRIPT_DIR" rev-parse --show-toplevel 2>/dev/null)"
+if [ -z "$REPO_ROOT" ]; then
+    _dir="$SCRIPT_DIR"
+    while [ "$_dir" != "/" ]; do
+        if [ -d "$_dir/.git" ] || [ -f "$_dir/SKILL.md" ]; then
+            REPO_ROOT="$_dir"
+            break
+        fi
+        _dir="$(dirname "$_dir")"
+    done
+fi
+if [ -z "$REPO_ROOT" ]; then
+    echo "Error: Could not find repository root from $SCRIPT_DIR"
+    exit 1
+fi
 TEMPLATE_DIR="$SCRIPT_DIR/templates"
 TARGET_DIR="$REPO_ROOT/experts/$DOMAIN/$EXPERT_NAME"
 
@@ -220,5 +234,5 @@ echo ""
 echo "Next steps:"
 echo "  1. Edit experts/$DOMAIN/$EXPERT_NAME/role.md — define identity and operating rules"
 echo "  2. Add skills to experts/$DOMAIN/$EXPERT_NAME/skills/"
-echo "  3. Run: ./framework/validate.sh $DOMAIN/$EXPERT_NAME"
+echo "  3. Run: ./framework/validate/validate.sh $DOMAIN/$EXPERT_NAME"
 echo ""

@@ -2,7 +2,7 @@
 
 This document is a deep-dive reference for contributors who want to understand, modify, or create experts. It explains every structural pattern, how the pieces connect, and why each convention exists.
 
-If you just want to create a new expert quickly, start with [CONTRIBUTING.md](../framework/CONTRIBUTING.md) and the scaffold script. Come back here when you need to understand *why* things work the way they do.
+If you just want to create a new expert quickly, start with [CONTRIBUTING.md](../framework/docs/CONTRIBUTING.md) and the scaffold script. Come back here when you need to understand *why* things work the way they do.
 
 Note: Expert definitions live in `experts/<domain>/` (e.g., `experts/technical/swe/`). Experts are organized by domain — `technical` for software development teams, with future domains like `business`, `operations`, etc. This document uses relative references like `skills/*.md` and `role.md` — these refer to files within an expert directory (e.g., `experts/technical/swe/`).
 
@@ -341,10 +341,10 @@ alwaysApply: true
 
 ```bash
 # Scaffold a new expert from templates (specify domain)
-./framework/create-expert.sh --domain technical maintenance-planner
+./framework/scaffold/create-expert.sh --domain technical maintenance-planner
 
 # Customize the generated files, then validate
-./framework/validate.sh technical/maintenance-planner
+./framework/validate/validate.sh technical/maintenance-planner
 ```
 
 The scaffold generates a complete expert skeleton — `role.md`, `skills/` directory, `tools/` directory, and a README — pre-populated with structural patterns and guidance comments. The expert is created under `experts/<domain>/<name>/`.

@@ -59,10 +59,10 @@ if ($RepoName -notmatch '^[a-zA-Z0-9._-]+$') {
 # Resolve paths: this script lives in experts/technical/project-manager/tools/
 $ScriptDir = $PSScriptRoot
 $RepoRoot = Split-Path (Split-Path (Split-Path (Split-Path $ScriptDir -Parent) -Parent) -Parent) -Parent
-$SetupScript = Join-Path $RepoRoot "framework" "setup.ps1"
+$SetupScript = Join-Path $RepoRoot "framework" "install" "install.ps1"
 
 if (-not (Test-Path $SetupScript)) {
-    Write-Error "Error: framework/setup.ps1 not found at $SetupScript"
+    Write-Error "Error: framework/install/install.ps1 not found at $SetupScript"
     exit 1
 }
 

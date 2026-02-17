@@ -31,10 +31,10 @@ fi
 # Resolve paths: this script lives in experts/technical/project-manager/tools/
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/../../../.." && pwd)"
-SETUP_SCRIPT="$REPO_ROOT/framework/setup.sh"
+SETUP_SCRIPT="$REPO_ROOT/framework/install/install.sh"
 
 if [ ! -f "$SETUP_SCRIPT" ]; then
-    echo "Error: framework/setup.sh not found at $SETUP_SCRIPT"
+    echo "Error: framework/install/install.sh not found at $SETUP_SCRIPT"
     echo "  Are you running this from the correct repo?"
     exit 1
 fi

@@ -84,8 +84,9 @@ machinedge-workflows/       ← this skill (the distributable package)
 │       ├── data-analyst/
 │       └── shared/           ← cross-expert protocols and shared skills
 └── framework/
-    ├── setup.sh / setup.ps1  ← the main setup scripts
-    └── ...
+    └── install/
+        ├── install.sh / install.ps1  ← the main install scripts
+        └── ...
 ```
 
 Resolve the paths like this:
@@ -100,7 +101,7 @@ SKILL_DIR="<directory containing this SKILL.md>"
 Run the setup script:
 
 ```bash
-bash "$SKILL_DIR/framework/setup.sh" --editor <claude|cursor|both> --experts <pm,swe,qa,devops> "<target-directory>"
+bash "$SKILL_DIR/framework/install/install.sh" --editor <claude|cursor|both> --experts <pm,swe,qa,devops> "<target-directory>"
 ```
 
 ### For new projects (local only)
@@ -109,7 +110,7 @@ Create the directory first, then run setup:
 
 ```bash
 mkdir -p "<target-directory>"
-bash "$SKILL_DIR/framework/setup.sh" --editor <claude|cursor|both> --experts <pm,swe,qa,devops> "<target-directory>"
+bash "$SKILL_DIR/framework/install/install.sh" --editor <claude|cursor|both> --experts <pm,swe,qa,devops> "<target-directory>"
 ```
 
 Then initialize git if appropriate:
@@ -141,9 +142,9 @@ Detect the platform and use the right one:
 
 ```bash
 if [[ "$OSTYPE" == "msys" ]] || [[ "$OSTYPE" == "win32" ]]; then
-    pwsh "$SKILL_DIR/framework/setup.ps1" ...
+    pwsh "$SKILL_DIR/framework/install/install.ps1" ...
 else
-    bash "$SKILL_DIR/framework/setup.sh" ...
+    bash "$SKILL_DIR/framework/install/install.sh" ...
 fi
 ```
 
@@ -182,7 +183,7 @@ The toolkit includes a framework for creating custom experts. If someone asks fo
 type that isn't available, let them know:
 
 1. The available experts are Project Manager, SWE, QA, DevOps, and Data Analyst
-2. Custom experts can be created using `./framework/create-expert.sh`
+2. Custom experts can be created using `./framework/scaffold/create-expert.sh`
 3. They can start by picking whichever existing expert is closest to their needs
    and customizing the role and skills after setup
 

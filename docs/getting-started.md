@@ -36,22 +36,22 @@ The skill walks you through choosing an expert (SWE, EDA, PM, QA, or DevOps), se
 
 ### Option B: Run the Setup Scripts Directly
 
-Setup scripts live in `framework/` and install expert definitions into your project:
+Setup scripts live in `framework/install/` and install expert definitions into your project:
 
 **macOS / Linux:**
 ```bash
 # Full team setup (all experts) for a new project
-./framework/setup.sh ~/projects/my-app
+./framework/install/install.sh ~/projects/my-app
 
 # Single expert setup
-./framework/setup.sh --expert swe ~/projects/my-app
-./framework/setup.sh --expert data-analyst ~/projects/my-analysis
+./framework/install/install.sh --expert swe ~/projects/my-app
+./framework/install/install.sh --expert data-analyst ~/projects/my-analysis
 ```
 
 **Windows (PowerShell):**
 ```powershell
-.\framework\setup.ps1 -Target ~\projects\my-app
-.\framework\setup.ps1 -Expert swe -Target ~\projects\my-app
+.\framework\install\install.ps1 -Target ~\projects\my-app
+.\framework\install\install.ps1 -Expert swe -Target ~\projects\my-app
 ```
 
 Then open the project in your editor and run the first skill (`/interview` for project-manager, `/start` for SWE, `/intake` for data-analyst).
