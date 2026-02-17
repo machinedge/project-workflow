@@ -2,9 +2,9 @@
 
 This document is a deep-dive reference for contributors who want to understand, modify, or create experts. It explains every structural pattern, how the pieces connect, and why each convention exists.
 
-If you just want to create a new expert quickly, start with [CONTRIBUTING.md](../framework/CONTRIBUTING.md) and the scaffold script. Come back here when you need to understand *why* things work the way they do.
+If you just want to create a new expert quickly, start with [CONTRIBUTING.md](../framework/docs/CONTRIBUTING.md) and the scaffold script. Come back here when you need to understand *why* things work the way they do.
 
-Note: Expert definitions live in `experts/` (the new canonical location, formerly `workflows/` and `skills/machinedge-workflows/workflows/`). This document uses relative references like `skills/*.md` and `role.md` — these refer to files within an expert directory (e.g., `experts/swe/`).
+Note: Expert definitions live in `experts/<domain>/` (e.g., `experts/technical/swe/`). Experts are organized by domain — `technical` for software development teams, with future domains like `business`, `operations`, etc. This document uses relative references like `skills/*.md` and `role.md` — these refer to files within an expert directory (e.g., `experts/technical/swe/`).
 
 ## Terminology
 
@@ -16,8 +16,9 @@ This project has evolved its terminology. Here's the mapping:
 | `editor.md` | `role.md` | Platform-neutral; describes who the agent is, not which editor it runs in |
 | `commands/` | `skills/` | Aligns with NanoClaw and OpenClaw conventions; skills are capabilities, not just slash commands |
 | Slash commands | Skills | In team mode, the PM triggers skills on other experts — they aren't user-invoked commands |
-
-The old terms may still appear in some source files during the migration period.
+| `pm/` | `project-manager/` | More explicit naming |
+| `eda/` | `data-analyst/` | More explicit naming |
+| issues | `issues/` directory | In-repo issue tracking — no external service dependency |
 
 ## The Big Picture
 
@@ -37,36 +38,38 @@ In **team mode** (coordinated experts on the MachinEdge platform), the PM expert
 
 The skill definitions are identical in both modes. The difference is who triggers them and how.
 
+In standalone mode, the install script prefixes each skill with a short expert alias to avoid filename collisions in the editor's flat command directory. For example, the SWE expert's `start` skill becomes `/swe-start`, and the PM's `interview` skill becomes `/pm-interview`. The prefixes are: `pm` (Project Manager), `swe` (SWE), `qa` (QA), `ops` (DevOps), `da` (Data Analyst), `ux` (User Experience), and `team` (shared skills). Underscores in source filenames are normalized to hyphens.
+
 ## The 8-Skill Lifecycle
 
 Each expert defines up to 8 skills that cover the full project lifecycle. They fall into four groups:
 
 ### Planning Skills (run once or rarely)
 
-| Slot | PM | SWE | QA | DevOps | EDA | Purpose |
-|------|-----|-----|-----|--------|-----|---------|
+| Slot | Project Manager | SWE | QA | DevOps | Data Analyst | Purpose |
+|------|-----------------|-----|-----|--------|--------------|---------|
 | Interview | `/interview` | — | — | — | `/intake` | Pull context from the human via structured interview |
 | Brief | `/vision` | — | — | — | `/brief` | Synthesize notes into source-of-truth document |
 | Plan | `/roadmap` | — | `/test-plan` | `/release-plan` | `/scope` | Define work structure |
-| Decompose | `/decompose` | — | — | — | `/decompose` | Break work into session-sized GitHub Issues |
+| Decompose | `/decompose` | — | — | — | `/decompose` | Break work into session-sized issues |
 
 ### Execution Skills (run per task)
 
 | Slot | Command | Purpose |
 |------|---------|---------|
-| Execute | `/start #N` | Load context, run structured multi-phase work session against a GitHub Issue |
+| Execute | `/start #N` | Load context, run structured multi-phase work session against a issue |
 | Handoff | `/handoff` | Close the session, produce handoff note, update the brief |
 
 ### Review Skills (run periodically)
 
-| Slot | PM | SWE | QA | EDA | Purpose |
-|------|-----|-----|-----|-----|---------|
+| Slot | Project Manager | SWE | QA | Data Analyst | Purpose |
+|------|-----------------|-----|-----|--------------|---------|
 | Review | — | — | `/review` | `/review` | Fresh-eyes evaluation in a separate session |
 | Synthesis | `/postmortem` | — | `/regression` | `/synthesize` | Phase-level reflection or final deliverable |
 
 ### Not All Experts Need All 8 Slots
 
-The PM is the primary planning expert — it owns interview, brief, plan, and decompose. SWE, QA, and DevOps focus on execution and their domain-specific planning (test plans, release plans, etc.). An expert only needs the skills relevant to its role.
+The project manager is the primary planning expert — it owns interview, brief, plan, and decompose. SWE, QA, and DevOps focus on execution and their domain-specific planning (test plans, release plans, etc.). An expert only needs the skills relevant to its role.
 
 ## How Skills Chain Together
 
@@ -79,7 +82,7 @@ Skills form a dependency chain through the documents they produce and consume:
                                                   │
 /plan ───────reads────────────────────────────────┘──produces──→ docs/plan.md
                                                                       │
-/decompose ──reads────────────────────────────────────────────────────┘──produces──→ GitHub Issues
+/decompose ──reads────────────────────────────────────────────────────┘──produces──→ issues
                                                                                         │
 /start ──────reads brief + lessons + issue + last handoff─────────────────────────────────┘
       │
@@ -87,7 +90,7 @@ Skills form a dependency chain through the documents they produce and consume:
                           │
 /handoff ─────reads───────┘──produces──→ docs/handoff-notes/<expert>/session-NN.md
                                               │
-/review ──────reads work products─────────────┘──produces──→ new GitHub Issues (findings)
+/review ──────reads work products─────────────┘──produces──→ new issues (findings)
                                                                    │
 /synthesis ───reads all handoff notes + work products──────────────┘──produces──→ final report
 ```
@@ -241,9 +244,23 @@ Every project needs these document types:
 
 Domain-specific experts add their own documents. EDA adds `domain-context.md` and `data-profile.md`. QA adds `test-plan.md`. DevOps adds `env-context.md` and `release-plan.md`.
 
+### In-Repo Issue Tracking
+
+Issues are tracked as files in the `issues/` directory within the project repo itself, rather than relying on an external service like GitHub Issues. This keeps everything self-contained and works in disconnected/on-prem environments. The project manager manages the issue lifecycle — creating, assigning, updating status, and closing issues. All experts can read issues; the project manager is the primary author.
+
 ### Cross-Expert Document Contracts
 
-See `experts/shared/docs-protocol.md` for the full producer/consumer matrix. The key principle: every expert can read all documents, but each expert writes only to its own handoff notes subdirectory and its own domain-specific documents.
+See `experts/technical/shared/docs-protocol.md` for the full producer/consumer matrix. The key principle: every expert can read all documents, but each expert writes only to its own handoff notes subdirectory and its own domain-specific documents.
+
+## The `tools/` Directory
+
+Each expert has a `tools/` directory for executable scripts specific to that expert's role. Unlike skills (which are LLM-executed markdown instructions), tools are scripts that extend the expert's capabilities:
+
+- **project-manager** has `new_repo.sh` / `new_repo.ps1` — only the PM can create new repositories
+- Other experts have empty `tools/` directories (with `.gitkeep`) ready for custom tooling
+- **shared** has a `tools/` directory for scripts available to all experts
+
+Tools enforce capability boundaries between experts — an SWE cannot create repos, a QA cannot deploy, etc.
 
 ## The `role.md` File
 
@@ -280,19 +297,37 @@ Add domain-specific principles as needed.
 
 ## The Translation Layer
 
-The expert definitions in this repo are platform-agnostic. A translation layer converts them to platform-specific configurations:
+The expert definitions in this repo are platform-agnostic. A translation layer converts them to platform-specific configurations. The MVP targets **OpenClaw** for team mode and **Claude Code / Cursor** for standalone mode.
 
-| Target Platform | `role.md` becomes | `skills/` become |
-|-----------------|-------------------|-----------------|
-| Claude Code | `.claude/CLAUDE.md` | `.claude/commands/*.md` |
-| Cursor | `.cursor/rules/{name}.mdc` (with YAML frontmatter) | `.cursor/commands/*.md` |
-| NanoClaw | `groups/{name}/CLAUDE.md` | `.claude/skills/*.md` (with YAML frontmatter) |
-| OpenClaw | Workspace `AGENTS.md` | `skills/*/SKILL.md` (with YAML frontmatter) |
-| MachinEdge Platform | Container-injected system prompt | Container-injected skill definitions |
+| Target Platform | `role.md` becomes | `skills/` become | `tools/` become |
+|-----------------|-------------------|-----------------|-----------------|
+| **OpenClaw** (MVP team mode) | Workspace `AGENTS.md` | `skills/*/SKILL.md` (with YAML frontmatter) | In workspace |
+| Claude Code (standalone) | `.claude/CLAUDE.md` | `.claude/commands/*.md` | Copied to project |
+| Cursor (standalone) | `.cursor/rules/{name}.mdc` (with YAML frontmatter) | `.cursor/commands/*.md` | Copied to project |
+| NanoClaw (future) | `groups/{name}/CLAUDE.md` | `.claude/skills/*.md` (with YAML frontmatter) | Mounted into container |
 
 The translation is automated and maintained by MachinEdge. Expert authors write `role.md` and `skills/*.md` in the canonical format; the translation handles the rest.
 
-### Cursor-Specific Translation
+### OpenClaw Translation (Team Mode)
+
+For team mode, each expert becomes an OpenClaw agent with its own workspace. The translation generates:
+
+- **`AGENTS.md`** from `role.md` — injected into the agent's workspace as the system prompt
+- **`SKILL.md` files** from each skill in `skills/` — with YAML frontmatter (`name`, `description`)
+- **Agent routing bindings** — configuring which expert responds to which message patterns
+- **Workspace isolation** — each expert gets its own `agentDir` and session store
+
+OpenClaw's multi-agent routing handles the message flow between experts via Matrix. The project manager agent gets moderator-level permissions; other experts get standard permissions.
+
+```yaml
+# Example SKILL.md frontmatter (generated by translation layer)
+---
+name: start
+description: "Load context and execute a structured work session against an issue"
+---
+```
+
+### Cursor-Specific Translation (Standalone Mode)
 
 Cursor requires YAML frontmatter on rules files:
 ```yaml
@@ -302,29 +337,19 @@ alwaysApply: true
 ---
 ```
 
-### NanoClaw/OpenClaw Skill Translation
-
-Both platforms use YAML frontmatter on skill files:
-```yaml
----
-name: [skill-name]
-description: [What this skill does]
----
-```
-
 ## How to Customize
 
 ### Creating a New Expert
 
 ```bash
-# Scaffold a new expert from templates
-./framework/create-expert.sh maintenance-planner
+# Scaffold a new expert from templates (specify domain)
+./framework/scaffold/create-expert.sh --domain technical maintenance-planner
 
 # Customize the generated files, then validate
-./framework/validate.sh maintenance-planner
+./framework/validate/validate.sh technical/maintenance-planner
 ```
 
-The scaffold generates a complete expert skeleton — `role.md`, skill files, and a README — pre-populated with structural patterns and guidance comments.
+The scaffold generates a complete expert skeleton — `role.md`, `skills/` directory, `tools/` directory, and a README — pre-populated with structural patterns and guidance comments. The expert is created under `experts/<domain>/<name>/`.
 
 ### Adding a Phase to `/start`
 

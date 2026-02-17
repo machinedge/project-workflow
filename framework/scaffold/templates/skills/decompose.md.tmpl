@@ -1,0 +1,64 @@
+<!-- TEMPLATE: Decompose Skill
+     This skill breaks a work unit (milestone/phase) into session-sized
+     tasks. Each task represents one /start session worth of work.
+
+     Tasks use the user story format and are tracked in the `issues/`
+     directory as local files. This keeps everything in-repo.
+
+     Replace {{PLAN_DOC}} with the plan file.
+     Replace {{BRIEF_DOC}} with the brief file.
+     Replace {{WORK_UNIT}} with your domain term (milestone, phase, etc.).
+     Replace {{ISSUE_LABEL}} with the label for tasks (e.g., "task", "analysis").
+     Delete these comments when done.
+-->
+The user wants to break a {{WORK_UNIT}} into individual tasks.
+
+If the user specified a {{WORK_UNIT}}: $ARGUMENTS
+
+Read `docs/{{PLAN_DOC}}` and `docs/{{BRIEF_DOC}}`.
+
+If the user didn't specify which {{WORK_UNIT}}, check the brief's "Current Status" section or ask them.
+
+Break the {{WORK_UNIT}} into session-sized tasks. Each task should be completable in a single `/start` session.
+
+For each task, create an issue file in the `issues/` directory:
+
+Save to `issues/NNN-[short-slug].md` (zero-padded, e.g. `issues/001-setup-auth.md`):
+
+```markdown
+# [Short, descriptive title]
+
+**Label:** {{ISSUE_LABEL}}
+**Status:** open
+
+## User Story
+As a [specific persona], I [need/want] [capability] so that [value].
+
+## Description
+[2-3 sentences explaining the work]
+
+## Acceptance Criteria
+- [ ] [Criterion phrased from the persona's perspective]
+- [ ] [Another criterion — what can the user do or see?]
+- [ ] [Keep to 3-5 criteria]
+
+## Technical Notes
+**Estimated effort:** [Small / Medium / Large]
+**Dependencies:** [Issue numbers, or "None"]
+```
+
+After creating all issues, present a summary table:
+
+```
+| # | Title | Effort | Dependencies |
+|---|-------|--------|-------------|
+```
+
+Rules:
+- Each task should take one session. If it feels like more, break it down further.
+- User stories use specific personas, not "user" or "developer."
+- Acceptance criteria describe what the persona can do or see, not implementation details.
+  - Good: "Warehouse manager can filter orders by date range"
+  - Bad: "Implement date range filter SQL query"
+- Sequence tasks so dependencies flow forward (no circular dependencies).
+- Present the plan to the user and wait for approval before creating issue files.

@@ -36,25 +36,25 @@ The skill walks you through choosing an expert (SWE, EDA, PM, QA, or DevOps), se
 
 ### Option B: Run the Setup Scripts Directly
 
-If you prefer the command line:
+Setup scripts live in `framework/install/` and install expert definitions into your project:
 
 **macOS / Linux:**
 ```bash
 # Full team setup (all experts) for a new project
-./workflows/setup.sh ~/projects/my-app
+./framework/install/install.sh ~/projects/my-app
 
 # Single expert setup
-./workflows/setup.sh --expert swe ~/projects/my-app
-./workflows/setup.sh --expert eda ~/projects/my-analysis
+./framework/install/install.sh --expert swe ~/projects/my-app
+./framework/install/install.sh --expert data-analyst ~/projects/my-analysis
 ```
 
 **Windows (PowerShell):**
 ```powershell
-.\workflows\setup.ps1 -Target ~\projects\my-app
-.\workflows\setup.ps1 -Expert swe -Target ~\projects\my-app
+.\framework\install\install.ps1 -Target ~\projects\my-app
+.\framework\install\install.ps1 -Expert swe -Target ~\projects\my-app
 ```
 
-Then open the project in your editor and run the first skill (`/interview` for PM, `/start` for SWE, `/intake` for EDA).
+Then open the project in your editor and run the first skill (`/pm-interview` for project-manager, `/swe-start` for SWE, `/da-intake` for data-analyst).
 
 ### What Setup Creates
 
@@ -68,21 +68,21 @@ my-app/
 ├── .cursor/
 │   ├── rules/expert-os.mdc         # Auto-loaded rules for Cursor
 │   └── commands/*.md                # Skills as slash commands
-└── docs/
-    ├── lessons-log.md               # Running gotchas (template)
-    └── handoff-notes/               # Session memory
-        ├── swe/
-        ├── qa/
-        ├── devops/
-        └── pm/
+├── docs/
+│   ├── lessons-log.md               # Running gotchas (template)
+│   └── handoff-notes/               # Session memory
+│       ├── swe/
+│       ├── qa/
+│       ├── devops/
+│       └── project-manager/
+└── issues/                          # In-repo issue tracking (managed by PM)
 ```
 
 ### Prerequisites (Standalone Mode)
 
 - Git (installed and configured)
-- GitHub CLI (`gh`) — [install here](https://cli.github.com/)
 - Claude Code, Cursor, or Cowork
-- For EDA: Python 3.10+ with uv or pip
+- For data-analyst expert: Python 3.10+ with uv or pip
 
 ---
 
@@ -92,22 +92,27 @@ my-app/
 
 ### Prerequisites (Team Mode)
 
+- OpenClaw installed and configured ([openclaw.ai](https://openclaw.ai/))
 - Docker and Docker Compose
-- A Matrix homeserver (Dendrite recommended for single-box deployments)
 - OpenAI API key
 - A Matrix client (Element recommended) for monitoring the team
 
 ### Spinning Up a Team
 
 ```bash
-# Initialize a new project with a full dev team
-machinedge init my-project
+# cd into the project directory of your choice
+cd my-project
 
-# This provisions:
-# - A Matrix room for the project
-# - Docker containers for each expert (PM, SWE, QA, DevOps)
-# - A shared git repo with branch-per-expert strategy
-# - Static configuration generated from the expert definitions
+# Spin up a full dev team for a project
+machinedge init software
+
+# This:
+# - Translates expert definitions into OpenClaw agent configs
+# - Provisions OpenClaw workspaces for each expert (project-manager, SWE, QA, DevOps)
+# - Sets up a Matrix room with routing bindings for the team
+# - Configures a shared git repo with branch-per-expert strategy
+# - Creates an issues/ directory for in-repo task tracking
+# - Starts the OpenClaw gateway with the team running
 ```
 
 ### Interacting with Your Team
@@ -127,17 +132,16 @@ You can also monitor individual expert activity, interject at any point, or step
 ~/.machinedge/
 ├── projects/
 │   └── my-project/
-│       ├── config.yaml              # Static team configuration
-│       ├── docker-compose.yaml      # Container definitions
-│       ├── matrix/                  # Matrix room configuration
-│       └── workspaces/              # Per-expert isolated workspaces
-│           ├── pm/
-│           ├── swe/
-│           ├── qa/
-│           └── devops/
-└── shared/
-    └── git/
-        └── my-project.git           # Shared bare repo
+│       ├── machinedge.yaml          # MachinEdge team configuration
+│       ├── openclaw/                # Generated OpenClaw configuration
+│       │   ├── agents.yaml          # Multi-agent routing and bindings
+│       │   └── workspaces/          # Per-expert OpenClaw workspaces
+│       │       ├── project-manager/ # AGENTS.md + skills/ + tools/
+│       │       ├── swe/
+│       │       ├── qa/
+│       │       └── devops/
+│       └── git/
+│           └── my-project.git       # Shared bare repo
 ```
 
 ---
@@ -146,29 +150,29 @@ You can also monitor individual expert activity, interject at any point, or step
 
 ### With the PM Expert
 
-1. **`/interview`** — The PM conducts a structured interview to pull your project ideas out. Asks about goals, users, constraints, and scope. Output: `docs/interview-notes.md`.
-2. **`/vision`** — Reads interview notes and drafts a concise project brief. Review carefully — this becomes the source of truth. Output: `docs/project-brief.md`.
-3. **`/roadmap`** — Creates a milestone plan with dependencies and risks. Output: `docs/roadmap.md`.
-4. **`/decompose`** — Pick a milestone. Breaks it into session-sized GitHub Issues with user stories and acceptance criteria.
+1. **`/pm-interview`** — The PM conducts a structured interview to pull your project ideas out. Asks about goals, users, constraints, and scope. Output: `docs/interview-notes.md`.
+2. **`/pm-vision`** — Reads interview notes and drafts a concise project brief. Review carefully — this becomes the source of truth. Output: `docs/project-brief.md`.
+3. **`/pm-roadmap`** — Creates a milestone plan with dependencies and risks. Output: `docs/roadmap.md`.
+4. **`/pm-decompose`** — Pick a milestone. Breaks it into session-sized issues (tracked in `issues/`) with user stories and acceptance criteria.
 
 ### With the SWE Expert
 
-5. **`/start #N`** — Pick an issue number. Loads all context, presents a plan (approval gate), designs architecture (approval gate), writes tests, implements, verifies, and reports.
-6. **`/handoff`** — Run before closing the session. Documents what was done, updates the brief, closes the issue.
+5. **`/swe-start #N`** — Pick an issue number. Loads all context, presents a plan (approval gate), designs architecture (approval gate), writes tests, implements, verifies, and reports.
+6. **`/swe-handoff`** — Run before closing the session. Documents what was done, updates the brief, closes the issue.
 
 Repeat steps 5-6 for each task.
 
 ### With the QA Expert
 
-- **`/review #N`** — Fresh-eyes evaluation in a separate session.
-- **`/test-plan`** — Creates a test plan based on the project brief and roadmap.
-- **`/regression`** — Runs regression analysis against existing test coverage.
+- **`/qa-review #N`** — Fresh-eyes evaluation in a separate session.
+- **`/qa-test-plan`** — Creates a test plan based on the project brief and roadmap.
+- **`/qa-regression`** — Runs regression analysis against existing test coverage.
 
 ### With the DevOps Expert
 
-- **`/env-discovery`** — Discovers and documents the deployment environment.
-- **`/pipeline`** — Sets up CI/CD pipeline configuration.
-- **`/deploy`** — Executes deployment following the release plan.
+- **`/ops-env-discovery`** — Discovers and documents the deployment environment.
+- **`/ops-pipeline`** — Sets up CI/CD pipeline configuration.
+- **`/ops-deploy`** — Executes deployment following the release plan.
 
 ## Your First Session (Team Mode)
 
@@ -187,12 +191,12 @@ In team mode, your interaction is simpler:
 
 ## Tips
 
-**Always run `/handoff` before closing a session (standalone mode).** This is the single most important habit. The handoff note is how the next session knows what happened.
+**Always run the handoff skill (e.g. `/swe-handoff`) before closing a session (standalone mode).** This is the single most important habit. The handoff note is how the next session knows what happened.
 
 **Keep sessions focused.** One task per session. If you're tempted to squeeze in "one more thing," start a new session instead.
 
 **Review the brief after `/vision` or `/brief`.** The project brief becomes the source of truth for every downstream action. If it's wrong, everything built on it will be wrong.
 
-**Use `/review` in a fresh session (standalone mode).** The whole point of fresh-eyes review is the absence of implementation memory. Running it in the same session that wrote the code defeats the purpose.
+**Use `/qa-review` in a fresh session (standalone mode).** The whole point of fresh-eyes review is the absence of implementation memory. Running it in the same session that wrote the code defeats the purpose.
 
-**The `docs/` folder is your team's shared context.** It's editor-agnostic and expert-agnostic. All experts read and write the same document pool.
+**`docs/` and `issues/` are your team's shared context.** They're editor-agnostic and expert-agnostic. All experts read from the same document and issue pool. The PM manages the issue lifecycle — creating, assigning, and closing issues as work progresses.

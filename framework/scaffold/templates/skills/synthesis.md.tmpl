@@ -1,0 +1,87 @@
+<!-- TEMPLATE: Synthesis Skill
+     This skill runs at the end of a major work unit (milestone/phase).
+     It pulls together everything that happened and produces a final assessment
+     or deliverable.
+
+     SWE calls this "/postmortem" — reviews what was learned, updates the plan.
+     EDA calls this "/synthesize" — pulls findings into a recommendations report.
+
+     The output depends on your domain:
+       - For SWE-like experts: a retrospective that updates the roadmap
+       - For EDA-like experts: a deliverable report for stakeholders
+       - For other experts: whatever the appropriate capstone is
+
+     Replace all {{PLACEHOLDER}} markers.
+     Delete these comments when done.
+-->
+The user has completed a {{WORK_UNIT}} and wants to review and synthesize the results.
+
+If the user specified which {{WORK_UNIT}}: $ARGUMENTS
+
+---
+
+## Step 1: Gather Everything
+
+Read:
+1. `docs/{{BRIEF_DOC}}`
+2. `docs/{{PLAN_DOC}}`
+3. All handoff notes for sessions in this {{WORK_UNIT}}
+4. All issues in `issues/` for this {{WORK_UNIT}} (including review findings)
+5. The work products produced
+
+<!-- GUIDE: Add domain-specific inputs. EDA reads notebooks and data profiles.
+     SWE reads the codebase. Your expert might have its own. -->
+
+---
+
+## Step 2: Assess
+
+<!-- GUIDE: Customize these assessment questions for your domain.
+
+     For SWE-like experts, ask:
+       - What was planned vs. what was delivered?
+       - What was learned that changes downstream plans?
+       - What technical debt was incurred?
+
+     For EDA-like experts, ask:
+       - What did we find?
+       - What are the recommendations?
+       - What's the confidence level?
+
+     For other experts, ask:
+       - Did we achieve the {{WORK_UNIT}} goal?
+       - What surprised us?
+       - What should change going forward? -->
+
+Assess the completed {{WORK_UNIT}}:
+
+1. **Goal vs. Reality** — Did we achieve what we set out to do?
+2. **Key Findings** — What were the most important results or discoveries?
+3. **Surprises** — What was unexpected? What assumptions were wrong?
+4. **Lessons** — What should we do differently in the next {{WORK_UNIT}}?
+5. **Impact on Plan** — Does anything downstream need to change?
+
+---
+
+## Step 3: Produce Output
+
+<!-- GUIDE: Customize the output for your domain.
+
+     For SWE: Update project-brief.md and roadmap.md with lessons learned.
+     For EDA: Produce a synthesis report in reports/.
+     For other: Whatever the appropriate capstone deliverable is. -->
+
+Produce the synthesis output and present it to the user for review.
+
+---
+
+## Step 4: Update Documents
+
+- Update `docs/{{BRIEF_DOC}}` with the {{WORK_UNIT}} completion and any revised plans.
+- Update `docs/{{PLAN_DOC}}` if downstream {{WORK_UNIT}}s need adjustment.
+- Add any new lessons to `docs/lessons-log.md`.
+
+Rules:
+- Be honest about what was delivered vs. what was planned.
+- Revise downstream estimates based on what was learned. Optimism is not a plan.
+- Present the synthesis to the user and wait for approval before saving.

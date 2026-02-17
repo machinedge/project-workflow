@@ -76,7 +76,7 @@ experts/
       skills/           # intake, brief, scope, decompose, start, review, synthesize
 ```
 
-These definitions are platform-agnostic. A translation layer generates configs for the target runtime — Claude Code, Cursor, NanoClaw, OpenClaw, or MachinEdge's own platform.
+These definitions are platform-agnostic. A translation layer generates configs for the target runtime — **OpenClaw** for team mode, **Claude Code** and **Cursor** for standalone mode.
 
 ### Team Architecture
 
@@ -118,9 +118,9 @@ In standalone mode, you trigger these as slash commands. In team mode, the PM tr
 |-------|----------|-------------|
 | [Overview](docs/overview.md) | Everyone | Vision, architecture, design philosophy, platform comparisons |
 | [Getting Started](docs/getting-started.md) | Users | Setup for standalone and team modes |
-| [Agent Reference](docs/agent-reference.md) | AI agents | How experts orient themselves, read documents, and execute skills |
+| [Agent Reference](docs/agent-reference.md) | AI assistants + Contributors | How to work on this repo — building, modifying, and extending expert definitions |
 | [Expert Anatomy](docs/workflow-anatomy.md) | Contributors | Deep-dive on expert structure, skill patterns, translation layer |
-| [Docs Protocol](workflows/shared/docs-protocol.md) | Contributors | Cross-expert document contracts and conventions |
+| [Docs Protocol](experts/technical/shared/docs-protocol.md) | Contributors | Cross-expert document contracts and conventions |
 
 ## Terminology
 
@@ -158,26 +158,31 @@ project-workflow/
 │   ├── getting-started.md          ← Setup guide
 │   ├── agent-reference.md          ← Reference for AI experts
 │   └── workflow-anatomy.md         ← Deep-dive on expert structure
-├── experts/                        ← Expert definitions (current location)
-│   ├── pm/                         ← Product/project manager
-│   │   ├── role.md                 ← Operating rules (→ role.md)
-│   │   └── skills/                 ← Skills (→ skills/)
-│   ├── swe/                        ← Software engineer
-│   ├── qa/                         ← Quality assurance
-│   ├── devops/                     ← DevOps/deployment
-│   ├── eda/                        ← Exploratory data analysis
-│   └── shared/                     ← Cross-expert protocols
+├── experts/                        ← Expert definitions
+│   └── technical/                  ← Domain: technical/software development
+│       ├── project-manager/        ← Orchestrator and team lead
+│       │   ├── role.md
+│       │   ├── skills/
+│       │   └── tools/              ← PM-only tooling (new_repo.sh, etc.)
+│       ├── swe/                    ← Software engineer
+│       │   ├── role.md
+│       │   ├── skills/
+│       │   └── tools/
+│       ├── qa/                     ← Quality assurance
+│       ├── devops/                 ← DevOps/deployment
+│       ├── data-analyst/           ← Data analysis (under development)
+│       ├── user-experience/        ← UX design (under development)
+│       └── shared/                 ← Cross-expert protocols and shared skills
 ├── skills/
 │   └── machinedge-workflows/       ← Distributable skill package
 ├── build/                          ← Build tooling
-└── framework/                      ← Scaffolding for new experts
-    ├── create-workflow.sh
+└── framework/                      ← Setup scripts, scaffolding, validation
+    ├── setup.sh / setup.ps1
+    ├── create-expert.sh
     ├── validate.sh
     ├── CONTRIBUTING.md
     └── templates/
 ```
-
-> **Note:** The repo is in a transition period. Expert definitions currently live in `workflows/` with `editor.md` and `commands/` naming. These will migrate to `experts/` with `role.md` and `skills/` naming in a future release. The documentation reflects the target state.
 
 ## Prerequisites
 
@@ -187,6 +192,7 @@ project-workflow/
 - For EDA: Python 3.10+
 
 **Team mode (coming):**
+- OpenClaw ([openclaw.ai](https://openclaw.ai/))
 - Docker + Docker Compose
 - OpenAI API key
 
