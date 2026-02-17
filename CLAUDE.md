@@ -20,10 +20,13 @@ framework/                  ← Framework tooling
     install.sh/ps1          ← Standalone mode (Claude Code, Cursor)
     install-team.sh         ← Team mode (Docker + Matrix + OpenClaw)
     targets/                ← Per-platform translation docs
-  package/                  ← Build & distribution (package.sh, SKILL.md)
   docs/                     ← Framework documentation (agent-reference.md, CONTRIBUTING.md)
+package/                    ← Build & distribution
+  package.sh/ps1            ← Build the .skill file
+  SKILL.md                  ← Skill definition for Claude Code/Cowork
+  tools/                    ← Repo creation (new_repo) and expert listing (list-experts)
+  build/                    ← Build output (gitignored)
 docs/                       ← Vision, architecture, guides
-build/                      ← Build output (gitignored)
 ```
 
 Each expert has three things: `role.md` (identity and operating rules), `skills/` (structured capabilities as markdown), and `tools/` (executable scripts).

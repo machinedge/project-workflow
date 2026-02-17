@@ -1,32 +1,23 @@
-# MachinEdge Expert Teams — New Repo Scaffolder (Windows)
-# Usage: .\new_repo.ps1 [-Org <github-org>] [-Editor claude|cursor|both] [-Experts pm,swe,qa,devops] <repo-name>
+# MachinEdge Expert Teams — New Repo Creator (Windows)
+# Usage: .\new_repo.ps1 [-Org <github-org>] <repo-name>
 #
-# Creates a new git repo with selected experts pre-configured,
-# and pushes it to GitHub under the specified org/user.
+# Creates a new git repo and pushes it to GitHub under the specified org/user.
+# Expert installation is handled separately via install.ps1.
 #
 # The GitHub org/user can be set via:
 #   1. -Org parameter (highest priority)
 #   2. GITHUB_ORG environment variable
 #
 # Examples:
-#   .\new_repo.ps1 my-app                                            # Uses $env:GITHUB_ORG, all experts, both editors
-#   .\new_repo.ps1 -Org mycompany my-app                             # Explicit org
-#   .\new_repo.ps1 -Experts "pm,swe" my-app                          # Just PM and SWE
-#   .\new_repo.ps1 -Experts "pm,swe,qa" -Editor cursor app           # PM+SWE+QA, Cursor only
+#   .\new_repo.ps1 my-app                      # Uses $env:GITHUB_ORG
+#   .\new_repo.ps1 -Org mycompany my-app       # Explicit org
 
 param(
     [Parameter(Mandatory = $true, Position = 0)]
     [string]$RepoName,
 
     [Parameter()]
-    [string]$Org = "",
-
-    [Parameter()]
-    [ValidateSet("claude", "cursor", "both")]
-    [string]$Editor = "both",
-
-    [Parameter()]
-    [string]$Experts = "project-manager,swe,qa,devops"
+    [string]$Org = ""
 )
 
 $ErrorActionPreference = "Stop"
@@ -56,16 +47,6 @@ if ($RepoName -notmatch '^[a-zA-Z0-9._-]+$') {
     exit 1
 }
 
-# Resolve paths: this script lives in experts/technical/project-manager/tools/
-$ScriptDir = $PSScriptRoot
-$RepoRoot = Split-Path (Split-Path (Split-Path (Split-Path $ScriptDir -Parent) -Parent) -Parent) -Parent
-$SetupScript = Join-Path $RepoRoot "framework" "install" "install.ps1"
-
-if (-not (Test-Path $SetupScript)) {
-    Write-Error "Error: framework/install/install.ps1 not found at $SetupScript"
-    exit 1
-}
-
 $RepoDir = Join-Path $HOME "work" $RepoName
 
 if (Test-Path $RepoDir) {
@@ -79,16 +60,12 @@ New-Item -ItemType Directory -Path $RepoDir -Force | Out-Null
 New-Item -ItemType File -Path "$RepoDir/README.md" -Force | Out-Null
 New-Item -ItemType File -Path "$RepoDir/.gitignore" -Force | Out-Null
 
-# Run the framework setup script
-Write-Host "Installing expert team..."
-& $SetupScript -Editor $Editor -Experts $Experts -Target $RepoDir
-
 # Git init and push
 Push-Location $RepoDir
 try {
     git init
     git add .
-    git commit -m "Initial commit: project scaffold with MachinEdge Expert Teams (experts: $Experts)"
+    git commit -m "Initial commit"
 
     gh repo create "$Org/$RepoName" --private
     if ($LASTEXITCODE -ne 0) {
@@ -108,5 +85,4 @@ try {
 Write-Host ""
 Write-Host "Done! Repo ready at: $RepoDir"
 Write-Host "GitHub: https://github.com/$Org/$RepoName"
-Write-Host "Experts installed: $Experts"
 Write-Host ""

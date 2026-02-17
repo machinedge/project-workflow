@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Package the machinedge-workflows skill into a distributable .skill file
-# Usage: ./framework/package/package.sh
+# Usage: ./package/package.sh
 #
 # Assembles the skill directory structure (copying experts/ into
 # skills/machinedge-workflows/experts/), downloads packaging tools
@@ -9,7 +9,7 @@
 # in the build/ directory.
 #
 # Examples:
-#   ./framework/package/package.sh
+#   ./package/package.sh
 
 set -euo pipefail
 
@@ -34,9 +34,9 @@ if [ -z "$REPO_ROOT" ]; then
     exit 1
 fi
 
-BUILD_DIR="$REPO_ROOT/build"
+BUILD_DIR="$REPO_ROOT/package/build"
 SKILL_NAME="machinedge-workflows"
-SKILL_SRC="$REPO_ROOT/framework/package"
+SKILL_SRC="$REPO_ROOT/package"
 EXPERTS_SRC="$REPO_ROOT/experts"
 SKILL_BUILD="$BUILD_DIR/skills/$SKILL_NAME"
 
@@ -73,7 +73,8 @@ mkdir -p "$SKILL_BUILD"
 # ─────────────────────────────────────────────
 
 echo "Copying skill files..."
-cp -R "$SKILL_SRC"/. "$SKILL_BUILD/"
+cp "$SKILL_SRC/SKILL.md" "$SKILL_BUILD/"
+cp -R "$SKILL_SRC/tools" "$SKILL_BUILD/tools"
 
 echo "Copying experts into skill package..."
 cp -R "$EXPERTS_SRC" "$SKILL_BUILD/experts"
@@ -148,7 +149,8 @@ if [ -f "$SKILL_FILE" ]; then
     echo "  Output: $SKILL_FILE ($SIZE)"
     echo ""
     echo "To install:"
-    echo "  claude install-skill $SKILL_FILE"
+    echo "  ./install-skill.sh                          # Personal (all projects)"
+    echo "  ./install-skill.sh --project <project-dir>  # Project-local"
 else
     echo ""
     echo "Error: Expected output file not found at $SKILL_FILE"

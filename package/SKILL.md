@@ -62,6 +62,17 @@ This requires `git` and `gh` CLI to be installed. If they say yes, you'll need:
 - A GitHub org or username (check for `GITHUB_ORG` env var first)
 - The repo name (default to the project directory name)
 
+### Listing available experts
+
+To show the user which experts are available, run:
+
+```bash
+bash "$SKILL_DIR/tools/list-experts.sh"
+```
+
+Use this when a user asks "what experts are available?" or when presenting expert choices
+during setup.
+
 ## Step 2: Execute Setup
 
 Once you have the user's choices, run the appropriate setup script. Everything is bundled
@@ -75,6 +86,9 @@ the parent of this file. All expert definitions and the framework are bundled ri
 ```
 machinedge-workflows/       ← this skill (the distributable package)
 ├── SKILL.md                ← you are reading this
+├── tools/                  ← repo creation and expert listing
+│   ├── new_repo.sh / new_repo.ps1
+│   └── list-experts.sh / list-experts.ps1
 ├── experts/                ← expert definitions organized by domain
 │   └── technical/
 │       ├── project-manager/  ← role.md, skills/, tools/
@@ -121,16 +135,28 @@ cd "<target-directory>" && git init && git add . && git commit -m "Initial commi
 
 ### For new projects with GitHub repo
 
-Use the PM's new_repo tool. It handles directory creation, setup, git init, and GitHub repo creation:
+First, create the repo:
 
 ```bash
-bash "$SKILL_DIR/experts/technical/project-manager/tools/new_repo.sh" --org "<github-org>" --editor <claude|cursor|both> --experts <pm,swe,qa,devops> "<repo-name>"
+bash "$SKILL_DIR/tools/new_repo.sh" --org "<github-org>" "<repo-name>"
 ```
 
 Before running this, verify prerequisites:
 - `git` is installed: `command -v git`
 - `gh` CLI is installed: `command -v gh`
 - `gh` is authenticated: `gh auth status`
+
+Then install the expert team into the new repo:
+
+```bash
+bash "$SKILL_DIR/framework/install/install.sh" --editor <claude|cursor|both> --experts <pm,swe,qa,devops> "$HOME/work/<repo-name>"
+```
+
+Then commit and push the expert team files:
+
+```bash
+cd "$HOME/work/<repo-name>" && git add . && git commit -m "Add MachinEdge Expert Teams" && git push
+```
 
 If any prerequisite is missing, explain what needs to be installed and offer to help
 (but note that the user may need to handle authentication themselves).

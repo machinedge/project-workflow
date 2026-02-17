@@ -91,16 +91,16 @@ Passing validation doesn't mean the expert is good — it means the structure is
 After making changes to experts or the skill, rebuild the distributable `.skill` file:
 
 ```bash
-./framework/package/package.sh
+./package/package.sh
 ```
 
 This script:
 
-1. Creates a `build/` directory
-2. Copies `framework/package/` into `build/skills/`
-3. Copies `experts/` into `build/skills/machinedge-workflows/experts/` (assembling the nested structure the skill expects)
+1. Creates a `package/build/` directory
+2. Copies `package/` (including `tools/`) into `package/build/skills/`
+3. Copies `experts/` into `package/build/skills/machinedge-workflows/experts/` (assembling the nested structure the skill expects)
 4. Downloads `package_skill.py` and `quick_validate.py` from the [anthropics/skills](https://github.com/anthropics/skills) repo if not already present
-5. Validates the skill structure and produces `build/machinedge-workflows.skill`
+5. Validates the skill structure and produces `package/build/machinedge-workflows.skill`
 
 ## PR Checklist
 
