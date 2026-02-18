@@ -1,283 +1,253 @@
 ---
 name: machinedge-workflows
-description: "Set up structured AI-assisted expert teams by MachinEdge. Available experts: Project Manager (PM) for orchestration and planning, Software Engineer (SWE) for implementation, QA for quality assurance, DevOps for deployment, and Data Analyst for time series analysis. Use this skill whenever someone mentions: setting up an expert team, starting a new project, machinedge, structured development, project setup, configuring Claude Code or Cursor for multi-session work, or wants to add expert skills to an existing project. Works in both Cowork and Claude Code."
+description: "Set up structured AI-assisted expert teams by MachinEdge. Available experts: Project Manager, Software Engineer, QA, DevOps, and Data Analyst. Use this skill when someone mentions: setting up an expert team, starting a new project, machinedge, structured development, project setup, or wants to add expert skills to an existing project."
 ---
 
 # MachinEdge Expert Teams Setup
 
 You are helping a user set up MachinEdge Expert Teams in a project directory. Your job is to
-guide them through a few choices and then configure everything — creating directories, copying
-editor rules, and installing skills — so they can immediately start working.
-
+guide them through a few choices and then configure everything so they can immediately start working.
 The user should not need to touch a terminal themselves. You handle all of it.
 
-## What Gets Installed
+---
 
-MachinEdge Expert Teams gives a project:
+## Step 0: Resolve SKILL_DIR (do this FIRST, before anything else)
 
-1. **Editor rules** — role files that Claude Code or Cursor auto-loads every session,
-   telling the AI how to behave as each expert (read docs first, stay in scope, produce handoff notes).
-2. **Skills** — a set of skills that structure the project lifecycle
-   (interview → plan → decompose → execute → review → handoff).
-3. **A docs directory** — where project memory lives between sessions (briefs, handoff notes, lessons).
-4. **An issues directory** — in-repo task tracking via files in `issues/`.
-5. **Expert tools** — executable scripts specific to each expert role.
+SKILL_DIR is the directory that contains this SKILL.md file. You know the path because you
+just read this file. Strip the filename to get the directory.
 
-## Step 1: Gather Information
+Example: if you read `/home/user/.skills/skills/machinedge-workflows/SKILL.md`,
+then `SKILL_DIR="/home/user/.skills/skills/machinedge-workflows"`
 
-Ask the user three things. Use the AskUserQuestion tool to present these as clear choices rather
-than open-ended questions. You can ask them all at once.
+**Verify immediately** — run this before proceeding:
 
-### Which experts?
+```bash
+ls "$SKILL_DIR/framework/install/install.sh" "$SKILL_DIR/framework/install/install-team.sh"
+```
 
-| Expert | Best For | Key Skills |
-|--------|----------|------------|
-| **Project Manager** | Orchestration, planning, scoping | `/pm-interview` → `/pm-vision` → `/pm-roadmap` → `/pm-decompose` → `/pm-postmortem` |
-| **SWE** (Software Engineering) | Building software — apps, APIs, libraries, tools | `/swe-start` → `/swe-handoff` |
-| **QA** (Quality Assurance) | Testing, code review, regression | `/qa-review` → `/qa-test-plan` → `/qa-regression` → `/qa-bug-triage` |
-| **DevOps** | Build, deploy, environments | `/ops-env-discovery` → `/ops-pipeline` → `/ops-release-plan` → `/ops-deploy` |
-| **Data Analyst** | Time series analysis, data exploration | `/da-intake` → `/da-brief` → `/da-scope` → `/da-start` → `/da-synthesize` |
+If either file is missing, STOP. Tell the user the skill directory could not be resolved and
+show them the path you tried. Do NOT continue.
 
-The default is all core experts: PM, SWE, QA, DevOps. Users can also pick a subset.
+---
 
-### New project or existing?
+## Step 1: Gather Information (two rounds)
 
-- **New project** — Create a fresh directory with everything set up from scratch.
-  Ask for the project/directory name. The directory will be created inside the user's
-  current working folder (or wherever they specify).
-- **Existing project** — Add the expert team to a project that already has code in it.
-  Ask where the project is. The expert files get layered in without touching existing code.
+Use the AskUserQuestion tool for both rounds. Do NOT ask open-ended questions in chat.
 
-### Which editor(s)?
+### Round 1 — Always ask these three questions together:
 
-- **Claude Code** — installs `.claude/CLAUDE.md`, `.claude/roles/*.md`, and `.claude/commands/*.md`
-- **Cursor** — installs `.cursor/rules/*.mdc` and `.cursor/commands/*.md`
-- **Both** (default) — installs for both editors. This is the right choice when a team
-  uses mixed editors, since the docs directory is shared and editor-agnostic.
+**Question 1: What style of setup?**
+- **Command Based** — Skills get installed as slash commands into your editor (Claude Code or Cursor). You work with one expert role per session. This is the default for most users.
+- **Team Mode** — Multiple experts run simultaneously in Docker containers and communicate via Matrix messaging. Requires Docker. Choose this only if you want parallel autonomous agents.
 
-### GitHub repo? (new projects only)
+**Question 2: Which experts?**
+- **All core experts (recommended)** — Project Manager, SWE, QA, DevOps
+- **Pick specific experts** — Let the user choose from the list below
 
-If the user is creating a new project, ask if they want to also create a GitHub repo.
-This requires `git` and `gh` CLI to be installed. If they say yes, you'll need:
-- A GitHub org or username (check for `GITHUB_ORG` env var first)
-- The repo name (default to the project directory name)
+| Expert | Short Name | Slash Commands |
+|--------|-----------|----------------|
+| Project Manager | pm | `/pm-interview`, `/pm-vision`, `/pm-roadmap`, `/pm-decompose`, `/pm-postmortem` |
+| Software Engineer | swe | `/swe-start`, `/swe-handoff` |
+| Quality Assurance | qa | `/qa-review`, `/qa-test-plan`, `/qa-regression`, `/qa-bug-triage` |
+| DevOps | devops | `/ops-env-discovery`, `/ops-pipeline`, `/ops-release-plan`, `/ops-deploy` |
+| Data Analyst | data-analyst | `/da-intake`, `/da-brief`, `/da-scope`, `/da-start`, `/da-synthesize` |
 
-### Listing available experts
-
-To show the user which experts are available, run:
-
+To show the user which experts are available programmatically:
 ```bash
 bash "$SKILL_DIR/tools/list-experts.sh"
 ```
 
-Use this when a user asks "what experts are available?" or when presenting expert choices
-during setup.
+**Question 3: New project or existing?**
+- **Existing project** — Add expert team to a project that already has code. The expert files layer in without touching existing code.
+- **New project** — Create a fresh directory with everything set up from scratch. Ask for the project/directory name.
 
-## Step 2: Execute Setup
+### Round 2 — Conditional follow-ups (ask only what applies):
 
-Once you have the user's choices, run the appropriate setup script. Everything is bundled
-inside this skill's directory.
+Ask these in a SECOND AskUserQuestion call. Skip any that don't apply.
 
-### Locating the scripts
+- **IF Command Based** → Ask: Which editor(s)? Options: Claude Code / Cursor / Both (default) / None
+- **IF New project** → Ask: Want to also create a GitHub repo? (Requires `git` and `gh` CLI)
+- **IF New project + GitHub** → Ask: GitHub org or username? (Check `GITHUB_ORG` env var first; offer it as default if set)
 
-You already know the path to this SKILL.md because you read it. The skill directory is
-the parent of this file. All expert definitions and the framework are bundled right here:
+**IF Team Mode** → Do NOT ask about editors. Team mode doesn't install editor configs.
 
-```
-machinedge-workflows/       ← this skill (the distributable package)
-├── SKILL.md                ← you are reading this
-├── tools/                  ← repo creation and expert listing
-│   ├── new_repo.sh / new_repo.ps1
-│   └── list-experts.sh / list-experts.ps1
-├── experts/                ← expert definitions organized by domain
-│   └── technical/
-│       ├── project-manager/  ← role.md, skills/, tools/
-│       ├── swe/
-│       ├── qa/
-│       ├── devops/
-│       ├── data-analyst/
-│       └── shared/           ← cross-expert protocols and shared skills
-└── framework/
-    └── install/
-        ├── install.sh / install.ps1            ← standalone mode (Claude Code, Cursor)
-        ├── install-team.sh / install-team.ps1  ← team mode (Docker + Matrix + OpenClaw)
-        └── templates/team/                     ← Docker/Matrix templates for team mode
-```
+---
 
-Resolve the paths like this:
+## Step 2: Pre-flight Checks
+
+Run these checks BEFORE executing any script. If ANY check fails, STOP and tell the user
+what's missing. Do NOT proceed past a failed check.
 
 ```bash
-SKILL_DIR="<directory containing this SKILL.md>"
-# e.g. /home/user/.skills/skills/machinedge-workflows
+# Always required — verify SKILL_DIR
+ls "$SKILL_DIR/framework/install/install.sh"
+
+# Always required — verify target directory is writable
+# (for new projects, check the PARENT directory)
+test -w "<target-or-parent>" && echo "OK: writable" || echo "FAIL: not writable"
 ```
 
-### For existing projects
+**Additional checks by path:**
 
-Run the setup script:
+| Path | Additional Checks |
+|------|-------------------|
+| Team Mode | `command -v docker && docker compose version` |
+| New + GitHub | `command -v git`, `command -v gh`, `gh auth status` |
+
+If a prerequisite is missing, explain what needs to be installed. Offer to help, but note
+that the user may need to handle authentication (e.g., `gh auth login`) themselves.
+
+---
+
+## Step 3: Execute Setup
+
+Follow EXACTLY ONE path below based on the user's answers. Do NOT mix steps from different paths.
+
+### Path A: Team Mode
+
+Use `install-team.sh`. Do NOT use `install.sh`.
 
 ```bash
-bash "$SKILL_DIR/framework/install/install.sh" --editor <claude|cursor|both> --experts <pm,swe,qa,devops> "<target-directory>"
+bash "$SKILL_DIR/framework/install/install-team.sh" \
+  --experts <comma-separated-short-names> \
+  --project-name "<name>" \
+  "<target-directory>"
 ```
 
-### For new projects (local only)
+Options:
+- `--experts` — Comma-separated short names: `pm,swe,qa,devops,data-analyst` (default: `project-manager,swe,qa,devops`)
+- `--project-name` — Override project name for container naming (default: derived from directory)
+- `--domain` — Expert domain (default: `technical`)
 
-Create the directory first, then run setup:
+For new projects, create the directory first:
+```bash
+mkdir -p "<target-directory>"
+```
+
+---
+
+### Path B: Command Based — Existing Project
+
+Use `install.sh`. Do NOT use `install-team.sh`.
+
+```bash
+bash "$SKILL_DIR/framework/install/install.sh" \
+  --editor <claude|cursor|both> \
+  --experts <comma-separated-short-names> \
+  "<target-directory>"
+```
+
+---
+
+### Path C: Command Based — New Project (local only, no GitHub)
+
+Create the directory, THEN run `install.sh`:
 
 ```bash
 mkdir -p "<target-directory>"
-bash "$SKILL_DIR/framework/install/install.sh" --editor <claude|cursor|both> --experts <pm,swe,qa,devops> "<target-directory>"
+bash "$SKILL_DIR/framework/install/install.sh" \
+  --editor <claude|cursor|both> \
+  --experts <comma-separated-short-names> \
+  "<target-directory>"
 ```
 
-Then initialize git if appropriate:
-
+Optionally initialize git:
 ```bash
 cd "<target-directory>" && git init && git add . && git commit -m "Initial commit: project scaffold with MachinEdge Expert Teams"
 ```
 
-### For new projects with GitHub repo
+---
+
+### Path D: Command Based — New Project + GitHub Repo
 
 First, create the repo:
-
 ```bash
 bash "$SKILL_DIR/tools/new_repo.sh" --org "<github-org>" "<repo-name>"
 ```
 
-Before running this, verify prerequisites:
-- `git` is installed: `command -v git`
-- `gh` CLI is installed: `command -v gh`
-- `gh` is authenticated: `gh auth status`
-
-Then install the expert team into the new repo:
-
+Then install the expert team:
 ```bash
-bash "$SKILL_DIR/framework/install/install.sh" --editor <claude|cursor|both> --experts <pm,swe,qa,devops> "$HOME/work/<repo-name>"
+bash "$SKILL_DIR/framework/install/install.sh" \
+  --editor <claude|cursor|both> \
+  --experts <comma-separated-short-names> \
+  "$HOME/work/<repo-name>"
 ```
 
-Then commit and push the expert team files:
-
+Then commit and push:
 ```bash
 cd "$HOME/work/<repo-name>" && git add . && git commit -m "Add MachinEdge Expert Teams" && git push
 ```
 
-If any prerequisite is missing, explain what needs to be installed and offer to help
-(but note that the user may need to handle authentication themselves).
+---
 
-### For team mode (Docker + Matrix + OpenClaw)
+### Platform Note
 
-If the user asks to "build a team", "set up a team", or wants multiple experts running in
-parallel in containers, use the **team mode** installer instead of the standalone installer.
+The scripts have both `.sh` (macOS/Linux) and `.ps1` (Windows) versions. In Claude Code and
+Cowork, always use the `.sh` versions. The `.ps1` scripts exist for users running setup
+manually on Windows.
 
-Team mode creates a `.octeam/` directory in the target project with Docker Compose configuration,
-Matrix messaging (Conduit + Element Web), and per-expert container setups. Each expert runs in
-its own container with its own git clone for true parallel work. The human interacts through
-Element Web (a Matrix client) in a browser.
+---
 
-```bash
-bash "$SKILL_DIR/framework/install/install-team.sh" --experts <pm,swe,qa,devops> --project-name "<name>" "<target-directory>"
-```
+## Step 4: Error Handling
 
-Options:
-- `--experts <list>` — Comma-separated expert short names (default: `project-manager,swe,qa,devops`).
-  Short names are mapped automatically: `pm` → `project-manager`.
-- `--project-name <name>` — Override the project name used in container naming (default: derived from directory name).
-- `--domain <domain>` — Expert domain (default: `technical`).
+If any script exits with a non-zero status:
+1. Show the user the FULL error output — do not summarize or paraphrase it
+2. Do NOT retry automatically — ask the user how they want to proceed
+3. Check these common causes:
 
-Examples:
-```bash
-# All core experts
-bash "$SKILL_DIR/framework/install/install-team.sh" ~/myproj
+| Error | Likely Cause | Fix |
+|-------|-------------|-----|
+| "directory not found" | Target path doesn't exist | Verify the path; create parent dirs |
+| "permission denied" | Target is read-only | Check permissions on target directory |
+| "expert not found" | Misspelled expert name | Run `list-experts.sh` and compare |
+| "Could not find experts/" | SKILL_DIR resolved wrong | Re-check the path to this SKILL.md |
+| Docker errors (team mode) | Docker not running | Ask user to start Docker Desktop |
 
-# Just PM and SWE
-bash "$SKILL_DIR/framework/install/install-team.sh" --experts pm,swe ~/myproj
+---
 
-# Custom project name
-bash "$SKILL_DIR/framework/install/install-team.sh" --project-name acme-app ~/myproj
-```
+## Step 5: Confirm and Orient
 
-**When to use team mode vs standalone mode:**
-- **Standalone** (`install.sh`) — Single-expert sessions in Claude Code or Cursor. The user
-  switches roles between sessions. This is the default for most users.
-- **Team** (`install-team.sh`) — Multiple experts running simultaneously in Docker containers,
-  communicating via Matrix. Requires Docker and is designed for the OpenClaw runtime.
+After setup completes successfully, tell the user THREE things. Keep it brief.
 
-### Platform handling
+**1. What was created** — List the specific directories and files that were generated.
+Be concrete (e.g., "Created `.claude/commands/` with 6 PM commands and 2 SWE commands"),
+not generic.
 
-The setup scripts have both `.sh` (macOS/Linux) and `.ps1` (Windows/PowerShell) versions.
-Detect the platform and use the right one:
+**2. What to do first:**
+- For Command Based: "Open the project in [their editor]. Start with the Project Manager role and run `/pm-interview` to capture your project idea."
+- For Team Mode: "Run `docker compose up` from the `.octeam/` directory, then open Element Web to interact with your team."
 
-```bash
-if [[ "$OSTYPE" == "msys" ]] || [[ "$OSTYPE" == "win32" ]]; then
-    pwsh "$SKILL_DIR/framework/install/install.ps1" ...
-else
-    bash "$SKILL_DIR/framework/install/install.sh" ...
-fi
-```
+**3. The key insight** — Expert teams give AI memory across sessions. Every session reads
+project documents at startup and writes handoff notes at the end. You never have to
+re-explain your project when you open a new chat.
 
-In practice, Claude Code and Cowork run in bash-compatible environments. The PowerShell
-scripts exist for users who run setup manually on Windows.
+Do NOT recite the full lifecycle unless the user asks for it.
 
-## Step 3: Confirm and Orient
-
-After setup completes, give the user a clear summary of what was created and what to do next.
-
-Tell them:
-> Your project is set up with MachinEdge Expert Teams. Here's what to do next:
->
-> 1. Open the project in Claude Code or Cursor
-> 2. The AI will ask which expert role you want for this session
-> 3. Start with the **Project Manager** role and run `/pm-interview` to capture your project idea
-> 4. Then follow the lifecycle: `/pm-vision` → `/pm-roadmap` → `/pm-decompose`
-> 5. Switch to the **SWE** role for implementation: `/swe-start` → `/swe-handoff`
-> 6. Use **QA** for reviews: `/qa-review` → `/qa-test-plan`
->
-> Each expert builds on shared project documents in `docs/`. The handoff notes carry
-> context across sessions so you never have to re-explain your project.
-
-### Key concept to communicate
-
-The most important thing for the user to understand: **these expert teams give AI memory across sessions**.
-Every session reads project documents at startup and writes handoff notes at the end. The user
-doesn't need to re-explain their project every time they open a new chat. This is the core value
-proposition — explain it in plain language, not jargon.
+---
 
 ## Edge Cases
 
-### User wants an expert that doesn't exist yet
+### User wants an expert that doesn't exist
+Available experts: Project Manager, SWE, QA, DevOps, Data Analyst. Custom experts can be
+created with `./framework/scaffold/create-expert.sh`. Suggest starting with the closest
+existing expert and customizing after setup.
 
-The toolkit includes a framework for creating custom experts. If someone asks for an expert
-type that isn't available, let them know:
-
-1. The available experts are Project Manager, SWE, QA, DevOps, and Data Analyst
-2. Custom experts can be created using `./framework/scaffold/create-expert.sh`
-3. They can start by picking whichever existing expert is closest to their needs
-   and customizing the role and skills after setup
-
-### User already has expert files in their project
-
-If the target directory already has `.claude/CLAUDE.md` or `.cursor/rules/`, warn the user
-that setup will overwrite those files. Ask for confirmation before proceeding.
+### Target directory already has expert files
+If `.claude/CLAUDE.md` or `.cursor/rules/` already exists, WARN the user that setup will
+overwrite managed files (user content in `docs/` is preserved). Get confirmation before proceeding.
 
 ### User is in Cowork without a folder selected
+Guide them to select a folder first from the Cowork interface, then re-run setup.
 
-If the user hasn't selected a folder in Cowork, you won't have a target directory to work with.
-Guide them to select a folder first (they can do this from the Cowork interface), then re-run
-the setup.
-
-### User is in Cowork with a folder already selected
-
-The selected folder is mounted and accessible. For "existing project" setups, this mounted
-folder is the natural target — you don't need to ask where the project is. For "new project"
-setups, create the new directory inside the mounted folder.
+### User is in Cowork with a folder selected
+The mounted folder is the natural target for "existing project" setups. For "new project,"
+create the new directory inside the mounted folder.
 
 ### User is in Claude Code
-
-The current working directory is the project. For "existing project" setups, use `.` as the
-target. For "new project" setups, ask where they want the new directory (default: current
-working directory or `$HOME/work/`).
+Current working directory is the project. For "existing project," use `.` as the target.
+For "new project," ask where to create the directory (default: `.` or `$HOME/work/`).
 
 ### User just wants to explore
-
-If the user is just asking about the experts (not ready to set one up), read the relevant
-`role.md` file from this skill's `experts/technical/` directory (e.g. `experts/technical/swe/role.md`)
-and explain what the expert does, what skills it includes, and what kind of project
-it's designed for. Don't push setup until they're ready.
+If the user isn't ready to set up — they just want to learn about an expert — read the
+relevant `role.md` from `$SKILL_DIR/experts/technical/<expert>/role.md` and explain what it
+does. Don't push setup until they're ready.
