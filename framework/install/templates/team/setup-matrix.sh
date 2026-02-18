@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 set -e
 
 # MachinEdge Expert Teams — Matrix Setup
@@ -75,11 +75,14 @@ get_token() {
 register_user "$ADMIN_USER" "$ADMIN_PASSWORD"
 
 # ── Register expert users ──
-IFS=',' read -ra EXPERTS <<< "${EXPERT_LIST:-project-manager,swe,qa,devops}"
-for expert in "${EXPERTS[@]}"; do
+EXPERT_LIST="${EXPERT_LIST:-project-manager,swe,qa,devops}"
+OLD_IFS="$IFS"; IFS=','
+for expert in $EXPERT_LIST; do
+    IFS="$OLD_IFS"
     expert=$(echo "$expert" | tr -d ' ')
     register_user "$expert" "${expert}-agent"
 done
+IFS="$OLD_IFS"
 
 # ── Login as admin and create the project room ──
 echo ""
@@ -122,7 +125,9 @@ fi
 if [ -n "$ROOM_ID" ]; then
     echo ""
     echo "  Inviting experts to project room..."
-    for expert in "${EXPERTS[@]}"; do
+    OLD_IFS="$IFS"; IFS=','
+    for expert in $EXPERT_LIST; do
+        IFS="$OLD_IFS"
         expert=$(echo "$expert" | tr -d ' ')
 
         # Invite
@@ -143,6 +148,7 @@ if [ -n "$ROOM_ID" ]; then
             echo "    Warning: Could not login as $expert to auto-join"
         fi
     done
+    IFS="$OLD_IFS"
 fi
 
 echo ""

@@ -25,12 +25,6 @@ services:
       - "${CONDUIT_PORT:-6167}:6167"
     networks:
       - octeam
-    healthcheck:
-      test: ["CMD-SHELL", "curl -sf http://localhost:6167/_matrix/client/versions || exit 1"]
-      interval: 5s
-      timeout: 3s
-      retries: 10
-      start_period: 5s
     restart: unless-stopped
 
   # ─────────────────────────────────────────────
@@ -49,7 +43,7 @@ services:
       - octeam
     depends_on:
       conduit:
-        condition: service_healthy
+        condition: service_started
     restart: unless-stopped
 
   # ─────────────────────────────────────────────
@@ -59,6 +53,7 @@ services:
   openclaw-gateway:
     image: ${OPENCLAW_IMAGE:-alpine/openclaw}
     container_name: ${COMPOSE_PROJECT_NAME}-gateway
+    user: "0:0"
     ports:
       - "${OPENCLAW_PORT:-18789}:18789"
     volumes:
@@ -70,7 +65,7 @@ services:
       - octeam
     depends_on:
       conduit:
-        condition: service_healthy
+        condition: service_started
     restart: unless-stopped
 
   # ─────────────────────────────────────────────
@@ -81,11 +76,8 @@ services:
   matrix-setup:
     image: curlimages/curl:latest
     container_name: ${COMPOSE_PROJECT_NAME}-matrix-setup
-    entrypoint: ["/bin/sh", "-c"]
-    command:
-      - |
-        apk add --no-cache bash > /dev/null 2>&1
-        bash /scripts/setup-matrix.sh
+    entrypoint: ["/bin/sh", "/scripts/setup-matrix.sh"]
+    command: []
     volumes:
       - ./scripts:/scripts:ro
     environment:
@@ -98,7 +90,7 @@ services:
       - octeam
     depends_on:
       conduit:
-        condition: service_healthy
+        condition: service_started
     restart: "no"
 
   # ─────────────────────────────────────────────

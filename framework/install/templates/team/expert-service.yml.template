@@ -22,7 +22,7 @@
       - octeam
     depends_on:
       conduit:
-        condition: service_healthy
+        condition: service_started
     restart: unless-stopped
     env_file:
       - .env
