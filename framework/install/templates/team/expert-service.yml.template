@@ -1,6 +1,7 @@
   {{EXPERT_NAME}}:
-    image: ${OPENCLAW_SANDBOX_IMAGE:-openclaw-sandbox:bookworm-slim}
+    image: ${OPENCLAW_IMAGE:-alpine/openclaw}
     container_name: ${COMPOSE_PROJECT_NAME}-{{EXPERT_NAME}}
+    user: "0:0"
     entrypoint: ["/bin/bash", "/scripts/expert-entrypoint.sh"]
     command: ["sleep", "infinity"]
     environment:

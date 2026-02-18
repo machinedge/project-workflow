@@ -33,7 +33,7 @@ The `install-team.sh` script generates a `.octeam/` directory in the target proj
 | `element-web` | `vectorim/element-web` | Browser UI for human interaction |
 | `openclaw-gateway` | `alpine/openclaw` | Agent routing and coordination |
 | `matrix-setup` | `curlimages/curl` | One-shot user/room setup |
-| `<expert>` | `openclaw-sandbox:bookworm-slim` | One container per expert, own workspace |
+| `<expert>` | `alpine/openclaw` | One container per expert, own workspace |
 
 ## Usage
 
