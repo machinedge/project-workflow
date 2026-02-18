@@ -71,7 +71,7 @@ get_token() {
         }" | grep -o '"access_token":"[^"]*"' | cut -d'"' -f4
 }
 
-# ── Register admin user ──
+# ── Register admin (human) user ──
 register_user "$ADMIN_USER" "$ADMIN_PASSWORD"
 
 # ── Register expert users ──

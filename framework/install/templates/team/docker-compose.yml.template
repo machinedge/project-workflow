@@ -54,18 +54,27 @@ services:
     image: ${OPENCLAW_IMAGE:-alpine/openclaw}
     container_name: ${COMPOSE_PROJECT_NAME}-gateway
     user: "0:0"
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - |
+        mkdir -p /root/.openclaw
+        cp /config/openclaw.json /root/.openclaw/openclaw.json
+        cd /app && pnpm install --filter ./extensions/matrix 2>&1
+        exec node openclaw.mjs gateway --allow-unconfigured
     ports:
       - "${OPENCLAW_PORT:-18789}:18789"
     volumes:
-      - openclaw-config:/home/node/.openclaw
+      - ./configs/gateway/openclaw.json:/config/openclaw.json:ro
+{{GATEWAY_AGENT_VOLUMES}}
       - /var/run/docker.sock:/var/run/docker.sock
     environment:
       - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
     networks:
       - octeam
     depends_on:
-      conduit:
-        condition: service_started
+      matrix-setup:
+        condition: service_completed_successfully
     restart: unless-stopped
 
   # ─────────────────────────────────────────────
@@ -106,5 +115,4 @@ networks:
 
 volumes:
   conduit-data:
-  openclaw-config:
 {{EXPERT_VOLUMES}}

@@ -204,6 +204,8 @@ render_compose_template() {
             printf '%s\n' "$EXPERT_SERVICES"
         elif [[ "$line" == *'{{EXPERT_VOLUMES}}'* ]]; then
             printf '%s\n' "$EXPERT_VOLUMES"
+        elif [[ "$line" == *'{{GATEWAY_AGENT_VOLUMES}}'* ]]; then
+            printf '%s' "$GATEWAY_AGENT_VOLUMES"
         elif [[ "$line" == *'{{EXPERT_LIST_CSV}}'* ]]; then
             printf '%s\n' "${line//\{\{EXPERT_LIST_CSV\}\}/$EXPERT_LIST_CSV}"
         else
@@ -228,6 +230,7 @@ echo ""
 
 mkdir -p "$OCTEAM_DIR/configs/conduit"
 mkdir -p "$OCTEAM_DIR/configs/element"
+mkdir -p "$OCTEAM_DIR/configs/gateway"
 mkdir -p "$OCTEAM_DIR/scripts"
 mkdir -p "$OCTEAM_DIR/data"
 
@@ -370,10 +373,14 @@ echo "  Generated scripts/setup-matrix.sh"
 # Generate docker-compose.yml from template
 # ─────────────────────────────────────────────
 
-# Build expert service blocks from per-expert template
+# Build expert service blocks, agent list, bindings, and gateway volumes
 EXPERT_SERVICES=""
 EXPERT_VOLUMES=""
 EXPERT_LIST_CSV=""
+AGENT_LIST=""
+AGENT_BINDINGS=""
+GATEWAY_AGENT_VOLUMES=""
+FIRST_EXPERT=true
 
 for expert in "${EXPERTS[@]}"; do
     if [ -n "$EXPERT_LIST_CSV" ]; then
@@ -396,7 +403,84 @@ $SERVICE"
         EXPERT_VOLUMES="$EXPERT_VOLUMES
   ${expert}-workspace:"
     fi
+
+    # Build OpenClaw agent list entry
+    IS_DEFAULT="false"
+    if [ "$expert" = "project-manager" ] || [ "$FIRST_EXPERT" = "true" ]; then
+        IS_DEFAULT="true"
+        AGENT_ENTRY="      { \"id\": \"$expert\", \"default\": $IS_DEFAULT, \"name\": \"$expert\", \"workspace\": \"/agents/$expert\", \"identity\": { \"name\": \"MachinEdge Team: $PROJECT_NAME\" } }"
+    else
+        AGENT_ENTRY="      { \"id\": \"$expert\", \"default\": $IS_DEFAULT, \"name\": \"$expert\", \"workspace\": \"/agents/$expert\" }"
+    fi
+    if [ -z "$AGENT_LIST" ]; then
+        AGENT_LIST="$AGENT_ENTRY"
+    else
+        AGENT_LIST="$AGENT_LIST,
+$AGENT_ENTRY"
+    fi
+
+    # Build per-expert Matrix account entry
+    EXPERT_PASSWORD="${expert}-agent"
+    ACCOUNT="        \"$expert\": { \"name\": \"$expert\", \"userId\": \"@$expert:$PROJECT_NAME.local\", \"password\": \"$EXPERT_PASSWORD\" }"
+    if [ -z "$MATRIX_ACCOUNTS" ]; then
+        MATRIX_ACCOUNTS="$ACCOUNT"
+    else
+        MATRIX_ACCOUNTS="$MATRIX_ACCOUNTS,
+$ACCOUNT"
+    fi
+
+    # Build OpenClaw binding entry (bind agent to its Matrix account)
+    BINDING="    { \"agentId\": \"$expert\", \"match\": { \"channel\": \"matrix\", \"accountId\": \"$expert\" } }"
+    if [ -z "$AGENT_BINDINGS" ]; then
+        AGENT_BINDINGS="$BINDING"
+    else
+        AGENT_BINDINGS="$AGENT_BINDINGS,
+$BINDING"
+    fi
+
+    # Build gateway agent volume mounts
+    GATEWAY_AGENT_VOLUMES="$GATEWAY_AGENT_VOLUMES      - ./configs/$expert:/agents/$expert
+"
+
+    FIRST_EXPERT=false
 done
+
+# ─────────────────────────────────────────────
+# Generate OpenClaw gateway configuration
+# ─────────────────────────────────────────────
+
+# Read the .env to get MATRIX_ADMIN_PASSWORD (or use default)
+MATRIX_ADMIN_PASSWORD="admin-changeme"
+if [ -f "$OCTEAM_DIR/.env" ]; then
+    DETECTED_PASSWORD=$(grep "^MATRIX_ADMIN_PASSWORD=" "$OCTEAM_DIR/.env" 2>/dev/null | cut -d= -f2-)
+    if [ -n "$DETECTED_PASSWORD" ]; then
+        MATRIX_ADMIN_PASSWORD="$DETECTED_PASSWORD"
+    fi
+fi
+
+# Read LLM model from .env (or use default)
+LLM_PROVIDER_MODEL="openai/gpt-4o"
+if [ -f "$OCTEAM_DIR/.env" ]; then
+    DETECTED_MODEL=$(grep "^LLM_MODEL=" "$OCTEAM_DIR/.env" 2>/dev/null | cut -d= -f2-)
+    if [ -n "$DETECTED_MODEL" ]; then
+        LLM_PROVIDER_MODEL="openai/$DETECTED_MODEL"
+    fi
+fi
+
+# Render openclaw.json with all dynamic blocks
+while IFS= read -r line || [[ -n "$line" ]]; do
+    if [[ "$line" == *'{{AGENT_LIST}}'* ]]; then
+        printf '%s\n' "$AGENT_LIST"
+    elif [[ "$line" == *'{{AGENT_BINDINGS}}'* ]]; then
+        printf '%s\n' "$AGENT_BINDINGS"
+    elif [[ "$line" == *'{{MATRIX_ACCOUNTS}}'* ]]; then
+        printf '%s\n' "$MATRIX_ACCOUNTS"
+    else
+        line="${line//\{\{LLM_PROVIDER_MODEL\}\}/$LLM_PROVIDER_MODEL}"
+        printf '%s\n' "$line"
+    fi
+done < "$TEMPLATE_DIR/openclaw.json.template" > "$OCTEAM_DIR/configs/gateway/openclaw.json"
+echo "  Generated configs/gateway/openclaw.json"
 
 render_compose_template "$TEMPLATE_DIR/docker-compose.yml.template" "$OCTEAM_DIR/docker-compose.yml"
 echo ""

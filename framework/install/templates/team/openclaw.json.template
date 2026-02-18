@@ -1,0 +1,43 @@
+{
+  "gateway": {
+    "mode": "local",
+    "port": 18789
+  },
+  "plugins": {
+    "entries": {
+      "matrix": { "enabled": true }
+    }
+  },
+  "channels": {
+    "matrix": {
+      "enabled": true,
+      "homeserver": "http://conduit:6167",
+      "encryption": false,
+      "allowFrom": ["*"],
+      "dm": {
+        "policy": "open",
+        "allowFrom": ["*"]
+      },
+      "groupPolicy": "open",
+      "autoJoin": "always",
+      "threadReplies": "inbound",
+      "accounts": {
+{{MATRIX_ACCOUNTS}}
+      }
+    }
+  },
+  "agents": {
+    "defaults": {
+      "model": {
+        "primary": "{{LLM_PROVIDER_MODEL}}"
+      },
+      "sandbox": { "mode": "off" }
+    },
+    "list": [
+{{AGENT_LIST}}
+    ]
+  },
+  "bindings": [
+{{AGENT_BINDINGS}}
+  ]
+}
