@@ -97,7 +97,7 @@ The `/start` skill is the most structured — it enforces a 7-phase process with
 
 ### Adding Tools
 
-Tools go in the expert's `tools/` directory. Unlike skills (which are LLM-executed markdown), tools are executable scripts (`.sh`, `.ps1`, `.py`, etc.) that the expert can invoke. Tools enforce capability boundaries — only the project manager has `new_repo.sh`, for instance.
+Tools go in the expert's `tools/` directory. Unlike skills (which are LLM-executed markdown), tools are executable scripts (`.sh`, `.ps1`, `.py`, etc.) that the expert can invoke. Tools enforce capability boundaries between experts. Shared tools (like `new_repo.sh` and `list-experts.sh`) live in `package/tools/`.
 
 If an expert doesn't need tools yet, keep the `tools/` directory with a `.gitkeep` file.
 

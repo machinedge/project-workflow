@@ -29,7 +29,7 @@ Desktop.ini
 .env.*
 
 # builds
-build
+package/build
 *.skill
 package_skill.py
 quick_validate.py

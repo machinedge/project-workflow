@@ -167,7 +167,7 @@ project-workflow/
 │       ├── project-manager/        ← Orchestrator and team lead
 │       │   ├── role.md
 │       │   ├── skills/
-│       │   └── tools/              ← PM-only tooling (new_repo.sh, etc.)
+│       │   └── tools/
 │       ├── swe/                    ← Software engineer
 │       │   ├── role.md
 │       │   ├── skills/
@@ -177,7 +177,14 @@ project-workflow/
 │       ├── data-analyst/           ← Data analysis (under development)
 │       ├── user-experience/        ← UX design (under development)
 │       └── shared/                 ← Cross-expert protocols and shared skills
-├── build/                          ← Build output (gitignored)
+├── package/                        ← Build & distribution
+│   ├── package.sh / package.ps1    ← Build the .skill file
+│   ├── install-skill.sh / .ps1     ← Install built skill into Claude Code
+│   ├── SKILL.md                    ← Skill definition for Claude Code/Cowork
+│   ├── tools/                      ← Repo creation and expert listing
+│   │   ├── new_repo.sh / new_repo.ps1
+│   │   └── list-experts.sh / list-experts.ps1
+│   └── build/                      ← Build output (gitignored)
 └── framework/                      ← Setup scripts, scaffolding, validation
     ├── install/
     │   ├── install.sh / install.ps1          ← Standalone mode setup
@@ -185,7 +192,6 @@ project-workflow/
     │   └── targets/                          ← Per-platform translation docs
     ├── scaffold/                             ← Expert authoring tools
     ├── validate/                             ← Validation (validate.sh)
-    ├── package/                              ← Build & distribution
     └── docs/                                 ← Framework docs
 ```
 

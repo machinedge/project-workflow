@@ -256,11 +256,11 @@ See `experts/technical/shared/docs-protocol.md` for the full producer/consumer m
 
 Each expert has a `tools/` directory for executable scripts specific to that expert's role. Unlike skills (which are LLM-executed markdown instructions), tools are scripts that extend the expert's capabilities:
 
-- **project-manager** has `new_repo.sh` / `new_repo.ps1` — only the PM can create new repositories
-- Other experts have empty `tools/` directories (with `.gitkeep`) ready for custom tooling
+- **package/tools/** has `new_repo.sh` / `new_repo.ps1` (repo creation) and `list-experts.sh` / `list-experts.ps1` (expert discovery)
+- Expert `tools/` directories hold scripts specific to that expert's role
 - **shared** has a `tools/` directory for scripts available to all experts
 
-Tools enforce capability boundaries between experts — an SWE cannot create repos, a QA cannot deploy, etc.
+Tools enforce capability boundaries between experts.
 
 ## The `role.md` File
 

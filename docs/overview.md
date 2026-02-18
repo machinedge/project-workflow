@@ -50,7 +50,7 @@ experts/
     project-manager/            # Orchestrator and team lead
       role.md                   # Identity, operating rules, session protocols
       skills/                   # interview, vision, roadmap, decompose, postmortem
-      tools/                    # PM-only tooling (e.g., new_repo.sh)
+      tools/                    # Expert-specific scripts
     swe/                        # Software engineer
       role.md
       skills/                   # start, handoff
@@ -85,7 +85,7 @@ Each expert directory contains three things:
 
 `skills/` contains the structured capabilities the expert can execute. Each skill follows a phased lifecycle with approval gates. Skills are what the PM triggers on other experts — they are not user-facing slash commands in the team context.
 
-`tools/` contains expert-specific scripts and tooling. Unlike skills (which are LLM-executed markdown instructions), tools are executable scripts that only that expert has access to. For example, only the PM has `new_repo.sh` — other experts cannot create repositories.
+`tools/` contains expert-specific scripts and tooling. Unlike skills (which are LLM-executed markdown instructions), tools are executable scripts that only that expert has access to. Shared tooling (like `new_repo.sh` and `list-experts.sh`) lives in `package/tools/`.
 
 This format is deliberately platform-agnostic. The same expert definition can be translated into:
 
