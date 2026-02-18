@@ -95,6 +95,50 @@ my-app/
 - A git repository URL and access token for the project
 - OpenClaw ([openclaw.ai](https://openclaw.ai/))
 
+### Setting Up a Git Access Token
+
+Expert containers clone your project repository over HTTPS and authenticate using a personal access token. Each expert gets its own git clone for true parallel work — the token is shared across all experts.
+
+For security, the token is **not stored in the `.env` file**. Instead, set it as an environment variable in your shell before starting the team:
+
+```bash
+# macOS / Linux — using GitHub CLI (easiest)
+export GIT_TOKEN=$(gh auth token)
+
+# macOS / Linux — using a token directly
+export GIT_TOKEN=ghp_your-token-here
+```
+
+```powershell
+# Windows PowerShell
+$env:GIT_TOKEN = $(gh auth token)
+# or
+$env:GIT_TOKEN = "ghp_your-token-here"
+```
+
+Docker Compose picks up `GIT_TOKEN` from your shell environment and passes it to the expert containers. To make this persistent, add the export to your shell profile (`.bashrc`, `.zshrc`, or PowerShell `$PROFILE`).
+
+**Creating a token — GitHub (recommended: fine-grained PAT)**
+
+1. Go to [github.com/settings/tokens?type=beta](https://github.com/settings/tokens?type=beta)
+2. Click **Generate new token**
+3. Set a name (e.g., "machinedge-team") and expiration
+4. Under **Repository access**, select **Only select repositories** and choose your project repo
+5. Under **Permissions → Repository permissions**, set **Contents** to **Read and write**
+6. Copy the token and export it as `GIT_TOKEN` (see above)
+
+**GitLab**
+
+1. Go to **Settings → Access Tokens**
+2. Create a token with `read_repository` and `write_repository` scopes
+
+**Bitbucket**
+
+1. Go to **Personal settings → App passwords**
+2. Create a password with **Repositories: Read** and **Repositories: Write**
+
+> **Why read+write?** Experts need write access because they commit work (code, docs, handoff notes) back to the repository. If your workflow is review-only, read access is sufficient.
+
 ### Step 1: Generate Team Infrastructure
 
 The `install-team.sh` script generates a `.octeam/` directory inside your project with everything needed to run the team in Docker:
@@ -119,10 +163,13 @@ Edit the generated `.env` file with your credentials:
 vi ~/projects/my-app/.octeam/.env
 ```
 
-At minimum, set these values:
+If you ran the install from inside a git repository, the git fields (`GIT_REPO_URL`, `GIT_USER_NAME`, `GIT_USER_EMAIL`) are pre-populated automatically.
+
+At minimum, verify or set these values in `.env`:
 - `OPENAI_API_KEY` — your LLM API key
-- `GIT_REPO_URL` — HTTPS URL of your project repository
-- `GIT_TOKEN` — git access token (shared across all experts)
+- `GIT_REPO_URL` — HTTPS URL of your project repository (auto-detected)
+
+And set `GIT_TOKEN` in your shell environment (see [Setting Up a Git Access Token](#setting-up-a-git-access-token) above).
 
 Optional per-expert overrides live in `configs/<expert>/env` (e.g., use a different model for the PM than for SWE).
 

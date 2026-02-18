@@ -129,14 +129,62 @@ if ! docker compose version &>/dev/null; then
 fi
 
 # ─────────────────────────────────────────────
+# Auto-detect git configuration
+# ─────────────────────────────────────────────
+
+DETECTED_GIT_REPO_URL=""
+DETECTED_GIT_USER_NAME=""
+DETECTED_GIT_USER_EMAIL=""
+
+if git -C "$TARGET" rev-parse --is-inside-work-tree &>/dev/null; then
+    # Repository URL (convert SSH to HTTPS for token-based auth in containers)
+    DETECTED_GIT_REPO_URL=$(git -C "$TARGET" remote get-url origin 2>/dev/null || echo "")
+    if [[ "$DETECTED_GIT_REPO_URL" =~ ^git@([^:]+):(.+)$ ]]; then
+        DETECTED_GIT_REPO_URL="https://${BASH_REMATCH[1]}/${BASH_REMATCH[2]}"
+    fi
+    DETECTED_GIT_REPO_URL="${DETECTED_GIT_REPO_URL%.git}"
+
+    # Git identity
+    DETECTED_GIT_USER_NAME=$(git -C "$TARGET" config user.name 2>/dev/null || echo "")
+    DETECTED_GIT_USER_EMAIL=$(git -C "$TARGET" config user.email 2>/dev/null || echo "")
+
+    echo "Git configuration detected:"
+    [ -n "$DETECTED_GIT_REPO_URL" ]   && echo "  Repo URL:   $DETECTED_GIT_REPO_URL"
+    [ -n "$DETECTED_GIT_USER_NAME" ]  && echo "  User name:  $DETECTED_GIT_USER_NAME"
+    [ -n "$DETECTED_GIT_USER_EMAIL" ] && echo "  User email: $DETECTED_GIT_USER_EMAIL"
+    echo ""
+else
+    echo "Not a git repository — git fields in .env will need manual configuration."
+    echo ""
+fi
+
+# Check for GIT_TOKEN in environment
+if [ -z "$GIT_TOKEN" ]; then
+    echo "Note: GIT_TOKEN is not set in your environment."
+    echo "  For private repos, export it before running docker compose:"
+    echo "    export GIT_TOKEN=\$(gh auth token)   # GitHub CLI"
+    echo "    export GIT_TOKEN=ghp_your-token      # or set directly"
+    echo ""
+fi
+
+# Fall back to defaults for user name/email if not detected
+GIT_REPO_URL_VALUE="${DETECTED_GIT_REPO_URL}"
+GIT_USER_NAME_VALUE="${DETECTED_GIT_USER_NAME:-machinedge-team}"
+GIT_USER_EMAIL_VALUE="${DETECTED_GIT_USER_EMAIL:-team@machinedge.local}"
+
+# ─────────────────────────────────────────────
 # Template helpers
 # ─────────────────────────────────────────────
 
-# Replace {{PROJECT_NAME}} in a template file and write to destination
+# Replace template placeholders in a file and write to destination
 render_simple_template() {
     local template="$1"
     local output="$2"
-    sed "s/{{PROJECT_NAME}}/$PROJECT_NAME/g" "$template" > "$output"
+    sed -e "s|{{PROJECT_NAME}}|$PROJECT_NAME|g" \
+        -e "s|{{GIT_REPO_URL}}|$GIT_REPO_URL_VALUE|g" \
+        -e "s|{{GIT_USER_NAME}}|$GIT_USER_NAME_VALUE|g" \
+        -e "s|{{GIT_USER_EMAIL}}|$GIT_USER_EMAIL_VALUE|g" \
+        "$template" > "$output"
 }
 
 # Replace {{EXPERT_NAME}} in a template file and write to destination
@@ -197,7 +245,11 @@ echo "  Generated .gitignore"
 
 if [ ! -f "$OCTEAM_DIR/.env" ]; then
     render_simple_template "$TEMPLATE_DIR/env.template" "$OCTEAM_DIR/.env"
-    echo "  Created .env template (edit with your API keys and git URL)"
+    if [ -n "$DETECTED_GIT_REPO_URL" ]; then
+        echo "  Created .env (git config auto-detected — review and add your API key)"
+    else
+        echo "  Created .env template (edit with your API keys and git URL)"
+    fi
 else
     echo "  .env already exists, preserving"
 fi
@@ -377,7 +429,12 @@ find "$OCTEAM_DIR" -type f 2>/dev/null | sort | while read f; do
 done
 echo ""
 echo "Next steps:"
-echo "  1. Edit .octeam/.env with your API keys and git URL"
+if [ -n "$DETECTED_GIT_REPO_URL" ]; then
+    echo "  1. Review .octeam/.env — git config was auto-detected. Add your OPENAI_API_KEY."
+else
+    echo "  1. Edit .octeam/.env with your API keys, git URL, and access token"
+    echo "     (See docs/getting-started.md → 'Setting Up a Git Access Token')"
+fi
 echo "  2. cd $TARGET/.octeam"
 echo "  3. docker compose up -d"
 echo "  4. Wait for all services to start (~30 seconds)"

@@ -104,6 +104,51 @@ if (-not $composeCheck) {
 }
 
 # ─────────────────────────────────────────────
+# Auto-detect git configuration
+# ─────────────────────────────────────────────
+
+$DetectedGitRepoUrl = ""
+$DetectedGitUserName = ""
+$DetectedGitUserEmail = ""
+
+$isGitRepo = & git -C $Target rev-parse --is-inside-work-tree 2>$null
+if ($isGitRepo -eq "true") {
+    # Repository URL (convert SSH to HTTPS for token-based auth in containers)
+    $DetectedGitRepoUrl = & git -C $Target remote get-url origin 2>$null
+    if ($DetectedGitRepoUrl -match '^git@([^:]+):(.+)$') {
+        $DetectedGitRepoUrl = "https://$($Matches[1])/$($Matches[2])"
+    }
+    $DetectedGitRepoUrl = $DetectedGitRepoUrl -replace '\.git$', ''
+
+    # Git identity
+    $DetectedGitUserName = & git -C $Target config user.name 2>$null
+    $DetectedGitUserEmail = & git -C $Target config user.email 2>$null
+
+    Write-Host "Git configuration detected:"
+    if ($DetectedGitRepoUrl)  { Write-Host "  Repo URL:   $DetectedGitRepoUrl" }
+    if ($DetectedGitUserName) { Write-Host "  User name:  $DetectedGitUserName" }
+    if ($DetectedGitUserEmail){ Write-Host "  User email: $DetectedGitUserEmail" }
+    Write-Host ""
+} else {
+    Write-Host "Not a git repository — git fields in .env will need manual configuration."
+    Write-Host ""
+}
+
+# Check for GIT_TOKEN in environment
+if (-not $env:GIT_TOKEN) {
+    Write-Host "Note: GIT_TOKEN is not set in your environment."
+    Write-Host "  For private repos, set it before running docker compose:"
+    Write-Host '    $env:GIT_TOKEN = $(gh auth token)   # GitHub CLI'
+    Write-Host '    $env:GIT_TOKEN = "ghp_your-token"   # or set directly'
+    Write-Host ""
+}
+
+# Fall back to defaults for user name/email if not detected
+$GitRepoUrlValue = $DetectedGitRepoUrl
+$GitUserNameValue = if ($DetectedGitUserName) { $DetectedGitUserName } else { "machinedge-team" }
+$GitUserEmailValue = if ($DetectedGitUserEmail) { $DetectedGitUserEmail } else { "team@machinedge.local" }
+
+# ─────────────────────────────────────────────
 # Template helpers
 # ─────────────────────────────────────────────
 
@@ -111,6 +156,9 @@ function Render-SimpleTemplate {
     param([string]$Template, [string]$Output)
     $content = [System.IO.File]::ReadAllText($Template)
     $content = $content -replace '{{PROJECT_NAME}}', $ProjectName
+    $content = $content -replace '{{GIT_REPO_URL}}', $GitRepoUrlValue
+    $content = $content -replace '{{GIT_USER_NAME}}', $GitUserNameValue
+    $content = $content -replace '{{GIT_USER_EMAIL}}', $GitUserEmailValue
     [System.IO.File]::WriteAllText($Output, $content)
 }
 
@@ -177,7 +225,11 @@ Write-Host "  Generated .gitignore"
 $envFile = Join-Path $OcteamDir ".env"
 if (-not (Test-Path $envFile)) {
     Render-SimpleTemplate -Template (Join-Path $TemplateDir "env.template") -Output $envFile
-    Write-Host "  Created .env template (edit with your API keys and git URL)"
+    if ($DetectedGitRepoUrl) {
+        Write-Host "  Created .env (git config auto-detected — review and add your API key)"
+    } else {
+        Write-Host "  Created .env template (edit with your API keys and git URL)"
+    }
 } else {
     Write-Host "  .env already exists, preserving"
 }
@@ -351,7 +403,12 @@ Get-ChildItem $OcteamDir -Recurse -File -ErrorAction SilentlyContinue | Sort-Obj
 }
 Write-Host ""
 Write-Host "Next steps:"
-Write-Host "  1. Edit .octeam/.env with your API keys and git URL"
+if ($DetectedGitRepoUrl) {
+    Write-Host "  1. Review .octeam/.env — git config was auto-detected. Add your OPENAI_API_KEY."
+} else {
+    Write-Host "  1. Edit .octeam/.env with your API keys, git URL, and access token"
+    Write-Host "     (See docs/getting-started.md -> 'Setting Up a Git Access Token')"
+}
 Write-Host "  2. cd $Target/.octeam"
 Write-Host "  3. docker compose up -d"
 Write-Host "  4. Wait for all services to start (~30 seconds)"
