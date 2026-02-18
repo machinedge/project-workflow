@@ -31,16 +31,10 @@ $ErrorActionPreference = "Stop"
 # ─────────────────────────────────────────────
 
 $ScriptDir = $PSScriptRoot
-$RepoRoot = & git -C $ScriptDir rev-parse --show-toplevel 2>$null
-if (-not $RepoRoot) {
-    $dir = $ScriptDir
-    while ($dir -and -not (Test-Path (Join-Path $dir ".git")) -and -not (Test-Path (Join-Path $dir "SKILL.md"))) {
-        $dir = Split-Path $dir -Parent
-    }
-    $RepoRoot = $dir
-}
-if (-not $RepoRoot) {
-    Write-Error "Error: Could not find repository or skill root from $ScriptDir"
+# Skill root is two levels up from framework/install/
+$SkillRoot = (Resolve-Path (Join-Path $ScriptDir ".." "..")).Path
+if (-not (Test-Path (Join-Path $SkillRoot "experts"))) {
+    Write-Error "Error: Could not find experts/ directory at $(Join-Path $SkillRoot 'experts')`n  Expected script location: <skill-root>/framework/install/"
     exit 1
 }
 
@@ -86,7 +80,7 @@ function Resolve-ExpertName {
 
 $ExpertList = $Experts -split ',' | ForEach-Object {
     $resolved = Resolve-ExpertName $_.Trim()
-    $expertDir = Join-Path $RepoRoot "experts" $Domain $resolved
+    $expertDir = Join-Path $SkillRoot "experts" $Domain $resolved
     if (-not (Test-Path $expertDir)) {
         Write-Error "Error: Expert '$_' (resolved to '$resolved') not found at $expertDir"
         exit 1
@@ -199,7 +193,7 @@ Write-Host "  Generated configs/element/config.json"
 # ─────────────────────────────────────────────
 
 foreach ($expert in $ExpertList) {
-    $ExpertSrc = Join-Path $RepoRoot "experts" $Domain $expert
+    $ExpertSrc = Join-Path $SkillRoot "experts" $Domain $expert
     Write-Host "  [$expert] Translating expert definition..."
 
     # role.md → AGENTS.md
@@ -255,7 +249,7 @@ foreach ($expert in $ExpertList) {
 # Translate shared skills (copied into every expert)
 # ─────────────────────────────────────────────
 
-$SharedDir = Join-Path $RepoRoot "experts" $Domain "shared"
+$SharedDir = Join-Path $SkillRoot "experts" $Domain "shared"
 $SharedSkillsDir = Join-Path $SharedDir "skills"
 if (Test-Path $SharedSkillsDir) {
     Write-Host ""

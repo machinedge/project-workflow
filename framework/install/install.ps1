@@ -32,16 +32,10 @@ $ErrorActionPreference = "Stop"
 
 # Resolve paths
 $ScriptDir = $PSScriptRoot
-$RepoRoot = & git -C $ScriptDir rev-parse --show-toplevel 2>$null
-if (-not $RepoRoot) {
-    $dir = $ScriptDir
-    while ($dir -and -not (Test-Path (Join-Path $dir ".git")) -and -not (Test-Path (Join-Path $dir "SKILL.md"))) {
-        $dir = Split-Path $dir -Parent
-    }
-    $RepoRoot = $dir
-}
-if (-not $RepoRoot) {
-    Write-Error "Error: Could not find repository or skill root from $ScriptDir"
+# Skill root is two levels up from framework/install/
+$SkillRoot = (Resolve-Path (Join-Path $ScriptDir ".." "..")).Path
+if (-not (Test-Path (Join-Path $SkillRoot "experts"))) {
+    Write-Error "Error: Could not find experts/ directory at $(Join-Path $SkillRoot 'experts')`n  Expected script location: <skill-root>/framework/install/"
     exit 1
 }
 
@@ -89,7 +83,7 @@ function Resolve-ExpertPrefix {
 
 $ExpertList = $Experts -split ',' | ForEach-Object {
     $resolved = Resolve-ExpertName $_.Trim()
-    $expertDir = Join-Path $RepoRoot "experts" $Domain $resolved
+    $expertDir = Join-Path $SkillRoot "experts" $Domain $resolved
     if (-not (Test-Path $expertDir)) {
         Write-Error "Error: Expert '$_' (resolved to '$resolved') not found at $expertDir"
         exit 1
@@ -157,7 +151,7 @@ if ($Editor -eq "cursor" -or $Editor -eq "both") {
 # ─────────────────────────────────────────────
 
 foreach ($expert in $ExpertList) {
-    $ExpertSrc = Join-Path $RepoRoot "experts" $Domain $expert
+    $ExpertSrc = Join-Path $SkillRoot "experts" $Domain $expert
     Write-Host "  [$expert] Installing expert definition..."
 
     # Claude Code: role.md → .claude/roles/<expert>.md, skills → .claude/commands/
@@ -224,7 +218,7 @@ alwaysApply: true
 # Install shared skills (e.g., /status)
 # ─────────────────────────────────────────────
 
-$SharedDir = Join-Path $RepoRoot "experts" $Domain "shared"
+$SharedDir = Join-Path $SkillRoot "experts" $Domain "shared"
 $SharedSkillsDir = Join-Path $SharedDir "skills"
 if (Test-Path $SharedSkillsDir) {
     Write-Host ""
@@ -253,7 +247,7 @@ $RoleLines = @()
 $SkillLines = @()
 
 foreach ($expert in $ExpertList) {
-    $ExpertSrc = Join-Path $RepoRoot "experts" $Domain $expert
+    $ExpertSrc = Join-Path $SkillRoot "experts" $Domain $expert
 
     # Extract display name from first line of role.md
     $roleFile = Join-Path $ExpertSrc "role.md"

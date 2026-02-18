@@ -85,6 +85,11 @@ mkdir -p "$SKILL_BUILD/framework/install"
 cp "$REPO_ROOT/framework/install/install.sh" "$SKILL_BUILD/framework/install/"
 cp "$REPO_ROOT/framework/install/install.ps1" "$SKILL_BUILD/framework/install/"
 cp "$REPO_ROOT/framework/install/install-team.sh" "$SKILL_BUILD/framework/install/"
+cp "$REPO_ROOT/framework/install/install-team.ps1" "$SKILL_BUILD/framework/install/"
+
+# Include templates needed by install-team
+echo "Copying install templates..."
+cp -R "$REPO_ROOT/framework/install/templates" "$SKILL_BUILD/framework/install/templates"
 
 # ─────────────────────────────────────────────
 # Ensure packaging tools are available

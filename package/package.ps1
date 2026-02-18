@@ -90,6 +90,11 @@ New-Item -ItemType Directory -Path $InstallDest -Force | Out-Null
 Copy-Item -Path (Join-Path $RepoRoot "framework" "install" "install.sh") -Destination $InstallDest
 Copy-Item -Path (Join-Path $RepoRoot "framework" "install" "install.ps1") -Destination $InstallDest
 Copy-Item -Path (Join-Path $RepoRoot "framework" "install" "install-team.sh") -Destination $InstallDest
+Copy-Item -Path (Join-Path $RepoRoot "framework" "install" "install-team.ps1") -Destination $InstallDest
+
+# Include templates needed by install-team
+Write-Host "Copying install templates..."
+Copy-Item -Path (Join-Path $RepoRoot "framework" "install" "templates") -Destination (Join-Path $InstallDest "templates") -Recurse -Force
 
 # ─────────────────────────────────────────────
 # Ensure packaging tools are available

@@ -99,8 +99,9 @@ machinedge-workflows/       ← this skill (the distributable package)
 │       └── shared/           ← cross-expert protocols and shared skills
 └── framework/
     └── install/
-        ├── install.sh / install.ps1  ← the main install scripts
-        └── ...
+        ├── install.sh / install.ps1            ← standalone mode (Claude Code, Cursor)
+        ├── install-team.sh / install-team.ps1  ← team mode (Docker + Matrix + OpenClaw)
+        └── templates/team/                     ← Docker/Matrix templates for team mode
 ```
 
 Resolve the paths like this:
@@ -160,6 +161,44 @@ cd "$HOME/work/<repo-name>" && git add . && git commit -m "Add MachinEdge Expert
 
 If any prerequisite is missing, explain what needs to be installed and offer to help
 (but note that the user may need to handle authentication themselves).
+
+### For team mode (Docker + Matrix + OpenClaw)
+
+If the user asks to "build a team", "set up a team", or wants multiple experts running in
+parallel in containers, use the **team mode** installer instead of the standalone installer.
+
+Team mode creates a `.octeam/` directory in the target project with Docker Compose configuration,
+Matrix messaging (Conduit + Element Web), and per-expert container setups. Each expert runs in
+its own container with its own git clone for true parallel work. The human interacts through
+Element Web (a Matrix client) in a browser.
+
+```bash
+bash "$SKILL_DIR/framework/install/install-team.sh" --experts <pm,swe,qa,devops> --project-name "<name>" "<target-directory>"
+```
+
+Options:
+- `--experts <list>` — Comma-separated expert short names (default: `project-manager,swe,qa,devops`).
+  Short names are mapped automatically: `pm` → `project-manager`.
+- `--project-name <name>` — Override the project name used in container naming (default: derived from directory name).
+- `--domain <domain>` — Expert domain (default: `technical`).
+
+Examples:
+```bash
+# All core experts
+bash "$SKILL_DIR/framework/install/install-team.sh" ~/myproj
+
+# Just PM and SWE
+bash "$SKILL_DIR/framework/install/install-team.sh" --experts pm,swe ~/myproj
+
+# Custom project name
+bash "$SKILL_DIR/framework/install/install-team.sh" --project-name acme-app ~/myproj
+```
+
+**When to use team mode vs standalone mode:**
+- **Standalone** (`install.sh`) — Single-expert sessions in Claude Code or Cursor. The user
+  switches roles between sessions. This is the default for most users.
+- **Team** (`install-team.sh`) — Multiple experts running simultaneously in Docker containers,
+  communicating via Matrix. Requires Docker and is designed for the OpenClaw runtime.
 
 ### Platform handling
 

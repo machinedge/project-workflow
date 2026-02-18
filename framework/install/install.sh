@@ -23,19 +23,11 @@ set -e
 
 # Resolve the directory where this script lives
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-REPO_ROOT="$(git -C "$SCRIPT_DIR" rev-parse --show-toplevel 2>/dev/null)"
-if [ -z "$REPO_ROOT" ]; then
-    _dir="$SCRIPT_DIR"
-    while [ "$_dir" != "/" ]; do
-        if [ -d "$_dir/.git" ] || [ -f "$_dir/SKILL.md" ]; then
-            REPO_ROOT="$_dir"
-            break
-        fi
-        _dir="$(dirname "$_dir")"
-    done
-fi
-if [ -z "$REPO_ROOT" ]; then
-    echo "Error: Could not find repository or skill root from $SCRIPT_DIR"
+# Skill root is two levels up from framework/install/
+SKILL_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
+if [ ! -d "$SKILL_ROOT/experts" ]; then
+    echo "Error: Could not find experts/ directory at $SKILL_ROOT/experts"
+    echo "  Expected script location: <skill-root>/framework/install/"
     exit 1
 fi
 
@@ -111,7 +103,7 @@ EXPERTS=()
 for raw in "${RAW_EXPERTS[@]}"; do
     raw=$(echo "$raw" | tr -d ' ')
     resolved=$(resolve_expert_name "$raw")
-    EXPERT_DIR="$REPO_ROOT/experts/$DOMAIN/$resolved"
+    EXPERT_DIR="$SKILL_ROOT/experts/$DOMAIN/$resolved"
     if [ ! -d "$EXPERT_DIR" ]; then
         echo "Error: Expert '$raw' (resolved to '$resolved') not found at $EXPERT_DIR"
         exit 1
@@ -179,7 +171,7 @@ fi
 # ─────────────────────────────────────────────
 
 for expert in "${EXPERTS[@]}"; do
-    EXPERT_SRC="$REPO_ROOT/experts/$DOMAIN/$expert"
+    EXPERT_SRC="$SKILL_ROOT/experts/$DOMAIN/$expert"
     echo "  [$expert] Installing expert definition..."
 
     # Claude Code: role.md → .claude/roles/<expert>.md, skills → .claude/commands/
@@ -247,7 +239,7 @@ done
 # Install shared skills (e.g., /status)
 # ─────────────────────────────────────────────
 
-SHARED_DIR="$REPO_ROOT/experts/$DOMAIN/shared"
+SHARED_DIR="$SKILL_ROOT/experts/$DOMAIN/shared"
 if [ -d "$SHARED_DIR/skills" ]; then
     echo ""
     echo "  [shared] Installing shared skills..."
@@ -279,7 +271,7 @@ fi
 ROLE_LIST=""
 SKILL_LIST=""
 for expert in "${EXPERTS[@]}"; do
-    EXPERT_SRC="$REPO_ROOT/experts/$DOMAIN/$expert"
+    EXPERT_SRC="$SKILL_ROOT/experts/$DOMAIN/$expert"
 
     # Extract the first line of role.md as the display name
     if [ -f "$EXPERT_SRC/role.md" ]; then
