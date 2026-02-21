@@ -2,29 +2,28 @@
     image: ${OPENCLAW_IMAGE:-alpine/openclaw}
     container_name: ${COMPOSE_PROJECT_NAME}-{{EXPERT_NAME}}
     user: "0:0"
-    entrypoint: ["/bin/bash", "/scripts/expert-entrypoint.sh"]
-    command: ["sleep", "infinity"]
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - |
+        mkdir -p /root/.openclaw
+        cp /config/openclaw.json /root/.openclaw/openclaw.json
+        cd /app && pnpm install --filter ./extensions/matrix 2>&1
+        exec node openclaw.mjs gateway --allow-unconfigured
+    ports:
+      - "{{EXPERT_PORT}}:18789"
     environment:
       - EXPERT_NAME={{EXPERT_NAME}}
       - OPENAI_API_KEY=${OPENAI_API_KEY}
-      - LLM_MODEL=${LLM_MODEL:-gpt-4o}
-      - LLM_API_BASE=${LLM_API_BASE:-https://api.openai.com/v1}
-      - GIT_REPO_URL=${GIT_REPO_URL}
-      - GIT_TOKEN=${GIT_TOKEN}
-      - GIT_USER_NAME=${GIT_USER_NAME:-machinedge-team}
-      - GIT_USER_EMAIL=${GIT_USER_EMAIL:-team@machinedge.local}
-      - CONDUIT_URL=http://conduit:6167
-      - MATRIX_SERVER_NAME=${MATRIX_SERVER_NAME}
+      - OPENAI_BASE_URL=${LLM_API_BASE:-https://api.openai.com/v1}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
     volumes:
-      - {{EXPERT_NAME}}-workspace:/workspace
-      - ./configs/{{EXPERT_NAME}}:/agent:ro
-      - ./scripts:/scripts:ro
+      - ./configs/{{EXPERT_NAME}}/openclaw.json:/config/openclaw.json:ro
+      - ./configs/{{EXPERT_NAME}}:/agent
     networks:
       - octeam
     depends_on:
-      conduit:
-        condition: service_started
+      matrix-setup:
+        condition: service_completed_successfully
     restart: unless-stopped
     env_file:
       - .env
-      - ./configs/{{EXPERT_NAME}}/env

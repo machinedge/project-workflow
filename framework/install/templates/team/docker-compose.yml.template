@@ -47,37 +47,6 @@ services:
     restart: unless-stopped
 
   # ─────────────────────────────────────────────
-  # OpenClaw Gateway
-  # Agent routing, tool execution, and multi-agent coordination
-  # ─────────────────────────────────────────────
-  openclaw-gateway:
-    image: ${OPENCLAW_IMAGE:-alpine/openclaw}
-    container_name: ${COMPOSE_PROJECT_NAME}-gateway
-    user: "0:0"
-    entrypoint: ["/bin/sh", "-c"]
-    command:
-      - |
-        mkdir -p /root/.openclaw
-        cp /config/openclaw.json /root/.openclaw/openclaw.json
-        cd /app && pnpm install --filter ./extensions/matrix 2>&1
-        exec node openclaw.mjs gateway --allow-unconfigured
-    ports:
-      - "${OPENCLAW_PORT:-18789}:18789"
-    volumes:
-      - ./configs/gateway/openclaw.json:/config/openclaw.json:ro
-{{GATEWAY_AGENT_VOLUMES}}
-      - /var/run/docker.sock:/var/run/docker.sock
-    environment:
-      - OPENAI_API_KEY=${OPENAI_API_KEY}
-      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
-    networks:
-      - octeam
-    depends_on:
-      matrix-setup:
-        condition: service_completed_successfully
-    restart: unless-stopped
-
-  # ─────────────────────────────────────────────
   # Matrix Setup (one-shot)
   # Registers users and creates rooms, then exits
   # Re-run: docker compose run --rm matrix-setup
@@ -103,8 +72,8 @@ services:
     restart: "no"
 
   # ─────────────────────────────────────────────
-  # Expert Containers
-  # One container per expert, each with its own workspace clone
+  # Expert Gateways
+  # One OpenClaw gateway per expert, each with its own Matrix identity
   # ─────────────────────────────────────────────
 
 {{EXPERT_SERVICES}}
@@ -115,4 +84,3 @@ networks:
 
 volumes:
   conduit-data:
-{{EXPERT_VOLUMES}}

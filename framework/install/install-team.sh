@@ -203,9 +203,7 @@ render_compose_template() {
         if [[ "$line" == *'{{EXPERT_SERVICES}}'* ]]; then
             printf '%s\n' "$EXPERT_SERVICES"
         elif [[ "$line" == *'{{EXPERT_VOLUMES}}'* ]]; then
-            printf '%s\n' "$EXPERT_VOLUMES"
-        elif [[ "$line" == *'{{GATEWAY_AGENT_VOLUMES}}'* ]]; then
-            printf '%s' "$GATEWAY_AGENT_VOLUMES"
+            : # no named volumes needed
         elif [[ "$line" == *'{{EXPERT_LIST_CSV}}'* ]]; then
             printf '%s\n' "${line//\{\{EXPERT_LIST_CSV\}\}/$EXPERT_LIST_CSV}"
         else
@@ -230,7 +228,7 @@ echo ""
 
 mkdir -p "$OCTEAM_DIR/configs/conduit"
 mkdir -p "$OCTEAM_DIR/configs/element"
-mkdir -p "$OCTEAM_DIR/configs/gateway"
+# (per-expert configs generated later in the expert loop)
 mkdir -p "$OCTEAM_DIR/scripts"
 mkdir -p "$OCTEAM_DIR/data"
 
@@ -373,14 +371,10 @@ echo "  Generated scripts/setup-matrix.sh"
 # Generate docker-compose.yml from template
 # ─────────────────────────────────────────────
 
-# Build expert service blocks, agent list, bindings, and gateway volumes
+# Build expert service blocks
 EXPERT_SERVICES=""
-EXPERT_VOLUMES=""
 EXPERT_LIST_CSV=""
-AGENT_LIST=""
-AGENT_BINDINGS=""
-GATEWAY_AGENT_VOLUMES=""
-FIRST_EXPERT=true
+EXPERT_PORT=18790
 
 for expert in "${EXPERTS[@]}"; do
     if [ -n "$EXPERT_LIST_CSV" ]; then
@@ -389,7 +383,9 @@ for expert in "${EXPERTS[@]}"; do
         EXPERT_LIST_CSV="$expert"
     fi
 
-    SERVICE=$(sed "s/{{EXPERT_NAME}}/$expert/g" "$TEMPLATE_DIR/expert-service.yml.template")
+    SERVICE=$(sed -e "s/{{EXPERT_NAME}}/$expert/g" \
+                  -e "s/{{EXPERT_PORT}}/$EXPERT_PORT/g" \
+                  "$TEMPLATE_DIR/expert-service.yml.template")
     if [ -z "$EXPERT_SERVICES" ]; then
         EXPERT_SERVICES="$SERVICE"
     else
@@ -397,90 +393,54 @@ for expert in "${EXPERTS[@]}"; do
 $SERVICE"
     fi
 
-    if [ -z "$EXPERT_VOLUMES" ]; then
-        EXPERT_VOLUMES="  ${expert}-workspace:"
-    else
-        EXPERT_VOLUMES="$EXPERT_VOLUMES
-  ${expert}-workspace:"
-    fi
-
-    # Build OpenClaw agent list entry
-    IS_DEFAULT="false"
-    if [ "$expert" = "project-manager" ] || [ "$FIRST_EXPERT" = "true" ]; then
-        IS_DEFAULT="true"
-        AGENT_ENTRY="      { \"id\": \"$expert\", \"default\": $IS_DEFAULT, \"name\": \"$expert\", \"workspace\": \"/agents/$expert\", \"identity\": { \"name\": \"MachinEdge Team: $PROJECT_NAME\" } }"
-    else
-        AGENT_ENTRY="      { \"id\": \"$expert\", \"default\": $IS_DEFAULT, \"name\": \"$expert\", \"workspace\": \"/agents/$expert\" }"
-    fi
-    if [ -z "$AGENT_LIST" ]; then
-        AGENT_LIST="$AGENT_ENTRY"
-    else
-        AGENT_LIST="$AGENT_LIST,
-$AGENT_ENTRY"
-    fi
-
-    # Build per-expert Matrix account entry
-    EXPERT_PASSWORD="${expert}-agent"
-    ACCOUNT="        \"$expert\": { \"name\": \"$expert\", \"userId\": \"@$expert:$PROJECT_NAME.local\", \"password\": \"$EXPERT_PASSWORD\" }"
-    if [ -z "$MATRIX_ACCOUNTS" ]; then
-        MATRIX_ACCOUNTS="$ACCOUNT"
-    else
-        MATRIX_ACCOUNTS="$MATRIX_ACCOUNTS,
-$ACCOUNT"
-    fi
-
-    # Build OpenClaw binding entry (bind agent to its Matrix account)
-    BINDING="    { \"agentId\": \"$expert\", \"match\": { \"channel\": \"matrix\", \"accountId\": \"$expert\" } }"
-    if [ -z "$AGENT_BINDINGS" ]; then
-        AGENT_BINDINGS="$BINDING"
-    else
-        AGENT_BINDINGS="$AGENT_BINDINGS,
-$BINDING"
-    fi
-
-    # Build gateway agent volume mounts
-    GATEWAY_AGENT_VOLUMES="$GATEWAY_AGENT_VOLUMES      - ./configs/$expert:/agents/$expert
-"
-
-    FIRST_EXPERT=false
+    EXPERT_PORT=$((EXPERT_PORT + 1))
 done
 
 # ─────────────────────────────────────────────
-# Generate OpenClaw gateway configuration
+# Generate per-expert OpenClaw gateway configurations
 # ─────────────────────────────────────────────
 
-# Read the .env to get MATRIX_ADMIN_PASSWORD (or use default)
-MATRIX_ADMIN_PASSWORD="admin-changeme"
-if [ -f "$OCTEAM_DIR/.env" ]; then
-    DETECTED_PASSWORD=$(grep "^MATRIX_ADMIN_PASSWORD=" "$OCTEAM_DIR/.env" 2>/dev/null | cut -d= -f2-)
-    if [ -n "$DETECTED_PASSWORD" ]; then
-        MATRIX_ADMIN_PASSWORD="$DETECTED_PASSWORD"
-    fi
-fi
-
-# Read LLM model from .env (or use default)
-LLM_PROVIDER_MODEL="openai/gpt-4o"
+# Read LLM settings from .env
+LLM_MODEL_ID="gpt-4o"
+LLM_API_BASE="https://api.openai.com/v1"
+LLM_PROVIDER_NAME="openai"
 if [ -f "$OCTEAM_DIR/.env" ]; then
     DETECTED_MODEL=$(grep "^LLM_MODEL=" "$OCTEAM_DIR/.env" 2>/dev/null | cut -d= -f2-)
     if [ -n "$DETECTED_MODEL" ]; then
-        LLM_PROVIDER_MODEL="openai/$DETECTED_MODEL"
+        LLM_MODEL_ID="$DETECTED_MODEL"
+    fi
+    DETECTED_BASE=$(grep "^LLM_API_BASE=" "$OCTEAM_DIR/.env" 2>/dev/null | cut -d= -f2-)
+    if [ -n "$DETECTED_BASE" ]; then
+        LLM_API_BASE="$DETECTED_BASE"
+    fi
+    DETECTED_PROVIDER=$(grep "^LLM_PROVIDER=" "$OCTEAM_DIR/.env" 2>/dev/null | cut -d= -f2-)
+    if [ -n "$DETECTED_PROVIDER" ]; then
+        LLM_PROVIDER_NAME="$DETECTED_PROVIDER"
     fi
 fi
 
-# Render openclaw.json with all dynamic blocks
-while IFS= read -r line || [[ -n "$line" ]]; do
-    if [[ "$line" == *'{{AGENT_LIST}}'* ]]; then
-        printf '%s\n' "$AGENT_LIST"
-    elif [[ "$line" == *'{{AGENT_BINDINGS}}'* ]]; then
-        printf '%s\n' "$AGENT_BINDINGS"
-    elif [[ "$line" == *'{{MATRIX_ACCOUNTS}}'* ]]; then
-        printf '%s\n' "$MATRIX_ACCOUNTS"
+# Generate an openclaw.json for each expert
+for expert in "${EXPERTS[@]}"; do
+    EXPERT_PASSWORD="${expert}-agent"
+    # Only the project-manager responds in group rooms; others are DM-only
+    if [ "$expert" = "project-manager" ]; then
+        GROUP_POLICY="open"
+        AUTO_REPLY="true"
     else
-        line="${line//\{\{LLM_PROVIDER_MODEL\}\}/$LLM_PROVIDER_MODEL}"
-        printf '%s\n' "$line"
+        GROUP_POLICY="closed"
+        AUTO_REPLY="false"
     fi
-done < "$TEMPLATE_DIR/openclaw.json.template" > "$OCTEAM_DIR/configs/gateway/openclaw.json"
-echo "  Generated configs/gateway/openclaw.json"
+    sed -e "s|{{EXPERT_NAME}}|$expert|g" \
+        -e "s|{{PROJECT_NAME}}|$PROJECT_NAME|g" \
+        -e "s|{{EXPERT_PASSWORD}}|$EXPERT_PASSWORD|g" \
+        -e "s|{{LLM_MODEL_ID}}|$LLM_MODEL_ID|g" \
+        -e "s|{{LLM_API_BASE}}|$LLM_API_BASE|g" \
+        -e "s|{{LLM_PROVIDER_NAME}}|$LLM_PROVIDER_NAME|g" \
+        -e "s|{{GROUP_POLICY}}|$GROUP_POLICY|g" \
+        -e "s|{{AUTO_REPLY}}|$AUTO_REPLY|g" \
+        "$TEMPLATE_DIR/openclaw.json.template" > "$OCTEAM_DIR/configs/$expert/openclaw.json"
+    echo "  Generated configs/$expert/openclaw.json"
+done
 
 render_compose_template "$TEMPLATE_DIR/docker-compose.yml.template" "$OCTEAM_DIR/docker-compose.yml"
 echo ""
