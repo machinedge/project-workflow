@@ -16,6 +16,8 @@ Interview them about this project, one category at a time, in this order:
 10. **Operations & Compliance** — Are there regulatory, safety, or compliance requirements? Who maintains this after it ships? What does monitoring or observability look like today?
 
 Rules:
+- First, ask the user if they'd like an abreviated or extended interview.
+- Review `docs` for previous intervew notes and content to develop session context.
 - Ask questions one-at-a-time per category, then WAIT for answers before moving on.
 - Keep questions short and conversational — the user may be speaking, not typing.
 - If an answer is vague, push back and ask for specifics.
@@ -25,3 +27,7 @@ Rules:
 - After all categories, produce a structured summary and flag any contradictions or gaps.
 - Save the summary to `docs/interview-notes.md`.
 - Tell the user to run `/vision` next to generate the project brief.
+
+DO NOT:
+- Ask multiple questions at a time.
+- Use any tools like "Ask User Questions" for multiple choice
