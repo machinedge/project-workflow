@@ -14,8 +14,8 @@
 | swe-techdebt-010 | Update CLAUDE.md repo guide to include System Architect | swe | techdebt | M3 | done |
 | swe-techdebt-011 | Add update_plan to PM role.md Skills section | swe | techdebt | M4 | done |
 | swe-techdebt-012 | Fix nits: /start tagline, docs-protocol description, PM docs-protocol path | swe | techdebt | M5 | done |
-| sa-feature-013 | Design Target-Class Directory Layout | system-architect | feature | M6 | backlog |
-| swe-feature-014 | Create Target-Class Directories and Relocate Files | swe | feature | M6 | backlog |
+| sa-feature-013 | Design Target-Class Directory Layout | system-architect | feature | M6 | done |
+| swe-feature-014 | Create Target-Class Directories and Relocate Files | swe | feature | M6 | done |
 | swe-feature-015 | Update Install, Packaging, and Validation Scripts for New Layout | swe | feature | M6 | backlog |
 | swe-feature-016 | Update Documentation References and Remove CLAUDE.md | swe | feature | M7 | backlog |
 | qa-feature-017 | Verify Deployment Restructure End-to-End | qa | feature | M7 | backlog |

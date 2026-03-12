@@ -29,3 +29,9 @@ Implement the directory restructure defined in `docs/architecture.md`. Create th
 **Dependencies:** sa-feature-013 (must know the target layout before moving files)
 **Inputs:** project brief (`docs/project-brief.md`), `docs/architecture.md` (the layout to implement)
 **Out of scope:** Updating script contents (paths, references inside scripts). That's swe-feature-015. Don't update docs — that's swe-feature-016.
+
+## Session 06 Summary
+
+**What was done:** Created the full target-class directory structure (`targets/ide/`, `targets/desktop-cli/claude/`, `targets/autonomous/openclaw/`, `tools/`) and relocated all 43 tracked files from `framework/` and `package/` using `git mv`. Removed old directories. Updated `.gitignore` for the new build path.
+**Handoff note:** `docs/handoff-notes/swe/session-06.md`
+**All acceptance criteria met:** Yes

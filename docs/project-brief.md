@@ -53,14 +53,14 @@ Developers using AI coding assistants who want structured, repeatable workflows 
 
 - **Core experts:** PM (10 skills), SWE (2 skills), QA (6 skills), DevOps (6 skills), System Architect (6 skills) — functional
 - **Under development:** Data Analyst, User Experience
-- **Framework:** scaffold, validate, install, package — functional
-- **Last completed:** swe-bug-007 through swe-techdebt-012 (All bug and tech debt issues resolved)
-- **Next task:** sa-feature-013 (Design target-class directory layout)
+- **Tooling:** scaffold, validate, install, package — functional (now in `tools/` and `targets/`)
+- **Last completed:** swe-feature-014 (Directory restructure — `framework/` and `package/` replaced by `targets/` and `tools/`)
+- **Next task:** swe-feature-015 (Update scripts for new paths)
 - **Last updated:** 2026-03-12
 
 ## Notes for AI
 
 - Use full expert directory names (`project-manager`, not `pm`; `data-analyst`, not `eda`)
 - Read `experts/technical/shared/docs-protocol.md` for cross-expert document contracts
-- Read `framework/docs/agent-reference.md` before modifying framework tooling
+- Read `docs/agent-reference.md` before modifying tooling
 - The System Architect owns `docs/architecture.md`; all other experts consume it

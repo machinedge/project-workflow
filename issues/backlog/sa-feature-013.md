@@ -3,7 +3,7 @@
 **Type:** feature
 **Expert:** system-architect
 **Milestone:** M6
-**Status:** backlog
+**Status:** done
 
 ## User Story
 
@@ -15,13 +15,13 @@ Design the new top-level directory structure for the repo, replacing the current
 
 ## Acceptance Criteria
 
-- [ ] `docs/architecture.md` exists and documents the new directory layout
-- [ ] Layout has a clear place for each of: scaffold, validate, install scripts, packaging scripts, per-target configs, OpenClaw templates, repo utilities (new_repo, list-experts), and framework docs
-- [ ] Extensibility model is defined — adding a new target requires creating one directory and optionally one script, with no changes to core files or other targets
-- [ ] OpenClaw code has a designated slot (preserved, not deleted)
-- [ ] `package/tools/` utilities (new_repo, list-experts) have a designated home separate from packaging
-- [ ] Trade-offs between considered alternatives are documented
-- [ ] Architecture is reviewed with the user before finalizing
+- [x] `docs/architecture.md` exists and documents the new directory layout
+- [x] Layout has a clear place for each of: scaffold, validate, install scripts, packaging scripts, per-target configs, OpenClaw templates, repo utilities (new_repo, list-experts), and framework docs
+- [x] Extensibility model is defined — adding a new target requires creating one directory and optionally one script, with no changes to core files or other targets
+- [x] OpenClaw code has a designated slot (preserved, not deleted)
+- [x] `package/tools/` utilities (new_repo, list-experts) have a designated home separate from packaging
+- [x] Trade-offs between considered alternatives are documented
+- [x] Architecture is reviewed with the user before finalizing
 
 ## Technical Notes
 
