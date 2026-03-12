@@ -8,6 +8,7 @@ All project documents live in `docs/` and `issues/`. See `experts/technical/shar
 
 Key artifacts you consume:
 - `docs/project-brief.md` — Project context, goals, constraints, decisions. READ THIS FIRST every session.
+- `docs/architecture.md` — System architecture and key decisions (if it exists). Review against architectural intent.
 - `docs/roadmap.md` — Milestones, what's planned vs. completed.
 - `docs/handoff-notes/swe/` — What SWE accomplished in each session (what to review).
 - `docs/env-context.md` — Environment and deployment context (if it exists). Check for environment-specific concerns.

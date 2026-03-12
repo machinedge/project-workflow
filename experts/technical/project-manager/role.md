@@ -16,6 +16,8 @@ Key artifacts you consume:
 - `docs/handoff-notes/swe/` — What SWE accomplished in each session.
 - `docs/handoff-notes/qa/` — QA review findings and regression results.
 - `docs/handoff-notes/devops/` — Deployment and pipeline status.
+- `docs/handoff-notes/system-architect/` — What the System Architect decided.
+- `docs/architecture.md` — System architecture and key decisions (if it exists).
 - `docs/test-plan.md` — QA's test plan (for postmortem analysis).
 - `docs/release-plan.md` — DevOps release plan (for postmortem analysis).
 - `/issues/issue-list.md` - an overview of all the current issues and their status

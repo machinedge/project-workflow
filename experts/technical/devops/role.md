@@ -8,6 +8,7 @@ All project documents live in `docs/` and `issues/`. See `experts/technical/shar
 
 Key artifacts you consume:
 - `docs/project-brief.md` — Project context, goals, constraints, decisions. READ THIS FIRST every session.
+- `docs/architecture.md` — System architecture and key decisions (if it exists). Respect its constraints.
 - `docs/env-context.md` — Environment and deployment context (you also produce this).
 - `docs/release-plan.md` — Release gates and rollback procedures (you also produce this).
 - `docs/test-plan.md` — QA's test plan (if it exists). Informs pipeline test stages.

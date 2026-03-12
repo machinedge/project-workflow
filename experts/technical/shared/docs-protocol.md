@@ -16,6 +16,7 @@ All project documents live in `docs/`:
 | Environment Context | `docs/env-context.md` | Build targets, deployment mechanisms, test infrastructure. |
 | Test Plan | `docs/test-plan.md` | What to test, at what level, with what infrastructure. |
 | Release Plan | `docs/release-plan.md` | Release gates, rollback procedures, artifact definitions. |
+| Architecture | `docs/architecture.md` | System architecture: components, boundaries, interfaces, key decisions. |
 | Issues List | `issues/issues-list.md` | Overview list of reported or captured issues and their current status |
 
 ## Workflow Contracts
@@ -38,6 +39,8 @@ Each workflow produces artifacts that other workflows consume. If an upstream ar
 | DevOps | `docs/release-plan.md` | PM, QA |
 | DevOps | `docs/handoff-notes/devops/session-NN.md` | PM, DevOps (next session) |
 | DevOps | Pipeline config | DevOps (internal) |
+| System Architect | `docs/architecture.md` | SWE, QA, DevOps, PM |
+| System Architect | `docs/handoff-notes/system-architect/session-NN.md` | PM, SWE, System Architect (next session) |
 
 ## Handoff Note Conventions
 
@@ -52,7 +55,9 @@ docs/handoff-notes/
 │   └── session-01.md
 ├── devops/
 │   └── session-01.md
-└── pm/
+├── pm/
+│   └── session-01.md
+└── system-architect/
     └── session-01.md
 ```
 

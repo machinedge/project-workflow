@@ -5,11 +5,12 @@
 # platform-agnostic expert definitions into editor-specific configurations.
 #
 # Expert short names are mapped to their full directory names:
-#   pm → project-manager, swe → swe, qa → qa, devops → devops, data-analyst → data-analyst
+#   pm → project-manager, swe → swe, qa → qa, devops → devops,
+#   sa → system-architect, data-analyst → data-analyst
 #
 # Skill prefix mapping (for flat command namespaces):
 #   pm- → project-manager, swe- → swe, qa- → qa, ops- → devops
-#   da- → data-analyst, ux- → user-experience, team- → shared
+#   sa- → system-architect, da- → data-analyst, ux- → user-experience, team- → shared
 #
 # Examples:
 #   .\install.ps1 -Target ~\myproj                                      # All core experts, both editors
@@ -21,7 +22,7 @@ param(
     [ValidateSet("claude", "cursor", "both")]
     [string]$Editor = "both",
 
-    [string]$Experts = "project-manager,swe,qa,devops",
+    [string]$Experts = "project-manager,swe,qa,devops,system-architect",
 
     [string]$Domain = "technical",
 
@@ -50,16 +51,18 @@ if ($Target -ne ".") {
 function Resolve-ExpertName {
     param([string]$Name)
     switch ($Name) {
-        "pm"              { return "project-manager" }
-        "project-manager" { return "project-manager" }
-        "swe"             { return "swe" }
-        "qa"              { return "qa" }
-        "devops"          { return "devops" }
-        "eda"             { return "data-analyst" }
-        "data-analyst"    { return "data-analyst" }
-        "ux"              { return "user-experience" }
-        "user-experience" { return "user-experience" }
-        default           { return $Name }
+        "pm"               { return "project-manager" }
+        "project-manager"  { return "project-manager" }
+        "swe"              { return "swe" }
+        "qa"               { return "qa" }
+        "devops"           { return "devops" }
+        "sa"               { return "system-architect" }
+        "system-architect" { return "system-architect" }
+        "eda"              { return "data-analyst" }
+        "data-analyst"     { return "data-analyst" }
+        "ux"               { return "user-experience" }
+        "user-experience"  { return "user-experience" }
+        default            { return $Name }
     }
 }
 
@@ -71,13 +74,14 @@ function Resolve-ExpertName {
 function Resolve-ExpertPrefix {
     param([string]$Name)
     switch ($Name) {
-        "project-manager" { return "pm" }
-        "swe"             { return "swe" }
-        "qa"              { return "qa" }
-        "devops"          { return "ops" }
-        "data-analyst"    { return "da" }
-        "user-experience" { return "ux" }
-        default           { return $Name }
+        "project-manager"  { return "pm" }
+        "swe"              { return "swe" }
+        "qa"               { return "qa" }
+        "devops"           { return "ops" }
+        "system-architect" { return "sa" }
+        "data-analyst"     { return "da" }
+        "user-experience"  { return "ux" }
+        default            { return $Name }
     }
 }
 
@@ -128,7 +132,7 @@ foreach ($expert in $ExpertList) {
 
 if ($Editor -eq "claude" -or $Editor -eq "both") {
     # Remove managed commands (known prefixes only)
-    foreach ($prefix in @("pm", "swe", "qa", "ops", "da", "ux", "team")) {
+    foreach ($prefix in @("pm", "swe", "qa", "ops", "sa", "da", "ux", "team")) {
         Get-ChildItem "$Target/.claude/commands/${prefix}-*.md" -ErrorAction SilentlyContinue | Remove-Item -Force
     }
     # Remove managed roles and generated root config
@@ -138,7 +142,7 @@ if ($Editor -eq "claude" -or $Editor -eq "both") {
 
 if ($Editor -eq "cursor" -or $Editor -eq "both") {
     # Remove managed commands (known prefixes only)
-    foreach ($prefix in @("pm", "swe", "qa", "ops", "da", "ux", "team")) {
+    foreach ($prefix in @("pm", "swe", "qa", "ops", "sa", "da", "ux", "team")) {
         Get-ChildItem "$Target/.cursor/commands/${prefix}-*.md" -ErrorAction SilentlyContinue | Remove-Item -Force
     }
     # Remove managed rules and generated root config
@@ -300,7 +304,7 @@ $RolesBlock
 2. Read the corresponding role file from ``.claude/roles/``.
 3. Follow that expert's session protocol.
 
-If the user jumps straight into a skill (e.g. ``/swe-start``), infer the expert from the skill prefix and load the appropriate role file automatically. Skill prefixes: pm=Project Manager, swe=SWE, qa=QA, ops=DevOps, da=Data Analyst, ux=User Experience, team=Shared.
+If the user jumps straight into a skill (e.g. ``/swe-start``), infer the expert from the skill prefix and load the appropriate role file automatically. Skill prefixes: pm=Project Manager, swe=SWE, qa=QA, ops=DevOps, sa=System Architect, da=Data Analyst, ux=User Experience, team=Shared.
 
 ## Available Skills
 $SkillsBlock
@@ -340,7 +344,7 @@ Role files are in ``.cursor/rules/`` as ``<expert>-os.mdc``.
 2. Read the corresponding role rules file.
 3. Follow that expert's session protocol.
 
-If the user jumps straight into a skill (e.g. ``/swe-start``), infer the expert from the skill prefix and load the appropriate role file automatically. Skill prefixes: pm=Project Manager, swe=SWE, qa=QA, ops=DevOps, da=Data Analyst, ux=User Experience, team=Shared.
+If the user jumps straight into a skill (e.g. ``/swe-start``), infer the expert from the skill prefix and load the appropriate role file automatically. Skill prefixes: pm=Project Manager, swe=SWE, qa=QA, ops=DevOps, sa=System Architect, da=Data Analyst, ux=User Experience, team=Shared.
 
 ## Available Skills
 $SkillsBlock

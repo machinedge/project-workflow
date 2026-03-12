@@ -16,6 +16,7 @@ Read these files automatically — do not ask the user to provide them:
 4. Most recent handoff note in `docs/handoff-notes/swe/` (if any exist)
 5. `docs/test-plan.md` (if it exists) — skim for test requirements relevant to this task
 6. `docs/env-context.md` (if it exists) — skim for environment constraints relevant to this task
+7. `docs/architecture.md` (if it exists) — understand system-level constraints, component boundaries, and technology decisions relevant to this task
 
 Confirm understanding with the user:
 - "Project: [1 sentence]"
@@ -44,12 +45,16 @@ Wait for user approval or feedback before proceeding.
 
 ## Phase 3: Architect the Solution
 
+This phase covers **domain-level architecture** — how to implement the feature within established system boundaries. System-level decisions (component boundaries, cross-cutting concerns, technology choices) belong to the System Architect and are defined in `docs/architecture.md`. If that document exists, your design must respect its constraints.
+
 Design before you build:
 
 - Define the structure: modules, functions, classes, data models, API contracts — whatever applies.
 - Identify how this integrates with existing code (if applicable). Read relevant existing files.
+- If `docs/architecture.md` exists, verify your design is consistent with its component boundaries, interfaces, and technology decisions.
 - Call out any dependencies, libraries, or tools needed.
 - If there are multiple valid approaches, present them with trade-offs and recommend one.
+- **If you need an architectural decision that isn't covered by `docs/architecture.md`, flag it and ask the user rather than assuming.** This includes new component boundaries, new integration patterns, or technology choices outside the current architecture.
 
 For small tasks this can be brief. For large tasks this should be thorough. Scale to the complexity.
 

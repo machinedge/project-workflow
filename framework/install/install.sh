@@ -7,11 +7,12 @@
 # platform-agnostic expert definitions into editor-specific configurations.
 #
 # Expert short names are mapped to their full directory names:
-#   pm → project-manager, swe → swe, qa → qa, devops → devops, data-analyst → data-analyst
+#   pm → project-manager, swe → swe, qa → qa, devops → devops,
+#   sa → system-architect, data-analyst → data-analyst
 #
 # Skill prefix mapping (for flat command namespaces):
 #   pm- → project-manager, swe- → swe, qa- → qa, ops- → devops
-#   da- → data-analyst, ux- → user-experience, team- → shared
+#   sa- → system-architect, da- → data-analyst, ux- → user-experience, team- → shared
 #
 # Examples:
 #   ./install.sh ~/myproj                                    # All core experts, both editors
@@ -33,7 +34,7 @@ fi
 
 # Parse arguments
 EDITOR="both"
-EXPERT_LIST="project-manager,swe,qa,devops"
+EXPERT_LIST="project-manager,swe,qa,devops,system-architect"
 DOMAIN="technical"
 TARGET="."
 
@@ -69,13 +70,14 @@ fi
 resolve_expert_name() {
     local name="$1"
     case "$name" in
-        pm|project-manager) echo "project-manager" ;;
-        swe)                echo "swe" ;;
-        qa)                 echo "qa" ;;
-        devops)             echo "devops" ;;
-        data-analyst|eda)   echo "data-analyst" ;;
-        user-experience|ux) echo "user-experience" ;;
-        *)                  echo "$name" ;;
+        pm|project-manager)          echo "project-manager" ;;
+        swe)                         echo "swe" ;;
+        qa)                          echo "qa" ;;
+        devops)                      echo "devops" ;;
+        sa|system-architect)         echo "system-architect" ;;
+        data-analyst|eda)            echo "data-analyst" ;;
+        user-experience|ux)          echo "user-experience" ;;
+        *)                           echo "$name" ;;
     esac
 }
 
@@ -87,13 +89,14 @@ resolve_expert_name() {
 resolve_expert_prefix() {
     local name="$1"
     case "$name" in
-        project-manager) echo "pm" ;;
-        swe)             echo "swe" ;;
-        qa)              echo "qa" ;;
-        devops)          echo "ops" ;;
-        data-analyst)    echo "da" ;;
-        user-experience) echo "ux" ;;
-        *)               echo "$name" ;;
+        project-manager)  echo "pm" ;;
+        swe)              echo "swe" ;;
+        qa)               echo "qa" ;;
+        devops)           echo "ops" ;;
+        system-architect) echo "sa" ;;
+        data-analyst)     echo "da" ;;
+        user-experience)  echo "ux" ;;
+        *)                echo "$name" ;;
     esac
 }
 
@@ -148,7 +151,7 @@ done
 
 if [ "$EDITOR" = "claude" ] || [ "$EDITOR" = "both" ]; then
     # Remove managed commands (known prefixes only)
-    for prefix in pm swe qa ops da ux team; do
+    for prefix in pm swe qa ops sa da ux team; do
         rm -f "$TARGET/.claude/commands/${prefix}"-*.md 2>/dev/null
     done
     # Remove managed roles and generated root config
@@ -158,7 +161,7 @@ fi
 
 if [ "$EDITOR" = "cursor" ] || [ "$EDITOR" = "both" ]; then
     # Remove managed commands (known prefixes only)
-    for prefix in pm swe qa ops da ux team; do
+    for prefix in pm swe qa ops sa da ux team; do
         rm -f "$TARGET/.cursor/commands/${prefix}"-*.md 2>/dev/null
     done
     # Remove managed rules and generated root config
@@ -323,7 +326,7 @@ $(echo -e "$ROLE_LIST")
 2. Read the corresponding role file from \`.claude/roles/\`.
 3. Follow that expert's session protocol.
 
-If the user jumps straight into a skill (e.g. \`/swe-start\`), infer the expert from the skill prefix and load the appropriate role file automatically. Skill prefixes: pm=Project Manager, swe=SWE, qa=QA, ops=DevOps, da=Data Analyst, ux=User Experience, team=Shared.
+If the user jumps straight into a skill (e.g. \`/swe-start\`), infer the expert from the skill prefix and load the appropriate role file automatically. Skill prefixes: pm=Project Manager, swe=SWE, qa=QA, ops=DevOps, sa=System Architect, da=Data Analyst, ux=User Experience, team=Shared.
 
 ## Available Skills
 $(echo -e "$SKILL_LIST")
@@ -363,7 +366,7 @@ Role files are in \`.cursor/rules/\` as \`<expert>-os.mdc\`.
 2. Read the corresponding role rules file.
 3. Follow that expert's session protocol.
 
-If the user jumps straight into a skill (e.g. \`/swe-start\`), infer the expert from the skill prefix and load the appropriate role file automatically. Skill prefixes: pm=Project Manager, swe=SWE, qa=QA, ops=DevOps, da=Data Analyst, ux=User Experience, team=Shared.
+If the user jumps straight into a skill (e.g. \`/swe-start\`), infer the expert from the skill prefix and load the appropriate role file automatically. Skill prefixes: pm=Project Manager, swe=SWE, qa=QA, ops=DevOps, sa=System Architect, da=Data Analyst, ux=User Experience, team=Shared.
 
 ## Available Skills
 $(echo -e "$SKILL_LIST")
