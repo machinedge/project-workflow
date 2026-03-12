@@ -3,7 +3,7 @@
 **Type:** feature
 **Expert:** qa
 **Milestone:** M7
-**Status:** backlog
+**Status:** done
 
 ## Description
 
@@ -23,10 +23,16 @@ Verify the entire Deployment Restructure (M6 + M7) against the success criteria 
 
 ## Acceptance Criteria
 
-- [ ] All verification checks pass or issues are filed for failures
-- [ ] Findings documented in QA handoff note
+- [x] All verification checks pass or issues are filed for failures
+- [x] Findings documented in QA handoff note
 
 ## Notes
 
 **Depends on:** swe-feature-016 (all restructure work must be complete)
 **Inputs:** `docs/architecture.md`, `docs/interview-notes-deployment-restructure.md` (success criteria), SWE handoff notes from swe-feature-014 through swe-feature-016
+
+## Session 01 Summary
+
+**What was done:** Full end-to-end verification of the Deployment Restructure (M6 + M7). 9 verification areas covered. 1 must-fix, 3 should-fix, and 1 nit found — all documentation issues. Core infrastructure (validation, install, scaffolding, OpenClaw isolation, extensibility, stale paths) is clean.
+**Handoff note:** `docs/handoff-notes/qa/session-01.md`
+**All acceptance criteria met:** Yes

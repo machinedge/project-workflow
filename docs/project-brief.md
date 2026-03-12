@@ -23,9 +23,9 @@ Developers using AI coding assistants who want structured, repeatable workflows 
 - [ ] [Expert Skill Restructure] Every expert has `/start` and `/handoff` for executing issues
 - [ ] [Expert Skill Restructure] SWE `/start` consumes `architecture.md` and enforces checkpoints
 - [ ] [Expert Skill Restructure] All experts escalate out-of-scope decisions to PM or System Architect
-- [ ] [Deployment Restructure] Directory layout organized by target class (IDE, Desktop/Code, Autonomous)
-- [ ] [Deployment Restructure] Adding a new deployment target is atomic and self-contained
-- [ ] [Deployment Restructure] OpenClaw code preserved but isolated in its own target directory
+- [x] [Deployment Restructure] Directory layout organized by target class (IDE, Desktop/Code, Autonomous)
+- [x] [Deployment Restructure] Adding a new deployment target is atomic and self-contained
+- [x] [Deployment Restructure] OpenClaw code preserved but isolated in its own target directory
 - [x] [Deployment Restructure] `CLAUDE.md` removed
 
 ## Constraints
@@ -54,8 +54,9 @@ Developers using AI coding assistants who want structured, repeatable workflows 
 - **Core experts:** PM (10 skills), SWE (2 skills), QA (6 skills), DevOps (6 skills), System Architect (6 skills) — functional
 - **Under development:** Data Analyst, User Experience
 - **Tooling:** scaffold, validate, install, package — functional (in `tools/` and `targets/`)
-- **Last completed:** swe-feature-016 (Documentation updated for new layout, CLAUDE.md removed)
-- **Next task:** qa-feature-017 (Verify Deployment Restructure End-to-End)
+- **Last completed:** qa-feature-017 (Deployment Restructure verified end-to-end; 4 doc issues filed as swe-bug-018 through swe-bug-021)
+- **Blockers:** swe-bug-018 (must-fix: README Quick Start broken path) blocks M7 completion
+- **Next task:** swe-bug-018 through swe-bug-021 (fix documentation issues found during QA)
 - **Last updated:** 2026-03-12
 
 ## Notes for AI
