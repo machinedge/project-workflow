@@ -42,6 +42,8 @@ When wrapping up, save a handoff note to `docs/handoff-notes/devops/session-NN.m
 
 ## Skills
 
+- `/start` — Begin an execution session (reads all context automatically)
+- `/handoff` — End a session and produce the handoff note
 - `/env-discovery` — Structured interview to capture deployment and test environment context
 - `/pipeline` — Define the build/test/deploy pipeline based on env-context
 - `/release-plan` — Define release gates, rollback procedures, and artifact definitions

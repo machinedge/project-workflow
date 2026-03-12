@@ -33,3 +33,5 @@ M2 (Framework) ── independent
 | Date | Change |
 |------|--------|
 | 2026-03-12 | Initial roadmap created. M1 and M2 marked as done (pre-existing). Added Expert Skill Restructure milestones (M3-M5) from interview notes. |
+| 2026-03-12 | Decomposed M3-M5 into 5 tasks: swe-feature-001 (M3), swe-feature-002 and swe-feature-003 (M4), swe-feature-004 and qa-feature-005 (M5). |
+| 2026-03-12 | Added swe-feature-006 (update install scripts for System Architect) to M3. |

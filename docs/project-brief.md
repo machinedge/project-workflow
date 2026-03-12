@@ -45,10 +45,11 @@ Developers using AI coding assistants who want structured, repeatable workflows 
 
 ## Current Status
 
-- **Core experts:** PM (7 skills), SWE (2 skills), QA (4 skills), DevOps (4 skills) — functional
+- **Core experts:** PM (9 skills), SWE (2 skills), QA (6 skills), DevOps (6 skills), System Architect (6 skills) — functional
 - **Under development:** Data Analyst, User Experience
 - **Framework:** scaffold, validate, install, package — functional
-- **Next task:** Decompose "Expert Skill Restructure" into session-sized tasks
+- **Last completed:** swe-feature-001 (Create System Architect Expert)
+- **Next task:** swe-feature-004 (Update SWE /start, Docs-Protocol, and Role Files for architecture.md)
 - **Last updated:** 2026-03-12
 
 ## Notes for AI

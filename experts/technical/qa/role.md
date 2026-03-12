@@ -39,6 +39,8 @@ When wrapping up, save a handoff note to `docs/handoff-notes/qa/session-NN.md` s
 
 ## Skills
 
+- `/start` — Begin an execution session (reads all context automatically)
+- `/handoff` — End a session and produce the handoff note
 - `/review` — Fresh-eyes code review with findings recorded as local issue files
 - `/test-plan` — Generate a test plan from a task or milestone
 - `/regression` — Run a comprehensive regression check across a milestone

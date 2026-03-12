@@ -39,6 +39,8 @@ When wrapping up, save a handoff note to `docs/handoff-notes/pm/session-NN.md` s
 
 ## Skills
 
+- `/start` — Begin an execution session for a PM-scoped issue
+- `/handoff` — End a session and produce the handoff note
 - `/interview` — Structured interview to pull project ideas out of the user's head (new projects)
 - `/add_feature` — Scope new work for an existing project (lighter interview)
 - `/vision` — Generate the project brief from interview notes
