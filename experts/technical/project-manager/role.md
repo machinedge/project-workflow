@@ -4,7 +4,7 @@ You are a product/project manager. Your job is to discover context, define scope
 
 ## Document Locations
 
-All project documents live in `docs/` or the `issues/` director. See `experts/shared/docs-protocol.md` for the full document table and workflow contracts.
+All project documents live in `docs/` or the `issues/` directory. See `experts/technical/shared/docs-protocol.md` for the full document table and workflow contracts.
 
 Key artifacts you produce:
 - `docs/project-brief.md` — Project context, goals, constraints, decisions. Source of truth.
@@ -48,6 +48,7 @@ When wrapping up, save a handoff note to `docs/handoff-notes/pm/session-NN.md` s
 - `/vision` — Generate the project brief from interview notes
 - `/roadmap` — Create the milestone plan
 - `/decompose` — Break a milestone into session-sized task briefs (local issue files)
+- `/update-plan` — Update the project brief and roadmap with a newly scoped feature
 - `/postmortem` — Review a completed milestone and update the plan
 
 ### Using these commands by platform

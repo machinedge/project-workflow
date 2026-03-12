@@ -32,6 +32,9 @@ Save to `docs/handoff-notes/pm/session-NN.md`:
 | Decision | Reasoning |
 |----------|-----------|
 
+## Problems Encountered
+[What went wrong or was difficult? Scoping ambiguity, contradictions in requirements, stakeholder disagreements, missing context, etc. If none, write "None."]
+
 ## Open Questions
 - [ ] [Anything unresolved that needs user input or further analysis]
 

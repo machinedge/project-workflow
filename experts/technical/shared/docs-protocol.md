@@ -10,7 +10,7 @@ All project documents live in `docs/`:
 |----------|------|---------|
 | Project Brief | `docs/project-brief.md` | Project context, goals, constraints, decisions. READ THIS FIRST every session. |
 | Roadmap | `docs/roadmap.md` | Milestones, dependencies, risks. |
-| Handoff Notes | `docs/handoff-notes/<workflow>/session-NN.md` | What happened in each past session, organized by workflow (swe/, qa/, devops/, pm/). |
+| Handoff Notes | `docs/handoff-notes/<workflow>/session-NN.md` | What happened in each past session, organized by workflow (swe/, qa/, devops/, pm/, system-architect/). |
 | Lessons Log | `docs/lessons-log.md` | Project-specific gotchas and patterns. |
 | Interview Notes | `docs/interview-notes*.md` | Raw interview transcripts from PM discovery. |
 | Environment Context | `docs/env-context.md` | Build targets, deployment mechanisms, test infrastructure. |

@@ -1,4 +1,4 @@
-Begin an execution session. This is the most important command.
+Begin an execution session for a QA-scoped issue.
 
 The user may specify a task: $ARGUMENTS
 
@@ -17,6 +17,7 @@ Read these files automatically — do not ask the user to provide them:
 5. Relevant SWE handoff notes in `docs/handoff-notes/swe/` — understand what was built and what changed
 6. `docs/test-plan.md` (if it exists) — evaluate coverage against it
 7. `docs/env-context.md` (if it exists) — check for environment-specific concerns
+8. `docs/architecture.md` (if it exists) — understand system-level constraints and review against architectural intent
 
 Confirm understanding with the user:
 - "Project: [1 sentence]"

@@ -59,4 +59,5 @@ When wrapping up, save a handoff note to `docs/handoff-notes/qa/session-NN.md` s
 - **Review only — don't auto-fix.** Fixes should go through the full SWE workflow (`/start`) so they get proper testing and verification. Your job is to find problems, not fix them.
 - **You have no memory between sessions.** These documents ARE your memory. Trust them.
 - **The project brief is source of truth.** If something contradicts it, ask the user.
+- **Escalate architectural questions.** If a review finding involves system-level architecture (component boundaries, technology choices, cross-cutting concerns) not covered by `docs/architecture.md`, flag it for the System Architect or PM rather than making architectural judgments yourself. Quality assessments within established boundaries are yours to make.
 - **Don't re-litigate past decisions.** Decisions are recorded in the project brief. Only revisit if the user asks.

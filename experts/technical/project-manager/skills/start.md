@@ -15,6 +15,7 @@ Read these files automatically — do not ask the user to provide them:
    - If not, check project brief's "Next task" field for the issue filename
    - If still unclear, scan `issues/planned/` and `issues/in-progress/` for PM tasks and ask
 5. Most recent handoff note in `docs/handoff-notes/pm/` (if any exist)
+6. `docs/architecture.md` (if it exists) — understand system-level context relevant to this task
 
 Confirm understanding with the user:
 - "Project: [1 sentence]"

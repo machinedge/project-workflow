@@ -1,4 +1,4 @@
-Begin an execution session. This is the most important command.
+Begin an execution session for a DevOps-scoped issue.
 
 The user may specify a task: $ARGUMENTS
 
@@ -18,6 +18,7 @@ Read these files automatically — do not ask the user to provide them:
 6. Relevant SWE handoff notes in `docs/handoff-notes/swe/` — understand what was built (what needs to be deployed)
 7. `docs/test-plan.md` (if it exists) — informs pipeline test stages
 8. Check current pipeline status (if a pipeline exists)
+9. `docs/architecture.md` (if it exists) — understand system-level constraints relevant to infrastructure and deployment
 
 Confirm understanding with the user:
 - "Project: [1 sentence]"

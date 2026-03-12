@@ -10,6 +10,7 @@ experts/technical/          ← Expert definitions (the core of this repo)
   swe/                      ← Software engineer
   qa/                       ← Quality assurance
   devops/                   ← DevOps/deployment
+  system-architect/         ← System-level architecture and design decisions
   data-analyst/             ← Data analysis (under development)
   user-experience/          ← UX design (under development)
   shared/                   ← Cross-expert protocols and shared skills
