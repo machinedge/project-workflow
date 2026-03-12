@@ -23,6 +23,10 @@ Developers using AI coding assistants who want structured, repeatable workflows 
 - [ ] [Expert Skill Restructure] Every expert has `/start` and `/handoff` for executing issues
 - [ ] [Expert Skill Restructure] SWE `/start` consumes `architecture.md` and enforces checkpoints
 - [ ] [Expert Skill Restructure] All experts escalate out-of-scope decisions to PM or System Architect
+- [ ] [Deployment Restructure] Directory layout organized by target class (IDE, Desktop/Code, Autonomous)
+- [ ] [Deployment Restructure] Adding a new deployment target is atomic and self-contained
+- [ ] [Deployment Restructure] OpenClaw code preserved but isolated in its own target directory
+- [ ] [Deployment Restructure] `CLAUDE.md` removed
 
 ## Constraints
 
@@ -30,7 +34,7 @@ Developers using AI coding assistants who want structured, repeatable workflows 
 - Project brief must stay under 1,000 words
 - Issues tracked in `issues/`, not external services
 - Every expert needs `role.md`, `skills/`, and `tools/` directories
-- Backward compatible with existing projects using the toolkit
+- Breaking changes to `framework/` and `package/` paths accepted for deployment restructure
 
 ## Key Decisions Made
 
@@ -42,6 +46,8 @@ Developers using AI coding assistants who want structured, repeatable workflows 
 | 2026-03-12 | Add System Architect expert | System-level architecture decisions were being made ad-hoc by SWE during execution, causing rework on large/ambiguous tasks |
 | 2026-03-12 | Standardize `/start` and `/handoff` across all experts | Every expert needs to pick up issues and close sessions consistently |
 | 2026-03-12 | SWE `/start` updated (not replaced) to consume `architecture.md` | Backward compatible; removes system-level architecture from SWE scope while preserving the existing flow |
+| 2026-03-12 | Restructure deployment layer by target class (IDE, Desktop/Code, Autonomous) | `framework/` and `package/` are tangled and block release; three target classes identified for clean extensibility |
+| 2026-03-12 | Remove `CLAUDE.md` | Redundant with project brief + expert roles + agent-reference.md; one less file to maintain |
 
 ## Current Status
 
@@ -49,7 +55,7 @@ Developers using AI coding assistants who want structured, repeatable workflows 
 - **Under development:** Data Analyst, User Experience
 - **Framework:** scaffold, validate, install, package — functional
 - **Last completed:** swe-bug-007 through swe-techdebt-012 (All bug and tech debt issues resolved)
-- **Next task:** qa-feature-005 (QA review of expert skill restructure)
+- **Next task:** sa-feature-013 (Design target-class directory layout)
 - **Last updated:** 2026-03-12
 
 ## Notes for AI
