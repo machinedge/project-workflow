@@ -38,7 +38,7 @@ The `install-team.sh` script generates a `.octeam/` directory in the target proj
 ## Usage
 
 ```bash
-./framework/install/install-team.sh ~/myproject
+./targets/autonomous/openclaw/install-team.sh ~/myproject
 cd ~/myproject/.octeam
 # Edit .env with API keys and git URL
 docker compose up -d

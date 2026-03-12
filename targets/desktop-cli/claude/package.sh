@@ -85,17 +85,16 @@ cp "$REPO_ROOT/tools/list-experts.ps1" "$SKILL_BUILD/tools/"
 echo "Copying experts into skill package..."
 cp -R "$EXPERTS_SRC" "$SKILL_BUILD/experts"
 
-# Include install scripts in framework/install/ layout (matches SKILL.md references)
-echo "Copying install scripts..."
-mkdir -p "$SKILL_BUILD/framework/install"
-cp "$REPO_ROOT/targets/ide/install.sh" "$SKILL_BUILD/framework/install/"
-cp "$REPO_ROOT/targets/ide/install.ps1" "$SKILL_BUILD/framework/install/"
-cp "$REPO_ROOT/targets/autonomous/openclaw/install-team.sh" "$SKILL_BUILD/framework/install/"
-cp "$REPO_ROOT/targets/autonomous/openclaw/install-team.ps1" "$SKILL_BUILD/framework/install/"
+echo "Copying IDE install scripts..."
+mkdir -p "$SKILL_BUILD/targets/ide"
+cp "$REPO_ROOT/targets/ide/install.sh" "$SKILL_BUILD/targets/ide/"
+cp "$REPO_ROOT/targets/ide/install.ps1" "$SKILL_BUILD/targets/ide/"
 
-echo "Copying install templates..."
-mkdir -p "$SKILL_BUILD/framework/install/templates"
-cp -R "$REPO_ROOT/targets/autonomous/openclaw/templates/"* "$SKILL_BUILD/framework/install/templates/"
+echo "Copying autonomous install scripts and templates..."
+mkdir -p "$SKILL_BUILD/targets/autonomous/openclaw"
+cp "$REPO_ROOT/targets/autonomous/openclaw/install-team.sh" "$SKILL_BUILD/targets/autonomous/openclaw/"
+cp "$REPO_ROOT/targets/autonomous/openclaw/install-team.ps1" "$SKILL_BUILD/targets/autonomous/openclaw/"
+cp -R "$REPO_ROOT/targets/autonomous/openclaw/templates" "$SKILL_BUILD/targets/autonomous/openclaw/"
 
 # ─────────────────────────────────────────────
 # Ensure packaging tools are available

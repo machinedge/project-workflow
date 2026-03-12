@@ -19,10 +19,43 @@ Read [overview.md](overview.md) for the full vision. Read [workflow-anatomy.md](
 | `experts/` | All expert definitions, organized by domain |
 | `experts/technical/` | Software development domain (the current focus) |
 | `experts/technical/shared/` | Cross-expert protocols, shared skills, shared tools |
-| `framework/` | Setup scripts, scaffolding, validation, build tooling |
+| `targets/` | All deployment targets, organized by class (IDE, desktop-cli, autonomous) |
+| `tools/` | Repo development and management utilities (scaffold, validate, new-repo, list-experts) |
 | `docs/` | Documentation about the repo itself (you're reading one now) |
-| `skills/` | Distributable skill package for Claude Code / Cowork |
-| `build/` | Build tooling |
+
+### Repo Structure
+
+```
+experts/technical/          ← Expert definitions (the core of this repo)
+  project-manager/          ← Orchestrator and team lead
+  swe/                      ← Software engineer
+  qa/                       ← Quality assurance
+  devops/                   ← DevOps/deployment
+  system-architect/         ← System-level architecture and design decisions
+  data-analyst/             ← Data analysis (under development)
+  user-experience/          ← UX design (under development)
+  shared/                   ← Cross-expert protocols and shared skills
+targets/                    ← All deployment targets
+  ide/                      ← IDE-based targets (Cursor, Claude Code)
+    install.sh/ps1          ← Standalone mode setup
+    cursor/                 ← Cursor-specific config
+    claude-code/            ← Claude Code standalone-specific config
+  desktop-cli/              ← Desktop/CLI environments
+    claude/                 ← Claude Desktop, Claude Code, Cowork (.skill packaging)
+      package.sh/ps1        ← Build the .skill file
+      SKILL.md              ← Skill definition for Claude Code/Cowork
+      build/                ← Build output (gitignored)
+  autonomous/               ← Autonomous agent frameworks
+    openclaw/               ← OpenClaw (Docker + Matrix)
+      install-team.sh/ps1   ← Team mode setup
+      templates/            ← Docker Compose, Matrix, conduit, etc.
+tools/                      ← Repo development utilities
+  scaffold/                 ← Expert authoring (create-expert scripts, templates)
+  validate/                 ← Expert validation (validate.sh)
+  new-repo.sh/ps1           ← Create new project repos
+  list-experts.sh/ps1       ← Enumerate available experts
+docs/                       ← Vision, architecture, guides
+```
 
 ### Expert Directory Structure
 
@@ -43,6 +76,7 @@ Current experts in `experts/technical/`:
 | `swe/` | Software engineering, implementation | Active |
 | `qa/` | Quality assurance, testing, review | Active |
 | `devops/` | Deployment, pipelines, environments | Active |
+| `system-architect/` | System-level architecture and design decisions | Active |
 | `data-analyst/` | Time series data analysis | Under development |
 | `user-experience/` | UX design | Under development (empty skills) |
 
@@ -60,7 +94,7 @@ Current experts in `experts/technical/`:
 Use the scaffold script:
 
 ```bash
-./framework/scaffold/create-expert.sh --domain technical maintenance-planner
+./tools/scaffold/create-expert.sh --domain technical maintenance-planner
 ```
 
 This creates `experts/technical/maintenance-planner/` with a skeleton `role.md`, `skills/` directory, `tools/` directory, and guidance comments. Customize from there.
@@ -97,7 +131,7 @@ The `/start` skill is the most structured — it enforces a 7-phase process with
 
 ### Adding Tools
 
-Tools go in the expert's `tools/` directory. Unlike skills (which are LLM-executed markdown), tools are executable scripts (`.sh`, `.ps1`, `.py`, etc.) that the expert can invoke. Tools enforce capability boundaries between experts. Shared tools (like `new_repo.sh` and `list-experts.sh`) live in `package/tools/`.
+Tools go in the expert's `tools/` directory. Unlike skills (which are LLM-executed markdown), tools are executable scripts (`.sh`, `.ps1`, `.py`, etc.) that the expert can invoke. Tools enforce capability boundaries between experts. Shared tools (like `new-repo.sh` and `list-experts.sh`) live in `tools/`.
 
 If an expert doesn't need tools yet, keep the `tools/` directory with a `.gitkeep` file.
 
@@ -120,6 +154,8 @@ When modifying experts, you need to understand how they exchange information at 
 | DevOps | `docs/env-context.md` | SWE, QA |
 | DevOps | `docs/release-plan.md` | Project Manager, QA |
 | DevOps | `docs/handoff-notes/devops/session-NN.md` | Project Manager |
+| System Architect | `docs/architecture.md` | SWE, QA, DevOps, Project Manager |
+| System Architect | `docs/handoff-notes/system-architect/session-NN.md` | Project Manager, SWE |
 | Data Analyst | Analysis notebooks, `reports/` | Project Manager |
 | Data Analyst | `docs/handoff-notes/data-analyst/session-NN.md` | Project Manager |
 
@@ -162,9 +198,9 @@ alwaysApply: true
 After making changes, validate the expert definitions:
 
 ```bash
-./framework/validate/validate.sh                              # Validate all experts
-./framework/validate/validate.sh technical/swe                 # Validate a specific expert
-./framework/validate/validate.sh technical/maintenance-planner # Validate a new expert
+./tools/validate/validate.sh                              # Validate all experts
+./tools/validate/validate.sh technical/swe                 # Validate a specific expert
+./tools/validate/validate.sh technical/maintenance-planner # Validate a new expert
 ```
 
 Validation checks for required sections in `role.md`, skill file structure, document contract consistency, and cross-references between experts.

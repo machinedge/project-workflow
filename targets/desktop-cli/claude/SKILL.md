@@ -22,7 +22,7 @@ then `SKILL_DIR="/home/user/.skills/skills/machinedge-workflows"`
 **Verify immediately** — run this before proceeding:
 
 ```bash
-ls "$SKILL_DIR/framework/install/install.sh" "$SKILL_DIR/framework/install/install-team.sh"
+ls "$SKILL_DIR/targets/ide/install.sh" "$SKILL_DIR/targets/autonomous/openclaw/install-team.sh"
 ```
 
 If either file is missing, STOP. Tell the user the skill directory could not be resolved and
@@ -80,7 +80,7 @@ what's missing. Do NOT proceed past a failed check.
 
 ```bash
 # Always required — verify SKILL_DIR
-ls "$SKILL_DIR/framework/install/install.sh"
+ls "$SKILL_DIR/targets/ide/install.sh"
 
 # Always required — verify target directory is writable
 # (for new projects, check the PARENT directory)
@@ -108,7 +108,7 @@ Follow EXACTLY ONE path below based on the user's answers. Do NOT mix steps from
 Use `install-team.sh`. Do NOT use `install.sh`.
 
 ```bash
-bash "$SKILL_DIR/framework/install/install-team.sh" \
+bash "$SKILL_DIR/targets/autonomous/openclaw/install-team.sh" \
   --experts <comma-separated-short-names> \
   --project-name "<name>" \
   "<target-directory>"
@@ -131,7 +131,7 @@ mkdir -p "<target-directory>"
 Use `install.sh`. Do NOT use `install-team.sh`.
 
 ```bash
-bash "$SKILL_DIR/framework/install/install.sh" \
+bash "$SKILL_DIR/targets/ide/install.sh" \
   --editor <claude|cursor|both> \
   --experts <comma-separated-short-names> \
   "<target-directory>"
@@ -145,7 +145,7 @@ Create the directory, THEN run `install.sh`:
 
 ```bash
 mkdir -p "<target-directory>"
-bash "$SKILL_DIR/framework/install/install.sh" \
+bash "$SKILL_DIR/targets/ide/install.sh" \
   --editor <claude|cursor|both> \
   --experts <comma-separated-short-names> \
   "<target-directory>"
@@ -162,12 +162,12 @@ cd "<target-directory>" && git init && git add . && git commit -m "Initial commi
 
 First, create the repo:
 ```bash
-bash "$SKILL_DIR/tools/new_repo.sh" --org "<github-org>" "<repo-name>"
+bash "$SKILL_DIR/tools/new-repo.sh" --org "<github-org>" "<repo-name>"
 ```
 
 Then install the expert team:
 ```bash
-bash "$SKILL_DIR/framework/install/install.sh" \
+bash "$SKILL_DIR/targets/ide/install.sh" \
   --editor <claude|cursor|both> \
   --experts <comma-separated-short-names> \
   "$HOME/work/<repo-name>"
@@ -229,7 +229,7 @@ Do NOT recite the full lifecycle unless the user asks for it.
 
 ### User wants an expert that doesn't exist
 Available experts: Project Manager, SWE, QA, DevOps, Data Analyst. Custom experts can be
-created with `./framework/scaffold/create-expert.sh`. Suggest starting with the closest
+created with `./tools/scaffold/create-expert.sh`. Suggest starting with the closest
 existing expert and customizing after setup.
 
 ### Target directory already has expert files

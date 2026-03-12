@@ -26,9 +26,9 @@ Validates the Expert Skill Restructure feature: System Architect expert creation
 
 | # | Behavior | Source | Test Level | Approach | Infrastructure | Priority |
 |---|----------|--------|-----------|----------|---------------|----------|
-| 1 | System Architect expert passes structural validation | swe-feature-001, AC 10 | Unit | Run `./framework/validate/validate.sh technical/system-architect` | Local | P1 |
+| 1 | System Architect expert passes structural validation | swe-feature-001, AC 10 | Unit | Run `./tools/validate/validate.sh technical/system-architect` | Local | P1 |
 | 2 | All original experts still pass structural validation | Backward compat constraint | Unit | Run `validate.sh` for each of: `technical/project-manager`, `technical/swe`, `technical/qa`, `technical/devops` | Local | P1 |
-| 3 | Install script produces correct structure with SA included | swe-feature-006 | Integration | Run `./framework/install/install.sh /tmp/test-proj` and verify output files | Local | P1 |
+| 3 | Install script produces correct structure with SA included | swe-feature-006 | Integration | Run `./targets/ide/install.sh /tmp/test-proj` and verify output files | Local | P1 |
 | 4 | Install script works with `--experts` flag excluding SA | swe-feature-006 | Integration | Run `./install.sh --experts pm,swe,qa,devops /tmp/test-proj-no-sa` and verify SA files absent | Local | P2 |
 | 5 | Generated CLAUDE.md includes SA expert and skills | swe-feature-006 | Integration | Inspect `/tmp/test-proj/.claude/CLAUDE.md` for SA entries | Local | P1 |
 | 6 | Generated project-os.mdc includes SA expert and skills | swe-feature-006 | Integration | Inspect `/tmp/test-proj/.cursor/rules/project-os.mdc` for SA entries | Local | P1 |
@@ -60,17 +60,17 @@ Validates the Expert Skill Restructure feature: System Architect expert creation
 ### ATP-1: Structural Validation (Tests #1, #2)
 **Tests:** Matrix rows 1-2
 **Prerequisites:** None
-1. Run `./framework/validate/validate.sh technical/system-architect`
-2. Run `./framework/validate/validate.sh technical/project-manager`
-3. Run `./framework/validate/validate.sh technical/swe`
-4. Run `./framework/validate/validate.sh technical/qa`
-5. Run `./framework/validate/validate.sh technical/devops`
+1. Run `./tools/validate/validate.sh technical/system-architect`
+2. Run `./tools/validate/validate.sh technical/project-manager`
+3. Run `./tools/validate/validate.sh technical/swe`
+4. Run `./tools/validate/validate.sh technical/qa`
+5. Run `./tools/validate/validate.sh technical/devops`
 **Expected result:** All experts pass with 0 failures and 0 warnings
 
 ### ATP-2: Install Script Full Test (Tests #3, #5, #6)
 **Tests:** Matrix rows 3, 5, 6
 **Prerequisites:** Clean target directory
-1. Run `./framework/install/install.sh /tmp/test-expert-install`
+1. Run `./targets/ide/install.sh /tmp/test-expert-install`
 2. Verify `system-architect` appears in the installed experts list output
 3. Verify `.claude/roles/system-architect.md` exists
 4. Verify `.cursor/rules/system-architect-os.mdc` exists
@@ -85,7 +85,7 @@ Validates the Expert Skill Restructure feature: System Architect expert creation
 ### ATP-3: Install Script Exclude Test (Test #4)
 **Tests:** Matrix row 4
 **Prerequisites:** Clean target directory
-1. Run `./framework/install/install.sh --experts pm,swe,qa,devops /tmp/test-no-sa`
+1. Run `./targets/ide/install.sh --experts pm,swe,qa,devops /tmp/test-no-sa`
 2. Verify no `sa-*.md` files in `.claude/commands/` or `.cursor/commands/`
 3. Verify no `system-architect.md` in `.claude/roles/`
 4. Verify no `system-architect-os.mdc` in `.cursor/rules/`

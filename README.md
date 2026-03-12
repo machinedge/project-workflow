@@ -37,7 +37,7 @@ Or run setup directly:
 
 ```bash
 # Generate Docker infrastructure for a full expert team
-./framework/install/install-team.sh ~/projects/my-app
+./targets/autonomous/openclaw/install-team.sh ~/projects/my-app
 
 # Configure your API keys and git URL
 vi ~/projects/my-app/.octeam/.env
@@ -69,16 +69,19 @@ experts/
       skills/           # start, handoff
     qa/                 # quality assurance
       role.md
-      skills/           # test-plan, review, regression
-    ux/                 # user experience - under active development
-      role.md           
-      skills/       
+      skills/           # test-plan, review, regression, bug-triage
     devops/             # devops
       role.md
       skills/           # env-discovery, pipeline, deploy, release-plan
-    data-analyst/       # data analyst - under active development0
+    system-architect/   # system-level architecture and design
+      role.md
+      skills/           # design, research, review, update, start, handoff
+    data-analyst/       # data analyst - under active development
       role.md
       skills/           # intake, brief, scope, decompose, start, review, synthesize
+    user-experience/    # user experience - under active development
+      role.md
+      skills/
 ```
 
 These definitions are platform-agnostic. A translation layer generates configs for the target runtime — **OpenClaw** for team mode, **Claude Code** and **Cursor** for standalone mode.
@@ -157,42 +160,38 @@ In standalone mode, you trigger these as slash commands. In team mode, the PM tr
 project-workflow/
 ├── README.md                       ← You are here
 ├── LICENSE                         ← Apache 2.0
+├── CONTRIBUTING.md                 ← How to contribute an expert
 ├── docs/                           ← Documentation
-│   ├── overview.md                 ← Vision and architecture
-│   ├── getting-started.md          ← Setup guide
-│   ├── agent-reference.md          ← Reference for AI experts
-│   └── workflow-anatomy.md         ← Deep-dive on expert structure
-├── experts/                        ← Expert definitions
+│   ├── agent-reference.md          ← Reference for AI assistants working on this repo
+│   ├── architecture.md             ← System architecture and key decisions
+│   └── ...                         ← Project docs (brief, roadmap, test plan, etc.)
+├── experts/                        ← Expert definitions (the core of this repo)
 │   └── technical/                  ← Domain: technical/software development
 │       ├── project-manager/        ← Orchestrator and team lead
-│       │   ├── role.md
-│       │   ├── skills/
-│       │   └── tools/
 │       ├── swe/                    ← Software engineer
-│       │   ├── role.md
-│       │   ├── skills/
-│       │   └── tools/
 │       ├── qa/                     ← Quality assurance
 │       ├── devops/                 ← DevOps/deployment
+│       ├── system-architect/       ← System-level architecture and design
 │       ├── data-analyst/           ← Data analysis (under development)
 │       ├── user-experience/        ← UX design (under development)
 │       └── shared/                 ← Cross-expert protocols and shared skills
-├── package/                        ← Build & distribution
-│   ├── package.sh / package.ps1    ← Build the .skill file
-│   ├── install-skill.sh / .ps1     ← Install built skill into Claude Code
-│   ├── SKILL.md                    ← Skill definition for Claude Code/Cowork
-│   ├── tools/                      ← Repo creation and expert listing
-│   │   ├── new_repo.sh / new_repo.ps1
-│   │   └── list-experts.sh / list-experts.ps1
-│   └── build/                      ← Build output (gitignored)
-└── framework/                      ← Setup scripts, scaffolding, validation
-    ├── install/
-    │   ├── install.sh / install.ps1          ← Standalone mode setup
-    │   ├── install-team.sh                   ← Team mode setup (Docker)
-    │   └── targets/                          ← Per-platform translation docs
-    ├── scaffold/                             ← Expert authoring tools
-    ├── validate/                             ← Validation (validate.sh)
-    └── docs/                                 ← Framework docs
+├── targets/                        ← All deployment targets
+│   ├── ide/                        ← IDE-based (Cursor, Claude Code)
+│   │   └── install.sh / install.ps1
+│   ├── desktop-cli/                ← Desktop/CLI environments
+│   │   └── claude/                 ← Claude Desktop/Code/Cowork (.skill packaging)
+│   │       ├── package.sh / .ps1   ← Build the .skill file
+│   │       ├── SKILL.md            ← Skill definition
+│   │       └── build/              ← Build output (gitignored)
+│   └── autonomous/                 ← Autonomous agent frameworks
+│       └── openclaw/               ← OpenClaw (Docker + Matrix)
+│           ├── install-team.sh / .ps1
+│           └── templates/          ← Docker Compose, Matrix, conduit
+└── tools/                          ← Repo development utilities
+    ├── scaffold/                   ← Expert authoring (create-expert)
+    ├── validate/                   ← Expert validation (validate.sh)
+    ├── new-repo.sh / .ps1          ← Create new project repos
+    └── list-experts.sh / .ps1      ← Enumerate available experts
 ```
 
 ## Prerequisites

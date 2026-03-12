@@ -26,7 +26,7 @@ Developers using AI coding assistants who want structured, repeatable workflows 
 - [ ] [Deployment Restructure] Directory layout organized by target class (IDE, Desktop/Code, Autonomous)
 - [ ] [Deployment Restructure] Adding a new deployment target is atomic and self-contained
 - [ ] [Deployment Restructure] OpenClaw code preserved but isolated in its own target directory
-- [ ] [Deployment Restructure] `CLAUDE.md` removed
+- [x] [Deployment Restructure] `CLAUDE.md` removed
 
 ## Constraints
 
@@ -53,14 +53,14 @@ Developers using AI coding assistants who want structured, repeatable workflows 
 
 - **Core experts:** PM (10 skills), SWE (2 skills), QA (6 skills), DevOps (6 skills), System Architect (6 skills) — functional
 - **Under development:** Data Analyst, User Experience
-- **Tooling:** scaffold, validate, install, package — functional (now in `tools/` and `targets/`)
-- **Last completed:** swe-feature-015 (All scripts updated for new `targets/` and `tools/` layout)
-- **Next task:** swe-feature-016 (Update documentation references and remove CLAUDE.md)
+- **Tooling:** scaffold, validate, install, package — functional (in `tools/` and `targets/`)
+- **Last completed:** swe-feature-016 (Documentation updated for new layout, CLAUDE.md removed)
+- **Next task:** qa-feature-017 (Verify Deployment Restructure End-to-End)
 - **Last updated:** 2026-03-12
 
 ## Notes for AI
 
 - Use full expert directory names (`project-manager`, not `pm`; `data-analyst`, not `eda`)
 - Read `experts/technical/shared/docs-protocol.md` for cross-expert document contracts
-- Read `docs/agent-reference.md` before modifying tooling
+- Read `docs/agent-reference.md` before modifying tooling or expert definitions
 - The System Architect owns `docs/architecture.md`; all other experts consume it

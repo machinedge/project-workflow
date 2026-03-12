@@ -90,19 +90,18 @@ Copy-Item -Path (Join-Path $RepoRoot "tools" "list-experts.ps1") -Destination $T
 Write-Host "Copying experts into skill package..."
 Copy-Item -Path $ExpertsSrc -Destination (Join-Path $SkillBuild "experts") -Recurse -Force
 
-# Include install scripts in framework/install/ layout (matches SKILL.md references)
-Write-Host "Copying install scripts..."
-$InstallDest = Join-Path $SkillBuild "framework" "install"
-New-Item -ItemType Directory -Path $InstallDest -Force | Out-Null
-Copy-Item -Path (Join-Path $RepoRoot "targets" "ide" "install.sh") -Destination $InstallDest
-Copy-Item -Path (Join-Path $RepoRoot "targets" "ide" "install.ps1") -Destination $InstallDest
-Copy-Item -Path (Join-Path $RepoRoot "targets" "autonomous" "openclaw" "install-team.sh") -Destination $InstallDest
-Copy-Item -Path (Join-Path $RepoRoot "targets" "autonomous" "openclaw" "install-team.ps1") -Destination $InstallDest
+Write-Host "Copying IDE install scripts..."
+$IdeDest = Join-Path $SkillBuild "targets" "ide"
+New-Item -ItemType Directory -Path $IdeDest -Force | Out-Null
+Copy-Item -Path (Join-Path $RepoRoot "targets" "ide" "install.sh") -Destination $IdeDest
+Copy-Item -Path (Join-Path $RepoRoot "targets" "ide" "install.ps1") -Destination $IdeDest
 
-Write-Host "Copying install templates..."
-$TemplateDest = Join-Path $InstallDest "templates"
-New-Item -ItemType Directory -Path $TemplateDest -Force | Out-Null
-Copy-Item -Path (Join-Path $RepoRoot "targets" "autonomous" "openclaw" "templates" "*") -Destination $TemplateDest -Recurse -Force
+Write-Host "Copying autonomous install scripts and templates..."
+$OpenclawDest = Join-Path $SkillBuild "targets" "autonomous" "openclaw"
+New-Item -ItemType Directory -Path $OpenclawDest -Force | Out-Null
+Copy-Item -Path (Join-Path $RepoRoot "targets" "autonomous" "openclaw" "install-team.sh") -Destination $OpenclawDest
+Copy-Item -Path (Join-Path $RepoRoot "targets" "autonomous" "openclaw" "install-team.ps1") -Destination $OpenclawDest
+Copy-Item -Path (Join-Path $RepoRoot "targets" "autonomous" "openclaw" "templates") -Destination $OpenclawDest -Recurse -Force
 
 # ─────────────────────────────────────────────
 # Ensure packaging tools are available

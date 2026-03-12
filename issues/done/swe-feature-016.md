@@ -24,6 +24,12 @@ Update every documentation file that references old `framework/` or `package/` p
 - [ ] No documentation file in the repo contains references to old `framework/` or `package/` paths (search and verify)
 - [ ] Essential repo-guide content from `CLAUDE.md` is preserved in agent-reference.md or equivalent
 
+## Session 08 Summary
+
+**What was done:** Updated all documentation files to reference new `targets/` and `tools/` layout, deleted `CLAUDE.md`, preserved essential content in `docs/agent-reference.md`, and updated `package.sh`/`package.ps1` to match SKILL.md's new path references.
+**Handoff note:** `docs/handoff-notes/swe/session-08.md`
+**All acceptance criteria met:** Yes
+
 ## Technical Notes
 
 **Estimated effort:** Medium session
