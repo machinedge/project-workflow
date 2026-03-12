@@ -26,15 +26,23 @@ set -e
 # ─────────────────────────────────────────────
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-# Skill root is two levels up from framework/install/
-SKILL_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
-if [ ! -d "$SKILL_ROOT/experts" ]; then
-    echo "Error: Could not find experts/ directory at $SKILL_ROOT/experts"
-    echo "  Expected script location: <skill-root>/framework/install/"
+# Walk up to find the skill/repo root (works from both repo and packaged skill)
+SKILL_ROOT=""
+_dir="$SCRIPT_DIR"
+while [ "$_dir" != "/" ]; do
+    if [ -d "$_dir/experts" ]; then
+        SKILL_ROOT="$_dir"
+        break
+    fi
+    _dir="$(dirname "$_dir")"
+done
+if [ -z "$SKILL_ROOT" ] || [ ! -d "$SKILL_ROOT/experts" ]; then
+    echo "Error: Could not find experts/ directory"
+    echo "  Searched upward from: $SCRIPT_DIR"
     exit 1
 fi
 
-TEMPLATE_DIR="$SCRIPT_DIR/templates/team"
+TEMPLATE_DIR="$SCRIPT_DIR/templates"
 if [ ! -d "$TEMPLATE_DIR" ]; then
     echo "Error: Template directory not found at $TEMPLATE_DIR"
     exit 1

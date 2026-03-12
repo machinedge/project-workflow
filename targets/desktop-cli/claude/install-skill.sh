@@ -16,11 +16,11 @@ set -e
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 REPO_ROOT="$(git -C "$SCRIPT_DIR" rev-parse --show-toplevel 2>/dev/null || true)"
 if [ -z "$REPO_ROOT" ]; then
-    REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+    REPO_ROOT="$(cd "$SCRIPT_DIR/../../.." && pwd)"
 fi
 
 SKILL_NAME="machinedge-workflows"
-SKILL_BUILD="$REPO_ROOT/package/build/skills/$SKILL_NAME"
+SKILL_BUILD="$REPO_ROOT/targets/desktop-cli/claude/build/skills/$SKILL_NAME"
 
 # Parse arguments
 PROJECT_DIR=""
@@ -40,7 +40,7 @@ done
 
 # Check that the skill has been built
 if [ ! -d "$SKILL_BUILD" ]; then
-    echo "Error: Skill not built yet. Run ./package/package.sh first."
+    echo "Error: Skill not built yet. Run ./targets/desktop-cli/claude/package.sh first."
     exit 1
 fi
 

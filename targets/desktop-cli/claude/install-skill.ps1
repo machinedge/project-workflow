@@ -23,15 +23,15 @@ try {
     $RepoRoot = $null
 }
 if ([string]::IsNullOrEmpty($RepoRoot)) {
-    $RepoRoot = Split-Path $ScriptDir -Parent
+    $RepoRoot = Split-Path (Split-Path (Split-Path $ScriptDir -Parent) -Parent) -Parent
 }
 
 $SkillName = "machinedge-workflows"
-$SkillBuild = Join-Path $RepoRoot "package" "build" "skills" $SkillName
+$SkillBuild = Join-Path $RepoRoot "targets" "desktop-cli" "claude" "build" "skills" $SkillName
 
 # Check that the skill has been built
 if (-not (Test-Path $SkillBuild)) {
-    Write-Error "Error: Skill not built yet. Run .\package\package.ps1 first."
+    Write-Error "Error: Skill not built yet. Run .\targets\desktop-cli\claude\package.ps1 first."
     exit 1
 }
 

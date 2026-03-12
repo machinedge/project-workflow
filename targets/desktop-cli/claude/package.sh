@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Package the machinedge-workflows skill into a distributable .skill file
-# Usage: ./package/package.sh
+# Usage: ./targets/desktop-cli/claude/package.sh
 #
 # Assembles the skill directory structure (copying experts/ into
 # skills/machinedge-workflows/experts/), downloads packaging tools
@@ -9,7 +9,7 @@
 # in the build/ directory.
 #
 # Examples:
-#   ./package/package.sh
+#   ./targets/desktop-cli/claude/package.sh
 
 set -euo pipefail
 
@@ -34,9 +34,9 @@ if [ -z "$REPO_ROOT" ]; then
     exit 1
 fi
 
-BUILD_DIR="$REPO_ROOT/package/build"
+BUILD_DIR="$REPO_ROOT/targets/desktop-cli/claude/build"
 SKILL_NAME="machinedge-workflows"
-SKILL_SRC="$REPO_ROOT/package"
+SKILL_SRC="$REPO_ROOT/targets/desktop-cli/claude"
 EXPERTS_SRC="$REPO_ROOT/experts"
 SKILL_BUILD="$BUILD_DIR/skills/$SKILL_NAME"
 
@@ -74,22 +74,28 @@ mkdir -p "$SKILL_BUILD"
 
 echo "Copying skill files..."
 cp "$SKILL_SRC/SKILL.md" "$SKILL_BUILD/"
-cp -R "$SKILL_SRC/tools" "$SKILL_BUILD/tools"
+
+echo "Copying repo utilities into skill package..."
+mkdir -p "$SKILL_BUILD/tools"
+cp "$REPO_ROOT/tools/new-repo.sh" "$SKILL_BUILD/tools/"
+cp "$REPO_ROOT/tools/new-repo.ps1" "$SKILL_BUILD/tools/"
+cp "$REPO_ROOT/tools/list-experts.sh" "$SKILL_BUILD/tools/"
+cp "$REPO_ROOT/tools/list-experts.ps1" "$SKILL_BUILD/tools/"
 
 echo "Copying experts into skill package..."
 cp -R "$EXPERTS_SRC" "$SKILL_BUILD/experts"
 
-# Also include the framework install scripts for installation
-echo "Copying framework install scripts..."
+# Include install scripts in framework/install/ layout (matches SKILL.md references)
+echo "Copying install scripts..."
 mkdir -p "$SKILL_BUILD/framework/install"
-cp "$REPO_ROOT/framework/install/install.sh" "$SKILL_BUILD/framework/install/"
-cp "$REPO_ROOT/framework/install/install.ps1" "$SKILL_BUILD/framework/install/"
-cp "$REPO_ROOT/framework/install/install-team.sh" "$SKILL_BUILD/framework/install/"
-cp "$REPO_ROOT/framework/install/install-team.ps1" "$SKILL_BUILD/framework/install/"
+cp "$REPO_ROOT/targets/ide/install.sh" "$SKILL_BUILD/framework/install/"
+cp "$REPO_ROOT/targets/ide/install.ps1" "$SKILL_BUILD/framework/install/"
+cp "$REPO_ROOT/targets/autonomous/openclaw/install-team.sh" "$SKILL_BUILD/framework/install/"
+cp "$REPO_ROOT/targets/autonomous/openclaw/install-team.ps1" "$SKILL_BUILD/framework/install/"
 
-# Include templates needed by install-team
 echo "Copying install templates..."
-cp -R "$REPO_ROOT/framework/install/templates" "$SKILL_BUILD/framework/install/templates"
+mkdir -p "$SKILL_BUILD/framework/install/templates"
+cp -R "$REPO_ROOT/targets/autonomous/openclaw/templates/"* "$SKILL_BUILD/framework/install/templates/"
 
 # ─────────────────────────────────────────────
 # Ensure packaging tools are available

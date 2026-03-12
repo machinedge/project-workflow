@@ -24,11 +24,11 @@ set -e
 
 # Resolve the directory where this script lives
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-# Skill root is two levels up from framework/install/
+# Skill root is two levels up from targets/ide/
 SKILL_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 if [ ! -d "$SKILL_ROOT/experts" ]; then
     echo "Error: Could not find experts/ directory at $SKILL_ROOT/experts"
-    echo "  Expected script location: <skill-root>/framework/install/"
+    echo "  Expected script location: <skill-root>/targets/ide/"
     exit 1
 fi
 

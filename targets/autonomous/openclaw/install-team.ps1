@@ -31,14 +31,22 @@ $ErrorActionPreference = "Stop"
 # ─────────────────────────────────────────────
 
 $ScriptDir = $PSScriptRoot
-# Skill root is two levels up from framework/install/
-$SkillRoot = (Resolve-Path (Join-Path $ScriptDir ".." "..")).Path
-if (-not (Test-Path (Join-Path $SkillRoot "experts"))) {
-    Write-Error "Error: Could not find experts/ directory at $(Join-Path $SkillRoot 'experts')`n  Expected script location: <skill-root>/framework/install/"
+# Walk up to find the skill/repo root (works from both repo and packaged skill)
+$SkillRoot = $null
+$TestDir = $ScriptDir
+while ($TestDir -and $TestDir -ne [System.IO.Path]::GetPathRoot($TestDir)) {
+    if (Test-Path (Join-Path $TestDir "experts")) {
+        $SkillRoot = $TestDir
+        break
+    }
+    $TestDir = Split-Path $TestDir -Parent
+}
+if (-not $SkillRoot -or -not (Test-Path (Join-Path $SkillRoot "experts"))) {
+    Write-Error "Error: Could not find experts/ directory`n  Searched upward from: $ScriptDir"
     exit 1
 }
 
-$TemplateDir = Join-Path $ScriptDir "templates" "team"
+$TemplateDir = Join-Path $ScriptDir "templates"
 if (-not (Test-Path $TemplateDir)) {
     Write-Error "Error: Template directory not found at $TemplateDir"
     exit 1

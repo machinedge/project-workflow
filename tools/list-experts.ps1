@@ -22,7 +22,7 @@ if ([string]::IsNullOrEmpty($ExpertsDir)) {
         $RepoRoot = $null
     }
     if ([string]::IsNullOrEmpty($RepoRoot)) {
-        $RepoRoot = Split-Path (Split-Path $ScriptDir -Parent) -Parent
+        $RepoRoot = Split-Path $ScriptDir -Parent
     }
     $ExpertsDir = Join-Path $RepoRoot "experts"
 }

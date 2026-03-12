@@ -33,10 +33,10 @@ $ErrorActionPreference = "Stop"
 
 # Resolve paths
 $ScriptDir = $PSScriptRoot
-# Skill root is two levels up from framework/install/
+# Skill root is two levels up from targets/ide/
 $SkillRoot = (Resolve-Path (Join-Path $ScriptDir ".." "..")).Path
 if (-not (Test-Path (Join-Path $SkillRoot "experts"))) {
-    Write-Error "Error: Could not find experts/ directory at $(Join-Path $SkillRoot 'experts')`n  Expected script location: <skill-root>/framework/install/"
+    Write-Error "Error: Could not find experts/ directory at $(Join-Path $SkillRoot 'experts')`n  Expected script location: <skill-root>/targets/ide/"
     exit 1
 }
 

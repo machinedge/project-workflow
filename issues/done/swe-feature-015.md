@@ -3,7 +3,7 @@
 **Type:** feature
 **Expert:** swe
 **Milestone:** M6
-**Status:** backlog
+**Status:** done
 
 ## User Story
 
@@ -29,3 +29,9 @@ Update all scripts that reference old `framework/` and `package/` paths to use t
 **Dependencies:** swe-feature-014 (files must be in new locations before updating scripts)
 **Inputs:** project brief (`docs/project-brief.md`), `docs/architecture.md`, all scripts in the new layout
 **Out of scope:** Documentation updates (that's swe-feature-016). Don't modify expert definitions or skill files.
+
+## Session 07 Summary
+
+**What was done:** Updated 12 scripts to use new `targets/` and `tools/` paths. Verified with grep sweeps, `validate.sh`, `install.sh`, `list-experts.sh`, and `create-expert.sh`. All acceptance criteria met.
+**Handoff note:** `docs/handoff-notes/swe/session-07.md`
+**All acceptance criteria met:** Yes

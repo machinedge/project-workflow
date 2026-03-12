@@ -18,7 +18,7 @@ if [ -n "$1" ]; then
 else
     REPO_ROOT="$(git -C "$SCRIPT_DIR" rev-parse --show-toplevel 2>/dev/null || true)"
     if [ -z "$REPO_ROOT" ]; then
-        REPO_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
+        REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
     fi
     EXPERTS_DIR="$REPO_ROOT/experts"
 fi

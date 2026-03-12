@@ -54,8 +54,8 @@ Developers using AI coding assistants who want structured, repeatable workflows 
 - **Core experts:** PM (10 skills), SWE (2 skills), QA (6 skills), DevOps (6 skills), System Architect (6 skills) — functional
 - **Under development:** Data Analyst, User Experience
 - **Tooling:** scaffold, validate, install, package — functional (now in `tools/` and `targets/`)
-- **Last completed:** swe-feature-014 (Directory restructure — `framework/` and `package/` replaced by `targets/` and `tools/`)
-- **Next task:** swe-feature-015 (Update scripts for new paths)
+- **Last completed:** swe-feature-015 (All scripts updated for new `targets/` and `tools/` layout)
+- **Next task:** swe-feature-016 (Update documentation references and remove CLAUDE.md)
 - **Last updated:** 2026-03-12
 
 ## Notes for AI

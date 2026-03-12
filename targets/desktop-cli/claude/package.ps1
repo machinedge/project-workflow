@@ -1,5 +1,5 @@
 # Package the machinedge-workflows skill into a distributable .skill file
-# Usage: .\package\package.ps1
+# Usage: .\targets\desktop-cli\claude\package.ps1
 #
 # Assembles the skill directory structure (copying experts/ into
 # skills/machinedge-workflows/experts/), downloads packaging tools
@@ -7,7 +7,7 @@
 # in the build/ directory.
 #
 # Examples:
-#   .\package\package.ps1
+#   .\targets\desktop-cli\claude\package.ps1
 
 $ErrorActionPreference = "Stop"
 
@@ -36,9 +36,9 @@ if ([string]::IsNullOrEmpty($RepoRoot)) {
     exit 1
 }
 
-$BuildDir = Join-Path $RepoRoot "package" "build"
+$BuildDir = Join-Path $RepoRoot "targets" "desktop-cli" "claude" "build"
 $SkillName = "machinedge-workflows"
-$SkillSrc = Join-Path $RepoRoot "package"
+$SkillSrc = Join-Path $RepoRoot "targets" "desktop-cli" "claude"
 $ExpertsSrc = Join-Path $RepoRoot "experts"
 $SkillBuild = Join-Path $BuildDir "skills" $SkillName
 
@@ -78,23 +78,31 @@ New-Item -ItemType Directory -Path $SkillBuild -Force | Out-Null
 
 Write-Host "Copying skill files..."
 Copy-Item -Path (Join-Path $SkillSrc "SKILL.md") -Destination $SkillBuild
-Copy-Item -Path (Join-Path $SkillSrc "tools") -Destination (Join-Path $SkillBuild "tools") -Recurse -Force
+
+Write-Host "Copying repo utilities into skill package..."
+$ToolsDest = Join-Path $SkillBuild "tools"
+New-Item -ItemType Directory -Path $ToolsDest -Force | Out-Null
+Copy-Item -Path (Join-Path $RepoRoot "tools" "new-repo.sh") -Destination $ToolsDest
+Copy-Item -Path (Join-Path $RepoRoot "tools" "new-repo.ps1") -Destination $ToolsDest
+Copy-Item -Path (Join-Path $RepoRoot "tools" "list-experts.sh") -Destination $ToolsDest
+Copy-Item -Path (Join-Path $RepoRoot "tools" "list-experts.ps1") -Destination $ToolsDest
 
 Write-Host "Copying experts into skill package..."
 Copy-Item -Path $ExpertsSrc -Destination (Join-Path $SkillBuild "experts") -Recurse -Force
 
-# Also include the framework install scripts for installation
-Write-Host "Copying framework install scripts..."
+# Include install scripts in framework/install/ layout (matches SKILL.md references)
+Write-Host "Copying install scripts..."
 $InstallDest = Join-Path $SkillBuild "framework" "install"
 New-Item -ItemType Directory -Path $InstallDest -Force | Out-Null
-Copy-Item -Path (Join-Path $RepoRoot "framework" "install" "install.sh") -Destination $InstallDest
-Copy-Item -Path (Join-Path $RepoRoot "framework" "install" "install.ps1") -Destination $InstallDest
-Copy-Item -Path (Join-Path $RepoRoot "framework" "install" "install-team.sh") -Destination $InstallDest
-Copy-Item -Path (Join-Path $RepoRoot "framework" "install" "install-team.ps1") -Destination $InstallDest
+Copy-Item -Path (Join-Path $RepoRoot "targets" "ide" "install.sh") -Destination $InstallDest
+Copy-Item -Path (Join-Path $RepoRoot "targets" "ide" "install.ps1") -Destination $InstallDest
+Copy-Item -Path (Join-Path $RepoRoot "targets" "autonomous" "openclaw" "install-team.sh") -Destination $InstallDest
+Copy-Item -Path (Join-Path $RepoRoot "targets" "autonomous" "openclaw" "install-team.ps1") -Destination $InstallDest
 
-# Include templates needed by install-team
 Write-Host "Copying install templates..."
-Copy-Item -Path (Join-Path $RepoRoot "framework" "install" "templates") -Destination (Join-Path $InstallDest "templates") -Recurse -Force
+$TemplateDest = Join-Path $InstallDest "templates"
+New-Item -ItemType Directory -Path $TemplateDest -Force | Out-Null
+Copy-Item -Path (Join-Path $RepoRoot "targets" "autonomous" "openclaw" "templates" "*") -Destination $TemplateDest -Recurse -Force
 
 # ─────────────────────────────────────────────
 # Ensure packaging tools are available
