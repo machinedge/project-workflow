@@ -1,0 +1,29 @@
+  {{EXPERT_NAME}}:
+    image: ${OPENCLAW_IMAGE:-alpine/openclaw}
+    container_name: ${COMPOSE_PROJECT_NAME}-{{EXPERT_NAME}}
+    user: "0:0"
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - |
+        mkdir -p /root/.openclaw
+        cp /config/openclaw.json /root/.openclaw/openclaw.json
+        cd /app && pnpm install --filter ./extensions/matrix 2>&1
+        exec node openclaw.mjs gateway --allow-unconfigured
+    ports:
+      - "{{EXPERT_PORT}}:18789"
+    environment:
+      - EXPERT_NAME={{EXPERT_NAME}}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - OPENAI_BASE_URL=${LLM_API_BASE:-https://api.openai.com/v1}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+    volumes:
+      - ./configs/{{EXPERT_NAME}}/openclaw.json:/config/openclaw.json:ro
+      - ./configs/{{EXPERT_NAME}}:/agent
+    networks:
+      - octeam
+    depends_on:
+      matrix-setup:
+        condition: service_completed_successfully
+    restart: unless-stopped
+    env_file:
+      - .env

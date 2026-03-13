@@ -1,0 +1,57 @@
+{
+  "gateway": {
+    "mode": "local",
+    "port": 18789
+  },
+  "plugins": {
+    "entries": {
+      "matrix": { "enabled": true }
+    }
+  },
+  "models": {
+    "providers": {
+      "{{LLM_PROVIDER_NAME}}": {
+        "baseUrl": "{{LLM_API_BASE}}",
+        "apiKey": "${OPENAI_API_KEY}",
+        "api": "openai-completions",
+        "models": [
+          {
+            "id": "{{LLM_MODEL_ID}}",
+            "name": "{{LLM_MODEL_ID}}",
+            "contextWindow": 32000,
+            "maxTokens": 4096
+          }
+        ]
+      }
+    }
+  },
+  "channels": {
+    "matrix": {
+      "enabled": true,
+      "homeserver": "http://conduit:6167",
+      "userId": "@{{EXPERT_NAME}}:{{PROJECT_NAME}}.local",
+      "password": "{{EXPERT_PASSWORD}}",
+      "encryption": false,
+      "allowFrom": ["*"],
+      "dm": {
+        "policy": "open",
+        "allowFrom": ["*"]
+      },
+      "groupPolicy": "{{GROUP_POLICY}}",
+      "autoReply": {{AUTO_REPLY}},
+      "autoJoin": "always",
+      "threadReplies": "inbound"
+    }
+  },
+  "agents": {
+    "defaults": {
+      "model": {
+        "primary": "{{LLM_PROVIDER_NAME}}/{{LLM_MODEL_ID}}"
+      },
+      "sandbox": { "mode": "off" }
+    },
+    "list": [
+      { "id": "{{EXPERT_NAME}}", "default": true, "name": "{{EXPERT_NAME}}", "workspace": "/agent" }
+    ]
+  }
+}

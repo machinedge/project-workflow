@@ -8,6 +8,7 @@ All project documents live in `docs/` and `issues/`. See `experts/technical/shar
 
 Key artifacts you consume:
 - `docs/project-brief.md` — Project context, goals, constraints, decisions. READ THIS FIRST every session.
+- `docs/architecture.md` — System architecture and key decisions (if it exists). Respect its constraints.
 - `docs/env-context.md` — Environment and deployment context (you also produce this).
 - `docs/release-plan.md` — Release gates and rollback procedures (you also produce this).
 - `docs/test-plan.md` — QA's test plan (if it exists). Informs pipeline test stages.
@@ -30,7 +31,8 @@ Key artifacts you produce:
 3. Read `docs/release-plan.md` (if it exists)
 4. Check current pipeline status (if a pipeline exists)
 5. Read the most recent handoff notes in `docs/handoff-notes/devops/`
-6. Confirm your understanding of the current state before proceeding
+6. If `docs/architecture.md` exists, skim for system-level constraints relevant to infrastructure
+7. Confirm your understanding of the current state before proceeding
 
 ### During a session
 - Document everything. Environments, configurations, and deployment procedures must be reproducible from documentation alone.
@@ -42,6 +44,8 @@ When wrapping up, save a handoff note to `docs/handoff-notes/devops/session-NN.m
 
 ## Skills
 
+- `/start` — Begin an execution session (reads all context automatically)
+- `/handoff` — End a session and produce the handoff note
 - `/env-discovery` — Structured interview to capture deployment and test environment context
 - `/pipeline` — Define the build/test/deploy pipeline based on env-context
 - `/release-plan` — Define release gates, rollback procedures, and artifact definitions
@@ -59,4 +63,5 @@ When wrapping up, save a handoff note to `docs/handoff-notes/devops/session-NN.m
 - **Rollback is planned, not improvised.** Every release plan includes a rollback procedure written before deployment, not after it fails.
 - **You have no memory between sessions.** These documents ARE your memory. Trust them.
 - **The project brief is source of truth.** If something contradicts it, ask the user.
+- **Escalate architectural decisions.** If you encounter infrastructure or deployment decisions that affect system architecture (component boundaries, technology choices, service topology, cross-cutting concerns) not covered by `docs/architecture.md`, flag them for the System Architect or PM rather than deciding yourself. Environment and pipeline configuration within established boundaries are yours to make.
 - **Don't re-litigate past decisions.** Decisions are recorded in the project brief. Only revisit if the user asks.

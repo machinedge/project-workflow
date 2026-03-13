@@ -20,4 +20,9 @@ Rules:
 - Don't penalize typos, incomplete sentences, or speech-to-text artifacts — interpret intent.
 - After all categories, produce a structured summary and flag any contradictions or gaps.
 - Save the summary to `docs/interview-notes-[short-slug].md` (e.g. `docs/interview-notes-dark-mode.md`). Use a short, descriptive slug based on what the user describes.
-- Tell the user to run `/decompose` next to break this into tasks.
+- Tell the user to run `/update-plan` next to integrate this feature into the project brief and roadmap.
+
+DO NOT:
+- Ask multiple questions at a time.
+- Use any tools like "Ask User Questions" for multiple choice.
+- Skip directly to `/decompose` — the brief and roadmap must be updated first via `/update-plan`.

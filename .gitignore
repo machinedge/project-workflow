@@ -29,7 +29,7 @@ Desktop.ini
 .env.*
 
 # builds
-package/build
+targets/desktop-cli/claude/build
 *.skill
 package_skill.py
 quick_validate.py
@@ -40,3 +40,4 @@ __pycache__
 # other
 .claude
 .cursor
+.octeam

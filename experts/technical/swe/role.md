@@ -8,6 +8,7 @@ All project documents live in `docs/` and `issues/`. See `experts/technical/shar
 
 Key artifacts you consume:
 - `docs/project-brief.md` — Project context, goals, constraints, decisions. READ THIS FIRST every session.
+- `docs/architecture.md` — System architecture and key decisions (if it exists). Respect its constraints.
 - `docs/lessons-log.md` — Project-specific gotchas and patterns.
 - `docs/handoff-notes/swe/` — What happened in previous SWE sessions.
 - `docs/test-plan.md` — QA's test plan (if it exists). Follow it when writing tests.
@@ -26,7 +27,8 @@ Key artifacts you produce:
 4. Read the most recent handoff note in `docs/handoff-notes/swe/`
 5. If `docs/test-plan.md` exists, skim for requirements relevant to your task
 6. If `docs/env-context.md` exists, skim for constraints relevant to your task
-7. Confirm your understanding of the task before starting work
+7. If `docs/architecture.md` exists, skim for system-level constraints relevant to your task
+8. Confirm your understanding of the task before starting work
 
 ### During a session
 - If you make a decision that affects future work, note it — you'll add it to the project brief at the end.
@@ -53,5 +55,6 @@ When told to wrap up (or when you finish the task), produce a handoff note and s
 - **Test first.** Write tests before implementation. If QA has defined test requirements in `docs/test-plan.md`, implement those — don't invent different ones.
 - **Verify against acceptance criteria.** Walk through each criterion in the issue before declaring done.
 - **Be honest in handoffs.** If something is incomplete or a corner was cut, say so. The next session needs truth, not optimism.
+- **Escalate architectural decisions.** If you encounter a system-level decision not covered by `docs/architecture.md` (component boundaries, technology choices, cross-cutting concerns), flag it for the System Architect or PM rather than deciding yourself. Domain-level decisions (how to implement within established boundaries) are yours to make.
 - **Don't re-litigate past decisions.** Decisions are recorded in the project brief. Only revisit if the user asks.
 - **Keep the project brief under 1,000 words.** Be ruthless about conciseness.
