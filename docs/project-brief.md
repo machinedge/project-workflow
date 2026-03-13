@@ -48,15 +48,16 @@ Developers using AI coding assistants who want structured, repeatable workflows 
 | 2026-03-12 | SWE `/start` updated (not replaced) to consume `architecture.md` | Backward compatible; removes system-level architecture from SWE scope while preserving the existing flow |
 | 2026-03-12 | Restructure deployment layer by target class (IDE, Desktop/Code, Autonomous) | `framework/` and `package/` are tangled and block release; three target classes identified for clean extensibility |
 | 2026-03-12 | Remove `CLAUDE.md` | Redundant with project brief + expert roles + agent-reference.md; one less file to maintain |
+| 2026-03-12 | Remove references to non-existent docs (overview.md, getting-started.md, workflow-anatomy.md) | Aspirational toolkit docs never authored; content largely redundant with README.md, architecture.md, and agent-reference.md; scope as new milestone if needed later |
 
 ## Current Status
 
 - **Core experts:** PM (10 skills), SWE (2 skills), QA (6 skills), DevOps (6 skills), System Architect (6 skills) — functional
 - **Under development:** Data Analyst, User Experience
 - **Tooling:** scaffold, validate, install, package — functional (in `tools/` and `targets/`)
-- **Last completed:** swe-bug-020, swe-bug-021 (IDE README prefix table, test plan CLAUDE.md reference)
-- **Blockers:** swe-bug-019 blocked on pm-feature-022 (PM must decide on missing doc files)
-- **Next task:** pm-feature-022 (unblocks swe-bug-019); swe-bug-023 (independent)
+- **Last completed:** pm-feature-022 (decided to remove missing doc references)
+- **Blockers:** None
+- **Next task:** swe-bug-019 (remove broken doc links, now unblocked); swe-bug-023 (independent)
 - **Last updated:** 2026-03-12
 
 ## Notes for AI
