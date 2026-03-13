@@ -12,7 +12,7 @@
 | swe-bug-025 | QA, DevOps, PM role.md Session Protocol missing architecture.md | swe | bug | M5 | — | done |
 | swe-techdebt-026 | SWE escalation routing language differs from QA and DevOps | swe | techdebt | M5 | — | done |
 | swe-techdebt-027 | DevOps escalation example list uses "service topology" instead of "technology choices" | swe | techdebt | M5 | — | done |
-| swe-techdebt-028 | agent-reference.md overstates /start phase count | swe | techdebt | M5 | — | backlog |
+| swe-techdebt-028 | agent-reference.md overstates /start phase count | swe | techdebt | M5 | — | done |
 | swe-bug-007 | PM, QA, DevOps /start skills don't load architecture.md | swe | bug | M5 | — | done |
 | swe-techdebt-008 | Add escalation behavior to QA and DevOps role files | swe | techdebt | M5 | — | done |
 | swe-techdebt-009 | Add "Problems Encountered" section to PM handoff template | swe | techdebt | M4 | — | done |

@@ -127,7 +127,7 @@ Skills are markdown files in `skills/` that define what an expert does when that
 
 Skills follow an 8-slot lifecycle (interview, brief, plan, decompose, execute, handoff, review, synthesis). Not every expert needs all 8.
 
-The `/start` skill is the most structured — it enforces a 7-phase process with approval gates. See the SWE `start.md` for the reference implementation.
+The `/start` skill is the most structured — it enforces a multi-phase process (5-7 phases depending on the expert) with approval gates. See the SWE `start.md` for the reference implementation (7 phases).
 
 ### Adding Tools
 
