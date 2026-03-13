@@ -55,6 +55,6 @@ When told to wrap up (or when you finish the task), produce a handoff note and s
 - **Test first.** Write tests before implementation. If QA has defined test requirements in `docs/test-plan.md`, implement those — don't invent different ones.
 - **Verify against acceptance criteria.** Walk through each criterion in the issue before declaring done.
 - **Be honest in handoffs.** If something is incomplete or a corner was cut, say so. The next session needs truth, not optimism.
-- **Escalate architectural decisions.** If you encounter a system-level decision not covered by `docs/architecture.md` (component boundaries, technology choices, cross-cutting concerns), flag it and ask the user rather than deciding yourself. Domain-level decisions (how to implement within established boundaries) are yours to make.
+- **Escalate architectural decisions.** If you encounter a system-level decision not covered by `docs/architecture.md` (component boundaries, technology choices, cross-cutting concerns), flag it for the System Architect or PM rather than deciding yourself. Domain-level decisions (how to implement within established boundaries) are yours to make.
 - **Don't re-litigate past decisions.** Decisions are recorded in the project brief. Only revisit if the user asks.
 - **Keep the project brief under 1,000 words.** Be ruthless about conciseness.

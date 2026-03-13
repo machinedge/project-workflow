@@ -61,7 +61,18 @@ Stay within the scope defined in the task issue. If you discover something out o
 
 ---
 
-## Phase 4: Record Findings
+## Phase 4: Verify
+
+Walk through each acceptance criterion from the QA task issue (not the work being reviewed — your own issue's criteria):
+
+- Can each criterion be demonstrated or verified from the review work performed?
+- Check them off one by one.
+
+If any criterion is not met, go back to Phase 3 and address it. Do not proceed until all acceptance criteria are satisfied or you've documented why one cannot be met yet.
+
+---
+
+## Phase 5: Record Findings
 
 For each issue found:
 - Create an issue file in `issues/backlog/` with a clear title, description, and severity
@@ -72,7 +83,7 @@ If no issues are found, say so explicitly — a clean review is a valid outcome.
 
 ---
 
-## Phase 5: Report
+## Phase 6: Report
 
 Summarize what was done:
 

@@ -54,7 +54,7 @@ Design before you build:
 - If `docs/architecture.md` exists, verify your design is consistent with its component boundaries, interfaces, and technology decisions.
 - Call out any dependencies, libraries, or tools needed.
 - If there are multiple valid approaches, present them with trade-offs and recommend one.
-- **If you need an architectural decision that isn't covered by `docs/architecture.md`, flag it and ask the user rather than assuming.** This includes new component boundaries, new integration patterns, or technology choices outside the current architecture.
+- **If you need an architectural decision that isn't covered by `docs/architecture.md`, flag it for the System Architect or PM rather than assuming.** This includes new component boundaries, new integration patterns, or technology choices outside the current architecture.
 
 For small tasks this can be brief. For large tasks this should be thorough. Scale to the complexity.
 

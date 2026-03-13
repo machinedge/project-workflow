@@ -8,10 +8,10 @@
 | swe-feature-004 | Update SWE /start, Docs-Protocol, and Role Files for architecture.md | swe | feature | M5 | swe-feature-001, swe-feature-002, swe-feature-003 | done |
 | swe-feature-006 | Update Install Scripts for System Architect Expert | swe | feature | M3 | swe-feature-001 | done |
 | qa-feature-005 | Review Expert Skill Restructure for Consistency | qa | feature | M5 | swe-feature-004 | done |
-| swe-bug-024 | QA /start missing dedicated Verify phase for own acceptance criteria | swe | bug | M5 | — | backlog |
-| swe-bug-025 | QA, DevOps, PM role.md Session Protocol missing architecture.md | swe | bug | M5 | — | backlog |
-| swe-techdebt-026 | SWE escalation routing language differs from QA and DevOps | swe | techdebt | M5 | — | backlog |
-| swe-techdebt-027 | DevOps escalation example list uses "service topology" instead of "technology choices" | swe | techdebt | M5 | — | backlog |
+| swe-bug-024 | QA /start missing dedicated Verify phase for own acceptance criteria | swe | bug | M5 | — | done |
+| swe-bug-025 | QA, DevOps, PM role.md Session Protocol missing architecture.md | swe | bug | M5 | — | done |
+| swe-techdebt-026 | SWE escalation routing language differs from QA and DevOps | swe | techdebt | M5 | — | done |
+| swe-techdebt-027 | DevOps escalation example list uses "service topology" instead of "technology choices" | swe | techdebt | M5 | — | done |
 | swe-techdebt-028 | agent-reference.md overstates /start phase count | swe | techdebt | M5 | — | backlog |
 | swe-bug-007 | PM, QA, DevOps /start skills don't load architecture.md | swe | bug | M5 | — | done |
 | swe-techdebt-008 | Add escalation behavior to QA and DevOps role files | swe | techdebt | M5 | — | done |

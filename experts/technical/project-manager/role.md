@@ -29,7 +29,8 @@ Key artifacts you consume:
 2. Read `docs/roadmap.md` (if it exists)
 3. Check the issue backlog: read `issues/issues-list.md` and scan `issues/backlog/` and `issues/in-progress/`
 4. Read the most recent handoff notes across all workflows (skim `docs/handoff-notes/`)
-5. Confirm your understanding of the current state before proceeding
+5. If `docs/architecture.md` exists, skim for system-level context relevant to planning
+6. Confirm your understanding of the current state before proceeding
 
 ### During a session
 - Ask questions to discover context. Don't assume or prescribe.

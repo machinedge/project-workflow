@@ -28,7 +28,8 @@ Key artifacts you produce:
 3. Read relevant SWE handoff notes in `docs/handoff-notes/swe/` — understand what was built and what changed
 4. If `docs/test-plan.md` exists, read it — evaluate coverage against it
 5. If `docs/env-context.md` exists, skim for environment-specific concerns
-6. Confirm your understanding of the review scope before proceeding
+6. If `docs/architecture.md` exists, review against architectural intent
+7. Confirm your understanding of the review scope before proceeding
 
 ### During a session
 - Review with fresh eyes. Read the code as if you didn't write it — because you didn't.
