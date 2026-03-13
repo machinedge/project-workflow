@@ -19,10 +19,10 @@ Developers using AI coding assistants who want structured, repeatable workflows 
 - [ ] Core experts (PM, SWE, QA, DevOps) have complete, tested skill sets
 - [ ] Framework tooling (scaffold, validate, install, package) works reliably
 - [ ] Users can install into a project and immediately start a productive session
-- [ ] [Expert Skill Restructure] System Architect expert exists with design, research, review, update, start, handoff skills
-- [ ] [Expert Skill Restructure] Every expert has `/start` and `/handoff` for executing issues
-- [ ] [Expert Skill Restructure] SWE `/start` consumes `architecture.md` and enforces checkpoints
-- [ ] [Expert Skill Restructure] All experts escalate out-of-scope decisions to PM or System Architect
+- [x] [Expert Skill Restructure] System Architect expert exists with design, research, review, update, start, handoff skills
+- [x] [Expert Skill Restructure] Every expert has `/start` and `/handoff` for executing issues
+- [x] [Expert Skill Restructure] SWE `/start` consumes `architecture.md` and enforces checkpoints
+- [x] [Expert Skill Restructure] All experts escalate out-of-scope decisions to PM or System Architect
 - [x] [Deployment Restructure] Directory layout organized by target class (IDE, Desktop/Code, Autonomous)
 - [x] [Deployment Restructure] Adding a new deployment target is atomic and self-contained
 - [x] [Deployment Restructure] OpenClaw code preserved but isolated in its own target directory
@@ -52,12 +52,12 @@ Developers using AI coding assistants who want structured, repeatable workflows 
 
 ## Current Status
 
+- **Milestones:** M1-M7 all complete. Expert Skill Restructure (M3-M5) and Deployment Restructure (M6-M7) delivered.
 - **Core experts:** PM (10 skills), SWE (2 skills), QA (6 skills), DevOps (6 skills), System Architect (6 skills) — functional
 - **Under development:** Data Analyst, User Experience
 - **Tooling:** scaffold, validate, install, package — functional (in `tools/` and `targets/`)
-- **Last completed:** swe-techdebt-028 (agent-reference.md phase count — final M5 item)
 - **Blockers:** None
-- **Next task:** None — M3-M5 (Expert Skill Restructure) and M6-M7 (Deployment Restructure) complete
+- **Next task:** None — backlog empty
 - **Last updated:** 2026-03-12
 
 ## Notes for AI

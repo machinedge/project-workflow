@@ -6,11 +6,11 @@
 |---|-----------|--------|------------|---------------|
 | M1 | Core experts functional (PM, SWE, QA, DevOps) | Done | — | — |
 | M2 | Framework tooling functional (scaffold, validate, install, package) | Done | — | — |
-| M3 | [Expert Skill Restructure] System Architect expert with full skill set | Planned | M1 | 2-3 |
-| M4 | [Expert Skill Restructure] Standardize `/start` and `/handoff` across PM, QA, DevOps | Planned | M1 | 2-3 |
-| M5 | [Expert Skill Restructure] Update SWE `/start` and docs-protocol for `architecture.md` | Planned | M3, M4 | 1-2 |
-| M6 | [Deployment Restructure] Design and implement target-class directory layout | Planned | M2 | 2-3 |
-| M7 | [Deployment Restructure] Update docs, remove CLAUDE.md, verify functionality | Planned | M6 | 1-2 |
+| M3 | [Expert Skill Restructure] System Architect expert with full skill set | Done | M1 | 2 |
+| M4 | [Expert Skill Restructure] Standardize `/start` and `/handoff` across PM, QA, DevOps | Done | M1 | 2 |
+| M5 | [Expert Skill Restructure] Update SWE `/start` and docs-protocol for `architecture.md` | Done | M3, M4 | 3 |
+| M6 | [Deployment Restructure] Design and implement target-class directory layout | Done | M2 | 3 |
+| M7 | [Deployment Restructure] Update docs, remove CLAUDE.md, verify functionality | Done | M6 | 3 |
 
 ## Dependency Map
 
@@ -41,3 +41,4 @@ M2 (Framework) ──────────> M6 (Deployment Restructure) ─�
 | 2026-03-12 | QA review completed (qa-feature-005). Created 6 fix issues: swe-bug-007 (must-fix), swe-techdebt-008 through swe-techdebt-012 (should-fix). |
 | 2026-03-12 | Added Deployment Restructure milestones (M6-M7) from interview notes. |
 | 2026-03-12 | Decomposed M6-M7 into 5 tasks: sa-feature-013 (M6, design), swe-feature-014 and swe-feature-015 (M6, implementation), swe-feature-016 and qa-feature-017 (M7, docs + verification). |
+| 2026-03-12 | Postmortem: M3-M7 all marked Done. 28 issues delivered (vs. 11 planned). Cleanup tail from QA reviews accounted for the gap. All risks mitigated successfully. |
