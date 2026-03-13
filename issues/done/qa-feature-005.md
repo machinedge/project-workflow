@@ -32,3 +32,9 @@ Review the entire Expert Skill Restructure for internal consistency. Check that 
 
 **Depends on:** swe-feature-001, swe-feature-002, swe-feature-003, swe-feature-004 (all implementation must be complete)
 **Inputs:** all expert role.md files, all new/modified skill files, `experts/technical/shared/docs-protocol.md`, `docs/interview-notes-expert-skill-restructure.md`
+
+## Session 02 Summary
+
+**What was done:** Full consistency review of Expert Skill Restructure (M3-M5). Reviewed all 5 expert role files, 10 start/handoff skills, 6 SA skills, docs-protocol, and agent-reference. Filed 5 issues (2 should-fix, 3 nit). No must-fix issues found.
+**Handoff note:** `docs/handoff-notes/qa/session-02.md`
+**All acceptance criteria met:** Yes — all 8 criteria reviewed, gaps found were filed as issues

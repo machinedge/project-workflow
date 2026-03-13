@@ -55,9 +55,9 @@ Developers using AI coding assistants who want structured, repeatable workflows 
 - **Core experts:** PM (10 skills), SWE (2 skills), QA (6 skills), DevOps (6 skills), System Architect (6 skills) — functional
 - **Under development:** Data Analyst, User Experience
 - **Tooling:** scaffold, validate, install, package — functional (in `tools/` and `targets/`)
-- **Last completed:** swe-bug-023 (PM decompose skill missing Prerequisites column)
+- **Last completed:** qa-feature-005 (QA consistency review — 2 should-fix, 3 nit filed)
 - **Blockers:** None
-- **Next task:** qa-feature-005 (QA consistency review)
+- **Next task:** swe-bug-024, swe-bug-025 (QA-found consistency fixes)
 - **Last updated:** 2026-03-12
 
 ## Notes for AI
