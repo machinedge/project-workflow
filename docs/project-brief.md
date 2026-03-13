@@ -54,9 +54,9 @@ Developers using AI coding assistants who want structured, repeatable workflows 
 - **Core experts:** PM (10 skills), SWE (2 skills), QA (6 skills), DevOps (6 skills), System Architect (6 skills) — functional
 - **Under development:** Data Analyst, User Experience
 - **Tooling:** scaffold, validate, install, package — functional (in `tools/` and `targets/`)
-- **Last completed:** swe-bug-018 (README Quick Start path fix)
-- **Blockers:** None
-- **Next task:** swe-bug-020, swe-bug-021 (independent doc fixes); swe-bug-019 blocked on pm-feature-022
+- **Last completed:** swe-bug-020, swe-bug-021 (IDE README prefix table, test plan CLAUDE.md reference)
+- **Blockers:** swe-bug-019 blocked on pm-feature-022 (PM must decide on missing doc files)
+- **Next task:** pm-feature-022 (unblocks swe-bug-019); swe-bug-023 (independent)
 - **Last updated:** 2026-03-12
 
 ## Notes for AI

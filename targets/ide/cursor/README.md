@@ -16,6 +16,7 @@ Skills are installed with a short prefix to avoid filename collisions in the fla
 | `swe-` | SWE | `/swe-start`, `/swe-handoff` |
 | `qa-` | QA | `/qa-review`, `/qa-test-plan` |
 | `ops-` | DevOps | `/ops-deploy`, `/ops-pipeline` |
+| `sa-` | System Architect | `/sa-design`, `/sa-start` |
 | `da-` | Data Analyst | `/da-start`, `/da-synthesize` |
 | `ux-` | User Experience | `/ux-...` |
 | `team-` | Shared | `/team-status` |

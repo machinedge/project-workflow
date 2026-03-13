@@ -40,7 +40,7 @@ Validates the Expert Skill Restructure feature: System Architect expert creation
 | 12 | docs-protocol Handoff Notes description includes system-architect/ | swe-techdebt-012 | System | Read docs-protocol.md, verify system-architect/ in description and tree | Local | P2 |
 | 13 | PM role.md lists `/update-plan` in Skills | swe-techdebt-011 | System | Read PM role.md, verify entry | Local | P2 |
 | 14 | PM handoff template includes "Problems Encountered" | swe-techdebt-009 | System | Read PM handoff.md, verify section exists | Local | P2 |
-| 15 | CLAUDE.md repo guide lists system-architect/ | swe-techdebt-010 | System | Read CLAUDE.md, verify system-architect/ in repo structure | Local | P2 |
+| 15 | agent-reference.md repo guide lists system-architect/ | swe-techdebt-010 | System | Read `docs/agent-reference.md`, verify system-architect/ in repo structure | Local | P2 |
 | 16 | PM role.md references correct docs-protocol path | swe-techdebt-012 | System | Verify `experts/technical/shared/docs-protocol.md` (not `experts/shared/`) | Local | P2 |
 | 17 | Backward compat: SWE /start still has all 7 phases | Backward compat constraint | System | Read SWE start.md, verify Phase 1-7 present | Local | P1 |
 | 18 | Backward compat: existing skills unmodified | swe-feature-002 AC 8, -003 AC 9-10 | System | Verify QA review/test-plan/regression/bug-triage unchanged; DevOps env-discovery/pipeline/release-plan/deploy unchanged | Local | P1 |
@@ -101,7 +101,7 @@ Validates the Expert Skill Restructure feature: System Architect expert creation
 4. Read `experts/technical/shared/docs-protocol.md`: verify `architecture.md` in Document Locations, System Architect in Workflow Contracts, `system-architect/` in handoff conventions
 5. Read PM `role.md`: verify `/update-plan` listed, correct docs-protocol path
 6. Read PM `handoff.md`: verify "Problems Encountered" section
-7. Read `CLAUDE.md`: verify `system-architect/` in repo structure
+7. Read `docs/agent-reference.md`: verify `system-architect/` in repo structure
 **Expected result:** All cross-references and conventions are consistent
 
 ### ATP-5: Behavioral Acceptance — SA Start (Test #19)
