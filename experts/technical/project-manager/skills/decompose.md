@@ -155,6 +155,6 @@ Bad: "- [ ] Input validation is implemented"
 ## After creating all issue files
 
 1. List the created issue files and present them to the user for review.
-2. Update `issues/issues-list.md` with the new issues — add each one with its filename, title, expert, type, milestone, and status.
+2. Update `issues/issues-list.md` with the new issues — add each one with its filename, title, expert, type, milestone, prerequisites, and status.
 3. Update `docs/roadmap.md` to note that the milestone has been decomposed. Log the issue filenames in the roadmap's change log.
 4. Update `docs/project-brief.md` "Current Status" with the first task's issue filename as "Next task."

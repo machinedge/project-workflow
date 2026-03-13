@@ -24,4 +24,4 @@
 | swe-bug-020 | IDE target READMEs missing System Architect prefix | swe | bug | M7 | — | done |
 | swe-bug-021 | Test plan ATP-4 step 7 references deleted CLAUDE.md | swe | bug | M7 | — | done |
 | pm-feature-022 | Decide on missing documentation files (overview.md, getting-started.md, workflow-anatomy.md) | pm | feature | M7 | — | done |
-| swe-bug-023 | PM decompose skill doesn't include Prerequisites column in issues-list.md | swe | bug | M4 | — | backlog |
+| swe-bug-023 | PM decompose skill doesn't include Prerequisites column in issues-list.md | swe | bug | M4 | — | done |
