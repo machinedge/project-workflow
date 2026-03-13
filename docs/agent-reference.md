@@ -10,7 +10,7 @@ If you're an AI assistant and someone has asked you to work on this repo, read t
 
 This repo defines platform-agnostic AI expert definitions. Each expert has a role, a set of skills, and optional tooling. The definitions get translated into platform-specific configurations for deployment on Claude Code, Cursor, NanoClaw, OpenClaw, or MachinEdge's own container-based platform.
 
-Read [overview.md](overview.md) for the full vision. Read [workflow-anatomy.md](workflow-anatomy.md) for structural details.
+The repo structure and expert definitions are described below. See [docs-protocol](../experts/technical/shared/docs-protocol.md) for cross-expert document contracts.
 
 ### Key Directories
 
@@ -87,7 +87,7 @@ Current experts in `experts/technical/`:
 1. Read the expert's `role.md` to understand its current identity and protocols
 2. Read the expert's existing skills in `skills/` to understand capabilities
 3. Read `experts/technical/shared/docs-protocol.md` to understand document contracts between experts
-4. Make changes, ensuring consistency with the patterns described in [workflow-anatomy.md](workflow-anatomy.md)
+4. Make changes, ensuring consistency with existing expert patterns (reference `project-manager/` as the most complete example)
 
 ### Creating a New Expert
 
@@ -99,7 +99,7 @@ Use the scaffold script:
 
 This creates `experts/technical/maintenance-planner/` with a skeleton `role.md`, `skills/` directory, `tools/` directory, and guidance comments. Customize from there.
 
-If creating manually, ensure your expert has all three directories and that `role.md` includes the required sections (see [workflow-anatomy.md](workflow-anatomy.md#the-rolemd-file)).
+If creating manually, ensure your expert has all three directories and that `role.md` includes the required sections (Document Locations, Session Protocol, Skills, Principles).
 
 ### Writing a `role.md`
 
@@ -125,9 +125,9 @@ Skills are markdown files in `skills/` that define what an expert does when that
 4. **Output specification** — What gets produced, where, in what format
 5. **Rules section** — Constraints and edge case handling
 
-Skills follow an 8-slot lifecycle (interview, brief, plan, decompose, execute, handoff, review, synthesis). Not every expert needs all 8. See [workflow-anatomy.md](workflow-anatomy.md#the-8-skill-lifecycle) for which slots each expert typically fills.
+Skills follow an 8-slot lifecycle (interview, brief, plan, decompose, execute, handoff, review, synthesis). Not every expert needs all 8.
 
-The `/start` skill is the most structured — it enforces a 7-phase process with approval gates. See [workflow-anatomy.md](workflow-anatomy.md#the-start-skill-7-phase-execution) for the required phase structure.
+The `/start` skill is the most structured — it enforces a 7-phase process with approval gates. See the SWE `start.md` for the reference implementation.
 
 ### Adding Tools
 
@@ -181,7 +181,7 @@ When modifying expert definitions, keep them platform-neutral. Don't include Ope
 
 ### OpenClaw Translation Notes
 
-For team mode, each expert becomes an OpenClaw agent with its own workspace. The translation generates `AGENTS.md` from `role.md`, `SKILL.md` files with YAML frontmatter from each skill, and agent routing bindings for Matrix message flow. See [workflow-anatomy.md](workflow-anatomy.md#openclaw-translation-team-mode) for details.
+For team mode, each expert becomes an OpenClaw agent with its own workspace. The translation generates `AGENTS.md` from `role.md`, `SKILL.md` files with YAML frontmatter from each skill, and agent routing bindings for Matrix message flow. See `targets/autonomous/openclaw/README.md` for translation details.
 
 ### Cursor-Specific Notes
 

@@ -415,7 +415,7 @@ if ($DetectedGitRepoUrl) {
     Write-Host "  1. Review .octeam/.env — git config was auto-detected. Add your OPENAI_API_KEY."
 } else {
     Write-Host "  1. Edit .octeam/.env with your API keys, git URL, and access token"
-    Write-Host "     (See docs/getting-started.md -> 'Setting Up a Git Access Token')"
+    Write-Host "     Set GIT_TOKEN in your shell: `$env:GIT_TOKEN = `$(gh auth token)"
 }
 Write-Host "  2. cd $Target/.octeam"
 Write-Host "  3. docker compose up -d"

@@ -45,4 +45,4 @@ docker compose up -d
 # Open http://localhost:8009 (Element Web)
 ```
 
-**Status:** MVP. See `docs/overview.md` for the full team mode vision.
+**Status:** MVP. See the [project README](../../../README.md) for the full team mode vision.

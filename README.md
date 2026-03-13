@@ -123,10 +123,7 @@ In standalone mode, you trigger these as slash commands. In team mode, the PM tr
 
 | Guide | Audience | Description |
 |-------|----------|-------------|
-| [Overview](docs/overview.md) | Everyone | Vision, architecture, design philosophy, platform comparisons |
-| [Getting Started](docs/getting-started.md) | Users | Setup for standalone and team modes |
 | [Agent Reference](docs/agent-reference.md) | AI assistants + Contributors | How to work on this repo — building, modifying, and extending expert definitions |
-| [Expert Anatomy](docs/workflow-anatomy.md) | Contributors | Deep-dive on expert structure, skill patterns, translation layer |
 | [Docs Protocol](experts/technical/shared/docs-protocol.md) | Contributors | Cross-expert document contracts and conventions |
 
 ## Terminology

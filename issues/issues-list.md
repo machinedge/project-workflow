@@ -20,7 +20,7 @@
 | swe-feature-016 | Update Documentation References and Remove CLAUDE.md | swe | feature | M7 | swe-feature-015 | done |
 | qa-feature-017 | Verify Deployment Restructure End-to-End | qa | feature | M7 | swe-feature-016 | done |
 | swe-bug-018 | README.md Quick Start references non-existent workflows/setup.sh | swe | bug | M7 | — | done |
-| swe-bug-019 | Multiple docs reference non-existent files (overview.md, getting-started.md, workflow-anatomy.md) | swe | bug | M7 | pm-feature-022 | backlog |
+| swe-bug-019 | Multiple docs reference non-existent files (overview.md, getting-started.md, workflow-anatomy.md) | swe | bug | M7 | pm-feature-022 | done |
 | swe-bug-020 | IDE target READMEs missing System Architect prefix | swe | bug | M7 | — | done |
 | swe-bug-021 | Test plan ATP-4 step 7 references deleted CLAUDE.md | swe | bug | M7 | — | done |
 | pm-feature-022 | Decide on missing documentation files (overview.md, getting-started.md, workflow-anatomy.md) | pm | feature | M7 | — | done |

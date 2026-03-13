@@ -66,7 +66,7 @@ Skills are markdown files in `skills/` that define what the expert does when tri
 4. **Output specification** — What gets produced, where, in what format
 5. **Rules section** — Constraints and edge case handling
 
-The 8-skill lifecycle (interview, brief, plan, decompose, start, review, handoff, synthesis) is a starting framework — not every expert needs all 8. See [workflow-anatomy.md](../docs/workflow-anatomy.md) for which slots each expert typically fills.
+The 8-skill lifecycle (interview, brief, plan, decompose, start, review, handoff, synthesis) is a starting framework — not every expert needs all 8.
 
 ### 3. Add Tools (optional)
 
@@ -116,7 +116,7 @@ Before submitting a pull request for a new expert:
 
 ## Reference
 
-For a deep-dive into the structural patterns, conventions, and the reasoning behind them, see [docs/workflow-anatomy.md](../docs/workflow-anatomy.md).
+For structural patterns and conventions, see [docs/agent-reference.md](../docs/agent-reference.md).
 
 For examples of completed experts, look at:
 - [project-manager/](../experts/technical/project-manager/) — Orchestrator and team lead

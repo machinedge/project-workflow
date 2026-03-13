@@ -485,7 +485,7 @@ if [ -n "$DETECTED_GIT_REPO_URL" ]; then
     echo "  1. Review .octeam/.env — git config was auto-detected. Add your OPENAI_API_KEY."
 else
     echo "  1. Edit .octeam/.env with your API keys, git URL, and access token"
-    echo "     (See docs/getting-started.md → 'Setting Up a Git Access Token')"
+    echo "     Set GIT_TOKEN in your shell: export GIT_TOKEN=\$(gh auth token)"
 fi
 echo "  2. cd $TARGET/.octeam"
 echo "  3. docker compose up -d"
