@@ -27,10 +27,10 @@ Or run setup directly:
 
 ```bash
 # Full team setup (all experts)
-./workflows/setup.sh ~/projects/my-app
+./targets/ide/install.sh ~/projects/my-app
 
 # Single expert
-./workflows/setup.sh --expert swe ~/projects/my-app
+./targets/ide/install.sh --experts swe ~/projects/my-app
 ```
 
 ### Team Mode (Coordinated Experts in Docker)
