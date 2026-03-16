@@ -33,3 +33,4 @@
 | swe-feature-029 | Remove date references from PM skill templates | swe | feature | M8 | — | done |
 | swe-feature-030 | Add adaptive complexity assessment to /add-feature | swe | feature | M8 | — | done |
 | swe-feature-031 | Remove date references from all remaining expert templates | swe | feature | M9 | — | done |
+| sa-research-032 | Audit Startup Context and Produce Optimization Matrix | system-architect | research | M10 | — | done |

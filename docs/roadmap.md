@@ -13,7 +13,7 @@
 | M7 | [Deployment Restructure] Update docs, remove CLAUDE.md, verify functionality | Done | M6 | 3 |
 | M8 | [PM Planning Improvements] Adaptive interview and date-free PM output | Done | M1 | 1-2 |
 | M9 | [Date Removal] Remove date references from all remaining expert templates | Done | M8 | 1 |
-| M10 | [Context Optimization] Research essential vs. unnecessary startup context per expert | Planned | M1 | 1-2 |
+| M10 | [Context Optimization] Research essential vs. unnecessary startup context per expert | Done | M1 | 1-2 |
 
 ## Dependency Map
 
@@ -56,3 +56,4 @@ M1 (Core experts) ──────> M10 (Context Optimization research)
 | — | Decomposed M9 into 1 task: swe-feature-031 (remove dates from all remaining experts + lessons-log). |
 | — | Postmortem: M9 marked Done. 1 issue planned, 1 delivered. M8+M9 together delivered full date removal across all experts in 3 sessions with zero rework. |
 | — | Added [Context Optimization] milestone (M10) from interview notes. |
+| — | Decomposed M10 into 1 task: sa-research-032 (audit startup context, produce matrix + recommendations). |

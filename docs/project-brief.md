@@ -61,13 +61,13 @@ Developers using AI coding assistants who want structured, repeatable workflows 
 
 ## Current Status
 
-- **Milestones:** M1-M9 all complete. Expert Skill Restructure (M3-M5), Deployment Restructure (M6-M7), PM Planning Improvements (M8), and Date Removal (M9) delivered.
+- **Milestones:** M1-M10 complete. Context Optimization research (M10) delivered.
 - **Core experts:** PM (10 skills), SWE (2 skills), QA (6 skills), DevOps (6 skills), System Architect (6 skills) — functional
 - **Under development:** Data Analyst, User Experience
 - **Tooling:** scaffold, validate, install, package — functional (in `tools/` and `targets/`)
 - **Blockers:** None
-- **Next task:** Decompose [Context Optimization] into tasks
-- **Last updated:** Context Optimization feature scoped
+- **Next task:** PM to review context optimization recommendations and decide which to implement
+- **Last updated:** M10 research complete (sa-research-032)
 
 ## Notes for AI
 
