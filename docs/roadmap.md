@@ -13,6 +13,7 @@
 | M7 | [Deployment Restructure] Update docs, remove CLAUDE.md, verify functionality | Done | M6 | 3 |
 | M8 | [PM Planning Improvements] Adaptive interview and date-free PM output | Done | M1 | 1-2 |
 | M9 | [Date Removal] Remove date references from all remaining expert templates | Done | M8 | 1 |
+| M10 | [Context Optimization] Research essential vs. unnecessary startup context per expert | Planned | M1 | 1-2 |
 
 ## Dependency Map
 
@@ -22,6 +23,7 @@ M1 (Core experts) ──┬──> M3 (System Architect)  ──┐
                      └──> M4 (Standardize start/handoff) ─┘
 M2 (Framework) ──────────> M6 (Deployment Restructure) ──> M7 (Docs + verify)
 M1 (Core experts) ──────> M8 (PM Planning Improvements) ──> M9 (Date Removal)
+M1 (Core experts) ──────> M10 (Context Optimization research)
 ```
 
 ## Risk Register
@@ -34,6 +36,7 @@ M1 (Core experts) ──────> M8 (PM Planning Improvements) ──> M9 (
 | First-draft skill content requires significant iteration | Medium | High | Flesh out fully for working baseline; user tests on real projects and refines |
 | Restructure design doesn't accommodate unforeseen target types | Medium | Medium | Design for known target classes (IDE, Desktop/Code, Autonomous); iterate structure as new targets are added |
 | Complexity assessment misjudges feature size, shortening interview when it shouldn't | Medium | Low | PM states assumptions explicitly; user can push back and request full interview |
+| Removing context that appears unnecessary but is actually essential degrades expert output | High | Medium | Research errs conservative; flag uncertainty; validate recommendations before implementing |
 
 ## Change Log
 
@@ -52,3 +55,4 @@ M1 (Core experts) ──────> M8 (PM Planning Improvements) ──> M9 (
 | — | Added [Date Removal] milestone (M9) from interview notes. |
 | — | Decomposed M9 into 1 task: swe-feature-031 (remove dates from all remaining experts + lessons-log). |
 | — | Postmortem: M9 marked Done. 1 issue planned, 1 delivered. M8+M9 together delivered full date removal across all experts in 3 sessions with zero rework. |
+| — | Added [Context Optimization] milestone (M10) from interview notes. |

@@ -31,6 +31,8 @@ Developers using AI coding assistants who want structured, repeatable workflows 
 - [x] [PM Planning Improvements] `/add-feature` assesses complexity and shortens interview for small features
 - [x] [PM Planning Improvements] PM states assumptions when shortening interview so user can correct
 - [x] [Date Removal] No expert skill template produces or consumes calendar dates
+- [ ] [Context Optimization] Expert x document matrix with essential/nice-to-have/unnecessary ratings
+- [ ] [Context Optimization] Recommendation with proposed changes and rationale
 
 ## Constraints
 
@@ -55,6 +57,7 @@ Developers using AI coding assistants who want structured, repeatable workflows 
 | 2026-03-12 | Remove references to non-existent docs (overview.md, getting-started.md, workflow-anatomy.md) | Aspirational toolkit docs never authored; content largely redundant with README.md, architecture.md, and agent-reference.md; scope as new milestone if needed later |
 | — | Remove dates from PM output; add adaptive interview to `/add-feature` | Dates meaningless in AI-assisted development; full interviews for trivial changes are unnecessary friction |
 | — | Extend date removal from PM to all experts and lessons-log template | Consistency — PM already date-free after M8; other experts should match |
+| — | Research context loading optimization across all experts | Excessive startup context wastes tokens, consumes context window, and may degrade output quality |
 
 ## Current Status
 
@@ -63,8 +66,8 @@ Developers using AI coding assistants who want structured, repeatable workflows 
 - **Under development:** Data Analyst, User Experience
 - **Tooling:** scaffold, validate, install, package — functional (in `tools/` and `targets/`)
 - **Blockers:** None
-- **Next task:** None — backlog empty
-- **Last updated:** M9 postmortem complete
+- **Next task:** Decompose [Context Optimization] into tasks
+- **Last updated:** Context Optimization feature scoped
 
 ## Notes for AI
 
