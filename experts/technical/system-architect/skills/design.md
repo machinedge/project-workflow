@@ -79,9 +79,9 @@ Create the architecture document using this structure:
 |------|--------|-----------|
 
 ## Architecture Decisions
-| ID | Decision | Status | Date |
-|----|----------|--------|------|
-| ADR-001 | [Decision title] | Accepted | [Date] |
+| ID | Decision | Status |
+|----|----------|--------|
+| ADR-001 | [Decision title] | Accepted |
 
 ### ADR-001: [Decision Title]
 **Context:** [What question needed answering]

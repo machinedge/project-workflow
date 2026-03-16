@@ -41,8 +41,6 @@ Save to `docs/test-plan.md`:
 # Test Plan
 
 **Scope:** [Milestone name or task numbers]
-**Created:** [today's date]
-**Last updated:** [today's date]
 
 ## Test Scope
 

@@ -51,7 +51,6 @@ Present findings:
 ```markdown
 ## Regression Report: [Milestone Name]
 
-**Date:** [today]
 **Issues in scope:** [issue filenames]
 **Total acceptance criteria:** [N]
 

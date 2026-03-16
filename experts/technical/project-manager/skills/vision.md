@@ -10,8 +10,6 @@ Create `docs/project-brief.md` using this exact structure:
 ## Identity
 - **Project:** [Name]
 - **Owner:** [Name]
-- **Started:** [Date]
-- **Target completion:** [Date]
 
 ## Goal
 [One sentence]
@@ -38,11 +36,11 @@ Create `docs/project-brief.md` using this exact structure:
 - **Current pain points:** [from interview — what's hard about building/testing/deploying today]
 
 ## Key Decisions Made
-| Date | Decision | Reasoning |
-|------|----------|-----------|
+| Decision | Reasoning |
+|----------|-----------|
 
 ## Current Status
-**Last updated:** [today]
+**Last updated:** [current session or milestone]
 **Current phase:** Planning
 **Last completed task:** None
 **Next task:** Create project roadmap

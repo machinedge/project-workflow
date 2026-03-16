@@ -16,7 +16,7 @@ Add the new feature to `docs/project-brief.md`. This is a surgical update — do
 Changes to make:
 1. **Success Looks Like** — Append new success criteria for the feature. Prefix each with the feature name in brackets, e.g. `- [ ] [Dark Mode] User can toggle between light and dark themes`.
 2. **Constraints** — Add any new constraints surfaced during the feature interview. If none, skip.
-3. **Key Decisions Made** — Add a row recording the decision to add this feature, with today's date and reasoning from the interview notes.
+3. **Key Decisions Made** — Add a row recording the decision to add this feature, with reasoning from the interview notes.
 4. **Current Status** — Update `Last updated`, set `Next task` to "Decompose [feature name] into tasks".
 
 After updating, check the word count. If over 1,000 words:
@@ -36,7 +36,7 @@ Add new milestones to `docs/roadmap.md` for the feature:
    - Prefix milestone names with the feature name in brackets, e.g. `[Dark Mode] User can toggle theme`.
 2. **Dependency Map** — Update to show how new milestones relate to existing ones.
 3. **Risk Register** — Add at least one risk for the new feature.
-4. **Change Log** — Add a row with today's date: "Added [feature name] milestones from interview notes."
+4. **Change Log** — Add a row: "Added [feature name] milestones from interview notes."
 
 ## Present changes for review
 

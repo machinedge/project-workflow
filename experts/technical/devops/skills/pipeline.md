@@ -77,7 +77,6 @@ Present as a pipeline definition:
 ```markdown
 # Pipeline Definition
 
-**Last updated:** [today's date]
 **Based on:** `docs/env-context.md`
 
 ## Pipeline Overview

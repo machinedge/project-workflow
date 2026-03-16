@@ -30,3 +30,6 @@
 | swe-bug-021 | Test plan ATP-4 step 7 references deleted CLAUDE.md | swe | bug | M7 | — | done |
 | pm-feature-022 | Decide on missing documentation files (overview.md, getting-started.md, workflow-anatomy.md) | pm | feature | M7 | — | done |
 | swe-bug-023 | PM decompose skill doesn't include Prerequisites column in issues-list.md | swe | bug | M4 | — | done |
+| swe-feature-029 | Remove date references from PM skill templates | swe | feature | M8 | — | done |
+| swe-feature-030 | Add adaptive complexity assessment to /add-feature | swe | feature | M8 | — | done |
+| swe-feature-031 | Remove date references from all remaining expert templates | swe | feature | M9 | — | done |

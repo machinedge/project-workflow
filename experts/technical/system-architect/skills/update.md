@@ -59,6 +59,6 @@ After user approval:
 
 1. Update `docs/architecture.md` with the approved changes
 2. Add new ADRs for any new decisions; mark superseded ADRs as "Superseded by ADR-XXX"
-3. Update the document's revision history or date
+3. Update the document's revision history
 
 If downstream experts need to be informed, note this for the handoff.

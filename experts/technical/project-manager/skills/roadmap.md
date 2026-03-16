@@ -8,8 +8,8 @@ Create `docs/roadmap.md` with 5-8 milestones using this structure:
 # Project Plan
 
 ## Milestones
-| # | Milestone | Status | Target Date | Depends On | Risks / Unknowns |
-|---|-----------|--------|-------------|------------|-------------------|
+| # | Milestone | Status | Depends On | Risks / Unknowns |
+|---|-----------|--------|------------|-------------------|
 
 ## Dependency Map
 [show which milestones block which — text or ASCII diagram]
@@ -19,8 +19,8 @@ Create `docs/roadmap.md` with 5-8 milestones using this structure:
 |------|-----------|--------|------------|--------|
 
 ## Change Log
-| Date | What Changed | Why |
-|------|-------------|-----|
+| What Changed | Why |
+|-------------|-----|
 ```
 
 Rules:
@@ -33,7 +33,6 @@ Rules:
 - Each milestone should take 2-5 sessions to complete.
 - Be explicit about dependencies between milestones.
 - Every milestone needs at least one identified risk or unknown.
-- Assume timelines take 1.5x longer than they seem.
 - Flag uncertainties for the user to decide on.
 - Milestones may trigger work across multiple workflows — not just SWE. Consider whether a milestone needs DevOps work (environment setup, pipeline config, deployment) or QA work (test plan, review) and note these in the milestone description or risks.
 

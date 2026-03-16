@@ -69,8 +69,7 @@ Save to `docs/release-plan.md`:
 # Release Plan
 
 **Milestone:** [name]
-**Last updated:** [today's date]
-**Target release date:** [from roadmap or user]
+**Target release date:** [from roadmap or user, if applicable]
 
 ## Release Gates
 
@@ -115,7 +114,7 @@ Save to `docs/release-plan.md`:
 ## Release Notes Template
 
 ```
-### [Version] — [Date]
+### [Version]
 
 **Milestone:** [name]
 

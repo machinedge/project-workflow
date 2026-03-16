@@ -27,6 +27,10 @@ Developers using AI coding assistants who want structured, repeatable workflows 
 - [x] [Deployment Restructure] Adding a new deployment target is atomic and self-contained
 - [x] [Deployment Restructure] OpenClaw code preserved but isolated in its own target directory
 - [x] [Deployment Restructure] `CLAUDE.md` removed
+- [x] [PM Planning Improvements] PM stops producing calendar dates in generated artifacts
+- [x] [PM Planning Improvements] `/add-feature` assesses complexity and shortens interview for small features
+- [x] [PM Planning Improvements] PM states assumptions when shortening interview so user can correct
+- [x] [Date Removal] No expert skill template produces or consumes calendar dates
 
 ## Constraints
 
@@ -49,16 +53,18 @@ Developers using AI coding assistants who want structured, repeatable workflows 
 | 2026-03-12 | Restructure deployment layer by target class (IDE, Desktop/Code, Autonomous) | `framework/` and `package/` are tangled and block release; three target classes identified for clean extensibility |
 | 2026-03-12 | Remove `CLAUDE.md` | Redundant with project brief + expert roles + agent-reference.md; one less file to maintain |
 | 2026-03-12 | Remove references to non-existent docs (overview.md, getting-started.md, workflow-anatomy.md) | Aspirational toolkit docs never authored; content largely redundant with README.md, architecture.md, and agent-reference.md; scope as new milestone if needed later |
+| — | Remove dates from PM output; add adaptive interview to `/add-feature` | Dates meaningless in AI-assisted development; full interviews for trivial changes are unnecessary friction |
+| — | Extend date removal from PM to all experts and lessons-log template | Consistency — PM already date-free after M8; other experts should match |
 
 ## Current Status
 
-- **Milestones:** M1-M7 all complete. Expert Skill Restructure (M3-M5) and Deployment Restructure (M6-M7) delivered.
+- **Milestones:** M1-M9 all complete. Expert Skill Restructure (M3-M5), Deployment Restructure (M6-M7), PM Planning Improvements (M8), and Date Removal (M9) delivered.
 - **Core experts:** PM (10 skills), SWE (2 skills), QA (6 skills), DevOps (6 skills), System Architect (6 skills) — functional
 - **Under development:** Data Analyst, User Experience
 - **Tooling:** scaffold, validate, install, package — functional (in `tools/` and `targets/`)
 - **Blockers:** None
 - **Next task:** None — backlog empty
-- **Last updated:** 2026-03-12
+- **Last updated:** M9 postmortem complete
 
 ## Notes for AI
 

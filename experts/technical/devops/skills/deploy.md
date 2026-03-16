@@ -94,7 +94,6 @@ After deployment completes:
 ```markdown
 ## Deployment Report: [Milestone Name]
 
-**Date:** [today]
 **Version:** [version]
 **Status:** SUCCESS / FAILED / ROLLED BACK
 

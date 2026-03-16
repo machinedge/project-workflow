@@ -17,7 +17,6 @@ Save to `docs/handoff-notes/system-architect/session-NN.md`:
 ```markdown
 # Handoff Note: [Task Name]
 
-**Session date:** [today's date]
 **Issue:** [filename] — [title]
 
 ## What Was Accomplished
@@ -69,7 +68,6 @@ If acceptance criteria are NOT all met, leave the issue file in `issues/in-progr
 Read and update `docs/project-brief.md`:
 - Add any new decisions to the "Key Decisions Made" table
 - Update "Current Status" section: last completed issue, next issue, blockers
-- Update the "Last updated" date
 
 ## Step 6: Update the lessons log
 

@@ -62,7 +62,7 @@ What should the first task of the next milestone be? Any blockers to resolve fir
 
 After user reviews and approves:
 - Save updated `docs/project-brief.md`
-- Update `docs/roadmap.md` — mark milestone complete, update dates, adjust risks
+- Update `docs/roadmap.md` — mark milestone complete, adjust risks
 - Add lessons to `docs/lessons-log.md`
 
 Be critical, not encouraging. The user needs an honest assessment, not cheerleading.

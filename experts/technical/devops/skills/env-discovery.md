@@ -44,7 +44,6 @@ After all categories, save to `docs/env-context.md`:
 ```markdown
 # Environment Context
 
-**Last updated:** [today's date]
 **Source:** `/env-discovery` interview
 
 ## Build

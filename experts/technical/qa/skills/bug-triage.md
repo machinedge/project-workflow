@@ -41,7 +41,6 @@ Present findings:
 ```markdown
 ## Bug Triage Report
 
-**Date:** [today]
 **Open issues:** [N total]
 **Current milestone:** [name from roadmap]
 
