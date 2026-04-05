@@ -104,10 +104,10 @@ After the user reviews and approves the findings, create issue files in `issues/
 
 Run `.cursor/scripts/next-issue-number.sh` to get the next available issue number.
 
-Identify the persona who is affected by each finding. Then create files following the naming convention:
+Identify the expert who will fix each finding — use that expert as the filename prefix (executor convention, not finder).
 
-For must-fix findings: `issues/backlog/qa-bug-[number].md`
-For should-fix / tech debt findings: `issues/backlog/qa-techdebt-[number].md`
+For must-fix findings: `issues/backlog/swe-bug-[number].md`
+For should-fix / tech debt findings: `issues/backlog/swe-techdebt-[number].md`
 
 Use this template:
 

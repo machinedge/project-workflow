@@ -51,6 +51,6 @@
 | sa-feature-047 | Define Routing for Cross-Expert Skills (team- prefix) | sa | feature | M11 | swe-feature-035 | done |
 | sa-bug-048 | Concurrent session conflicts: session numbering and project brief overwrites | system-architect | bug | — | — | done |
 | swe-feature-049 | Robust concurrent handoff: script-based project brief updates and session claiming | swe | feature | — | sa-bug-048 | backlog |
-| swe-bug-050 | PowerShell next-session-number.ps1 missing atomic session claiming | swe | bug | M11 | — | backlog |
-| swe-bug-051 | Issue filename prefix convention inconsistent across skills | swe | bug | M11 | — | backlog |
-| swe-techdebt-052 | Dead `count` variable in update-issues-list.sh | swe | techdebt | M11 | — | backlog |
+| swe-bug-050 | PowerShell next-session-number.ps1 missing atomic session claiming | swe | bug | M11 | — | done |
+| swe-bug-051 | Issue filename prefix convention inconsistent across skills | swe | bug | M11 | — | done |
+| swe-techdebt-052 | Dead `count` variable in update-issues-list.sh | swe | techdebt | M11 | — | done |

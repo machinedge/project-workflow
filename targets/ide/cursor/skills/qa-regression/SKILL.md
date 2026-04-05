@@ -91,7 +91,7 @@ Present findings:
 
 For each regression failure, run `.cursor/scripts/next-issue-number.sh` to get the next available issue number.
 
-Create an issue file in `issues/backlog/` using the naming convention: `issues/backlog/qa-bug-[number].md`
+Create an issue file in `issues/backlog/` using the executor prefix convention: `issues/backlog/swe-bug-[number].md` (or the appropriate expert who will fix it).
 
 Template:
 

@@ -81,8 +81,8 @@ Developers using AI coding assistants who want structured, repeatable workflows 
 - **Under development:** Data Analyst, User Experience
 - **Tooling:** scaffold, validate, install, package — functional (in `tools/` and `targets/`)
 - **Blockers:** None
-- **Next task:** swe-bug-050 (PS1 atomic claiming), swe-bug-051 (issue naming convention), then Claude Code (swe-feature-040, swe-feature-041)
-- **Last updated:** qa-feature-039 complete; Cursor implementation reviewed — 0 must-fix, 2 should-fix, 1 nit
+- **Next task:** Claude Code implementation (swe-feature-040, swe-feature-041)
+- **Last updated:** swe-bug-050, swe-bug-051, swe-techdebt-052 complete; all QA findings from Cursor review resolved
 
 ## Notes for AI
 

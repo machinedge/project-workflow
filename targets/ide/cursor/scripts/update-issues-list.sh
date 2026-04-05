@@ -15,8 +15,6 @@ cat > "$output" << 'HEADER'
 |------|-------|--------|------|-----------|---------------|--------|
 HEADER
 
-count=0
-
 # Collect rows: sort key | table row
 {
   for dir in issues/backlog issues/planned issues/in-progress issues/done; do
@@ -41,7 +39,6 @@ count=0
       num=$(echo "$filename" | grep -oE '[0-9]+$' || echo "0")
 
       echo "${num}|${filename}|${title}|${expert}|${type}|${milestone}|${deps}|${status}"
-      count=$((count + 1))
     done
   done
 } | sort -t'|' -k1,1n | while IFS='|' read -r _num filename title expert type milestone deps status; do

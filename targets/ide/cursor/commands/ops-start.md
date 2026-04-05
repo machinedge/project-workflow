@@ -11,7 +11,7 @@ Read these files automatically — do not ask the user to provide them:
 2. `docs/env-context.md` (if it exists) — current environment and deployment context
 3. `docs/release-plan.md` (if it exists) — current release gates and rollback procedures
 4. The task issue:
-   - If user specified an issue (e.g. "ops-feature-001" or a description), find and read it from `issues/`
+   - If user specified an issue (e.g. "devops-feature-001" or a description), find and read it from `issues/`
    - If not, check project brief's "Next task" field for the issue filename
    - If still unclear, scan `issues/planned/` and `issues/in-progress/` for DevOps tasks and ask
 5. Most recent handoff note in `docs/handoff-notes/devops/` (if any exist)
