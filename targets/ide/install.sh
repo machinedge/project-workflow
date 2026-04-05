@@ -1,42 +1,49 @@
 #!/bin/bash
 
 # MachinEdge Expert Teams — Install
-# Usage: ./install.sh [--editor claude|cursor|both] [--experts pm,swe,qa,devops] [--domain technical] [project-directory]
+# Usage: ./install.sh [--editor cursor|claude|both] [project-directory]
 #
-# Installs one or more experts into a project directory by translating
-# platform-agnostic expert definitions into editor-specific configurations.
-#
-# Expert short names are mapped to their full directory names:
-#   pm → project-manager, swe → swe, qa → qa, devops → devops,
-#   sa → system-architect, data-analyst → data-analyst
-#
-# Skill prefix mapping (for flat command namespaces):
-#   pm- → project-manager, swe- → swe, qa- → qa, ops- → devops
-#   sa- → system-architect, da- → data-analyst, ux- → user-experience, team- → shared
+# Installs platform-native expert files into a project directory by copying
+# pre-built implementations from targets/ide/<platform>/.
 #
 # Examples:
-#   ./install.sh ~/myproj                                    # All core experts, both editors
-#   ./install.sh --experts pm,swe ~/myproj                   # Just PM and SWE
-#   ./install.sh --experts pm,swe,qa --editor cursor .       # PM+SWE+QA, Cursor only
-#   ./install.sh --editor claude ~/myproj                    # All core experts, Claude only
+#   ./install.sh ~/myproj                          # Both editors
+#   ./install.sh --editor cursor ~/myproj           # Cursor only
+#   ./install.sh --editor claude ~/myproj           # Claude Code only
+#   ./install.sh .                                  # Current directory, both editors
 
 set -e
 
-# Resolve the directory where this script lives
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-# Skill root is two levels up from targets/ide/
-SKILL_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
-if [ ! -d "$SKILL_ROOT/experts" ]; then
-    echo "Error: Could not find experts/ directory at $SKILL_ROOT/experts"
-    echo "  Expected script location: <skill-root>/targets/ide/"
-    exit 1
+CURSOR_SRC="$SCRIPT_DIR/cursor"
+CLAUDE_SRC="$SCRIPT_DIR/claude-code"
+
+if [ ! -d "$CURSOR_SRC" ] || [ ! -d "$CLAUDE_SRC" ]; then
+    echo "Error: Platform source directories not found."
+    echo "  Expected: $CURSOR_SRC and $CLAUDE_SRC"
+    exit 2
 fi
 
+# ─────────────────────────────────────────────
 # Parse arguments
+# ─────────────────────────────────────────────
+
 EDITOR="both"
-EXPERT_LIST="project-manager,swe,qa,devops,system-architect"
-DOMAIN="technical"
 TARGET="."
+
+usage() {
+    echo "Usage: $0 [--editor cursor|claude|both] [project-directory]"
+    echo ""
+    echo "Options:"
+    echo "  --editor    Target editor: cursor, claude, or both (default: both)"
+    echo "  -h, --help  Show this help message"
+    echo ""
+    echo "Examples:"
+    echo "  $0 ~/myproj                          # Both editors"
+    echo "  $0 --editor cursor ~/myproj           # Cursor only"
+    echo "  $0 --editor claude .                  # Claude Code, current dir"
+    exit 0
+}
 
 while [[ $# -gt 0 ]]; do
     case $1 in
@@ -44,13 +51,8 @@ while [[ $# -gt 0 ]]; do
             EDITOR="$2"
             shift 2
             ;;
-        --experts|--workflows)
-            EXPERT_LIST="$2"
-            shift 2
-            ;;
-        --domain)
-            DOMAIN="$2"
-            shift 2
+        -h|--help)
+            usage
             ;;
         *)
             TARGET="$1"
@@ -59,64 +61,20 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
+case "$EDITOR" in
+    cursor|claude|both) ;;
+    *)
+        echo "Error: --editor must be cursor, claude, or both (got '$EDITOR')"
+        exit 2
+        ;;
+esac
+
 if [ "$TARGET" != "." ]; then
     mkdir -p "$TARGET"
 fi
 
-# ─────────────────────────────────────────────
-# Map short names to full expert directory names
-# ─────────────────────────────────────────────
-
-resolve_expert_name() {
-    local name="$1"
-    case "$name" in
-        pm|project-manager)          echo "project-manager" ;;
-        swe)                         echo "swe" ;;
-        qa)                          echo "qa" ;;
-        devops)                      echo "devops" ;;
-        sa|system-architect)         echo "system-architect" ;;
-        data-analyst|eda)            echo "data-analyst" ;;
-        user-experience|ux)          echo "user-experience" ;;
-        *)                           echo "$name" ;;
-    esac
-}
-
-# ─────────────────────────────────────────────
-# Map expert directory names to short prefixes
-# Used to namespace skills in flat command directories
-# ─────────────────────────────────────────────
-
-resolve_expert_prefix() {
-    local name="$1"
-    case "$name" in
-        project-manager)  echo "pm" ;;
-        swe)              echo "swe" ;;
-        qa)               echo "qa" ;;
-        devops)           echo "ops" ;;
-        system-architect) echo "sa" ;;
-        data-analyst)     echo "da" ;;
-        user-experience)  echo "ux" ;;
-        *)                echo "$name" ;;
-    esac
-}
-
-# Parse and validate expert names
-IFS=',' read -ra RAW_EXPERTS <<< "$EXPERT_LIST"
-EXPERTS=()
-for raw in "${RAW_EXPERTS[@]}"; do
-    raw=$(echo "$raw" | tr -d ' ')
-    resolved=$(resolve_expert_name "$raw")
-    EXPERT_DIR="$SKILL_ROOT/experts/$DOMAIN/$resolved"
-    if [ ! -d "$EXPERT_DIR" ]; then
-        echo "Error: Expert '$raw' (resolved to '$resolved') not found at $EXPERT_DIR"
-        exit 1
-    fi
-    EXPERTS+=("$resolved")
-done
-
-echo "Setting up expert team in: $TARGET"
-echo "  Experts: ${EXPERTS[*]}"
-echo "  Domain: $DOMAIN"
+echo "MachinEdge Expert Teams — Install"
+echo "  Target: $(cd "$TARGET" && pwd)"
 echo "  Editor: $EDITOR"
 echo ""
 
@@ -125,285 +83,224 @@ echo ""
 # ─────────────────────────────────────────────
 
 mkdir -p "$TARGET/docs/handoff-notes"
-mkdir -p "$TARGET/issues"
+mkdir -p "$TARGET/issues/backlog"
+mkdir -p "$TARGET/issues/planned"
+mkdir -p "$TARGET/issues/in-progress"
+mkdir -p "$TARGET/issues/done"
+
+for expert in project-manager swe qa devops system-architect; do
+    mkdir -p "$TARGET/docs/handoff-notes/$expert"
+done
 
 if [ ! -f "$TARGET/docs/lessons-log.md" ]; then
-cat > "$TARGET/docs/lessons-log.md" << 'DOC_EOF'
+cat > "$TARGET/docs/lessons-log.md" << 'EOF'
 # Lessons Log
 
 Record project-specific gotchas, patterns, and knowledge here. Future sessions will read this to avoid repeating mistakes.
 
-| Date | Lesson | Context |
-|------|--------|---------|
-DOC_EOF
+| Lesson | Context |
+|--------|---------|
+EOF
 fi
-
-# Create handoff-notes subdirectories for each expert
-for expert in "${EXPERTS[@]}"; do
-    mkdir -p "$TARGET/docs/handoff-notes/$expert"
-done
 
 # ─────────────────────────────────────────────
 # Clean previous installation (managed files only)
 # Preserves user content in docs/, issues/, and
-# any custom commands without our known prefixes
+# any custom rules/commands/skills without our prefixes
 # ─────────────────────────────────────────────
 
-if [ "$EDITOR" = "claude" ] || [ "$EDITOR" = "both" ]; then
-    # Remove managed commands (known prefixes only)
-    for prefix in pm swe qa ops sa da ux team; do
-        rm -f "$TARGET/.claude/commands/${prefix}"-*.md 2>/dev/null
-    done
-    # Remove managed roles and generated root config
-    rm -rf "$TARGET/.claude/roles" 2>/dev/null
-    rm -f "$TARGET/.claude/CLAUDE.md" 2>/dev/null
-fi
+MANAGED_PREFIXES="pm swe qa ops sa da ux team"
 
 if [ "$EDITOR" = "cursor" ] || [ "$EDITOR" = "both" ]; then
-    # Remove managed commands (known prefixes only)
-    for prefix in pm swe qa ops sa da ux team; do
-        rm -f "$TARGET/.cursor/commands/${prefix}"-*.md 2>/dev/null
+    rm -f "$TARGET/.cursor/rules/"*-os.mdc 2>/dev/null || true
+    rm -f "$TARGET/.cursor/rules/project-os.mdc" 2>/dev/null || true
+    for prefix in $MANAGED_PREFIXES; do
+        rm -f "$TARGET/.cursor/commands/${prefix}"-*.md 2>/dev/null || true
+        rm -rf "$TARGET/.cursor/skills/${prefix}"-*/ 2>/dev/null || true
     done
-    # Remove managed rules and generated root config
-    rm -f "$TARGET/.cursor/rules/"*-os.mdc 2>/dev/null
-    rm -f "$TARGET/.cursor/rules/project-os.mdc" 2>/dev/null
+    rm -f "$TARGET/.cursor/scripts/move-issue."* 2>/dev/null || true
+    rm -f "$TARGET/.cursor/scripts/next-issue-number."* 2>/dev/null || true
+    rm -f "$TARGET/.cursor/scripts/next-session-number."* 2>/dev/null || true
+    rm -f "$TARGET/.cursor/scripts/update-issues-list."* 2>/dev/null || true
+fi
+
+if [ "$EDITOR" = "claude" ] || [ "$EDITOR" = "both" ]; then
+    rm -f "$TARGET/.claude/CLAUDE.md" 2>/dev/null || true
+    rm -rf "$TARGET/.claude/roles" 2>/dev/null || true
+    for prefix in $MANAGED_PREFIXES; do
+        rm -f "$TARGET/.claude/commands/${prefix}"-*.md 2>/dev/null || true
+        rm -rf "$TARGET/.claude/skills/${prefix}"-*/ 2>/dev/null || true
+    done
+    rm -f "$TARGET/.claude/scripts/move-issue."* 2>/dev/null || true
+    rm -f "$TARGET/.claude/scripts/next-issue-number."* 2>/dev/null || true
+    rm -f "$TARGET/.claude/scripts/next-session-number."* 2>/dev/null || true
+    rm -f "$TARGET/.claude/scripts/update-issues-list."* 2>/dev/null || true
+    rm -f "$TARGET/.claude/scripts/session-primer.sh" 2>/dev/null || true
 fi
 
 # ─────────────────────────────────────────────
-# Install each expert's definition
+# Helper: copy a directory of skills (each is a subfolder with SKILL.md)
 # ─────────────────────────────────────────────
 
-for expert in "${EXPERTS[@]}"; do
-    EXPERT_SRC="$SKILL_ROOT/experts/$DOMAIN/$expert"
-    echo "  [$expert] Installing expert definition..."
-
-    # Claude Code: role.md → .claude/roles/<expert>.md, skills → .claude/commands/
-    if [ "$EDITOR" = "claude" ] || [ "$EDITOR" = "both" ]; then
-        mkdir -p "$TARGET/.claude/roles"
-        mkdir -p "$TARGET/.claude/commands"
-
-        if [ -f "$EXPERT_SRC/role.md" ]; then
-            cp "$EXPERT_SRC/role.md" "$TARGET/.claude/roles/$expert.md"
-        fi
-
-        # Copy skills as slash commands (prefixed and normalized)
-        if [ -d "$EXPERT_SRC/skills" ]; then
-            PREFIX=$(resolve_expert_prefix "$expert")
-            for skill_file in "$EXPERT_SRC"/skills/*.md; do
-                if [ -f "$skill_file" ]; then
-                    skill_basename=$(basename "$skill_file" | tr '_' '-')
-                    cp "$skill_file" "$TARGET/.claude/commands/${PREFIX}-${skill_basename}"
-                fi
-            done
-        fi
-    fi
-
-    # Cursor: role.md → .cursor/rules/<expert>-os.mdc (with frontmatter), skills → .cursor/commands/
-    if [ "$EDITOR" = "cursor" ] || [ "$EDITOR" = "both" ]; then
-        mkdir -p "$TARGET/.cursor/rules"
-        mkdir -p "$TARGET/.cursor/commands"
-
-        if [ -f "$EXPERT_SRC/role.md" ]; then
-            # Prepend Cursor's YAML frontmatter
-            {
-                printf '%s\n' "---"
-                printf '%s\n' "description: $expert expert — operating rules"
-                printf '%s\n' "alwaysApply: true"
-                printf '%s\n' "---"
-                printf '\n'
-                cat "$EXPERT_SRC/role.md"
-            } > "$TARGET/.cursor/rules/${expert}-os.mdc"
-        fi
-
-        # Copy skills as commands (prefixed and normalized)
-        if [ -d "$EXPERT_SRC/skills" ]; then
-            PREFIX=$(resolve_expert_prefix "$expert")
-            for skill_file in "$EXPERT_SRC"/skills/*.md; do
-                if [ -f "$skill_file" ]; then
-                    skill_basename=$(basename "$skill_file" | tr '_' '-')
-                    cp "$skill_file" "$TARGET/.cursor/commands/${PREFIX}-${skill_basename}"
-                fi
-            done
-        fi
-    fi
-
-    # Copy expert tools to project if any exist (beyond .gitkeep)
-    if [ -d "$EXPERT_SRC/tools" ]; then
-        TOOL_COUNT=$(find "$EXPERT_SRC/tools" -type f ! -name ".gitkeep" 2>/dev/null | wc -l | tr -d ' ')
-        if [ "$TOOL_COUNT" -gt 0 ]; then
-            mkdir -p "$TARGET/tools/$expert"
-            find "$EXPERT_SRC/tools" -type f ! -name ".gitkeep" -exec cp {} "$TARGET/tools/$expert/" \;
-            echo "    Copied $TOOL_COUNT tool(s) to tools/$expert/"
-        fi
-    fi
-done
+copy_skills() {
+    local src="$1"
+    local dest="$2"
+    mkdir -p "$dest"
+    for skill_dir in "$src"/*/; do
+        [ -d "$skill_dir" ] || continue
+        local skill_name
+        skill_name=$(basename "$skill_dir")
+        [ "$skill_name" = "*" ] && continue
+        mkdir -p "$dest/$skill_name"
+        cp "$skill_dir"SKILL.md "$dest/$skill_name/"
+    done
+}
 
 # ─────────────────────────────────────────────
-# Install shared skills (e.g., /status)
+# Helper: copy scripts, set .sh executable, skip test/dev files
 # ─────────────────────────────────────────────
 
-SHARED_DIR="$SKILL_ROOT/experts/$DOMAIN/shared"
-if [ -d "$SHARED_DIR/skills" ]; then
-    echo ""
-    echo "  [shared] Installing shared skills..."
+copy_scripts() {
+    local src="$1"
+    local dest="$2"
+    mkdir -p "$dest"
+    for f in "$src"/*; do
+        [ -f "$f" ] || continue
+        local fname
+        fname=$(basename "$f")
+        case "$fname" in
+            test-*|*.test.*) continue ;;
+            .gitkeep) continue ;;
+        esac
+        cp "$f" "$dest/"
+    done
+    chmod +x "$dest"/*.sh 2>/dev/null || true
+}
 
-    if [ "$EDITOR" = "claude" ] || [ "$EDITOR" = "both" ]; then
-        for skill_file in "$SHARED_DIR"/skills/*.md; do
-            if [ -f "$skill_file" ]; then
-                skill_basename=$(basename "$skill_file" | tr '_' '-')
-                cp "$skill_file" "$TARGET/.claude/commands/team-${skill_basename}"
-            fi
-        done
+# ─────────────────────────────────────────────
+# Helper: copy commands, skip .gitkeep
+# ─────────────────────────────────────────────
+
+copy_commands() {
+    local src="$1"
+    local dest="$2"
+    mkdir -p "$dest"
+    for f in "$src"/*.md; do
+        [ -f "$f" ] || continue
+        cp "$f" "$dest/"
+    done
+}
+
+# ─────────────────────────────────────────────
+# Helper: merge settings.json (Claude Code hooks)
+# ─────────────────────────────────────────────
+
+merge_settings() {
+    local target_dir="$1"
+    local existing="$target_dir/.claude/settings.json"
+    local source="$CLAUDE_SRC/settings.json"
+
+    if [ ! -f "$source" ]; then
+        return
     fi
 
-    if [ "$EDITOR" = "cursor" ] || [ "$EDITOR" = "both" ]; then
-        for skill_file in "$SHARED_DIR"/skills/*.md; do
-            if [ -f "$skill_file" ]; then
-                skill_basename=$(basename "$skill_file" | tr '_' '-')
-                cp "$skill_file" "$TARGET/.cursor/commands/team-${skill_basename}"
-            fi
-        done
+    if [ ! -f "$existing" ]; then
+        cp "$source" "$existing"
+        echo "    Settings: created .claude/settings.json"
+        return
     fi
-fi
 
-# ─────────────────────────────────────────────
-# Generate the root CLAUDE.md / Cursor rules
-# ─────────────────────────────────────────────
+    if command -v python3 &>/dev/null; then
+        python3 << PYEOF
+import json
 
-# Build the list of installed experts and their skills
-ROLE_LIST=""
-SKILL_LIST=""
-for expert in "${EXPERTS[@]}"; do
-    EXPERT_SRC="$SKILL_ROOT/experts/$DOMAIN/$expert"
+with open("$existing") as f:
+    existing = json.load(f)
+with open("$source") as f:
+    new_settings = json.load(f)
 
-    # Extract the first line of role.md as the display name
-    if [ -f "$EXPERT_SRC/role.md" ]; then
-        DISPLAY_NAME=$(head -1 "$EXPERT_SRC/role.md" | sed 's/^#\s*//' | sed 's/ Operating System$//')
+if "hooks" not in existing:
+    existing["hooks"] = {}
+for hook_name, hook_value in new_settings.get("hooks", {}).items():
+    existing["hooks"][hook_name] = hook_value
+
+with open("$existing", "w") as f:
+    json.dump(existing, f, indent=2)
+    f.write("\n")
+PYEOF
+        echo "    Settings: merged hooks into existing .claude/settings.json"
     else
-        DISPLAY_NAME="$expert"
+        echo "    WARNING: Could not merge settings.json (python3 not found)."
+        echo "    Please manually merge hooks from: $source"
+        echo "    Into: $existing"
     fi
+}
 
-    ROLE_LIST="$ROLE_LIST\n- **$DISPLAY_NAME** (\`.claude/roles/$expert.md\`)"
-
-    # List skills from the expert (prefixed and normalized)
-    if [ -d "$EXPERT_SRC/skills" ]; then
-        PREFIX=$(resolve_expert_prefix "$expert")
-        for skill_file in "$EXPERT_SRC"/skills/*.md; do
-            if [ -f "$skill_file" ]; then
-                skill_name=$(basename "$skill_file" .md | tr '_' '-')
-                SKILL_LIST="$SKILL_LIST\n- \`/${PREFIX}-${skill_name}\` ($DISPLAY_NAME)"
-            fi
-        done
-    fi
-done
-
-# Add shared skills
-if [ -d "$SHARED_DIR/skills" ]; then
-    for skill_file in "$SHARED_DIR"/skills/*.md; do
-        if [ -f "$skill_file" ]; then
-            skill_name=$(basename "$skill_file" .md | tr '_' '-')
-            SKILL_LIST="$SKILL_LIST\n- \`/team-${skill_name}\` (Shared)"
-        fi
-    done
-fi
-
-if [ "$EDITOR" = "claude" ] || [ "$EDITOR" = "both" ]; then
-    echo ""
-    echo "  [claude] Generating .claude/CLAUDE.md..."
-    cat > "$TARGET/.claude/CLAUDE.md" << CLAUDE_EOF
-# Project Operating System
-
-This project uses the MachinEdge Expert Teams toolkit. Each session, you operate as a specific expert.
-
-## Experts
-
-Read the role file for your active expert at the start of every session:
-$(echo -e "$ROLE_LIST")
-
-## Starting a Session
-
-1. Ask the user which expert role they want for this session.
-2. Read the corresponding role file from \`.claude/roles/\`.
-3. Follow that expert's session protocol.
-
-If the user jumps straight into a skill (e.g. \`/swe-start\`), infer the expert from the skill prefix and load the appropriate role file automatically. Skill prefixes: pm=Project Manager, swe=SWE, qa=QA, ops=DevOps, sa=System Architect, da=Data Analyst, ux=User Experience, team=Shared.
-
-## Available Skills
-$(echo -e "$SKILL_LIST")
-
-## Shared Principles
-
-- You have no memory between sessions. Project documents ARE your memory.
-- The project brief (\`docs/project-brief.md\`) is the source of truth.
-- Keep the project brief under 1,000 words.
-- Verify your work. "It should work" is not verification.
-- Issues are tracked in \`issues/\`, not external services.
-CLAUDE_EOF
-fi
+# ─────────────────────────────────────────────
+# Install Cursor
+# ─────────────────────────────────────────────
 
 if [ "$EDITOR" = "cursor" ] || [ "$EDITOR" = "both" ]; then
-    echo "  [cursor] Generating .cursor/rules/project-os.mdc..."
-    cat > "$TARGET/.cursor/rules/project-os.mdc" << CURSOR_EOF
----
-description: Project operating system — MachinEdge Expert Teams
-alwaysApply: true
----
+    echo "  [cursor] Installing platform-native files..."
 
-# Project Operating System
+    mkdir -p "$TARGET/.cursor/rules"
+    cp "$CURSOR_SRC"/rules/*.mdc "$TARGET/.cursor/rules/"
 
-This project uses the MachinEdge Expert Teams toolkit. Each session, you operate as a specific expert.
+    copy_commands "$CURSOR_SRC/commands" "$TARGET/.cursor/commands"
+    copy_skills "$CURSOR_SRC/skills" "$TARGET/.cursor/skills"
+    copy_scripts "$CURSOR_SRC/scripts" "$TARGET/.cursor/scripts"
 
-## Experts
+    rule_count=$(ls "$TARGET/.cursor/rules/"*.mdc 2>/dev/null | wc -l | tr -d ' ')
+    cmd_count=$(ls "$TARGET/.cursor/commands/"*.md 2>/dev/null | wc -l | tr -d ' ')
+    skill_count=$(find "$TARGET/.cursor/skills" -name "SKILL.md" 2>/dev/null | wc -l | tr -d ' ')
+    script_count=$(find "$TARGET/.cursor/scripts" -type f 2>/dev/null | wc -l | tr -d ' ')
+    echo "    Rules: $rule_count files"
+    echo "    Commands: $cmd_count files"
+    echo "    Skills: $skill_count folders"
+    echo "    Scripts: $script_count files"
+fi
 
-Read the role file for your active expert at the start of every session:
-$(echo -e "$ROLE_LIST")
+# ─────────────────────────────────────────────
+# Install Claude Code
+# ─────────────────────────────────────────────
 
-Role files are in \`.cursor/rules/\` as \`<expert>-os.mdc\`.
+if [ "$EDITOR" = "claude" ] || [ "$EDITOR" = "both" ]; then
+    echo "  [claude] Installing platform-native files..."
 
-## Starting a Session
+    mkdir -p "$TARGET/.claude"
+    cp "$CLAUDE_SRC/CLAUDE.md" "$TARGET/.claude/CLAUDE.md"
 
-1. Ask the user which expert role they want for this session.
-2. Read the corresponding role rules file.
-3. Follow that expert's session protocol.
+    mkdir -p "$TARGET/.claude/roles"
+    cp "$CLAUDE_SRC"/roles/*.md "$TARGET/.claude/roles/"
 
-If the user jumps straight into a skill (e.g. \`/swe-start\`), infer the expert from the skill prefix and load the appropriate role file automatically. Skill prefixes: pm=Project Manager, swe=SWE, qa=QA, ops=DevOps, sa=System Architect, da=Data Analyst, ux=User Experience, team=Shared.
+    copy_commands "$CLAUDE_SRC/commands" "$TARGET/.claude/commands"
+    copy_skills "$CLAUDE_SRC/skills" "$TARGET/.claude/skills"
+    copy_scripts "$CLAUDE_SRC/scripts" "$TARGET/.claude/scripts"
 
-## Available Skills
-$(echo -e "$SKILL_LIST")
+    merge_settings "$TARGET"
 
-## Shared Principles
-
-- You have no memory between sessions. Project documents ARE your memory.
-- The project brief (\`docs/project-brief.md\`) is the source of truth.
-- Keep the project brief under 1,000 words.
-- Verify your work. "It should work" is not verification.
-- Issues are tracked in \`issues/\`, not external services.
-CURSOR_EOF
+    role_count=$(ls "$TARGET/.claude/roles/"*.md 2>/dev/null | wc -l | tr -d ' ')
+    cmd_count=$(ls "$TARGET/.claude/commands/"*.md 2>/dev/null | wc -l | tr -d ' ')
+    skill_count=$(find "$TARGET/.claude/skills" -name "SKILL.md" 2>/dev/null | wc -l | tr -d ' ')
+    script_count=$(find "$TARGET/.claude/scripts" -type f 2>/dev/null | wc -l | tr -d ' ')
+    echo "    Roles: $role_count files"
+    echo "    Commands: $cmd_count files"
+    echo "    Skills: $skill_count folders"
+    echo "    Scripts: $script_count files"
 fi
 
 # ─────────────────────────────────────────────
 # Summary
 # ─────────────────────────────────────────────
 
+TOOLKIT_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
+SYNC_SH="$TOOLKIT_ROOT/tools/sync.sh"
+
 echo ""
-echo "Done! Project structure:"
-echo ""
-find "$TARGET/docs" -type f 2>/dev/null | sort | while read f; do
-    echo "  $f"
-done
-if [ "$EDITOR" = "claude" ] || [ "$EDITOR" = "both" ]; then
-    find "$TARGET/.claude" -type f 2>/dev/null | sort | while read f; do
-        echo "  $f"
-    done
-fi
-if [ "$EDITOR" = "cursor" ] || [ "$EDITOR" = "both" ]; then
-    find "$TARGET/.cursor" -type f 2>/dev/null | sort | while read f; do
-        echo "  $f"
-    done
-fi
+echo "Done! Installed to: $(cd "$TARGET" && pwd)"
 echo ""
 echo "Next steps:"
-echo "  1. cd $TARGET"
+echo "  1. cd $(cd "$TARGET" && pwd)"
 if [ "$EDITOR" = "claude" ]; then
     echo "  2. Open Claude Code and run /pm-interview to start a new project"
 elif [ "$EDITOR" = "cursor" ]; then
@@ -412,4 +309,27 @@ else
     echo "  2. Open Claude Code or Cursor and run /pm-interview to start a new project"
 fi
 echo "  3. Or run /team-status to see the project health summary"
+echo ""
+if [ -f "$SYNC_SH" ]; then
+    echo "Maintenance:"
+    echo "  To check for updates:  $SYNC_SH check $(cd "$TARGET" && pwd)"
+    echo "  To apply updates:      $SYNC_SH apply $(cd "$TARGET" && pwd)"
+fi
+echo ""
+echo "Uninstall:"
+echo "  To remove the toolkit, delete the managed files:"
+if [ "$EDITOR" = "cursor" ] || [ "$EDITOR" = "both" ]; then
+    echo "    rm -rf .cursor/rules/*-os.mdc .cursor/rules/project-os.mdc"
+    echo "    rm -rf .cursor/commands/{pm,swe,qa,ops,sa,team}-*.md"
+    echo "    rm -rf .cursor/skills/{pm,swe,qa,ops,sa,team}-*"
+    echo "    rm -rf .cursor/scripts/"
+fi
+if [ "$EDITOR" = "claude" ] || [ "$EDITOR" = "both" ]; then
+    echo "    rm -f .claude/CLAUDE.md"
+    echo "    rm -rf .claude/roles/ .claude/commands/{pm,swe,qa,ops,sa,team}-*.md"
+    echo "    rm -rf .claude/skills/{pm,swe,qa,ops,sa,team}-*"
+    echo "    rm -rf .claude/scripts/"
+    echo "    # Manually remove hooks from .claude/settings.json if desired"
+fi
+echo "  Project documents (docs/, issues/) are yours — they are not removed."
 echo ""
