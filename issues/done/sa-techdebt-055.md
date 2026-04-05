@@ -22,3 +22,9 @@ The script specifications table in `docs/architecture.md` (under "Shared Specifi
 **Estimated effort:** Trivial (single table row addition)
 **Dependencies:** swe-feature-049 (done)
 **Inputs:** `targets/ide/cursor/scripts/update-brief-status.sh` for reference
+
+## Session 07 Summary
+
+**What was done:** Added `update-brief-status.sh` to the script specifications table in `docs/architecture.md` with arguments, output, and "Used By" columns.
+**Handoff note:** `docs/handoff-notes/system-architect/session-07.md`
+**All acceptance criteria met:** Yes

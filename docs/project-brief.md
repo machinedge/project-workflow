@@ -82,7 +82,7 @@ Developers using AI coding assistants who want structured, repeatable workflows 
 - **Tooling:** scaffold, validate, install, package — functional (in `tools/` and `targets/`)
 - **Blockers:** None
 - **Next task:** qa-feature-045 (cross-platform regression)
-- **Last updated:** swe-feature-049 complete; update-brief-status.sh created for concurrent handoff safety, all 10 handoff skills updated
+- **Last updated:** sa-techdebt-055 complete; documented update-brief-status.sh in architecture.md script specifications table
 
 ## Notes for AI
 

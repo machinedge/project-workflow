@@ -56,4 +56,4 @@
 | swe-techdebt-052 | Dead `count` variable in update-issues-list.sh | swe | techdebt | M11 | — | done |
 | swe-feature-053 | SWE: Add team-status skill to Claude Code implementation | swe | feature | M11 | — | done |
 | swe-techdebt-054 | SWE: Update outdated README files in both IDE target directories | swe | techdebt | M11 | — | done |
-| sa-techdebt-055 | Update architecture.md script specifications for update-brief-status | system-architect | techdebt | — | swe-feature-049 | backlog |
+| sa-techdebt-055 | Update architecture.md script specifications for update-brief-status | system-architect | techdebt | — | swe-feature-049 | done |
