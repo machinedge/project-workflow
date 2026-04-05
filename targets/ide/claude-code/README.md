@@ -1,24 +1,36 @@
 # Claude Code Target
 
-Translation rules for generating Claude Code configurations from platform-agnostic expert definitions.
+Platform-native implementation of MachinEdge Expert Teams for Claude Code. Files in this directory are pre-built and installed to the user's project via direct copy — no translation or generation step.
 
-Currently, the Claude Code translation logic lives inline in `install.sh`. This directory is the future home for extracted, modular translation configs.
+## File Categories
 
-**Output paths:** `.claude/roles/*.md`, `.claude/commands/*.md`, `.claude/CLAUDE.md`
+| Category | Source Path | Install Path | Count |
+|----------|-------------|--------------|-------|
+| Roles | `roles/*.md` | `.claude/roles/` | 5 |
+| Commands | `commands/*.md` | `.claude/commands/` | 9 |
+| Skills | `skills/*/SKILL.md` | `.claude/skills/` | 21 |
+| Scripts | `scripts/*` | `.claude/scripts/` | 9 |
+| CLAUDE.md | `CLAUDE.md` | `.claude/CLAUDE.md` | 1 |
+| Settings | `settings.json` | `.claude/settings.json` | 1 |
 
 ## Skill Namespacing
 
-Skills are installed with a short prefix to avoid filename collisions in the flat `.claude/commands/` directory. Underscores in source filenames are normalized to hyphens.
+Skills and commands use a short prefix to identify the expert workflow. Prefixes match the executor, not the finder.
 
-| Prefix | Expert | Example |
+| Prefix | Expert | Examples |
 |--------|--------|---------|
-| `pm-` | Project Manager | `/pm-interview`, `/pm-decompose` |
-| `swe-` | SWE | `/swe-start`, `/swe-handoff` |
-| `qa-` | QA | `/qa-review`, `/qa-test-plan` |
-| `ops-` | DevOps | `/ops-deploy`, `/ops-pipeline` |
-| `sa-` | System Architect | `/sa-design`, `/sa-start` |
-| `da-` | Data Analyst | `/da-start`, `/da-synthesize` |
-| `ux-` | User Experience | `/ux-...` |
-| `team-` | Shared | `/team-status` |
+| `pm-` | Project Manager | `pm-start`, `pm-interview`, `pm-vision` |
+| `swe-` | SWE | `swe-start`, `swe-handoff` |
+| `qa-` | QA | `qa-start`, `qa-review`, `qa-test-plan` |
+| `ops-` | DevOps | `ops-start`, `ops-deploy`, `ops-pipeline` |
+| `sa-` | System Architect | `sa-start`, `sa-design`, `sa-research` |
+| `team-` | Shared (cross-expert) | `team-status` |
 
-The prefix is applied by the install script during translation. Source skill files in `experts/` remain unprefixed and platform-agnostic.
+## Platform-Specific Details
+
+- **Roles** are plain markdown files loaded conditionally when the user selects an expert. `CLAUDE.md` provides shared principles and expert routing (always loaded).
+- **Commands** are explicit workflows invoked by the user (e.g., `/swe-start`). Used for interactive processes and approval-gated operations.
+- **Skills** are discoverable by the agent via YAML frontmatter (`name`, `description`). The agent invokes them autonomously when the description matches the user's intent.
+- **Scripts** are hidden shell utilities for mechanical operations (issue numbering, file movement, session claiming). Referenced by skills and commands but not user-facing.
+- **settings.json** defines the `SessionStart` hook, which runs `session-primer.sh` to extract raw project context at the start of each session.
+- **session-primer.sh** is a raw content extractor (not a summarizer). It extracts project identity, current status, and the most recent handoff note for the agent to process.

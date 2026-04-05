@@ -54,5 +54,5 @@
 | swe-bug-050 | PowerShell next-session-number.ps1 missing atomic session claiming | swe | bug | M11 | — | done |
 | swe-bug-051 | Issue filename prefix convention inconsistent across skills | swe | bug | M11 | — | done |
 | swe-techdebt-052 | Dead `count` variable in update-issues-list.sh | swe | techdebt | M11 | — | done |
-| swe-feature-053 | SWE: Add team-status skill to Claude Code implementation | swe | feature | M11 | — | backlog |
-| swe-techdebt-054 | SWE: Update outdated README files in both IDE target directories | swe | techdebt | M11 | — | backlog |
+| swe-feature-053 | SWE: Add team-status skill to Claude Code implementation | swe | feature | M11 | — | done |
+| swe-techdebt-054 | SWE: Update outdated README files in both IDE target directories | swe | techdebt | M11 | — | done |

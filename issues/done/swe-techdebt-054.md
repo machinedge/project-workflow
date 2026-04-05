@@ -28,3 +28,9 @@ Both `targets/ide/cursor/README.md` and `targets/ide/claude-code/README.md` desc
 
 **Found by:** qa-feature-042 (Claude Code QA review)
 **Affects:** Both `targets/ide/cursor/README.md` and `targets/ide/claude-code/README.md`
+
+## Session 25 Summary
+
+**What was done:** Rewrote both READMEs to describe the platform-native implementation model with accurate file categories, output paths, and in-scope expert prefixes. Removed all references to the pre-M11 translation pipeline.
+**Handoff note:** `docs/handoff-notes/swe/session-25.md`
+**All acceptance criteria met:** Yes

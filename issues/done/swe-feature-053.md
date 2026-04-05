@@ -27,3 +27,9 @@ The skill is a cross-expert (team-prefixed) skill that generates a project healt
 
 **Found by:** qa-feature-042 (Claude Code QA review)
 **Source:** `targets/ide/cursor/skills/team-status/SKILL.md`
+
+## Session 25 Summary
+
+**What was done:** Copied team-status SKILL.md from Cursor to Claude Code. Content is identical (no platform-specific script references). Claude Code now has 21 skills matching the architecture's full skill map.
+**Handoff note:** `docs/handoff-notes/swe/session-25.md`
+**All acceptance criteria met:** Yes

@@ -76,13 +76,13 @@ Developers using AI coding assistants who want structured, repeatable workflows 
 
 ## Current Status
 
-- **Milestones:** M1-M10 complete. Platform-Native Refactor (M11) in progress — Claude Code QA review complete (0 must-fix). One parity gap remaining (team-status skill). Install script and sync command remaining.
-- **Core experts:** PM (10 skills), SWE (2 skills), QA (6 skills), DevOps (6 skills), System Architect (6 skills) — functional on both platforms
+- **Milestones:** M1-M10 complete. Platform-Native Refactor (M11) in progress — both Cursor and Claude Code implementations at full parity (21 skills, 9 commands each). All QA-found issues resolved. Install script and sync command remaining.
+- **Core experts:** PM (10 skills), SWE (2 skills), QA (6 skills), DevOps (6 skills), System Architect (6 skills), team-status (1 shared) — functional on both platforms
 - **Under development:** Data Analyst, User Experience
 - **Tooling:** scaffold, validate, install, package — functional (in `tools/` and `targets/`)
 - **Blockers:** None
-- **Next task:** swe-feature-053 (add team-status to Claude Code); swe-feature-043 (sync command); swe-feature-044 (install + docs)
-- **Last updated:** qa-feature-042 complete; Claude Code QA review found 1 should-fix (team-status missing), 1 nit (README outdated)
+- **Next task:** swe-feature-043 (sync command); swe-feature-044 (install + docs); qa-feature-045 (cross-platform regression)
+- **Last updated:** swe-feature-053 and swe-techdebt-054 complete; Claude Code team-status parity gap closed, both IDE READMEs rewritten
 
 ## Notes for AI
 
