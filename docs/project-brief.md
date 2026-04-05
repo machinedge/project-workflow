@@ -2,7 +2,7 @@
 
 ## What This Is
 
-A platform-agnostic toolkit that defines AI expert roles for coordinated software development. Each expert (PM, SWE, QA, DevOps, etc.) has a role definition, structured skills, and tools. A translation layer converts these canonical definitions to platform-specific configs (Claude Code, Cursor, OpenClaw).
+A toolkit that defines AI expert roles for coordinated software development. Each expert (PM, SWE, QA, DevOps, etc.) has a role definition, structured skills, and tools. Platform-native implementations for Cursor and Claude Code leverage each platform's rules, skills, hooks, and tool capabilities directly.
 
 ## Who It's For
 
@@ -10,7 +10,7 @@ Developers using AI coding assistants who want structured, repeatable workflows 
 
 ## How It Works
 
-- **Standalone mode:** Expert definitions install into a project as role files and skill commands. The user picks an expert and runs skill commands (e.g., `/swe-start`, `/qa-review`).
+- **Standalone mode:** Expert definitions install into a project as platform-native rules, skills, and tools. The AI loads the right expert context automatically; autonomous skills are discoverable without commands. Human-interactive workflows (interviews, deployment) remain explicit commands.
 - **Team mode (OpenClaw):** PM orchestrates a multi-agent team over Matrix. The human talks to PM; PM delegates to other experts.
 - **Documents are memory.** Experts have no memory between sessions. All state lives in `docs/` and `issues/`.
 
@@ -31,12 +31,17 @@ Developers using AI coding assistants who want structured, repeatable workflows 
 - [x] [PM Planning Improvements] `/add-feature` assesses complexity and shortens interview for small features
 - [x] [PM Planning Improvements] PM states assumptions when shortening interview so user can correct
 - [x] [Date Removal] No expert skill template produces or consumes calendar dates
-- [ ] [Context Optimization] Expert x document matrix with essential/nice-to-have/unnecessary ratings
-- [ ] [Context Optimization] Recommendation with proposed changes and rationale
+- [x] [Context Optimization] Expert x document matrix with essential/nice-to-have/unnecessary ratings
+- [x] [Context Optimization] Recommendation with proposed changes and rationale
+- [ ] [Platform-Native Refactor] Cursor and Claude Code each have native implementations (not translated from canonical)
+- [ ] [Platform-Native Refactor] Autonomous skills discoverable without slash commands
+- [ ] [Platform-Native Refactor] Handoffs auto-trigger on session end
+- [ ] [Platform-Native Refactor] Mechanical operations handled by hidden shell scripts
+- [ ] [Platform-Native Refactor] Sync command keeps platform implementations aligned
 
 ## Constraints
 
-- Expert definitions must be platform-agnostic (no `.claude/` paths, no Cursor frontmatter in canonical files)
+- Platform implementations in `targets/ide/cursor/` and `targets/ide/claude-code/` are first-class; `experts/technical/` retained as reference only
 - Project brief must stay under 1,000 words
 - Issues tracked in `issues/`, not external services
 - Every expert needs `role.md`, `skills/`, and `tools/` directories
@@ -58,16 +63,19 @@ Developers using AI coding assistants who want structured, repeatable workflows 
 | — | Remove dates from PM output; add adaptive interview to `/add-feature` | Dates meaningless in AI-assisted development; full interviews for trivial changes are unnecessary friction |
 | — | Extend date removal from PM to all experts and lessons-log template | Consistency — PM already date-free after M8; other experts should match |
 | — | Research context loading optimization across all experts | Excessive startup context wastes tokens, consumes context window, and may degrade output quality |
+| — | Retire platform-agnostic canonical definitions; fork to platform-native implementations | Only targeting Cursor and Claude Code; translation layer adds complexity without proportional value; platforms evolve independently |
+| — | Shell scripts (not MCP) for mechanical operations; hidden in platform config dirs | Lightest dependency burden; MCP wrapper can be added later if discoverability is needed |
+| — | Absorb M10 context optimization into platform-native refactor | Conditional rules, scoped loading, and QA bug fix are all part of the same restructuring |
 
 ## Current Status
 
-- **Milestones:** M1-M10 complete. Context Optimization research (M10) delivered.
+- **Milestones:** M1-M10 complete. Platform-Native Refactor (M11) planned.
 - **Core experts:** PM (10 skills), SWE (2 skills), QA (6 skills), DevOps (6 skills), System Architect (6 skills) — functional
 - **Under development:** Data Analyst, User Experience
 - **Tooling:** scaffold, validate, install, package — functional (in `tools/` and `targets/`)
 - **Blockers:** None
-- **Next task:** PM to review context optimization recommendations and decide which to implement
-- **Last updated:** M10 research complete (sa-research-032)
+- **Next task:** sa-feature-033 (Design Platform-Native Architecture)
+- **Last updated:** Platform-Native Refactor interview complete
 
 ## Notes for AI
 
