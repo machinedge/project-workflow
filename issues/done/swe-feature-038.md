@@ -3,7 +3,7 @@
 **Type:** feature
 **Expert:** swe
 **Milestone:** M11
-**Status:** backlog
+**Status:** done
 
 ## User Story
 
@@ -36,3 +36,9 @@ Transform the DevOps (6 files) and System Architect (6 files) canonical skill fi
 **Dependencies:** sa-feature-033 (design), swe-feature-034 (shell scripts), swe-feature-035 (Cursor rules structure)
 **Inputs:** project brief, sa-feature-033 design, `experts/technical/devops/skills/*.md`, `experts/technical/system-architect/skills/*.md`
 **Out of scope:** Other experts. Claude Code version.
+
+## Session 21 Summary
+
+**What was done:** Transformed all 12 DevOps and SA canonical skill files into Cursor-native formats — 4 commands (ops-start, ops-deploy, ops-env-discovery, sa-start) and 8 discoverable skills (ops-pipeline, ops-release-plan, ops-handoff, sa-design, sa-research, sa-review, sa-update, sa-handoff). Also discovered and filed `sa-bug-048` for concurrent session conflicts.
+**Handoff note:** `docs/handoff-notes/swe/session-21.md`
+**All acceptance criteria met:** Yes
