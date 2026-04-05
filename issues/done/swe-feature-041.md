@@ -24,6 +24,12 @@ Complete the Claude Code implementation by adding QA (6 files), DevOps (6 files)
 - [ ] Interview-style commands (env-discovery) remain explicit
 - [ ] Consistent format across all 3 experts — same patterns as PM and SWE from swe-feature-040
 
+## Session 24 Summary
+
+**What was done:** Created all 21 Claude Code files for QA, DevOps, and System Architect experts (3 roles, 5 commands, 13 skills), adapted from Cursor implementations with `.claude/scripts/` paths and plain markdown role format.
+**Handoff note:** `docs/handoff-notes/swe/session-24.md`
+**All acceptance criteria met:** Yes
+
 ## Technical Notes
 
 **Estimated effort:** Medium session

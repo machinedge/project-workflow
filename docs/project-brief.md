@@ -76,13 +76,13 @@ Developers using AI coding assistants who want structured, repeatable workflows 
 
 ## Current Status
 
-- **Milestones:** M1-M10 complete. Platform-Native Refactor (M11) in progress — Claude Code PM + SWE complete. QA/DevOps/SA next.
-- **Core experts:** PM (10 skills), SWE (2 skills), QA (6 skills), DevOps (6 skills), System Architect (6 skills) — functional
+- **Milestones:** M1-M10 complete. Platform-Native Refactor (M11) in progress — Claude Code all 5 core experts complete. Install script and sync command remaining.
+- **Core experts:** PM (10 skills), SWE (2 skills), QA (6 skills), DevOps (6 skills), System Architect (6 skills) — functional on both platforms
 - **Under development:** Data Analyst, User Experience
 - **Tooling:** scaffold, validate, install, package — functional (in `tools/` and `targets/`)
 - **Blockers:** None
-- **Next task:** Claude Code QA/DevOps/SA experts (swe-feature-041)
-- **Last updated:** swe-feature-040 complete; Claude Code rules, settings.json, session-primer.sh, PM and SWE experts created
+- **Next task:** team-status skill for Claude Code (not yet filed); install script updates; sync command
+- **Last updated:** swe-feature-041 complete; Claude Code QA, DevOps, SA experts created (21 files)
 
 ## Notes for AI
 
