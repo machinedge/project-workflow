@@ -27,6 +27,12 @@ Transform the SWE (2 files) and QA (6 files) canonical skill files into Cursor-n
 - [ ] Each skill has its own context loading steps
 - [ ] QA skills include own handoff notes in context loading (M10 Rec 4 fix applied at skill level)
 
+## Session 20 Summary
+
+**What was done:** Converted all 8 SWE and QA canonical skill files into Cursor-native formats (2 commands + 6 skills) with YAML frontmatter, platform-prefixed references, own context loading, and script references.
+**Handoff note:** `docs/handoff-notes/swe/session-20.md`
+**All acceptance criteria met:** Yes
+
 ## Technical Notes
 
 **Estimated effort:** Medium session

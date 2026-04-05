@@ -38,8 +38,8 @@
 | swe-feature-034 | Create Workflow Shell Scripts for Mechanical Operations | swe | feature | M11 | sa-feature-033 | done |
 | swe-feature-035 | Create Cursor Rules and Project Structure | swe | feature | M11 | sa-feature-033 | done |
 | swe-feature-036 | Create Cursor-Native PM Expert Skills | swe | feature | M11 | sa-feature-033, swe-feature-034, swe-feature-035 | done |
-| swe-feature-037 | Create Cursor-Native SWE and QA Expert Skills | swe | feature | M11 | sa-feature-033, swe-feature-034, swe-feature-035 | backlog |
-| swe-feature-038 | Create Cursor-Native DevOps and System Architect Expert Skills | swe | feature | M11 | sa-feature-033, swe-feature-034, swe-feature-035 | backlog |
+| swe-feature-037 | Create Cursor-Native SWE and QA Expert Skills | swe | feature | M11 | sa-feature-033, swe-feature-034, swe-feature-035 | done |
+| swe-feature-038 | Create Cursor-Native DevOps and System Architect Expert Skills | swe | feature | M11 | sa-feature-033, swe-feature-034, swe-feature-035 | done |
 | qa-feature-039 | QA: Review Cursor Implementation for Completeness and Consistency | qa | feature | M11 | — | backlog |
 | swe-feature-040 | Create Claude Code Rules, Project Structure, PM and SWE Expert Skills | swe | feature | M11 | sa-feature-033, swe-feature-034, swe-feature-035, swe-feature-036, swe-feature-037 | backlog |
 | swe-feature-041 | Create Claude Code QA, DevOps, and System Architect Expert Skills | swe | feature | M11 | swe-feature-040, swe-feature-037, swe-feature-038 | backlog |
