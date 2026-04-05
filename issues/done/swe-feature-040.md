@@ -33,3 +33,9 @@ Create the Claude Code implementation in `targets/ide/claude-code/`. Set up the 
 **Dependencies:** sa-feature-033 (design), swe-feature-034 (shell scripts), swe-feature-035 (Cursor rules — use as reference), swe-feature-036 (Cursor PM — use as reference), swe-feature-037 (Cursor SWE — use as reference)
 **Inputs:** project brief, sa-feature-033 design, Cursor implementation in `targets/ide/cursor/`
 **Out of scope:** QA, DevOps, SA experts (next task). Sync command. Install scripts.
+
+## Session 23 Summary
+
+**What was done:** Created all Claude Code platform-native files for PM and SWE experts — CLAUDE.md, settings.json, session-primer.sh, 2 roles, 4 commands, 7 skills (16 files total).
+**Handoff note:** `docs/handoff-notes/swe/session-23.md`
+**All acceptance criteria met:** Yes
