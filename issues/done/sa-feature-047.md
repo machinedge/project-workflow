@@ -31,3 +31,9 @@ The System Architect should decide the routing mechanism for shared/cross-expert
 **Dependencies:** swe-feature-035 (Cursor rules structure — defines the routing table)
 **Inputs:** `targets/ide/cursor/rules/project-os.mdc`, `docs/architecture.md`
 **Out of scope:** Implementing the `team-status` skill itself (separate task)
+
+## Session 05 Summary
+
+**What was done:** Decided that `team-` prefixed skills run roleless (ADR-010). Updated `targets/ide/cursor/rules/project-os.mdc` routing line and added the decision to the architecture's Claude Code CLAUDE.md spec.
+**Handoff note:** `docs/handoff-notes/system-architect/session-05.md`
+**All acceptance criteria met:** Yes

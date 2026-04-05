@@ -71,6 +71,7 @@ Developers using AI coding assistants who want structured, repeatable workflows 
 | — | Direct-copy install replaces translation pipeline | Platform-native files are pre-built; translation adds complexity without value |
 | — | Shell scripts in `.cursor/scripts/` and `.claude/scripts/` | Hidden from user, accessible to agent; more descriptive than "tools" |
 | — | Session primer is a raw extractor script, not an agent summarizer (ADR-009) | Summarization is agent work, but raw file extraction is mechanical; agent processes raw output naturally |
+| — | Team-prefixed skills run roleless (ADR-010) | Cross-expert skills should not adopt a single-expert persona; self-contained SKILL.md + project-os context is sufficient |
 
 ## Current Status
 
@@ -80,7 +81,7 @@ Developers using AI coding assistants who want structured, repeatable workflows 
 - **Tooling:** scaffold, validate, install, package — functional (in `tools/` and `targets/`)
 - **Blockers:** None
 - **Next task:** swe-feature-035 (Create Cursor Rules and Project Structure)
-- **Last updated:** sa-feature-046 complete; session-context redesigned as raw extractor script (ADR-009)
+- **Last updated:** sa-feature-047 complete; team-prefix routing defined as roleless (ADR-010)
 
 ## Notes for AI
 

@@ -19,7 +19,7 @@ Load the active expert's role file before executing any skill or command:
 | DevOps Engineer | `.cursor/rules/devops-os.mdc` | ops |
 | System Architect | `.cursor/rules/system-architect-os.mdc` | sa |
 
-Infer the expert from the skill or command prefix (e.g. `/swe-start` → SWE, `/pm-interview` → PM). For `team-` prefixed skills, use the current session context. If unclear, ask the user.
+Infer the expert from the skill or command prefix (e.g. `/swe-start` → SWE, `/pm-interview` → PM). For `team-` prefixed skills, no expert role is loaded — these are cross-expert skills that run with only project-os context and their own SKILL.md instructions.
 
 ## Conventions
 

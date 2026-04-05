@@ -169,6 +169,7 @@ The rule: **one directory, optionally one script, zero changes elsewhere.**
 | ADR-007 | Shell scripts in `.cursor/scripts/` and `.claude/scripts/` | Accepted | — |
 | ADR-008 | Direct-copy install replaces translation pipeline | Accepted | — |
 | ADR-009 | Session primer as raw extractor, not agent summarizer | Accepted | — |
+| ADR-010 | Team-prefixed skills run roleless (no expert role loaded) | Accepted | — |
 
 ### ADR-001: Organize targets by class hierarchy
 
@@ -283,6 +284,19 @@ The rule: **one directory, optionally one script, zero changes elsewhere.**
 **Decision:** Option A. The script's scope is redefined: extract raw content (project identity, current status section, most recent handoff note) using mechanical operations (`head`, `sed`, `find`, `cat`). The agent's natural reasoning handles interpretation and prioritization. This preserves the hook's 100% reliability while respecting the boundary — scripts do mechanical work, agents do intelligent work.
 
 **Consequences:** Claude Code retains its platform advantage (automatic context at session start). Cursor has no equivalent, which is an acceptable gap — Cursor users use `/start` commands and per-skill context loading. Script should cap output length to avoid flooding the agent with verbose handoff notes.
+
+### ADR-010: Team-prefixed skills run roleless
+
+**Context:** The `team-` prefix routes to shared, cross-expert skills (currently `team-status`, with room for future additions). Unlike other prefixes (pm, swe, qa, ops, sa) which each map to a specific expert role, `team-` has no corresponding expert. The routing instruction "use the current session context" is ambiguous when no session is active and semantically incorrect — cross-expert skills should not adopt a single-expert persona.
+
+**Options considered:**
+- **(A) Roleless** — `team-` skills run with only the always-loaded project-os context (`project-os.mdc` / `CLAUDE.md`) and their own SKILL.md instructions. No expert role is loaded.
+- **(B) Lightweight team role** — Create a minimal `team-os.mdc` / `team.md` providing cross-expert identity and listing shared skills.
+- **(C) PM fallback** — Route `team-` to the PM role when no expert session is active, since PM is the natural project-level coordinator.
+
+**Decision:** Option A. Team-prefixed skills are cross-expert by definition. Loading any single expert role would add irrelevant context (~70 lines) and impose wrong-persona principles. Each `team-*` skill is self-contained: its SKILL.md includes its own context loading and instructions. The always-loaded project-os context provides shared principles — that's sufficient grounding.
+
+**Consequences:** `team-*` skills must be fully self-contained (own context loading, own instructions). No new role files to create or maintain. Future shared skills follow the same pattern. The routing table explicitly notes `team-` as roleless.
 
 ## Constraints
 
@@ -566,6 +580,7 @@ targets/ide/claude-code/
 Equivalent to Cursor's `project-os.mdc`. Contains:
 - Expert list with `.claude/roles/<expert>.md` paths
 - Instruction to select expert role at session start or infer from prefix
+- `team-` prefix routing: no role loaded; skills are self-contained (ADR-010)
 - Shared principles
 - Script reference: `.claude/scripts/`
 - Handoff instruction (same as Cursor)

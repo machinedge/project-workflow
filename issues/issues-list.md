@@ -36,7 +36,7 @@
 | sa-research-032 | Audit Startup Context and Produce Optimization Matrix | system-architect | research | M10 | — | done |
 | sa-feature-033 | Design Platform-Native Architecture for Cursor and Claude Code | system-architect | feature | M11 | — | done |
 | swe-feature-034 | Create Workflow Shell Scripts for Mechanical Operations | swe | feature | M11 | sa-feature-033 | done |
-| swe-feature-035 | Create Cursor Rules and Project Structure | swe | feature | M11 | sa-feature-033 | backlog |
+| swe-feature-035 | Create Cursor Rules and Project Structure | swe | feature | M11 | sa-feature-033 | done |
 | swe-feature-036 | Create Cursor-Native PM Expert Skills | swe | feature | M11 | sa-feature-033, swe-feature-034, swe-feature-035 | backlog |
 | swe-feature-037 | Create Cursor-Native SWE and QA Expert Skills | swe | feature | M11 | sa-feature-033, swe-feature-034, swe-feature-035 | backlog |
 | swe-feature-038 | Create Cursor-Native DevOps and System Architect Expert Skills | swe | feature | M11 | sa-feature-033, swe-feature-034, swe-feature-035 | backlog |
@@ -48,4 +48,4 @@
 | swe-feature-044 | Update Install Scripts and READMEs for Platform-Native Structure | swe | feature | M11 | qa-feature-039, qa-feature-042, swe-feature-043 | backlog |
 | qa-feature-045 | QA: Cross-Platform Regression and Install Verification | qa | feature | M11 | — | backlog |
 | sa-feature-046 | Redesign session-context as Agent Skill Instead of Shell Script | system-architect | feature | M11 | sa-feature-033 | done |
-| sa-feature-047 | Define Routing for Cross-Expert Skills (team- prefix) | sa | feature | M11 | swe-feature-035 | backlog |
+| sa-feature-047 | Define Routing for Cross-Expert Skills (team- prefix) | sa | feature | M11 | swe-feature-035 | done |
