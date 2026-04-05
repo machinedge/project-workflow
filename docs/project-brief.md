@@ -81,8 +81,8 @@ Developers using AI coding assistants who want structured, repeatable workflows 
 - **Under development:** Data Analyst, User Experience
 - **Tooling:** scaffold, validate, install, package — functional (in `tools/` and `targets/`)
 - **Blockers:** None
-- **Next task:** swe-feature-043 (sync command); swe-feature-044 (install + docs); qa-feature-045 (cross-platform regression)
-- **Last updated:** swe-feature-053 and swe-techdebt-054 complete; Claude Code team-status parity gap closed, both IDE READMEs rewritten
+- **Next task:** swe-feature-044 (install + docs); qa-feature-045 (cross-platform regression)
+- **Last updated:** swe-feature-043 complete; sync command (`tools/sync.sh` + `tools/sync.ps1`) built and tested (36/36 tests pass)
 
 ## Notes for AI
 

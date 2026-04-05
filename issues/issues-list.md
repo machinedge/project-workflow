@@ -44,7 +44,7 @@
 | swe-feature-040 | Create Claude Code Rules, Project Structure, PM and SWE Expert Skills | swe | feature | M11 | sa-feature-033, swe-feature-034, swe-feature-035, swe-feature-036, swe-feature-037 | done |
 | swe-feature-041 | Create Claude Code QA, DevOps, and System Architect Expert Skills | swe | feature | M11 | swe-feature-040, swe-feature-037, swe-feature-038 | done |
 | qa-feature-042 | QA: Review Claude Code Implementation for Completeness and Consistency | qa | feature | M11 | — | done |
-| swe-feature-043 | Build Sync/Management Command | swe | feature | M11 | qa-feature-039, qa-feature-042 — both implementations must be finalized before the sync command can be validated | backlog |
+| swe-feature-043 | Build Sync/Management Command | swe | feature | M11 | qa-feature-039, qa-feature-042 — both implementations must be finalized before the sync command can be validated | done |
 | swe-feature-044 | Update Install Scripts and READMEs for Platform-Native Structure | swe | feature | M11 | qa-feature-039, qa-feature-042, swe-feature-043 | backlog |
 | qa-feature-045 | QA: Cross-Platform Regression and Install Verification | qa | feature | M11 | — | backlog |
 | sa-feature-046 | Redesign session-context as Agent Skill Instead of Shell Script | system-architect | feature | M11 | sa-feature-033 | done |
