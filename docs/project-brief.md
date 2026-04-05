@@ -72,6 +72,7 @@ Developers using AI coding assistants who want structured, repeatable workflows 
 | — | Shell scripts in `.cursor/scripts/` and `.claude/scripts/` | Hidden from user, accessible to agent; more descriptive than "tools" |
 | — | Session primer is a raw extractor script, not an agent summarizer (ADR-009) | Summarization is agent work, but raw file extraction is mechanical; agent processes raw output naturally |
 | — | Team-prefixed skills run roleless (ADR-010) | Cross-expert skills should not adopt a single-expert persona; self-contained SKILL.md + project-os context is sufficient |
+| — | Atomic session claiming via `set -C` (noclobber) in `next-session-number.sh` | Prevents concurrent sessions from claiming the same handoff note number; kernel-level `O_CREAT\|O_EXCL` is simplest correct solution |
 
 ## Current Status
 
@@ -80,8 +81,8 @@ Developers using AI coding assistants who want structured, repeatable workflows 
 - **Under development:** Data Analyst, User Experience
 - **Tooling:** scaffold, validate, install, package — functional (in `tools/` and `targets/`)
 - **Blockers:** None
-- **Next task:** See remaining M11 issues in backlog
-- **Last updated:** swe-feature-037 and swe-feature-038 complete; all Cursor-native expert skills created (9 commands + 21 skills)
+- **Next task:** See remaining M11 issues in backlog; swe-feature-049 (robust project brief updates) in backlog
+- **Last updated:** sa-bug-048 complete; atomic session numbering and handoff conflict awareness added to all scripts and skills
 
 ## Notes for AI
 

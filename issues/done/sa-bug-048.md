@@ -42,3 +42,9 @@ When multiple expert sessions run concurrently (e.g., two SWE sessions working o
 - **Check-before-write:** Handoff skills could verify the target file doesn't already exist before writing. If it does, increment and try again.
 - **Append-only project brief updates:** Instead of overwriting the Current Status section, append a timestamped entry. Or use a separate `docs/session-log.md` for per-session status lines.
 - **Git-based conflict detection:** Handoff skills could check `git status` before writing and warn if the target files have uncommitted changes from another session.
+
+## Session 06 Summary
+
+**What was done:** Fixed session numbering with atomic `set -C` claim in `next-session-number.sh`. Updated all 5 Cursor handoff skills with claim semantics and project brief conflict-awareness. Created swe-feature-049 for script-enforced brief protection.
+**Handoff note:** `docs/handoff-notes/system-architect/session-06.md`
+**All acceptance criteria met:** Yes

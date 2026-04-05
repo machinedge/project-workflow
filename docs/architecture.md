@@ -645,7 +645,7 @@ When SWE converts canonical skill files to platform-native SKILL.md:
 | `next-issue-number.sh` | — | Next available issue number (integer) | QA review, any skill creating issues |
 | `move-issue.sh` | `<filename> <target-dir>` | Confirmation message | Handoff, start (moving to in-progress) |
 | `update-issues-list.sh` | — | Regenerated `issues/issues-list.md` | After any issue creation or movement |
-| `next-session-number.sh` | `<expert-name>` | Next session number for that expert (integer) | Handoff skills |
+| `next-session-number.sh` | `<expert-name>` | Next session number for that expert (integer). **Side effect:** atomically creates a placeholder file at the claimed path to prevent concurrent sessions from colliding. | Handoff skills |
 
 Each `.sh` script has a companion `.ps1` for Windows.
 

@@ -5,9 +5,9 @@ description: "End the current QA session and produce a handoff note. Use when th
 
 End the current session and produce a handoff note.
 
-## Step 1: Determine session number
+## Step 1: Claim session number
 
-Run `.cursor/scripts/next-session-number.sh qa` to get the next session number.
+Run `.cursor/scripts/next-session-number.sh qa` to atomically claim the next session number. The script creates a placeholder file to prevent concurrent sessions from claiming the same number. It outputs the claimed number (e.g., "04").
 
 ## Step 2: Identify the task
 
@@ -74,7 +74,8 @@ If acceptance criteria are NOT all met, leave the issue file in its current fold
 
 ## Step 5: Update the project brief
 
-Read and update `docs/project-brief.md`:
+Re-read `docs/project-brief.md` before making changes — another concurrent session may have modified it since you last read it. If the "Current Status" or "Key Decisions Made" sections contain information you didn't write, merge your updates with the existing content rather than overwriting it. If you detect a conflict you can't resolve, warn the user.
+
 - Add any new decisions to the "Key Decisions Made" table
 - Update "Current Status" section: last completed issue, next issue, blockers
 
