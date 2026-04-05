@@ -17,8 +17,9 @@ Update `targets/ide/install.sh` and `targets/ide/install.ps1` to install the new
 
 - [ ] `targets/ide/install.sh` installs Cursor-native rules to `.cursor/rules/`
 - [ ] `targets/ide/install.sh` installs Cursor skills to the correct location per sa-feature-033 design
-- [ ] `targets/ide/install.sh` installs shell scripts to `.cursor/tools/` and sets them executable
-- [ ] `targets/ide/install.sh` installs Claude Code rules/skills/tools to the correct Claude Code locations
+- [ ] `targets/ide/install.sh` installs shell scripts to `.cursor/scripts/` and sets them executable
+- [ ] `targets/ide/install.sh` installs Claude Code rules/skills/scripts to the correct Claude Code locations
+- [ ] `targets/ide/install.sh` merges `settings.json` hooks into existing `.claude/settings.json` (don't overwrite user settings)
 - [ ] `targets/ide/install.ps1` handles the same for Windows (PowerShell scripts to correct locations)
 - [ ] `targets/ide/cursor/README.md` documents: what's installed, directory layout, how skills are discovered, how hooks auto-trigger, shell script requirements
 - [ ] `targets/ide/claude-code/README.md` documents: same for Claude Code

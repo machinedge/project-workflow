@@ -54,18 +54,18 @@ Developers using AI coding assistants who want structured, repeatable workflows 
 | Pre-existing | Documents are memory, not conversation history | Experts have no cross-session memory; docs are the only continuity mechanism |
 | Pre-existing | PM is the orchestrator in team mode | Single point of coordination; human talks to PM, PM delegates |
 | Pre-existing | Platform-agnostic canonical definitions | Avoids lock-in; translation layer handles platform differences |
-| 2026-03-12 | Add System Architect expert | System-level architecture decisions were being made ad-hoc by SWE during execution, causing rework on large/ambiguous tasks |
-| 2026-03-12 | Standardize `/start` and `/handoff` across all experts | Every expert needs to pick up issues and close sessions consistently |
-| 2026-03-12 | SWE `/start` updated (not replaced) to consume `architecture.md` | Backward compatible; removes system-level architecture from SWE scope while preserving the existing flow |
-| 2026-03-12 | Restructure deployment layer by target class (IDE, Desktop/Code, Autonomous) | `framework/` and `package/` are tangled and block release; three target classes identified for clean extensibility |
-| 2026-03-12 | Remove `CLAUDE.md` | Redundant with project brief + expert roles + agent-reference.md; one less file to maintain |
-| 2026-03-12 | Remove references to non-existent docs (overview.md, getting-started.md, workflow-anatomy.md) | Aspirational toolkit docs never authored; content largely redundant with README.md, architecture.md, and agent-reference.md; scope as new milestone if needed later |
-| — | Remove dates from PM output; add adaptive interview to `/add-feature` | Dates meaningless in AI-assisted development; full interviews for trivial changes are unnecessary friction |
-| — | Extend date removal from PM to all experts and lessons-log template | Consistency — PM already date-free after M8; other experts should match |
-| — | Research context loading optimization across all experts | Excessive startup context wastes tokens, consumes context window, and may degrade output quality |
-| — | Retire platform-agnostic canonical definitions; fork to platform-native implementations | Only targeting Cursor and Claude Code; translation layer adds complexity without proportional value; platforms evolve independently |
-| — | Shell scripts (not MCP) for mechanical operations; hidden in platform config dirs | Lightest dependency burden; MCP wrapper can be added later if discoverability is needed |
-| — | Absorb M10 context optimization into platform-native refactor | Conditional rules, scoped loading, and QA bug fix are all part of the same restructuring |
+| 2026-03-12 | Add System Architect expert | Ad-hoc architecture decisions by SWE caused rework |
+| 2026-03-12 | Standardize `/start` and `/handoff` across all experts | Consistent issue pickup and session close |
+| 2026-03-12 | SWE `/start` consumes `architecture.md` | Backward compatible; separates system-level from domain-level |
+| 2026-03-12 | Target-class directory layout (IDE, Desktop/Code, Autonomous) | Clean extensibility; replaces tangled `framework/` + `package/` |
+| 2026-03-12 | Remove `CLAUDE.md` | Redundant with brief + roles + agent-reference |
+| 2026-03-12 | Remove refs to non-existent docs | Never authored; redundant with existing docs |
+| — | Remove dates from PM; add adaptive interview | Dates meaningless in AI dev; full interviews for trivial changes wasteful |
+| — | Extend date removal to all experts | Consistency with PM |
+| — | Research context optimization | Excess startup context degrades output quality |
+| — | Retire canonical definitions; fork to platform-native | Only Cursor + Claude Code; translation layer adds complexity without value |
+| — | Shell scripts (not MCP) for mechanical ops; hidden in config dirs | Lightest dependency; MCP later if needed |
+| — | Absorb M10 into platform-native refactor | Conditional rules, scoped loading, QA fix — same restructuring |
 | — | Autonomous skills + handoffs as discoverable SKILL.md; only interactive + /start as commands | Skills support both agent discovery AND explicit /skill-name; 21 skills + 9 commands |
 | — | Soft handoff auto-trigger on both platforms (rule instruction + skill discovery) | Cursor lacks session-end hook; consistent behavior across platforms preferred |
 | — | Direct-copy install replaces translation pipeline | Platform-native files are pre-built; translation adds complexity without value |
@@ -73,13 +73,13 @@ Developers using AI coding assistants who want structured, repeatable workflows 
 
 ## Current Status
 
-- **Milestones:** M1-M10 complete. Platform-Native Refactor (M11) in progress — architecture design complete.
+- **Milestones:** M1-M10 complete. Platform-Native Refactor (M11) in progress — architecture design complete, 12 tasks in backlog.
 - **Core experts:** PM (10 skills), SWE (2 skills), QA (6 skills), DevOps (6 skills), System Architect (6 skills) — functional
 - **Under development:** Data Analyst, User Experience
 - **Tooling:** scaffold, validate, install, package — functional (in `tools/` and `targets/`)
 - **Blockers:** None
 - **Next task:** swe-feature-034 (Create Workflow Shell Scripts for Mechanical Operations)
-- **Last updated:** Platform-Native Architecture design complete (sa-feature-033)
+- **Last updated:** M11 backlog reconciled with architecture (post sa-feature-033)
 
 ## Notes for AI
 

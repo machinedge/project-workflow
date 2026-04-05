@@ -15,7 +15,7 @@ Fresh-eyes review of the complete Cursor platform-native implementation. Verify 
 - All Cursor skills across 5 experts — correct format, discoverable, self-contained context loading
 - All Cursor commands — interview-style and deploy correctly remain explicit
 - All handoff hooks — auto-trigger mechanism works
-- Shell scripts in `targets/ide/cursor/tools/` — all 7 scripts present, executable, handle edge cases
+- Shell scripts in `targets/ide/cursor/scripts/` — all 5 scripts present, executable, handle edge cases
 - M10 recommendations — Rec 1 (conditional rules), Rec 2 (doc loading in skills not protocols), Rec 3 (scoped handoffs), Rec 4 (QA bug fix) all implemented
 - Cross-expert consistency — naming conventions, file structure, context loading patterns are uniform
 - No canonical file left unmapped — every file in `experts/technical/` (excluding data-analyst and shared) has a Cursor counterpart

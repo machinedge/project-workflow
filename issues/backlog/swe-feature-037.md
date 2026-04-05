@@ -23,7 +23,7 @@ Transform the SWE (2 files) and QA (6 files) canonical skill files into Cursor-n
 - [ ] QA `test-plan` → discoverable skill (produces plan, user reviews)
 - [ ] QA `regression` → discoverable skill (autonomous regression analysis)
 - [ ] QA `bug-triage` → discoverable skill (autonomous triage with user review)
-- [ ] All skills reference shell scripts from `.cursor/tools/` for mechanical operations
+- [ ] All skills reference shell scripts from `.cursor/scripts/` for mechanical operations
 - [ ] Each skill has its own context loading steps
 - [ ] QA skills include own handoff notes in context loading (M10 Rec 4 fix applied at skill level)
 

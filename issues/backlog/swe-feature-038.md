@@ -27,7 +27,7 @@ Transform the DevOps (6 files) and System Architect (6 files) canonical skill fi
 - [ ] SA `research` → discoverable skill (autonomous investigation, user decides on recommendation)
 - [ ] SA `review` → discoverable skill (autonomous architectural review)
 - [ ] SA `update` → discoverable skill (user must approve architectural changes)
-- [ ] All skills reference shell scripts from `.cursor/tools/` for mechanical operations
+- [ ] All skills reference shell scripts from `.cursor/scripts/` for mechanical operations
 - [ ] Each skill has its own context loading steps
 
 ## Technical Notes

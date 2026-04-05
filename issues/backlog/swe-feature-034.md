@@ -11,7 +11,7 @@ As an expert session user, I want mechanical operations (issue numbering, file m
 
 ## Description
 
-Create ~7 reusable shell scripts that handle the mechanical operations currently repeated across 10+ skill files. Each script gets both `.sh` and `.ps1` versions. Scripts are stored in the repo under `targets/ide/cursor/tools/` and `targets/ide/claude-code/tools/` (identical content, per the design from sa-feature-033). Install scripts will later copy these into `.cursor/tools/` and `.claude/tools/` in user projects.
+Create reusable shell scripts that handle the mechanical operations currently repeated across 10+ skill files. Each script gets both `.sh` and `.ps1` versions. Scripts are stored in the repo under `targets/ide/cursor/scripts/` and `targets/ide/claude-code/scripts/` (identical content, per the design from sa-feature-033). Install scripts will later copy these into `.cursor/scripts/` and `.claude/scripts/` in user projects.
 
 ## Acceptance Criteria
 
@@ -19,16 +19,15 @@ Create ~7 reusable shell scripts that handle the mechanical operations currently
 - [ ] `next-session-number` script: takes expert name as argument, scans `docs/handoff-notes/<expert>/`, prints next session number (zero-padded to 2 digits)
 - [ ] `move-issue` script: takes issue filename and target status (backlog/planned/in-progress/done), moves the file to the correct directory
 - [ ] `update-issues-list` script: regenerates `issues/issues-list.md` from all issue files across all status directories
-- [ ] `update-brief-status` script: takes key-value pairs, updates the Current Status section of `docs/project-brief.md`
-- [ ] `count-issues` script: counts issue files by status directory, outputs summary
+- [ ] `session-context` script: outputs brief project context (project name, current status, most recent handoff summary) for Claude Code's `SessionStart` hook
 - [ ] All scripts have both `.sh` and `.ps1` versions
 - [ ] All `.sh` scripts are executable and work on macOS/Linux (bash/zsh)
 - [ ] Scripts handle edge cases: empty directories, missing files, first-ever issue/session
-- [ ] Scripts are stored in `targets/ide/cursor/tools/` and `targets/ide/claude-code/tools/`
+- [ ] Scripts are stored in `targets/ide/cursor/scripts/` and `targets/ide/claude-code/scripts/`
 
 ## Technical Notes
 
 **Estimated effort:** Medium session
 **Dependencies:** sa-feature-033 (design defines exact script locations and naming)
-**Inputs:** project brief, sa-feature-033 design output, existing issue/handoff file conventions from `experts/technical/shared/docs-protocol.md`
+**Inputs:** project brief, sa-feature-033 design output, existing issue/handoff file conventions from `experts/technical/shared/docs-protocol.md`, architecture script specifications table
 **Out of scope:** MCP tool wrappers. Integration into install scripts (separate task). Platform-specific script differences (none expected — these are pure file operations).

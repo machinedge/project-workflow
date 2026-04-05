@@ -14,7 +14,7 @@
 | M8 | [PM Planning Improvements] Adaptive interview and date-free PM output | Done | M1 | 1-2 |
 | M9 | [Date Removal] Remove date references from all remaining expert templates | Done | M8 | 1 |
 | M10 | [Context Optimization] Research essential vs. unnecessary startup context per expert | Done | M1 | 1-2 |
-| M11 | [Platform-Native Refactor] Fork to platform-native implementations with rules, skills, tools, hooks + context optimization | Planned | M7, M10 | 5-8 |
+| M11 | [Platform-Native Refactor] Fork to platform-native implementations with rules, skills, tools, hooks + context optimization | In Progress | M7, M10 | 5-8 |
 
 ## Dependency Map
 
@@ -64,3 +64,4 @@ M1 (Core experts) ──────> M10 (Context Optimization research) ──
 | — | Decomposed M10 into 1 task: sa-research-032 (audit startup context, produce matrix + recommendations). |
 | — | Added [Platform-Native Refactor] milestone (M11) from interview notes. Absorbs M10 context optimization implementation. Retires platform-agnostic canonical definitions in favor of platform-native implementations. |
 | — | Decomposed M11 into 13 tasks: sa-feature-033 (design), swe-feature-034 through swe-feature-038 (Cursor implementation), qa-feature-039 (Cursor QA), swe-feature-040 and swe-feature-041 (Claude Code implementation), qa-feature-042 (Claude Code QA), swe-feature-043 (sync command), swe-feature-044 (install + docs), qa-feature-045 (final regression). |
+| — | Post sa-feature-033: reconciled all M11 backlog issues with architecture design. Renamed `tools/` → `scripts/` per ADR-007. Aligned script list with architecture spec (4 + session-context.sh). Added settings.json hook to Claude Code tasks. No new tasks or milestones needed. |

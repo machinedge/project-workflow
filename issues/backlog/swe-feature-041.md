@@ -18,7 +18,7 @@ Complete the Claude Code implementation by adding QA (6 files), DevOps (6 files)
 - [ ] QA expert: start (hybrid), handoff (hook), review (skill), test-plan (skill), regression (skill), bug-triage (skill)
 - [ ] DevOps expert: start (hybrid), handoff (hook), env-discovery (command), pipeline (skill), release-plan (skill), deploy (command)
 - [ ] SA expert: start (hybrid), handoff (hook), design (skill), research (skill), review (skill), update (skill)
-- [ ] All skills reference shell scripts from Claude Code tools directory
+- [ ] All skills reference shell scripts from Claude Code scripts directory (`.claude/scripts/`)
 - [ ] Each skill has its own context loading steps
 - [ ] Safety-critical commands (deploy) maintain explicit approval gates
 - [ ] Interview-style commands (env-discovery) remain explicit

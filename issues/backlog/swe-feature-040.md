@@ -20,7 +20,8 @@ Create the Claude Code implementation in `targets/ide/claude-code/`. Set up the 
 - [ ] M10 recommendations applied (conditional roles, scoped handoffs, QA bug fix, doc loading in skills)
 - [ ] PM expert: all 10 skills mapped (commands, skills, hooks) in Claude Code format
 - [ ] SWE expert: start (hybrid) + handoff (hook) in Claude Code format
-- [ ] Shell scripts present in `targets/ide/claude-code/tools/` (copied from Cursor — identical content)
+- [ ] Shell scripts present in `targets/ide/claude-code/scripts/` (copied from Cursor — identical content)
+- [ ] `settings.json` created with `SessionStart` hook referencing `.claude/scripts/session-context.sh` per architecture spec
 - [ ] All skills reference shell scripts for mechanical operations
 - [ ] Each skill has its own context loading steps
 - [ ] docs-protocol content integrated appropriately

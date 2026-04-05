@@ -25,7 +25,7 @@ Transform the 10 PM canonical skill files into Cursor-native formats per the des
 - [ ] `start` → hybrid (context loads automatically via rule/skill; approval gates at Phase 1 and 2 remain explicit)
 - [ ] `handoff` → auto-trigger hook (fires when user signals session end; no `/handoff` command needed)
 - [ ] `status` → discoverable skill (fully autonomous, no human interaction)
-- [ ] All skills reference shell scripts from `.cursor/tools/` for mechanical operations (issue numbering, file movement, etc.)
+- [ ] All skills reference shell scripts from `.cursor/scripts/` for mechanical operations (issue numbering, file movement, etc.)
 - [ ] Each skill has its own context loading steps (not relying on session protocol preamble)
 
 ## Technical Notes

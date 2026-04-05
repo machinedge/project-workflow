@@ -15,7 +15,7 @@ Fresh-eyes review of the complete Claude Code platform-native implementation. Ve
 - All Claude Code skills across 5 experts — correct format, self-contained context loading
 - All Claude Code commands — interview-style and deploy correctly remain explicit
 - All handoff hooks — auto-trigger mechanism defined
-- Shell scripts in `targets/ide/claude-code/tools/` — identical to Cursor versions
+- Shell scripts in `targets/ide/claude-code/scripts/` — identical to Cursor versions
 - Cross-platform parity — every Cursor skill has a Claude Code equivalent with matching acceptance criteria
 - M10 recommendations applied consistently with Cursor version
 
