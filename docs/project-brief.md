@@ -81,7 +81,7 @@ Developers using AI coding assistants who want structured, repeatable workflows 
 - **Tooling:** scaffold, validate, install, package — functional (in `tools/` and `targets/`)
 - **Blockers:** None
 - **Next task:** See remaining M11 issues in backlog
-- **Last updated:** swe-feature-038 complete; DevOps + SA Cursor-native skills created (4 commands + 8 skills)
+- **Last updated:** swe-feature-037 and swe-feature-038 complete; all Cursor-native expert skills created (9 commands + 21 skills)
 
 ## Notes for AI
 

@@ -3,7 +3,7 @@
 **Type:** feature
 **Expert:** swe
 **Milestone:** M11
-**Status:** backlog
+**Status:** done
 
 ## User Story
 
@@ -15,17 +15,17 @@ Transform the SWE (2 files) and QA (6 files) canonical skill files into Cursor-n
 
 ## Acceptance Criteria
 
-- [ ] SWE `start` → hybrid (auto context loading; approval gates at Phase 1, 2, 3 remain explicit)
-- [ ] SWE `handoff` → auto-trigger hook
-- [ ] QA `start` → hybrid (auto context loading; approval gates remain)
-- [ ] QA `handoff` → auto-trigger hook
-- [ ] QA `review` → discoverable skill (autonomous code review with user review of findings)
-- [ ] QA `test-plan` → discoverable skill (produces plan, user reviews)
-- [ ] QA `regression` → discoverable skill (autonomous regression analysis)
-- [ ] QA `bug-triage` → discoverable skill (autonomous triage with user review)
-- [ ] All skills reference shell scripts from `.cursor/scripts/` for mechanical operations
-- [ ] Each skill has its own context loading steps
-- [ ] QA skills include own handoff notes in context loading (M10 Rec 4 fix applied at skill level)
+- [x] SWE `start` → hybrid (auto context loading; approval gates at Phase 1, 2, 3 remain explicit)
+- [x] SWE `handoff` → auto-trigger hook
+- [x] QA `start` → hybrid (auto context loading; approval gates remain)
+- [x] QA `handoff` → auto-trigger hook
+- [x] QA `review` → discoverable skill (autonomous code review with user review of findings)
+- [x] QA `test-plan` → discoverable skill (produces plan, user reviews)
+- [x] QA `regression` → discoverable skill (autonomous regression analysis)
+- [x] QA `bug-triage` → discoverable skill (autonomous triage with user review)
+- [x] All skills reference shell scripts from `.cursor/scripts/` for mechanical operations
+- [x] Each skill has its own context loading steps
+- [x] QA skills include own handoff notes in context loading (M10 Rec 4 fix applied at skill level)
 
 ## Session 20 Summary
 
