@@ -76,13 +76,13 @@ Developers using AI coding assistants who want structured, repeatable workflows 
 
 ## Current Status
 
-- **Milestones:** M1-M10 complete. Platform-Native Refactor (M11) in progress — Cursor rules done, all expert skills done (PM, SWE, QA, DevOps, SA). Claude Code implementation next.
+- **Milestones:** M1-M10 complete. Platform-Native Refactor (M11) in progress — Cursor implementation complete and QA-reviewed. Claude Code implementation next.
 - **Core experts:** PM (10 skills), SWE (2 skills), QA (6 skills), DevOps (6 skills), System Architect (6 skills) — functional
 - **Under development:** Data Analyst, User Experience
 - **Tooling:** scaffold, validate, install, package — functional (in `tools/` and `targets/`)
 - **Blockers:** None
-- **Next task:** See remaining M11 issues in backlog; swe-feature-049 (robust project brief updates) in backlog
-- **Last updated:** sa-bug-048 complete; atomic session numbering and handoff conflict awareness added to all scripts and skills
+- **Next task:** swe-bug-050 (PS1 atomic claiming), swe-bug-051 (issue naming convention), then Claude Code (swe-feature-040, swe-feature-041)
+- **Last updated:** qa-feature-039 complete; Cursor implementation reviewed — 0 must-fix, 2 should-fix, 1 nit
 
 ## Notes for AI
 
