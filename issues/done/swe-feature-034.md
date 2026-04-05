@@ -31,3 +31,9 @@ Create reusable shell scripts that handle the mechanical operations currently re
 **Dependencies:** sa-feature-033 (design defines exact script locations and naming)
 **Inputs:** project brief, sa-feature-033 design output, existing issue/handoff file conventions from `experts/technical/shared/docs-protocol.md`, architecture script specifications table
 **Out of scope:** MCP tool wrappers. Integration into install scripts (separate task). Platform-specific script differences (none expected — these are pure file operations).
+
+## Session 17 Summary
+
+**What was done:** Created 4 mechanical shell scripts (next-issue-number, next-session-number, move-issue, update-issues-list) with both `.sh` and `.ps1` versions, stored identically in both platform target directories. 31-test suite validates all scripts. `session-context` was re-scoped to sa-feature-046 as an agent skill (not a shell script).
+**Handoff note:** `docs/handoff-notes/swe/session-17.md`
+**All acceptance criteria met:** 8 of 9 met. `session-context` re-scoped — it requires agent intelligence, not mechanical file operations. Filed as sa-feature-046 for SA architectural redesign.
