@@ -72,10 +72,9 @@ If acceptance criteria are NOT all met, leave the issue file in its current fold
 
 ## Step 5: Update the project brief
 
-Re-read `docs/project-brief.md` before making changes — another concurrent session may have modified it since you last read it. If the "Current Status" or "Key Decisions Made" sections contain information you didn't write, merge your updates with the existing content rather than overwriting it. If you detect a conflict you can't resolve, warn the user.
+Run `.cursor/scripts/update-brief-status.sh <issue-id> "<brief description of what was accomplished>"` to atomically update the "Last updated" line in `docs/project-brief.md`. The script acquires a lock to prevent concurrent sessions from overwriting each other.
 
-- Add any new decisions to the "Key Decisions Made" table
-- Update "Current Status" section: last completed issue, next issue, blockers
+If new decisions were made during this session, append them to the "Key Decisions Made" table in `docs/project-brief.md`.
 
 ## Step 6: Update the lessons log
 

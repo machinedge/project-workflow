@@ -45,14 +45,15 @@
 | swe-feature-041 | Create Claude Code QA, DevOps, and System Architect Expert Skills | swe | feature | M11 | swe-feature-040, swe-feature-037, swe-feature-038 | done |
 | qa-feature-042 | QA: Review Claude Code Implementation for Completeness and Consistency | qa | feature | M11 | — | done |
 | swe-feature-043 | Build Sync/Management Command | swe | feature | M11 | qa-feature-039, qa-feature-042 — both implementations must be finalized before the sync command can be validated | done |
-| swe-feature-044 | Update Install Scripts and READMEs for Platform-Native Structure | swe | feature | M11 | qa-feature-039, qa-feature-042, swe-feature-043 | backlog |
+| swe-feature-044 | Update Install Scripts and READMEs for Platform-Native Structure | swe | feature | M11 | qa-feature-039, qa-feature-042, swe-feature-043 | done |
 | qa-feature-045 | QA: Cross-Platform Regression and Install Verification | qa | feature | M11 | — | backlog |
 | sa-feature-046 | Redesign session-context as Agent Skill Instead of Shell Script | system-architect | feature | M11 | sa-feature-033 | done |
 | sa-feature-047 | Define Routing for Cross-Expert Skills (team- prefix) | sa | feature | M11 | swe-feature-035 | done |
 | sa-bug-048 | Concurrent session conflicts: session numbering and project brief overwrites | system-architect | bug | — | — | done |
-| swe-feature-049 | Robust concurrent handoff: script-based project brief updates and session claiming | swe | feature | — | sa-bug-048 | backlog |
+| swe-feature-049 | Robust concurrent handoff: script-based project brief updates and session claiming | swe | feature | — | sa-bug-048 | done |
 | swe-bug-050 | PowerShell next-session-number.ps1 missing atomic session claiming | swe | bug | M11 | — | done |
 | swe-bug-051 | Issue filename prefix convention inconsistent across skills | swe | bug | M11 | — | done |
 | swe-techdebt-052 | Dead `count` variable in update-issues-list.sh | swe | techdebt | M11 | — | done |
 | swe-feature-053 | SWE: Add team-status skill to Claude Code implementation | swe | feature | M11 | — | done |
 | swe-techdebt-054 | SWE: Update outdated README files in both IDE target directories | swe | techdebt | M11 | — | done |
+| sa-techdebt-055 | Update architecture.md script specifications for update-brief-status | system-architect | techdebt | — | swe-feature-049 | backlog |

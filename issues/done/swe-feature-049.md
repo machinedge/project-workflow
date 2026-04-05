@@ -40,3 +40,9 @@ A lighter alternative: a `check-brief-conflicts.sh` script that checks `git diff
 **Dependencies:** sa-bug-048 (atomic session numbering — already done)
 **Inputs:** Handoff skills (`*-handoff/SKILL.md`), project brief structure
 **Out of scope:** Multi-user locking, distributed systems
+
+## Session 28 Summary
+
+**What was done:** Created `update-brief-status.sh` (+ `.ps1`) with lockfile-based atomic updates to the "Last updated" line. Updated all 10 handoff skills to call the script instead of agent-managed re-read/merge.
+**Handoff note:** `docs/handoff-notes/swe/session-28.md`
+**All acceptance criteria met:** Yes
