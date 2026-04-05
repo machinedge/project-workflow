@@ -34,7 +34,7 @@
 | swe-feature-030 | Add adaptive complexity assessment to /add-feature | swe | feature | M8 | — | done |
 | swe-feature-031 | Remove date references from all remaining expert templates | swe | feature | M9 | — | done |
 | sa-research-032 | Audit Startup Context and Produce Optimization Matrix | system-architect | research | M10 | — | done |
-| sa-feature-033 | Design Platform-Native Architecture for Cursor and Claude Code | system-architect | feature | M11 | — | backlog |
+| sa-feature-033 | Design Platform-Native Architecture for Cursor and Claude Code | system-architect | feature | M11 | — | done |
 | swe-feature-034 | Create Workflow Shell Scripts for Mechanical Operations | swe | feature | M11 | sa-feature-033 | backlog |
 | swe-feature-035 | Create Cursor Rules and Project Structure | swe | feature | M11 | sa-feature-033 | backlog |
 | swe-feature-036 | Create Cursor-Native PM Expert Skills | swe | feature | M11 | sa-feature-033, swe-feature-034, swe-feature-035 | backlog |

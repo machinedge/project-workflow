@@ -66,16 +66,20 @@ Developers using AI coding assistants who want structured, repeatable workflows 
 | — | Retire platform-agnostic canonical definitions; fork to platform-native implementations | Only targeting Cursor and Claude Code; translation layer adds complexity without proportional value; platforms evolve independently |
 | — | Shell scripts (not MCP) for mechanical operations; hidden in platform config dirs | Lightest dependency burden; MCP wrapper can be added later if discoverability is needed |
 | — | Absorb M10 context optimization into platform-native refactor | Conditional rules, scoped loading, and QA bug fix are all part of the same restructuring |
+| — | Autonomous skills + handoffs as discoverable SKILL.md; only interactive + /start as commands | Skills support both agent discovery AND explicit /skill-name; 21 skills + 9 commands |
+| — | Soft handoff auto-trigger on both platforms (rule instruction + skill discovery) | Cursor lacks session-end hook; consistent behavior across platforms preferred |
+| — | Direct-copy install replaces translation pipeline | Platform-native files are pre-built; translation adds complexity without value |
+| — | Shell scripts in `.cursor/scripts/` and `.claude/scripts/` | Hidden from user, accessible to agent; more descriptive than "tools" |
 
 ## Current Status
 
-- **Milestones:** M1-M10 complete. Platform-Native Refactor (M11) planned.
+- **Milestones:** M1-M10 complete. Platform-Native Refactor (M11) in progress — architecture design complete.
 - **Core experts:** PM (10 skills), SWE (2 skills), QA (6 skills), DevOps (6 skills), System Architect (6 skills) — functional
 - **Under development:** Data Analyst, User Experience
 - **Tooling:** scaffold, validate, install, package — functional (in `tools/` and `targets/`)
 - **Blockers:** None
-- **Next task:** sa-feature-033 (Design Platform-Native Architecture)
-- **Last updated:** Platform-Native Refactor interview complete
+- **Next task:** swe-feature-034 (Create Workflow Shell Scripts for Mechanical Operations)
+- **Last updated:** Platform-Native Architecture design complete (sa-feature-033)
 
 ## Notes for AI
 
