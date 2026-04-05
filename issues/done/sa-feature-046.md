@@ -34,3 +34,9 @@ The System Architect needs to redesign `session-context` as a discoverable skill
 **Dependencies:** sa-feature-033 (original design)
 **Inputs:** architecture.md (current hook configuration, script specifications), swe-feature-034 finding
 **Out of scope:** Implementation of the skill itself (that belongs to the Claude Code skill tasks).
+
+## Session 04 Summary
+
+**What was done:** Redesigned `session-context` from an intelligent summarizer script to a raw content extractor (`session-primer.sh`) invoked by Claude Code's SessionStart hook. Documented as ADR-009 in architecture.md. Updated hook configuration, directory structure, and swe-feature-040 acceptance criteria.
+**Handoff note:** `docs/handoff-notes/system-architect/session-04.md`
+**All acceptance criteria met:** Yes

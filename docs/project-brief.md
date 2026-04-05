@@ -70,7 +70,7 @@ Developers using AI coding assistants who want structured, repeatable workflows 
 | — | Soft handoff auto-trigger on both platforms (rule instruction + skill discovery) | Cursor lacks session-end hook; consistent behavior across platforms preferred |
 | — | Direct-copy install replaces translation pipeline | Platform-native files are pre-built; translation adds complexity without value |
 | — | Shell scripts in `.cursor/scripts/` and `.claude/scripts/` | Hidden from user, accessible to agent; more descriptive than "tools" |
-| — | `session-context` is an agent skill, not a shell script | Requires reading docs, extracting context, and summarizing — agent work, not file manipulation |
+| — | Session primer is a raw extractor script, not an agent summarizer (ADR-009) | Summarization is agent work, but raw file extraction is mechanical; agent processes raw output naturally |
 
 ## Current Status
 
@@ -78,9 +78,9 @@ Developers using AI coding assistants who want structured, repeatable workflows 
 - **Core experts:** PM (10 skills), SWE (2 skills), QA (6 skills), DevOps (6 skills), System Architect (6 skills) — functional
 - **Under development:** Data Analyst, User Experience
 - **Tooling:** scaffold, validate, install, package — functional (in `tools/` and `targets/`)
-- **Blockers:** sa-feature-046 (session-context redesign) should be resolved before Claude Code skill tasks
+- **Blockers:** None
 - **Next task:** swe-feature-035 (Create Cursor Rules and Project Structure)
-- **Last updated:** swe-feature-034 complete; sa-feature-046 filed for session-context redesign
+- **Last updated:** sa-feature-046 complete; session-context redesigned as raw extractor script (ADR-009)
 
 ## Notes for AI
 

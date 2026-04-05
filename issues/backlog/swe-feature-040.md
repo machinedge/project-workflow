@@ -21,7 +21,8 @@ Create the Claude Code implementation in `targets/ide/claude-code/`. Set up the 
 - [ ] PM expert: all 10 skills mapped (commands, skills, hooks) in Claude Code format
 - [ ] SWE expert: start (hybrid) + handoff (hook) in Claude Code format
 - [ ] Shell scripts present in `targets/ide/claude-code/scripts/` (copied from Cursor — identical content)
-- [ ] `settings.json` created with `SessionStart` hook referencing `.claude/scripts/session-context.sh` per architecture spec
+- [ ] `settings.json` created with `SessionStart` hook referencing `.claude/scripts/session-primer.sh` per architecture spec (see ADR-009)
+- [ ] `session-primer.sh` created in `targets/ide/claude-code/scripts/` — raw content extractor (project identity, current status, most recent handoff), not a summarizer
 - [ ] All skills reference shell scripts for mechanical operations
 - [ ] Each skill has its own context loading steps
 - [ ] docs-protocol content integrated appropriately

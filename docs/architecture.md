@@ -168,6 +168,7 @@ The rule: **one directory, optionally one script, zero changes elsewhere.**
 | ADR-006 | Soft auto-trigger for handoff on both platforms | Accepted | — |
 | ADR-007 | Shell scripts in `.cursor/scripts/` and `.claude/scripts/` | Accepted | — |
 | ADR-008 | Direct-copy install replaces translation pipeline | Accepted | — |
+| ADR-009 | Session primer as raw extractor, not agent summarizer | Accepted | — |
 
 ### ADR-001: Organize targets by class hierarchy
 
@@ -268,6 +269,20 @@ The rule: **one directory, optionally one script, zero changes elsewhere.**
 **Decision:** Option A. Translation adds complexity and maintenance burden. The entire point of the platform-native refactor is that each platform is a first-class implementation.
 
 **Consequences:** Install script becomes dramatically simpler. Changes must be made separately in each platform implementation (sync command addresses this).
+
+### ADR-009: Session primer as raw extractor, not agent summarizer
+
+**Context:** The original architecture specified `session-context.sh` as a shell script invoked by Claude Code's `SessionStart` hook to "output brief project context (project name, current status from brief, most recent handoff summary)." During implementation (swe-feature-034), it was determined that producing a compressed summary from project documents is agent work, not mechanical file manipulation (see lessons log).
+
+**Options considered:**
+- **(A) Redefine hook script as raw content extractor** — Output sections from project files without summarization. Rename to `session-primer.sh`. Agent processes raw text naturally. Cursor gets no equivalent (no session-start hook).
+- **(B) Replace with discoverable skill** — `team-session-context/SKILL.md` on both platforms. Remove the hook. Agent invokes skill to produce intelligent summary.
+- **(C) Discoverable skill + hook prompt** — Skill on both platforms. Hook outputs instruction to run the skill. Two mechanisms for one behavior.
+- **(D) Remove hook entirely** — Rely on `/start` and per-skill context loading. No new artifact.
+
+**Decision:** Option A. The script's scope is redefined: extract raw content (project identity, current status section, most recent handoff note) using mechanical operations (`head`, `sed`, `find`, `cat`). The agent's natural reasoning handles interpretation and prioritization. This preserves the hook's 100% reliability while respecting the boundary — scripts do mechanical work, agents do intelligent work.
+
+**Consequences:** Claude Code retains its platform advantage (automatic context at session start). Cursor has no equivalent, which is an acceptable gap — Cursor users use `/start` commands and per-skill context loading. Script should cap output length to avoid flooding the agent with verbose handoff notes.
 
 ## Constraints
 
@@ -525,11 +540,12 @@ Estimated auto-trigger reliability: ~70-80%.
     sa-update/SKILL.md
     sa-handoff/SKILL.md
     team-status/SKILL.md
-  scripts/                      # Same scripts as Cursor
+  scripts/                      # Same scripts as Cursor + session primer
     next-issue-number.sh
     move-issue.sh
     update-issues-list.sh
     next-session-number.sh
+    session-primer.sh            # SessionStart hook — raw project context injection
 ```
 
 #### Toolkit Repo Structure
@@ -574,7 +590,7 @@ Identical to Cursor. Skills use SKILL.md with frontmatter. Commands use plain ma
         "hooks": [
           {
             "type": "command",
-            "command": ".claude/scripts/session-context.sh"
+            "command": ".claude/scripts/session-primer.sh"
           }
         ]
       }
@@ -583,7 +599,15 @@ Identical to Cursor. Skills use SKILL.md with frontmatter. Commands use plain ma
 }
 ```
 
-**`SessionStart` hook:** Runs `session-context.sh` which outputs brief project context (project name, current status from brief, most recent handoff summary) to prime the session. This is Claude Code's bonus over Cursor — automatic context injection at session start.
+**`SessionStart` hook:** Runs `session-primer.sh` which extracts and outputs raw content from project documents to prime the session. This is a mechanical operation (file extraction, not summarization — see ADR-009). The agent processes the raw text naturally.
+
+Script behavior:
+1. Extract project identity (first few lines of `docs/project-brief.md`)
+2. Extract the "Current Status" section from `docs/project-brief.md`
+3. Find the most recent handoff note across `docs/handoff-notes/` and output its content
+4. Cap total output to avoid flooding the agent context with verbose handoff notes
+
+This is Claude Code's bonus over Cursor — automatic context injection at session start. Cursor has no session-start hook; Cursor users rely on `/start` commands and per-skill context loading.
 
 **Handoff auto-trigger:** Same soft mechanism as Cursor (role instruction + discoverable skill). Claude Code's `Stop` event could add a safety-net prompt hook in the future, but is not implemented in M11 to keep both platforms consistent.
 
@@ -609,6 +633,8 @@ When SWE converts canonical skill files to platform-native SKILL.md:
 | `next-session-number.sh` | `<expert-name>` | Next session number for that expert (integer) | Handoff skills |
 
 Each `.sh` script has a companion `.ps1` for Windows.
+
+Additionally, Claude Code has `session-primer.sh` (Claude Code only, no `.ps1` companion needed — Claude Code runs on macOS/Linux). This script is invoked by the `SessionStart` hook, not by skills. See Hook Configuration for its specification.
 
 #### Install Script Changes
 
