@@ -53,7 +53,7 @@ foreach ($dir in @(
     New-Item -ItemType Directory -Path (Join-Path $Target $dir) -Force | Out-Null
 }
 
-foreach ($expert in @("project-manager", "swe", "qa", "devops", "system-architect")) {
+foreach ($expert in @("pm", "swe", "qa", "devops", "system-architect")) {
     New-Item -ItemType Directory -Path (Join-Path $Target "docs/handoff-notes/$expert") -Force | Out-Null
 }
 
@@ -86,6 +86,7 @@ if ($Editor -eq "cursor" -or $Editor -eq "both") {
     Get-ChildItem (Join-Path $Target ".cursor/scripts/next-issue-number.*") -ErrorAction SilentlyContinue | Remove-Item -Force
     Get-ChildItem (Join-Path $Target ".cursor/scripts/next-session-number.*") -ErrorAction SilentlyContinue | Remove-Item -Force
     Get-ChildItem (Join-Path $Target ".cursor/scripts/update-issues-list.*") -ErrorAction SilentlyContinue | Remove-Item -Force
+    Get-ChildItem (Join-Path $Target ".cursor/scripts/update-brief-status.*") -ErrorAction SilentlyContinue | Remove-Item -Force
 }
 
 if ($Editor -eq "claude" -or $Editor -eq "both") {
@@ -101,6 +102,7 @@ if ($Editor -eq "claude" -or $Editor -eq "both") {
     Get-ChildItem (Join-Path $Target ".claude/scripts/next-issue-number.*") -ErrorAction SilentlyContinue | Remove-Item -Force
     Get-ChildItem (Join-Path $Target ".claude/scripts/next-session-number.*") -ErrorAction SilentlyContinue | Remove-Item -Force
     Get-ChildItem (Join-Path $Target ".claude/scripts/update-issues-list.*") -ErrorAction SilentlyContinue | Remove-Item -Force
+    Get-ChildItem (Join-Path $Target ".claude/scripts/update-brief-status.*") -ErrorAction SilentlyContinue | Remove-Item -Force
     Remove-Item (Join-Path $Target ".claude/scripts/session-primer.sh") -ErrorAction SilentlyContinue -Force
 }
 

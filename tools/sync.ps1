@@ -72,7 +72,8 @@ function Get-Subdirs {
 
 function Test-ShouldSkip {
     param([string]$RelPath)
-    return $RelPath -eq "README.md"
+    $fname = Split-Path $RelPath -Leaf
+    return ($fname -eq "README.md" -or $fname -eq ".gitkeep" -or $fname -match '^test-' -or $fname -match '\.test\.')
 }
 
 function Compare-FileContent {

@@ -57,6 +57,6 @@
 | swe-feature-053 | SWE: Add team-status skill to Claude Code implementation | swe | feature | M11 | — | done |
 | swe-techdebt-054 | SWE: Update outdated README files in both IDE target directories | swe | techdebt | M11 | — | done |
 | sa-techdebt-055 | Update architecture.md script specifications for update-brief-status | system-architect | techdebt | — | swe-feature-049 | done |
-| swe-bug-056 | Install script creates wrong PM handoff directory | swe | bug | M11 | — | backlog |
-| swe-bug-057 | update-brief-status script missing from install cleanup and READMEs | swe | bug | M11 | — | backlog |
-| swe-bug-058 | Sync check command flags intentionally excluded files as MISSING | swe | bug | M11 | — | backlog |
+| swe-bug-056 | Install script creates wrong PM handoff directory | swe | bug | M11 | — | done |
+| swe-bug-057 | update-brief-status script missing from install cleanup and READMEs | swe | bug | M11 | — | done |
+| swe-bug-058 | Sync check command flags intentionally excluded files as MISSING | swe | bug | M11 | — | done |

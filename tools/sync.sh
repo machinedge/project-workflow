@@ -77,8 +77,12 @@ list_subdirs() {
 }
 
 should_skip_source_file() {
-  case "$1" in
+  local fname
+  fname=$(basename "$1")
+  case "$fname" in
     README.md) return 0 ;;
+    .gitkeep) return 0 ;;
+    test-*|*.test.*) return 0 ;;
     *) return 1 ;;
   esac
 }

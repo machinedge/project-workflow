@@ -56,6 +56,8 @@ The install script copies files from this directory into your project's `.cursor
     next-session-number.ps1
     update-issues-list.sh       # Regenerate issues/issues-list.md
     update-issues-list.ps1
+    update-brief-status.sh      # Atomically update project brief status line
+    update-brief-status.ps1
 ```
 
 The install script also creates the project scaffolding:
@@ -64,7 +66,7 @@ The install script also creates the project scaffolding:
 docs/
   lessons-log.md                # Seeded if it doesn't exist
   handoff-notes/
-    project-manager/
+    pm/
     swe/
     qa/
     devops/
@@ -120,6 +122,7 @@ Scripts are hidden shell utilities in `.cursor/scripts/` for mechanical operatio
 - **`move-issue.sh`** — moves an issue file between status directories (`backlog/` → `in-progress/`, etc.).
 - **`next-session-number.sh`** — atomically claims the next handoff note number using `set -C` (noclobber) to prevent concurrent session collisions.
 - **`update-issues-list.sh`** — regenerates `issues/issues-list.md` from all issue files.
+- **`update-brief-status.sh`** — atomically updates the "Last updated" line in `docs/project-brief.md` under a lockfile to prevent concurrent overwrites.
 
 Each `.sh` script has a `.ps1` companion for Windows. Skills and commands reference these scripts via `Shell` tool calls rather than reimplementing the logic.
 

@@ -81,8 +81,8 @@ Developers using AI coding assistants who want structured, repeatable workflows 
 - **Under development:** Data Analyst, User Experience
 - **Tooling:** scaffold, validate, install, package — functional (in `tools/` and `targets/`)
 - **Blockers:** None
-- **Next task:** qa-feature-045 (cross-platform regression)
-- **Last updated:** qa-feature-045 complete; cross-platform regression complete; 1 must-fix (swe-bug-056: PM handoff dir), 2 should-fix filed
+- **Next task:** None — all QA regression bugs resolved; install script and sync command remaining
+- **Last updated:** swe-bug-056, swe-bug-057, swe-bug-058 complete; all QA regression findings resolved
 
 ## Notes for AI
 

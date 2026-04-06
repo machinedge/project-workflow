@@ -57,6 +57,8 @@ The install script copies files from this directory into your project's `.claude
     next-session-number.ps1
     update-issues-list.sh       # Regenerate issues/issues-list.md
     update-issues-list.ps1
+    update-brief-status.sh      # Atomically update project brief status line
+    update-brief-status.ps1
     session-primer.sh           # SessionStart hook — raw project context extraction
 ```
 
@@ -66,7 +68,7 @@ The install script also creates the project scaffolding:
 docs/
   lessons-log.md                # Seeded if it doesn't exist
   handoff-notes/
-    project-manager/
+    pm/
     swe/
     qa/
     devops/
@@ -110,6 +112,13 @@ Skills are discoverable by Claude Code's agent. Each skill folder contains a `SK
 ### Scripts
 
 Scripts in `.claude/scripts/` handle mechanical operations. Same set as Cursor, plus `session-primer.sh` (Claude Code only — used by the SessionStart hook).
+
+- **`next-issue-number.sh`** — scans `issues/` to find the next unused issue number.
+- **`move-issue.sh`** — moves an issue file between status directories (`backlog/` → `in-progress/`, etc.).
+- **`next-session-number.sh`** — atomically claims the next handoff note number using `set -C` (noclobber) to prevent concurrent session collisions.
+- **`update-issues-list.sh`** — regenerates `issues/issues-list.md` from all issue files.
+- **`update-brief-status.sh`** — atomically updates the "Last updated" line in `docs/project-brief.md` under a lockfile to prevent concurrent overwrites.
+- **`session-primer.sh`** — extracts raw project context for the SessionStart hook (Claude Code only).
 
 **Requirements:** Bash must be available for `.sh` scripts. On macOS and Linux this is standard. Claude Code currently runs on macOS and Linux, so `.ps1` scripts are included for completeness but not required.
 

@@ -88,7 +88,7 @@ mkdir -p "$TARGET/issues/planned"
 mkdir -p "$TARGET/issues/in-progress"
 mkdir -p "$TARGET/issues/done"
 
-for expert in project-manager swe qa devops system-architect; do
+for expert in pm swe qa devops system-architect; do
     mkdir -p "$TARGET/docs/handoff-notes/$expert"
 done
 
@@ -122,6 +122,7 @@ if [ "$EDITOR" = "cursor" ] || [ "$EDITOR" = "both" ]; then
     rm -f "$TARGET/.cursor/scripts/next-issue-number."* 2>/dev/null || true
     rm -f "$TARGET/.cursor/scripts/next-session-number."* 2>/dev/null || true
     rm -f "$TARGET/.cursor/scripts/update-issues-list."* 2>/dev/null || true
+    rm -f "$TARGET/.cursor/scripts/update-brief-status."* 2>/dev/null || true
 fi
 
 if [ "$EDITOR" = "claude" ] || [ "$EDITOR" = "both" ]; then
@@ -135,6 +136,7 @@ if [ "$EDITOR" = "claude" ] || [ "$EDITOR" = "both" ]; then
     rm -f "$TARGET/.claude/scripts/next-issue-number."* 2>/dev/null || true
     rm -f "$TARGET/.claude/scripts/next-session-number."* 2>/dev/null || true
     rm -f "$TARGET/.claude/scripts/update-issues-list."* 2>/dev/null || true
+    rm -f "$TARGET/.claude/scripts/update-brief-status."* 2>/dev/null || true
     rm -f "$TARGET/.claude/scripts/session-primer.sh" 2>/dev/null || true
 fi
 
