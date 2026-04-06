@@ -37,14 +37,19 @@ During a session:
 
 When wrapping up, produce a handoff note via the `ops-handoff` skill.
 
-## Skills
+## Commands
 
 - `/ops-start` — Begin an execution session (reads all context automatically)
-- `/ops-handoff` — End session and produce a handoff note
 - `/ops-env-discovery` — Structured interview to capture deployment and test environment context
 - `/ops-deploy` — Execute a release with verification
-- `/ops-pipeline` — Define the build/test/deploy pipeline based on env-context
-- `/ops-release-plan` — Define release gates, rollback procedures, and artifact definitions
+
+## Skills (agent-discoverable)
+
+These are not slash commands. The agent finds and invokes them automatically based on context.
+
+- **ops-handoff** — End session and produce a handoff note
+- **ops-pipeline** — Define the build/test/deploy pipeline based on env-context
+- **ops-release-plan** — Define release gates, rollback procedures, and artifact definitions
 
 ## Principles
 

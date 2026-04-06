@@ -79,4 +79,4 @@ Summarize what was done:
 - Any concerns, open questions, or follow-up items
 - Anything the user should review or approve
 
-Then ask the user if they'd like to proceed to `/pm-handoff` to close out the session.
+Then ask the user if they'd like to proceed to the `pm-handoff` skill to close out the session.

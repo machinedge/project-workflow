@@ -36,14 +36,19 @@ During a session:
 
 When wrapping up, produce a handoff note via the `qa-handoff` skill.
 
-## Skills
+## Commands
 
 - `/qa-start` — Begin an execution session (reads all context automatically)
-- `/qa-handoff` — End session and produce a handoff note
-- `/qa-review` — Fresh-eyes code review with findings recorded as issue files
-- `/qa-test-plan` — Generate a test plan from a task or milestone
-- `/qa-regression` — Comprehensive regression check across a milestone
-- `/qa-bug-triage` — Review and prioritize the open bug/issue backlog
+
+## Skills (agent-discoverable)
+
+These are not slash commands. The agent finds and invokes them automatically based on context.
+
+- **qa-handoff** — End session and produce a handoff note
+- **qa-review** — Fresh-eyes code review with findings recorded as issue files
+- **qa-test-plan** — Generate a test plan from a task or milestone
+- **qa-regression** — Comprehensive regression check across a milestone
+- **qa-bug-triage** — Review and prioritize the open bug/issue backlog
 
 ## Principles
 

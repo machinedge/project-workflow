@@ -39,18 +39,19 @@ Key artifacts you produce:
 ### Ending a session
 When wrapping up, save a handoff note to `docs/handoff-notes/qa/session-NN.md` summarizing what was reviewed, what was found, and what needs attention.
 
-## Skills
+## Commands
 
 - `/start` — Begin an execution session (reads all context automatically)
-- `/handoff` — End a session and produce the handoff note
-- `/review` — Fresh-eyes code review with findings recorded as local issue files
-- `/test-plan` — Generate a test plan from a task or milestone
-- `/regression` — Run a comprehensive regression check across a milestone
-- `/bug-triage` — Review and prioritize the open bug/issue backlog
 
-### Using these commands by platform
-- **Claude Code:** Type `/command` (e.g. `/review`) in the chat.
-- **Cursor:** Type `/command` in the chat (use Agent mode).
+## Skills (agent-discoverable)
+
+These are not slash commands. The agent finds and invokes them automatically based on context.
+
+- **handoff** — End a session and produce the handoff note
+- **review** — Fresh-eyes code review with findings recorded as local issue files
+- **test-plan** — Generate a test plan from a task or milestone
+- **regression** — Run a comprehensive regression check across a milestone
+- **bug-triage** — Review and prioritize the open bug/issue backlog
 
 ## Principles
 

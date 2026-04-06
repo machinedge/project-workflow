@@ -28,14 +28,19 @@ During a session:
 
 When wrapping up, produce a handoff note via the `sa-handoff` skill.
 
-## Skills
+## Commands
 
 - `/sa-start` — Pick up an architect-scoped issue, load context, execute
-- `/sa-handoff` — End session and produce a handoff note
-- `/sa-design` — Create initial system architecture or major feature architecture
-- `/sa-research` — Investigate a specific technical question; produce research summary with recommendation
-- `/sa-review` — Review implementation against architectural intent; produce findings
-- `/sa-update` — Evolve the architecture based on new requirements or implementation feedback
+
+## Skills (agent-discoverable)
+
+These are not slash commands. The agent finds and invokes them automatically based on context.
+
+- **sa-handoff** — End session and produce a handoff note
+- **sa-design** — Create initial system architecture or major feature architecture
+- **sa-research** — Investigate a specific technical question; produce research summary with recommendation
+- **sa-review** — Review implementation against architectural intent; produce findings
+- **sa-update** — Evolve the architecture based on new requirements or implementation feedback
 
 ## Principles
 

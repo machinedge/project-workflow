@@ -27,10 +27,15 @@ During a session:
 
 When wrapping up, produce a handoff note via the `swe-handoff` skill.
 
-## Skills
+## Commands
 
 - `/swe-start` — Begin an execution session (reads all context automatically)
-- `/swe-handoff` — End session and produce a handoff note
+
+## Skills (agent-discoverable)
+
+These are not slash commands. The agent finds and invokes them automatically based on context.
+
+- **swe-handoff** — End session and produce a handoff note
 
 ## Principles
 

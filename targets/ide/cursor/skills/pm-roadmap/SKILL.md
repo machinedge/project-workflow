@@ -5,7 +5,7 @@ description: "Create the project milestone plan from the project brief. Use when
 
 Create the project milestone plan.
 
-First, read `docs/project-brief.md`. If it doesn't exist, tell the user to run `/pm-vision` first.
+First, read `docs/project-brief.md`. If it doesn't exist, tell the user to ask for the `pm-vision` skill first.
 
 Create `docs/roadmap.md` with 5-8 milestones using this structure:
 

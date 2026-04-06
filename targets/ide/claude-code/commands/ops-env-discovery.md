@@ -8,7 +8,7 @@ If the user provided context: $ARGUMENTS
 
 Read `docs/project-brief.md`, specifically the "Delivery & Operations Context" section that PM captured during the initial interview. Use this as your starting point — don't re-ask questions that were already answered.
 
-If `docs/project-brief.md` doesn't exist, tell the user: "No project brief found. Run `/pm-interview` and `/pm-vision` first so I have project context to build on."
+If `docs/project-brief.md` doesn't exist, tell the user: "No project brief found. Run `/pm-interview` and ask for the `pm-vision` skill first so I have project context to build on."
 
 Also read `docs/env-context.md` if it exists — this may be an update to an existing environment context, not a first-time capture.
 
@@ -88,4 +88,4 @@ After all categories, save to `docs/env-context.md`:
 
 Show the draft to the user for review. Don't save until they approve.
 
-Tell the user they can run `/ops-pipeline` next to define their build/test/deploy pipeline based on this context.
+Tell the user they can ask for the `ops-pipeline` skill next to define their build/test/deploy pipeline based on this context.

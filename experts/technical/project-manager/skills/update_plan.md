@@ -3,8 +3,8 @@ Update the project brief and roadmap with a newly scoped feature.
 If the user provided a reference: $ARGUMENTS
 
 First, read these files:
-1. `docs/project-brief.md` — if it doesn't exist, tell the user to run `/interview` and `/vision` first.
-2. `docs/roadmap.md` — if it doesn't exist, tell the user to run `/roadmap` first.
+1. `docs/project-brief.md` — if it doesn't exist, tell the user to run `/interview` and the `vision` skill first.
+2. `docs/roadmap.md` — if it doesn't exist, tell the user to ask for `roadmap` first (or run the `roadmap` skill).
 3. The most recent `docs/interview-notes-*.md` file (by modification date), or the one the user specifies.
 
 If no feature interview notes exist (`docs/interview-notes-*.md`), tell the user to run `/add_feature` first.
@@ -50,8 +50,8 @@ Ask the user to review and approve before saving. If they request changes, incor
 
 ## After saving
 
-Tell the user to run `/decompose` next to break the new milestones into tasks. Suggest specifying the milestone name, e.g.:
-> Run `/decompose [Dark Mode] User can toggle theme` to create tasks for the first new milestone.
+Tell the user to run the `decompose` skill next to break the new milestones into tasks. Suggest specifying the milestone name, e.g.:
+> Run `decompose [Dark Mode] User can toggle theme` to create tasks for the first new milestone.
 
 Rules:
 - Do NOT rewrite or reorder existing milestones, success criteria, or decisions.

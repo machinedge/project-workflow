@@ -119,7 +119,7 @@ Use this template:
 **Milestone:** [Current milestone]
 **Status:** backlog
 **Severity:** must-fix | should-fix
-**Found by:** /qa-review of [original task issue filename]
+**Found by:** `qa-review` of [original task issue filename]
 
 ## User Story
 

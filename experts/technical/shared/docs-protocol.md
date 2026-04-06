@@ -21,7 +21,7 @@ All project documents live in `docs/`:
 
 ## Workflow Contracts
 
-Each workflow produces artifacts that other workflows consume. If an upstream artifact doesn't exist, the workflow should check for it and guide the user (e.g., "Run `/interview` and `/vision` first to create a project brief.").
+Each workflow produces artifacts that other workflows consume. If an upstream artifact doesn't exist, the workflow should check for it and guide the user (e.g., "Run `/interview` and the `vision` skill first to create a project brief.").
 
 | Producer | Artifact | Consumer(s) |
 |----------|----------|-------------|

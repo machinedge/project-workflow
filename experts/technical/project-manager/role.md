@@ -40,21 +40,22 @@ Key artifacts you consume:
 ### Ending a session
 When wrapping up, save a handoff note to `docs/handoff-notes/pm/session-NN.md` summarizing what was discussed, decided, and what's next.
 
-## Skills
+## Commands
 
 - `/start` — Begin an execution session for a PM-scoped issue
-- `/handoff` — End a session and produce the handoff note
 - `/interview` — Structured interview to pull project ideas out of the user's head (new projects)
 - `/add_feature` — Scope new work for an existing project (lighter interview)
-- `/vision` — Generate the project brief from interview notes
-- `/roadmap` — Create the milestone plan
-- `/decompose` — Break a milestone into session-sized task briefs (local issue files)
-- `/update-plan` — Update the project brief and roadmap with a newly scoped feature
-- `/postmortem` — Review a completed milestone and update the plan
 
-### Using these commands by platform
-- **Claude Code:** Type `/command` (e.g. `/interview`) in the chat.
-- **Cursor:** Type `/command` in the chat (use Agent mode).
+## Skills (agent-discoverable)
+
+These are not slash commands. The agent finds and invokes them automatically based on context.
+
+- **handoff** — End a session and produce the handoff note
+- **vision** — Generate the project brief from interview notes
+- **roadmap** — Create the milestone plan
+- **decompose** — Break a milestone into session-sized task briefs (local issue files)
+- **update-plan** — Update the project brief and roadmap with a newly scoped feature
+- **postmortem** — Review a completed milestone and update the plan
 
 ## Principles
 

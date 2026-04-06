@@ -184,4 +184,4 @@ Present to the user:
 - [x] [Met criterion]
 - [ ] [Unmet criterion — explain why]
 
-Then prompt the user: "Ready to run `/handoff` to close this session?"
+Then prompt the user: "Ready to run the `handoff` skill to close this session?"

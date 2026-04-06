@@ -40,18 +40,19 @@ Key artifacts you consume:
 ### Ending a session
 When wrapping up, save a handoff note to `docs/handoff-notes/system-architect/session-NN.md` summarizing what was decided, what changed, and what's next.
 
-## Skills
+## Commands
 
-- `/design` — Create initial system architecture or major feature architecture; produces `docs/architecture.md`
-- `/research` — Investigate a specific technical question; produce a research summary with recommendation
-- `/review` — Review implementation against architectural intent; produce findings
-- `/update` — Evolve the architecture based on new requirements or implementation feedback; update `docs/architecture.md`
 - `/start` — Pick up an architect-scoped issue from `issues/`, load context, execute, produce handoff
-- `/handoff` — Close session, produce handoff note
 
-### Using these commands by platform
-- **Claude Code:** Type `/command` (e.g. `/design`) in the chat.
-- **Cursor:** Type `/command` in the chat (use Agent mode).
+## Skills (agent-discoverable)
+
+These are not slash commands. The agent finds and invokes them automatically based on context.
+
+- **handoff** — Close session, produce handoff note
+- **design** — Create initial system architecture or major feature architecture; produces `docs/architecture.md`
+- **research** — Investigate a specific technical question; produce a research summary with recommendation
+- **review** — Review implementation against architectural intent; produce findings
+- **update** — Evolve the architecture based on new requirements or implementation feedback; update `docs/architecture.md`
 
 ## Principles
 

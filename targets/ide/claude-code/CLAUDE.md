@@ -24,7 +24,7 @@ Infer the expert from the skill or command prefix (e.g. `/swe-start` → SWE, `/
 
 **Workflow contracts:** Each expert produces artifacts that others consume. If an upstream artifact doesn't exist, tell the user what's missing and how to create it — don't fail silently or invent data.
 
-**Skills:** Expert skills are discoverable in `.claude/skills/`. Each expert's role file lists its available skills. Skills can be invoked explicitly (e.g. `/pm-vision`) or discovered automatically by the agent based on context.
+**Skills:** Expert skills are discoverable in `.claude/skills/`. Each expert's role file lists its available skills. The agent finds and invokes them automatically based on context — they are not slash commands.
 
 **Scripts:** Mechanical operations (issue numbering, file movement, session numbering, issues-list regeneration) use shell scripts in `.claude/scripts/`. Use these instead of reimplementing the logic inline.
 

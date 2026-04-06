@@ -1,6 +1,6 @@
 Create the project milestone plan.
 
-First, read `docs/project-brief.md`. If it doesn't exist, tell the user to run `/vision` first.
+First, read `docs/project-brief.md`. If it doesn't exist, tell the user to ask for `vision` first (or run the `vision` skill).
 
 Create `docs/roadmap.md` with 5-8 milestones using this structure:
 

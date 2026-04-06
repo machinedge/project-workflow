@@ -11,7 +11,7 @@ Read these files:
 2. `docs/project-brief.md` — project context
 3. `docs/env-context.md` — deployment mechanism and failure/recovery characteristics
 
-If `docs/release-plan.md` doesn't exist, tell the user: "No release plan found. Run `/ops-release-plan` first to define release gates and rollback procedures."
+If `docs/release-plan.md` doesn't exist, tell the user: "No release plan found. Ask for the `ops-release-plan` skill first to define release gates and rollback procedures."
 
 ## Step 2: Check Release Gates
 

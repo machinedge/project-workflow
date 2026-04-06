@@ -42,18 +42,19 @@ Key artifacts you produce:
 ### Ending a session
 When wrapping up, save a handoff note to `docs/handoff-notes/devops/session-NN.md` summarizing what was configured, what works, and what's next.
 
-## Skills
+## Commands
 
 - `/start` — Begin an execution session (reads all context automatically)
-- `/handoff` — End a session and produce the handoff note
 - `/env-discovery` — Structured interview to capture deployment and test environment context
-- `/pipeline` — Define the build/test/deploy pipeline based on env-context
-- `/release-plan` — Define release gates, rollback procedures, and artifact definitions
 - `/deploy` — Execute a release with verification
 
-### Using these commands by platform
-- **Claude Code:** Type `/command` (e.g. `/env-discovery`) in the chat.
-- **Cursor:** Type `/command` in the chat (use Agent mode).
+## Skills (agent-discoverable)
+
+These are not slash commands. The agent finds and invokes them automatically based on context.
+
+- **handoff** — End a session and produce the handoff note
+- **pipeline** — Define the build/test/deploy pipeline based on env-context
+- **release-plan** — Define release gates, rollback procedures, and artifact definitions
 
 ## Principles
 

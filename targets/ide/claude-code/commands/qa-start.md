@@ -96,4 +96,4 @@ Summarize what was done:
 - Any concerns, risks, or follow-up items
 - Anything the user should manually verify
 
-Then ask the user if they'd like to proceed to `/qa-handoff` to close out the session.
+Then ask the user if they'd like to proceed to the `qa-handoff` skill to close out the session.

@@ -22,7 +22,7 @@ Supports **Cursor** and **Claude Code** with platform-native implementations. Al
 Then open the project in your editor:
 - Run `/pm-interview` to start a new project
 - Run `/swe-start` to pick up an implementation task
-- Run `/team-status` to see the project health summary
+- Ask for a "team status" to see the project health summary
 
 ### Team Mode (Coordinated Experts in Docker)
 
@@ -66,7 +66,7 @@ The toolkit installs three types of files:
 - Start commands (`/pm-start`, `/swe-start`, `/qa-start`, `/ops-start`, `/sa-start`) begin a session with full context loading and approval gates.
 - Interactive commands (`/pm-interview`, `/pm-add-feature`, `/ops-deploy`, `/ops-env-discovery`) require back-and-forth with the user.
 
-**Skills** (21) are discoverable by the agent. Each is a `SKILL.md` with a description the agent matches against your intent. The agent invokes them autonomously — or you can invoke them explicitly by name. Skills cover autonomous operations (vision, roadmap, review, decompose, etc.) and session handoffs.
+**Skills** (21) are discoverable by the agent — they are not slash commands and don't appear in the `/` menu. Each is a `SKILL.md` with a description the agent matches against your intent. The agent invokes them autonomously when it recognizes the right context. Skills cover autonomous operations (vision, roadmap, review, decompose, etc.) and session handoffs.
 
 **Scripts** (5) are hidden shell utilities for mechanical operations — issue numbering, file movement, session claiming, issues list regeneration, and atomic project brief updates. Skills call these via shell instead of reimplementing the logic.
 

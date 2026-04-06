@@ -14,7 +14,7 @@ Read these files automatically:
 2. `docs/project-brief.md` — project constraints and decisions
 3. Recent SWE handoff notes in `docs/handoff-notes/swe/` — what was built and what changed
 
-If `docs/architecture.md` doesn't exist, tell the user: "No architecture document exists yet. Run `/sa-design` first to establish the architectural intent, or this review will have no baseline to evaluate against."
+If `docs/architecture.md` doesn't exist, tell the user: "No architecture document exists yet. Ask for the `sa-design` skill first to establish the architectural intent, or this review will have no baseline to evaluate against."
 
 If the user specified what to review (e.g., a specific component, a recent session's work), focus there. Otherwise, review broadly.
 
@@ -62,6 +62,6 @@ Run `.claude/scripts/update-issues-list.sh` after creating issues.
 
 Present findings to the user. Highlight the most important items first.
 
-If the architecture document itself needs updating (e.g., intentional drift should be documented), suggest running `/sa-update`.
+If the architecture document itself needs updating (e.g., intentional drift should be documented), suggest asking for the `sa-update` skill.
 
 Do NOT auto-fix implementation. Fixes go through the SWE workflow so they get proper testing and verification. Your job is to find problems, not fix them.

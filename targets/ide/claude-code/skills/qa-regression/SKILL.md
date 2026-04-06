@@ -110,7 +110,7 @@ Template:
 
 **Regression from:** [original task issue filename]
 **Broken by:** [task that likely caused the regression, if identifiable]
-**Found by:** /qa-regression check of [Milestone name]
+**Found by:** `qa-regression` check of [Milestone name]
 
 ## Acceptance Criteria
 
@@ -127,4 +127,4 @@ After creating issue files, run `.claude/scripts/update-issues-list.sh` to regen
 
 - Add any patterns to `docs/lessons-log.md` (e.g., "tasks that modify shared config should re-run all tests")
 - Note in `docs/roadmap.md` change log that regression was run and how many issues were found
-- The regression report feeds into PM's `/pm-postmortem` for the milestone
+- The regression report feeds into PM's `pm-postmortem` skill for the milestone

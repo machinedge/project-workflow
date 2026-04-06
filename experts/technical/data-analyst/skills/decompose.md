@@ -1,4 +1,4 @@
-# /decompose — Break Analysis Phase into Hypothesis-Driven Tasks
+# decompose — Break Analysis Phase into Hypothesis-Driven Tasks
 
 You are breaking an analysis phase into session-sized tasks and creating them as local issue files. Each issue is framed as a hypothesis or question to answer, with acceptance criteria that specify the analytical activities needed.
 

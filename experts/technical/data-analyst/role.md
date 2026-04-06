@@ -52,10 +52,10 @@ The following custom commands are available:
 - `/intake` — Generate domain context + structured interview to understand data, domain, and business questions
 - `/brief` — Generate the analysis brief from intake notes
 - `/scope` — Define analysis phases, dependencies, and risks
-- `/decompose` — Break an analysis phase into session-sized tasks (hypothesis-driven local issue files)
+- `decompose` — Break an analysis phase into session-sized tasks (hypothesis-driven local issue files)
 - `/start` — Begin an analysis session (7-phase: load → hypothesize → design → validate data → analyze → validate results → report)
-- `/review` — Methodological review (run in a separate session from `/start`)
-- `/handoff` — End a session and produce the handoff note
+- `review` — Methodological review (run in a separate session from `/start`)
+- `handoff` — End a session and produce the handoff note
 - `/synthesize` — Pull all findings into recommendations — the actual deliverable
 
 ## Opinionated Stack

@@ -28,17 +28,22 @@ During a session:
 
 When wrapping up, produce a handoff note via the `pm-handoff` skill.
 
-## Skills
+## Commands
 
 - `/pm-start` — Begin an execution session for a PM-scoped issue
-- `/pm-handoff` — End session and produce a handoff note
 - `/pm-interview` — Structured interview to pull project ideas out of the user's head (new projects)
 - `/pm-add-feature` — Scope new work for an existing project (lighter interview)
-- `/pm-vision` — Generate the project brief from interview notes
-- `/pm-roadmap` — Create the milestone plan
-- `/pm-decompose` — Break a milestone into session-sized task briefs
-- `/pm-update-plan` — Update the project brief and roadmap with a newly scoped feature
-- `/pm-postmortem` — Review a completed milestone and update the plan
+
+## Skills (agent-discoverable)
+
+These are not slash commands. The agent finds and invokes them automatically based on context.
+
+- **pm-handoff** — End session and produce a handoff note
+- **pm-vision** — Generate the project brief from interview notes
+- **pm-roadmap** — Create the milestone plan
+- **pm-decompose** — Break a milestone into session-sized task briefs
+- **pm-update-plan** — Update the project brief and roadmap with a newly scoped feature
+- **pm-postmortem** — Review a completed milestone and update the plan
 
 ## Principles
 

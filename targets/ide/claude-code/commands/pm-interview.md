@@ -26,7 +26,7 @@ Rules:
 - Categories 9 and 10 are intentionally open-ended. They work whether the answer is "it's a Rails app on Heroku" or "we flash firmware via JTAG to PLCs on a factory floor." Don't assume any particular technology or delivery mechanism.
 - After all categories, produce a structured summary and flag any contradictions or gaps.
 - Save the summary to `docs/interview-notes.md`.
-- Tell the user to run `/pm-vision` next to generate the project brief.
+- Tell the user to ask for the `pm-vision` skill next to generate the project brief.
 
 DO NOT:
 - Ask multiple questions at a time.

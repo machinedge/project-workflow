@@ -11,7 +11,7 @@ Read these if they exist:
 - `docs/roadmap.md` — milestones, what's planned vs. completed
 - `docs/lessons-log.md` — accumulated gotchas and patterns
 
-If `docs/project-brief.md` doesn't exist, tell the user: "No project brief found. Run `/interview` and `/vision` to get started." and stop.
+If `docs/project-brief.md` doesn't exist, tell the user: "No project brief found. Run `/interview` and the `vision` skill to get started." and stop.
 
 ### 2. Check issues
 
@@ -75,7 +75,7 @@ Format:
 ### 6. Suggest next actions
 
 Based on the current state, suggest 1-3 concrete next actions. For example:
-- If no roadmap exists: "Run `/roadmap` to create a milestone plan."
-- If there are open bugs: "Run `/bug-triage` to prioritize the bug backlog."
-- If a milestone looks complete but no postmortem exists: "Run `/postmortem` to review the completed milestone."
+- If no roadmap exists: "Run the `roadmap` skill to create a milestone plan."
+- If there are open bugs: "Run the `bug-triage` skill to prioritize the bug backlog."
+- If a milestone looks complete but no postmortem exists: "Run the `postmortem` skill to review the completed milestone."
 - If no env-context exists but the project has deployment concerns: "Run `/env-discovery` to capture environment context."

@@ -12,7 +12,7 @@ Read these files automatically:
 3. `docs/roadmap.md` (if it exists) — upcoming work that the architecture should support
 4. Recent handoff notes across all experts — what happened since the architecture was last updated
 
-If `docs/architecture.md` doesn't exist, tell the user: "No architecture document exists yet. Run `/design` to create one, or `/start` to pick up an architect-scoped issue."
+If `docs/architecture.md` doesn't exist, tell the user: "No architecture document exists yet. Run the `design` skill to create one, or `/start` to pick up an architect-scoped issue."
 
 ## Step 2: Identify What Changed
 

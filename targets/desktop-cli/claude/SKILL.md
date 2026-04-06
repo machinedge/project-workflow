@@ -44,13 +44,13 @@ Use the AskUserQuestion tool for both rounds. Do NOT ask open-ended questions in
 - **All core experts (recommended)** — Project Manager, SWE, QA, DevOps
 - **Pick specific experts** — Let the user choose from the list below
 
-| Expert | Short Name | Slash Commands |
-|--------|-----------|----------------|
-| Project Manager | pm | `/pm-interview`, `/pm-vision`, `/pm-roadmap`, `/pm-decompose`, `/pm-postmortem` |
-| Software Engineer | swe | `/swe-start`, `/swe-handoff` |
-| Quality Assurance | qa | `/qa-review`, `/qa-test-plan`, `/qa-regression`, `/qa-bug-triage` |
-| DevOps | devops | `/ops-env-discovery`, `/ops-pipeline`, `/ops-release-plan`, `/ops-deploy` |
-| Data Analyst | data-analyst | `/da-intake`, `/da-brief`, `/da-scope`, `/da-start`, `/da-synthesize` |
+| Expert | Short Name | Commands (`/`) | Agent Skills |
+|--------|-----------|-----------------|--------------|
+| Project Manager | pm | `/pm-start`, `/pm-interview`, `/pm-add-feature` | vision, roadmap, decompose, postmortem, update-plan, handoff |
+| Software Engineer | swe | `/swe-start` | handoff |
+| Quality Assurance | qa | `/qa-start` | review, test-plan, regression, bug-triage, handoff |
+| DevOps | devops | `/ops-start`, `/ops-env-discovery`, `/ops-deploy` | pipeline, release-plan, handoff |
+| Data Analyst | data-analyst | (under development) | intake, brief, scope, start, synthesize |
 
 To show the user which experts are available programmatically:
 ```bash

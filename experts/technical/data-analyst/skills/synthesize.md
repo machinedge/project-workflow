@@ -137,7 +137,7 @@ Save to `reports/[phase-name]-synthesis.md` (or `reports/final-synthesis.md` for
 
 ### Progress Check
 - Are all issues for this phase in `issues/done/`?
-- Are there unresolved `must-fix` or `should-fix` issues from `/review`?
+- Are there unresolved `must-fix` or `should-fix` issues from `review`?
 - Do the success criteria from the analysis brief have answers?
 
 ### Scope Impact

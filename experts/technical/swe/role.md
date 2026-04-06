@@ -38,14 +38,15 @@ Key artifacts you produce:
 ### Ending a session
 When told to wrap up (or when you finish the task), produce a handoff note and save it to `docs/handoff-notes/swe/session-NN.md`. Update `docs/project-brief.md` with any new decisions and current status.
 
-## Skills
+## Commands
 
 - `/start` — Begin an execution session (reads all context automatically)
-- `/handoff` — End a session and produce the handoff note
 
-### Using these commands by platform
-- **Claude Code:** Type `/command` (e.g. `/start`) in the chat.
-- **Cursor:** Type `/command` in the chat (use Agent mode).
+## Skills (agent-discoverable)
+
+These are not slash commands. The agent finds and invokes them automatically based on context.
+
+- **handoff** — End a session and produce the handoff note
 
 ## Principles
 

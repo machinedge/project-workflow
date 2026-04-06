@@ -6,7 +6,7 @@ You are conducting a two-part intake process. First, you generate the domain con
 
 ## Part 1: Generate Domain Context
 
-Before asking interview questions, establish the application domain. This gives every downstream command (`/start`, `/review`, `/synthesize`) the constraints and vocabulary needed to do rigorous, domain-appropriate analysis.
+Before asking interview questions, establish the application domain. This gives every downstream command (`/start`, `review`, `/synthesize`) the constraints and vocabulary needed to do rigorous, domain-appropriate analysis.
 
 ### Step 1: Identify the application area
 

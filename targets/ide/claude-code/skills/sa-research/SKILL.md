@@ -57,7 +57,7 @@ State your recommendation clearly:
 Present the full research summary. Wait for the user to decide.
 
 If the user accepts the recommendation:
-- Note whether `docs/architecture.md` should be updated (suggest running `/sa-update` if so)
+- Note whether `docs/architecture.md` should be updated (suggest asking for the `sa-update` skill if so)
 - Record the decision in the session's handoff note
 
 If the user wants more investigation, go deeper on the specific areas they identify.

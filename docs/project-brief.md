@@ -81,8 +81,8 @@ Developers using AI coding assistants who want structured, repeatable workflows 
 - **Under development:** Data Analyst, User Experience
 - **Tooling:** scaffold, validate, install, package — functional (in `tools/` and `targets/`)
 - **Blockers:** None
-- **Next task:** None — all QA regression bugs resolved; install script and sync command remaining
-- **Last updated:** swe-bug-056, swe-bug-057, swe-bug-058 complete; all QA regression findings resolved
+- **Next task:** qa-feature-059 — QA review of commands vs skills slash prefix cleanup
+- **Last updated:** session-30 — ad-hoc cleanup separating commands (9, slash-invocable) from skills (21, agent-discoverable) across all role files, rules, SKILL.md, command files, and READMEs (79 files changed)
 
 ## Notes for AI
 

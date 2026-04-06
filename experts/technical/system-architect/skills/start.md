@@ -49,7 +49,7 @@ Gather the information needed to make sound architectural decisions:
 
 - Read relevant existing code, configs, or documentation
 - Identify constraints from the project brief, env-context, and existing architecture
-- If the task requires evaluating technology options, do the evaluation here (same rigor as `/research`)
+- If the task requires evaluating technology options, do the evaluation here (same rigor as `research`)
 - If the task involves a new component or subsystem, identify integration points with existing components
 
 Present your analysis:
@@ -116,4 +116,4 @@ Summarize what was done:
 - Any concerns, open questions, or follow-up items
 - Anything the user should manually verify
 
-Then ask the user if they'd like to proceed to `/handoff` to close out the session.
+Then ask the user if they'd like to run the `handoff` skill to close out the session.

@@ -10,8 +10,8 @@ If the user provided a reference: $ARGUMENTS
 ## Step 1: Load context
 
 Read these files:
-1. `docs/project-brief.md` — if it doesn't exist, tell the user to run `/pm-interview` and `/pm-vision` first.
-2. `docs/roadmap.md` — if it doesn't exist, tell the user to run `/pm-roadmap` first.
+1. `docs/project-brief.md` — if it doesn't exist, tell the user to run `/pm-interview` and ask for the `pm-vision` skill first.
+2. `docs/roadmap.md` — if it doesn't exist, tell the user to ask for the `pm-roadmap` skill first.
 3. The most recent `docs/interview-notes-*.md` file (by modification date), or the one the user specifies.
 
 If no feature interview notes exist (`docs/interview-notes-*.md`), tell the user to run `/pm-add-feature` first.
@@ -57,8 +57,8 @@ Ask the user to review and approve before saving. If they request changes, incor
 
 ## Step 5: After saving
 
-Tell the user to run `/pm-decompose` next to break the new milestones into tasks. Suggest specifying the milestone name, e.g.:
-> Run `/pm-decompose [Dark Mode] User can toggle theme` to create tasks for the first new milestone.
+Tell the user to ask for the `pm-decompose` skill next to break the new milestones into tasks. Suggest specifying the milestone name, e.g.:
+> Ask for `pm-decompose` with `[Dark Mode] User can toggle theme` to create tasks for the first new milestone.
 
 Rules:
 - Do NOT rewrite or reorder existing milestones, success criteria, or decisions.

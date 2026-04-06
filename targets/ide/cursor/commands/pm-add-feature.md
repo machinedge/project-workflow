@@ -2,7 +2,7 @@ The user wants to scope new work for an existing project.
 
 If the user provided a description: $ARGUMENTS
 
-First, read `docs/project-brief.md` and `docs/roadmap.md` (if it exists) so you understand the project context, constraints, audience, and what's already been built or planned. If `docs/project-brief.md` doesn't exist, tell the user to run `/pm-interview` and `/pm-vision` first — this command is for adding to an existing project.
+First, read `docs/project-brief.md` and `docs/roadmap.md` (if it exists) so you understand the project context, constraints, audience, and what's already been built or planned. If `docs/project-brief.md` doesn't exist, tell the user to run `/pm-interview` and ask for the `pm-vision` skill first — this command is for adding to an existing project.
 
 ## Step 1: Assess Complexity
 
@@ -61,9 +61,9 @@ Rules:
 After the interview (abbreviated or full):
 - Produce a structured summary and flag any contradictions or gaps.
 - Save the summary to `docs/interview-notes-[short-slug].md` (e.g. `docs/interview-notes-dark-mode.md`). Use a short, descriptive slug based on what the user describes.
-- Tell the user to run `/pm-update-plan` next to integrate this feature into the project brief and roadmap.
+- Tell the user to ask for the `pm-update-plan` skill next to integrate this feature into the project brief and roadmap.
 
 DO NOT:
 - Ask multiple questions at a time.
 - Use any tools like "Ask User Questions" for multiple choice.
-- Skip directly to `/pm-decompose` — the brief and roadmap must be updated first via `/pm-update-plan`.
+- Skip directly to the `pm-decompose` skill — the brief and roadmap must be updated first via the `pm-update-plan` skill.

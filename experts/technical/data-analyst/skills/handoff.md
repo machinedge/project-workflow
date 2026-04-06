@@ -1,4 +1,4 @@
-# /handoff — End Session and Produce Handoff Note
+# handoff — End Session and Produce Handoff Note
 
 You are closing the current analysis session and producing a handoff note for the next session. The handoff note IS the next session's memory of what happened here.
 

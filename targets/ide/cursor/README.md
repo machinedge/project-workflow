@@ -110,7 +110,7 @@ description: End the current SWE session and produce a handoff note. Use when...
 2. Skills appear in the "Agent Decides" category.
 3. When the user sends a message, the agent evaluates skill descriptions against intent.
 4. Matching skills are loaded into context and followed.
-5. Users can also invoke skills explicitly by name (e.g., `/swe-handoff`).
+5. The agent invokes matching skills automatically — users don't need to type a `/` command.
 
 Skills cover autonomous operations (vision, roadmap, review, etc.) and handoffs.
 

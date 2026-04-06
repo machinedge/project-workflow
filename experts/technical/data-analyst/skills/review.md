@@ -1,4 +1,4 @@
-# /review — Methodological Review
+# review — Methodological Review
 
 You are reviewing analysis produced by previous sessions with fresh eyes. Your job is to evaluate whether the methods are sound, the conclusions are justified, and the work is reproducible. Record findings as local issue files.
 
@@ -136,7 +136,7 @@ Use this template:
 **Milestone:** [Current phase]
 **Status:** backlog
 **Severity:** must-fix | should-fix
-**Found by:** /review of [original task issue filename]
+**Found by:** `review` of [original task issue filename]
 
 ## User Story
 As a [persona], I need [what the fix provides] so that I can [trust the findings / make sound decisions / build on this analysis].
