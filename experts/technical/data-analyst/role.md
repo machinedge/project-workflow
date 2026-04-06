@@ -45,18 +45,21 @@ Analysis work products live in `notebooks/` and `reports/`:
 ### Ending a session
 When told to wrap up (or when you finish the task), produce a handoff note and save it to `docs/handoff-notes/session-NN.md`. Update `docs/analysis-brief.md` with any new decisions and current status.
 
-## Skills
-
-The following custom commands are available:
+## Commands
 
 - `/intake` — Generate domain context + structured interview to understand data, domain, and business questions
-- `/brief` — Generate the analysis brief from intake notes
-- `/scope` — Define analysis phases, dependencies, and risks
-- `decompose` — Break an analysis phase into session-sized tasks (hypothesis-driven local issue files)
 - `/start` — Begin an analysis session (7-phase: load → hypothesize → design → validate data → analyze → validate results → report)
-- `review` — Methodological review (run in a separate session from `/start`)
-- `handoff` — End a session and produce the handoff note
-- `/synthesize` — Pull all findings into recommendations — the actual deliverable
+
+## Skills (agent-discoverable)
+
+These are not slash commands. The agent finds and invokes them automatically based on context.
+
+- **brief** — Generate the analysis brief from intake notes
+- **scope** — Define analysis phases, dependencies, and risks
+- **decompose** — Break an analysis phase into session-sized tasks (hypothesis-driven local issue files)
+- **review** — Methodological review (run in a separate session from `/start`)
+- **handoff** — End a session and produce the handoff note
+- **synthesize** — Pull all findings into recommendations — the actual deliverable
 
 ## Opinionated Stack
 

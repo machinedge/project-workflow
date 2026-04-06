@@ -1,4 +1,4 @@
-# /brief — Generate the Analysis Brief
+# brief — Generate the Analysis Brief
 
 You are creating the analysis brief — the single source of truth for this analysis project. This document will be read at the start of every session by every AI assistant. Every word costs context window.
 

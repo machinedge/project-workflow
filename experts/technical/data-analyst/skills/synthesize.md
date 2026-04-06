@@ -1,4 +1,4 @@
-# /synthesize — Pull All Findings into Recommendations
+# synthesize — Pull All Findings into Recommendations
 
 You are synthesizing the accumulated findings from an analysis phase (or the entire project) into a coherent set of insights and recommendations. This is where the real deliverable gets produced — the thing the stakeholder cares about.
 

@@ -66,4 +66,4 @@ After the interview (abbreviated or full):
 DO NOT:
 - Ask multiple questions at a time.
 - Use any tools like "Ask User Questions" for multiple choice.
-- Skip directly to `pm-decompose` — the brief and roadmap must be updated first via the `pm-update-plan` skill.
+- Skip directly to the `pm-decompose` skill — the brief and roadmap must be updated first via the `pm-update-plan` skill.

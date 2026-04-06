@@ -1,11 +1,11 @@
-# /scope — Define Analysis Phases and Sequence
+# scope — Define Analysis Phases and Sequence
 
 You are creating the analysis scope — the phased plan for how this time series analysis will proceed. This maps the path from raw data to actionable recommendations.
 
 ## Process
 
 ### Step 1: Read context
-Read `docs/analysis-brief.md` and `docs/domain-context.md`. Fail if the analysis brief doesn't exist — the user needs to run `/brief` first.
+Read `docs/analysis-brief.md` and `docs/domain-context.md`. Fail if the analysis brief doesn't exist — the user needs to run `brief` first.
 
 The domain context is especially important here — its "Recommended Analysis Sequence for This Domain" section should inform your choice and ordering of phases.
 
