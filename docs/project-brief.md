@@ -81,8 +81,8 @@ Developers using AI coding assistants who want structured, repeatable workflows 
 - **Under development:** Data Analyst, User Experience
 - **Tooling:** scaffold, validate, install, package — functional (in `tools/` and `targets/`)
 - **Blockers:** None
-- **Next task:** qa-feature-059 — QA review of commands vs skills slash prefix cleanup
-- **Last updated:** session-30 — ad-hoc cleanup separating commands (9, slash-invocable) from skills (21, agent-discoverable) across all role files, rules, SKILL.md, command files, and READMEs (79 files changed)
+- **Next task:** swe-bug-060 — Fix data-analyst mixed command/skill treatment
+- **Last updated:** qa-session-06 — QA review of commands vs skills cleanup passed 7/8 criteria; data-analyst mixed treatment filed as swe-bug-060 (should-fix), pm-add-feature wording nit filed as swe-bug-061
 
 ## Notes for AI
 

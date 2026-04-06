@@ -53,11 +53,17 @@ Verify these 21 are listed as **skills** (without `/` prefix):
 
 ## Acceptance Criteria
 
-- [ ] All 9 commands correctly listed with `/` prefix across all role/rules files (both platforms + source)
-- [ ] All 21 skills correctly listed without `/` prefix across all role/rules files (both platforms + source)
-- [ ] Cross-references in command files correctly distinguish commands (keep `/`) from skills (no `/`)
-- [ ] Cross-references in SKILL.md files correctly distinguish commands from skills
-- [ ] Cursor and Claude Code implementations are consistent with each other
-- [ ] Data-analyst source files are consistent (no mixed treatment)
-- [ ] No broken markdown formatting
-- [ ] READMEs accurately describe the commands vs skills distinction
+- [x] All 9 commands correctly listed with `/` prefix across all role/rules files (both platforms + source)
+- [x] All 21 skills correctly listed without `/` prefix across all role/rules files (both platforms + source)
+- [x] Cross-references in command files correctly distinguish commands (keep `/`) from skills (no `/`)
+- [x] Cross-references in SKILL.md files correctly distinguish commands from skills
+- [x] Cursor and Claude Code implementations are consistent with each other
+- [ ] Data-analyst source files are consistent (no mixed treatment) — FAIL (swe-bug-060)
+- [x] No broken markdown formatting
+- [x] READMEs accurately describe the commands vs skills distinction
+
+## Session 06 Summary
+
+**What was done:** Full QA review of 79-file commands vs skills slash prefix cleanup. 7 of 8 acceptance criteria pass. Data-analyst has mixed treatment (should-fix). Filed swe-bug-060 and swe-bug-061.
+**Handoff note:** `docs/handoff-notes/qa/session-06.md`
+**All acceptance criteria met:** No — data-analyst source files have mixed `/` treatment (swe-bug-060). All 5 core experts pass on both platforms.
