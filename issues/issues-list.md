@@ -46,7 +46,7 @@
 | qa-feature-042 | QA: Review Claude Code Implementation for Completeness and Consistency | qa | feature | M11 | — | done |
 | swe-feature-043 | Build Sync/Management Command | swe | feature | M11 | qa-feature-039, qa-feature-042 — both implementations must be finalized before the sync command can be validated | done |
 | swe-feature-044 | Update Install Scripts and READMEs for Platform-Native Structure | swe | feature | M11 | qa-feature-039, qa-feature-042, swe-feature-043 | done |
-| qa-feature-045 | QA: Cross-Platform Regression and Install Verification | qa | feature | M11 | — | backlog |
+| qa-feature-045 | QA: Cross-Platform Regression and Install Verification | qa | feature | M11 | — | done |
 | sa-feature-046 | Redesign session-context as Agent Skill Instead of Shell Script | system-architect | feature | M11 | sa-feature-033 | done |
 | sa-feature-047 | Define Routing for Cross-Expert Skills (team- prefix) | sa | feature | M11 | swe-feature-035 | done |
 | sa-bug-048 | Concurrent session conflicts: session numbering and project brief overwrites | system-architect | bug | — | — | done |
@@ -57,3 +57,6 @@
 | swe-feature-053 | SWE: Add team-status skill to Claude Code implementation | swe | feature | M11 | — | done |
 | swe-techdebt-054 | SWE: Update outdated README files in both IDE target directories | swe | techdebt | M11 | — | done |
 | sa-techdebt-055 | Update architecture.md script specifications for update-brief-status | system-architect | techdebt | — | swe-feature-049 | done |
+| swe-bug-056 | Install script creates wrong PM handoff directory | swe | bug | M11 | — | backlog |
+| swe-bug-057 | update-brief-status script missing from install cleanup and READMEs | swe | bug | M11 | — | backlog |
+| swe-bug-058 | Sync check command flags intentionally excluded files as MISSING | swe | bug | M11 | — | backlog |
