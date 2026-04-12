@@ -63,6 +63,7 @@ The rule: **one directory, zero changes elsewhere.**
 | ADR-008 | Direct-copy install replaces translation pipeline | Accepted | — |
 | ADR-009 | Session primer as raw extractor, not agent summarizer | Accepted | — |
 | ADR-010 | Team-prefixed skills run roleless (no expert role loaded) | Accepted | — |
+| ADR-011 | Split managed artifacts into `.workflow/` directory | Accepted | — |
 
 ### ADR-001: Organize targets by class hierarchy
 
@@ -549,7 +550,7 @@ Specific steps:
 1. Detect target platform (cursor / claude-code) from CLI argument or auto-detection
 2. Copy rules/roles, commands, skills, scripts directories
 3. For Claude Code: merge `settings.json` hooks into existing `.claude/settings.json` (don't overwrite user settings)
-4. Create `docs/` and `issues/` directories if they don't exist (unchanged)
+4. Create `docs/` and `.workflow/` directories if they don't exist (see ADR-011 for `.workflow/` layout)
 
 #### M10 Recommendations Implementation
 
@@ -559,3 +560,116 @@ Specific steps:
 | 2 | Remove doc loading from session protocols | Role files simplified: session protocol says "use `/start` for context loading; for direct skill invocation, load relevant artifacts as needed." Individual skills include their own loading phases. |
 | 3 | Scope handoff note loading | Role files changed: "read most recent handoff in own subdirectory" only. Cross-expert handoffs loaded by specific skills that need them (`/pm-postmortem`, `/qa-regression`). |
 | 4 | Fix QA handoff gap | QA role file updated to include own handoff notes. Aligned between role file and `/qa-start` command. |
+
+### ADR-011: Split managed artifacts into `.workflow/` directory
+
+**Context:** Managed workflow artifacts (handoff notes, issues, interview notes, lessons log, research reports) are agent memory — noisy for humans browsing the project tree. Currently they live in `docs/` and top-level `issues/`. How should user-facing planning docs be separated from agent-managed artifacts?
+
+**Options considered:**
+- **(A) Flat `.workflow/`** — All moved artifacts directly under `.workflow/` (e.g., `.workflow/lessons-log.md`, `.workflow/issues/`, `.workflow/handoff-notes/`). Simple, mirrors current structure with a prefix change.
+- **(B) Nested `.workflow/docs/`** — Keep a `docs/` subdirectory inside `.workflow/` for non-issue artifacts. Preserves old mental model but adds unnecessary nesting.
+- **(C) Categorized `.workflow/`** — Group by type: `.workflow/memory/` for handoff/lessons, `.workflow/tracking/` for issues. Adds structure but also complexity for zero benefit.
+
+**Decision:** Option A. The artifacts already have clear names; adding sub-categories creates depth without value. The move is a prefix change from `docs/` or top-level to `.workflow/`.
+
+**Consequences:** Every path reference across ~90 files per platform changes. The change is mechanical (string replacement) but high-surface-area. `.workflow/` is not auto-added to `.gitignore` — user's choice whether to commit agent memory.
+
+#### Directory Tree
+
+```
+.workflow/
+  handoff-notes/
+    pm/
+    swe/
+    qa/
+    devops/
+    system-architect/
+  issues/
+    backlog/
+    planned/
+    in-progress/
+    done/
+    issues-list.md
+  lessons-log.md
+  interview-notes.md            # from pm-interview (initial)
+  interview-notes-*.md          # from pm-add-feature (per-feature)
+  research-*.md                 # ad-hoc research outputs
+```
+
+#### Path Mapping
+
+| Old Path | New Path | Code References |
+|----------|----------|-----------------|
+| `docs/handoff-notes/` | `.workflow/handoff-notes/` | ~45 files/platform |
+| `docs/handoff-notes/<expert>/session-NN.md` | `.workflow/handoff-notes/<expert>/session-NN.md` | (included above) |
+| `docs/interview-notes.md` | `.workflow/interview-notes.md` | ~7 files/platform |
+| `docs/interview-notes-*.md` | `.workflow/interview-notes-*.md` | (included above) |
+| `docs/lessons-log.md` | `.workflow/lessons-log.md` | ~19 files/platform |
+| `docs/research-*.md` | `.workflow/research-*.md` | 0 (no code refs) |
+| `issues/` | `.workflow/issues/` | ~40 files/platform |
+| `issues/backlog/` | `.workflow/issues/backlog/` | (included above) |
+| `issues/planned/` | `.workflow/issues/planned/` | (included above) |
+| `issues/in-progress/` | `.workflow/issues/in-progress/` | (included above) |
+| `issues/done/` | `.workflow/issues/done/` | (included above) |
+| `issues/issues-list.md` | `.workflow/issues/issues-list.md` | (included above) |
+
+#### docs/ Retention List
+
+These files stay in `docs/` — they are core planning docs or user-generated content, not agent memory:
+
+| File | Why it stays |
+|------|-------------|
+| `project-brief.md` | Core planning doc, source of truth |
+| `roadmap.md` | Core planning doc |
+| `architecture.md` | Core planning doc, SA-owned |
+| `agent-reference.md` | Project-specific reference |
+| `test-plan.md` | Core planning doc, QA-owned |
+| `env-context.md` | Core planning doc (may not exist) |
+| Any user-created docs | Not workflow artifacts |
+
+#### Script Path Changes
+
+| Script | Old Path | New Path |
+|--------|----------|----------|
+| `next-session-number.sh/.ps1` | `docs/handoff-notes/$expert` | `.workflow/handoff-notes/$expert` |
+| `move-issue.sh/.ps1` | `issues/backlog` ... `issues/done`, `issues/$target` | `.workflow/issues/backlog` ... `.workflow/issues/done`, `.workflow/issues/$target` |
+| `next-issue-number.sh/.ps1` | `issues/backlog` ... `issues/done` | `.workflow/issues/backlog` ... `.workflow/issues/done` |
+| `update-issues-list.sh/.ps1` | `issues/issues-list.md`, `issues/backlog` ... `issues/done` | `.workflow/issues/issues-list.md`, `.workflow/issues/backlog` ... `.workflow/issues/done` |
+| `session-primer.sh` (Claude Code only) | `docs/handoff-notes` | `.workflow/handoff-notes` |
+| `test-scripts.sh` | `docs/handoff-notes` + `issues/` | `.workflow/handoff-notes` + `.workflow/issues/` |
+| `update-brief-status.sh/.ps1` | `docs/project-brief.md` | No change (stays in `docs/`) |
+
+#### Conventions Update
+
+The conventions sections in `project-os.mdc` (Cursor) and `CLAUDE.md` (Claude Code) currently define canonical path patterns. These update as follows:
+
+| Current Convention | New Convention |
+|--------------------|----------------|
+| `docs/handoff-notes/<expert>/session-NN.md` | `.workflow/handoff-notes/<expert>/session-NN.md` |
+| `issues/<status>/[expert]-[type]-[NNN].md` | `.workflow/issues/<status>/[expert]-[type]-[NNN].md` |
+
+#### Edge Cases
+
+1. **Mixed references in skills:** Many skills reference both staying files (e.g., `docs/project-brief.md`) and moving files (e.g., `docs/lessons-log.md`). Since every path is fully qualified, this is a mechanical find-and-replace — no ambiguity.
+
+2. **`docs/research-*.md` has no code references:** The `sa-research` skill doesn't codify an output path — research results go into `docs/architecture.md` or handoff notes. The mapping is included for completeness.
+
+3. **Conventions are the routing hub:** `project-os.mdc` and `CLAUDE.md` define the canonical path patterns. Update these first — they're the reference all other files point back to.
+
+4. **Install script scaffolding:** `install.sh` and `install.ps1` create directory structures on fresh install. These change from `docs/handoff-notes/`, `docs/lessons-log.md`, and `issues/` to `.workflow/handoff-notes/`, `.workflow/lessons-log.md`, and `.workflow/issues/`. The `docs/` directory is still created for core planning docs.
+
+5. **Top-level `issues/` disappears:** On fresh installs, there is no top-level `issues/` directory. It becomes `.workflow/issues/`. Migration (M14) handles moving existing `issues/` content.
+
+6. **`docs/architecture.md` self-referential updates:** This document's own non-ADR sections reference old paths: the Top Level directory layout (line ~31), session-primer.sh behavior description (lines ~511-513), and script specifications table (lines ~534-539). Update these when the corresponding scripts and install logic are updated — not before, to avoid a half-current/half-future document.
+
+#### Implementation Order
+
+SWE tasks should follow this order to minimize risk:
+1. Update conventions (`project-os.mdc`, `CLAUDE.md`) — establishes the new canonical paths
+2. Update rules/roles — expert role files reference artifact locations
+3. Update commands — `/start` commands load context from these paths
+4. Update skills — the largest surface area; mechanical find-and-replace
+5. Update scripts — hardcoded paths in shell/PowerShell scripts
+6. Update install scripts — fresh install creates new layout
+7. Update docs and READMEs — documentation references
+8. Reinstall and verify — end-to-end test on this project

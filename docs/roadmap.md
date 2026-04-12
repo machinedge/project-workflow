@@ -16,6 +16,8 @@
 | M10 | [Context Optimization] Research essential vs. unnecessary startup context per expert | Done | M1 | 1-2 |
 | M11 | [Platform-Native Refactor] Fork to platform-native implementations with rules, skills, tools, hooks + context optimization | Done | M7, M10 | 5-8 (actual: ~24) |
 | M12 | [Repo Alignment] Remove legacy directories, align docs and CONTRIBUTING.md with platform-native paradigm | Done | M11 | 1-2 (actual: 1) |
+| M13 | [Workflow Directory] Update structure and references — all paths point to `.workflow/`, fresh install creates new layout | Planned | M12 | 3-5 |
+| M14 | [Workflow Directory] Migration from old structure — install script detects old layout and migrates artifacts | Planned | M13 | 2-3 |
 
 ## Dependency Map
 
@@ -28,6 +30,8 @@ M1 (Core experts) ──────> M8 (PM Planning Improvements) ──> M9 (
 M1 (Core experts) ──────> M10 (Context Optimization research) ──────────────────┼──> M11 (Platform-Native Refactor)
                                                                                  └──────┘       │
                                                                                                 └──> M12 (Repo Alignment)
+                                                                                                       │
+                                                                                                       └──> M13 (Workflow Directory: structure + refs) ──> M14 (Workflow Directory: migration)
 ```
 
 ## Risk Register
@@ -44,6 +48,9 @@ M1 (Core experts) ──────> M10 (Context Optimization research) ──
 | Platform divergence between Cursor and Claude Code becomes maintenance burden | Medium | High | Manual alignment for now; rebuild sync tooling as needed |
 | Auto-triggered skills (handoff, context loading) fire unreliably or at wrong time | Medium | Medium | QA acceptance testing; respond as bugs |
 | Retiring canonical definitions makes future platform additions harder | Medium | Low | 5 working experts in `targets/ide/` serve as living examples for new platforms |
+| Path reference coverage — missing a `.workflow/` reference means an expert silently reads/writes the wrong location | High | Medium | Systematic grep audit of all path references across both platforms |
+| Migration moves or misses user-created files in `docs/` | Medium | Medium | Migration only moves known artifacts by name pattern; leaves everything else |
+| Partial migration leaves files split between old and new locations | High | Low | Migration script should be idempotent (safe to re-run) |
 
 ## Change Log
 
@@ -70,3 +77,5 @@ M1 (Core experts) ──────> M10 (Context Optimization research) ──
 | — | Postmortem: M11 marked Done. 13 planned issues, 29 delivered (2.2x). 24 sessions used vs. 5-8 estimated. 10 ADRs produced (005-010 + 4 operational decisions). 4 QA sessions filed 9 issues (1 must-fix, 6 should-fix, 2 nits), all resolved. Architecture design phase (5 SA sessions) prevented implementation rework. Persistent gap: PowerShell untested on Windows. |
 | — | Added [Repo Alignment] milestone (M12) from interview notes. Remove `experts/`, `tools/`, `targets/desktop-cli/`, `targets/autonomous/`. Rewrite `CONTRIBUTING.md`. Update all docs with stale references. |
 | — | Postmortem: M12 marked Done. Scoped and executed in 1 combined PM+SWE session. 105 files changed (~10,400 lines removed). No formal issue file — scope was clear enough to execute directly from interview notes. No QA rework needed — deletion + doc rewrite with systematic grep verification. All 12 milestones now complete. |
+| — | Added [Workflow Directory] milestones (M13-M14) from interview notes. Split managed artifacts (`.workflow/`) from user-facing docs (`docs/`). |
+| — | Decomposed M13 into 13 tasks: sa-feature-063 (design), swe-feature-064 through swe-feature-067 (Cursor: rules, commands, skills, scripts), swe-feature-068 through swe-feature-071 (Claude Code: rules, commands, skills, scripts), swe-feature-072 (install fresh), swe-feature-073 (docs + READMEs), swe-feature-074 (reinstall + verify), qa-feature-075 (grep audit). Decomposed M14 into 4 tasks: swe-feature-076 (bash migration), swe-feature-077 (PowerShell migration), swe-feature-078 (test on this project), qa-feature-079 (end-to-end verification). |
