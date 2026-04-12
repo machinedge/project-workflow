@@ -28,3 +28,9 @@ Update all command files in `targets/ide/cursor/commands/` to replace old path r
 **Dependencies:** sa-feature-063
 **Inputs:** `docs/project-brief.md`, sa-feature-063 path mapping, `targets/ide/cursor/commands/`
 **Out of scope:** Rules, skills, and scripts
+
+## Session 36 Summary
+
+**What was done:** Updated all 8 Cursor command files to replace old artifact paths (docs/handoff-notes/, docs/lessons-log.md, docs/interview-notes*, issues/) with .workflow/ equivalents per ADR-011.
+**Handoff note:** `docs/handoff-notes/swe/session-36.md`
+**All acceptance criteria met:** Yes

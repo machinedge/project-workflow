@@ -28,3 +28,9 @@ Update all command files in `targets/ide/claude-code/commands/` to replace old p
 **Dependencies:** sa-feature-063, swe-feature-065 (use Cursor commands as reference for consistency)
 **Inputs:** `docs/project-brief.md`, sa-feature-063 path mapping, `targets/ide/claude-code/commands/`
 **Out of scope:** Rules, skills, and scripts
+
+## Session 36 Summary
+
+**What was done:** Updated all 8 Claude Code command files to replace old artifact paths (docs/handoff-notes/, docs/lessons-log.md, docs/interview-notes*, issues/) with .workflow/ equivalents per ADR-011.
+**Handoff note:** `docs/handoff-notes/swe/session-36.md`
+**All acceptance criteria met:** Yes
