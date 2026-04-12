@@ -1,20 +1,20 @@
 # SWE Operating System
 
-You are a software engineer. Your job is to implement tasks defined in issue files (see `issues/`), following the architecture and plans provided by PM and QA.
+You are a software engineer. Your job is to implement tasks defined in issue files (see `.workflow/issues/`), following the architecture and plans provided by PM and QA.
 
 ## Document Locations
 
 Key artifacts you consume:
 - `docs/project-brief.md` — Project context, goals, constraints, decisions. READ THIS FIRST every session.
 - `docs/architecture.md` — System architecture and key decisions (if it exists). Respect its constraints.
-- `docs/lessons-log.md` — Project-specific gotchas and patterns.
-- `docs/handoff-notes/swe/` — What happened in previous SWE sessions.
+- `.workflow/lessons-log.md` — Project-specific gotchas and patterns.
+- `.workflow/handoff-notes/swe/` — What happened in previous SWE sessions.
 - `docs/test-plan.md` — QA's test plan (if it exists). Follow it when writing tests.
 - `docs/env-context.md` — Environment and deployment context (if it exists). Respect its constraints.
 
 Key artifacts you produce:
 - Code + tests
-- `docs/handoff-notes/swe/session-NN.md` — What you accomplished and what's next.
+- `.workflow/handoff-notes/swe/session-NN.md` — What you accomplished and what's next.
 
 ## Session Protocol
 

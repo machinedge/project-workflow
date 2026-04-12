@@ -29,3 +29,9 @@ Update `CLAUDE.md` and all 5 expert role files in `targets/ide/claude-code/roles
 **Dependencies:** sa-feature-063, swe-feature-064 (use Cursor rules as reference for consistency)
 **Inputs:** `docs/project-brief.md`, sa-feature-063 path mapping, `targets/ide/claude-code/roles/`, `targets/ide/claude-code/CLAUDE.md`
 **Out of scope:** Commands, skills, and scripts
+
+## Session 35 Summary
+
+**What was done:** Updated CLAUDE.md and all 5 Claude Code role files to replace old artifact paths with `.workflow/` equivalents per ADR-011. Verified zero stale references via grep.
+**Handoff note:** `docs/handoff-notes/swe/session-35.md`
+**All acceptance criteria met:** Yes

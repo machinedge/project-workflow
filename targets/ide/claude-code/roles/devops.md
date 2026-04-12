@@ -10,15 +10,15 @@ Key artifacts you consume:
 - `docs/env-context.md` — Environment and deployment context (you also produce this).
 - `docs/release-plan.md` — Release gates and rollback procedures (you also produce this).
 - `docs/test-plan.md` — QA's test plan (if it exists). Informs pipeline test stages.
-- `docs/handoff-notes/devops/` — What happened in previous DevOps sessions.
-- `docs/handoff-notes/swe/` — What SWE built (what needs to be deployed).
-- `docs/handoff-notes/qa/` — QA findings (what needs to pass before release).
-- `docs/lessons-log.md` — Project-specific gotchas and patterns.
+- `.workflow/handoff-notes/devops/` — What happened in previous DevOps sessions.
+- `.workflow/handoff-notes/swe/` — What SWE built (what needs to be deployed).
+- `.workflow/handoff-notes/qa/` — QA findings (what needs to pass before release).
+- `.workflow/lessons-log.md` — Project-specific gotchas and patterns.
 
 Key artifacts you produce:
 - `docs/env-context.md` — Build targets, deployment mechanisms, test infrastructure.
 - `docs/release-plan.md` — Release gates, rollback procedures, artifact definitions.
-- `docs/handoff-notes/devops/session-NN.md` — What you configured and what's next.
+- `.workflow/handoff-notes/devops/session-NN.md` — What you configured and what's next.
 - Pipeline definitions and configuration.
 
 ## Session Protocol

@@ -18,9 +18,9 @@ Infer the expert from the skill or command prefix (e.g. `/swe-start` → SWE, `/
 
 ## Conventions
 
-**Handoff notes:** `docs/handoff-notes/<expert>/session-NN.md`. Each expert writes only to its own subdirectory. Session numbers are sequential.
+**Handoff notes:** `.workflow/handoff-notes/<expert>/session-NN.md`. Each expert writes only to its own subdirectory. Session numbers are sequential.
 
-**Issues:** `issues/<status>/[expert]-[type]-[NNN].md` where status is `backlog/`, `planned/`, `in-progress/`, or `done/`. The `[expert]` prefix is the **executor** — the expert who will fix or implement the issue, not the expert who found it. DevOps issues use `devops-` (not `ops-`). All experts can read all issues and create in `backlog/`. Only PM moves issues between directories.
+**Issues:** `.workflow/issues/<status>/[expert]-[type]-[NNN].md` where status is `backlog/`, `planned/`, `in-progress/`, or `done/`. The `[expert]` prefix is the **executor** — the expert who will fix or implement the issue, not the expert who found it. DevOps issues use `devops-` (not `ops-`). All experts can read all issues and create in `backlog/`. Only PM moves issues between directories.
 
 **Workflow contracts:** Each expert produces artifacts that others consume. If an upstream artifact doesn't exist, tell the user what's missing and how to create it — don't fail silently or invent data.
 
@@ -34,6 +34,6 @@ Infer the expert from the skill or command prefix (e.g. `/swe-start` → SWE, `/
 - The project brief (`docs/project-brief.md`) is the source of truth.
 - Keep the project brief under 1,000 words.
 - Verify your work. "It should work" is not verification.
-- Issues are tracked in `issues/`, not external services.
+- Issues are tracked in `.workflow/issues/`, not external services.
 - Stay in scope. Flag out-of-scope discoveries, don't act on them.
 - When the user signals they're wrapping up, invoke the appropriate handoff skill for the active expert.
