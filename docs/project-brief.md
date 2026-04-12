@@ -17,9 +17,9 @@ Developers using AI coding assistants who want structured, repeatable workflows 
 
 - [x] Core experts (PM, SWE, QA, DevOps, System Architect) have complete, tested skill sets on both platforms
 - [x] Users can install into a project and immediately start a productive session
-- [ ] [Repo Alignment] Remove legacy directories (`experts/`, `tools/`, `targets/desktop-cli/`, `targets/autonomous/`)
-- [ ] [Repo Alignment] `CONTRIBUTING.md` reflects current platform-native paradigm
-- [ ] [Repo Alignment] All docs free of stale references to removed directories
+- [x] [Repo Alignment] Remove legacy directories (`experts/`, `tools/`, `targets/desktop-cli/`, `targets/autonomous/`)
+- [x] [Repo Alignment] `CONTRIBUTING.md` reflects current platform-native paradigm
+- [x] [Repo Alignment] All docs free of stale references to removed directories
 
 ## Constraints
 
@@ -60,10 +60,10 @@ Developers using AI coding assistants who want structured, repeatable workflows 
 
 ## Current Status
 
-- **Milestones:** M1-M11 complete. M12 (Repo Alignment) in progress.
+- **Milestones:** M1-M12 complete. All planned milestones delivered.
 - **Core experts:** PM (10 skills), SWE (2 skills), QA (6 skills), DevOps (6 skills), System Architect (6 skills), team-status (1 shared) — functional on both platforms
 - **Blockers:** None
-- **Last updated:** pm-session — Scoped M12 (Repo Alignment Cleanup). Removing legacy directories and aligning docs with platform-native paradigm.
+- **Last updated:** swe-session-33 — M12 (Repo Alignment) complete. Removed `experts/`, `tools/`, `targets/desktop-cli/`, `targets/autonomous/`. Rewrote CONTRIBUTING.md, README.md, agent-reference.md. Zero open issues.
 
 ## Notes for AI
 

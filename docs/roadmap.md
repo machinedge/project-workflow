@@ -15,7 +15,7 @@
 | M9 | [Date Removal] Remove date references from all remaining expert templates | Done | M8 | 1 |
 | M10 | [Context Optimization] Research essential vs. unnecessary startup context per expert | Done | M1 | 1-2 |
 | M11 | [Platform-Native Refactor] Fork to platform-native implementations with rules, skills, tools, hooks + context optimization | Done | M7, M10 | 5-8 (actual: ~24) |
-| M12 | [Repo Alignment] Remove legacy directories, align docs and CONTRIBUTING.md with platform-native paradigm | Planned | M11 | 1-2 |
+| M12 | [Repo Alignment] Remove legacy directories, align docs and CONTRIBUTING.md with platform-native paradigm | Done | M11 | 1-2 (actual: 1) |
 
 ## Dependency Map
 
@@ -69,3 +69,4 @@ M1 (Core experts) ──────> M10 (Context Optimization research) ──
 | — | Post sa-feature-033: reconciled all M11 backlog issues with architecture design. Renamed `tools/` → `scripts/` per ADR-007. Aligned script list with architecture spec (4 + session-context.sh). Added settings.json hook to Claude Code tasks. No new tasks or milestones needed. |
 | — | Postmortem: M11 marked Done. 13 planned issues, 29 delivered (2.2x). 24 sessions used vs. 5-8 estimated. 10 ADRs produced (005-010 + 4 operational decisions). 4 QA sessions filed 9 issues (1 must-fix, 6 should-fix, 2 nits), all resolved. Architecture design phase (5 SA sessions) prevented implementation rework. Persistent gap: PowerShell untested on Windows. |
 | — | Added [Repo Alignment] milestone (M12) from interview notes. Remove `experts/`, `tools/`, `targets/desktop-cli/`, `targets/autonomous/`. Rewrite `CONTRIBUTING.md`. Update all docs with stale references. |
+| — | Postmortem: M12 marked Done. Scoped and executed in 1 combined PM+SWE session. 105 files changed (~10,400 lines removed). No formal issue file — scope was clear enough to execute directly from interview notes. No QA rework needed — deletion + doc rewrite with systematic grep verification. All 12 milestones now complete. |
