@@ -26,6 +26,12 @@ Comprehensive audit of the entire repository for any remaining references to old
 - [ ] If no stale references found, audit report confirms clean state
 - [ ] Cross-check: skills that reference both `docs/` (for planning docs) and `.workflow/` (for managed artifacts) are using the correct path for each
 
+## Session 07 Summary
+
+**What was done:** Grep audit across all in-scope files for 5 stale path patterns. Found 1 should-fix (swe-bug-080) and 1 nit. Cross-check confirmed correct `docs/` vs `.workflow/` usage in skills.
+**Handoff note:** `docs/handoff-notes/qa/session-07.md`
+**All acceptance criteria met:** Yes
+
 ## Notes
 
 **Depends on:** swe-feature-074 (reinstall must be complete)
