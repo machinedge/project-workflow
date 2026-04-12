@@ -60,7 +60,7 @@ Rules:
 
 After the interview (abbreviated or full):
 - Produce a structured summary and flag any contradictions or gaps.
-- Save the summary to `docs/interview-notes-[short-slug].md` (e.g. `docs/interview-notes-dark-mode.md`). Use a short, descriptive slug based on what the user describes.
+- Save the summary to `.workflow/interview-notes-[short-slug].md` (e.g. `.workflow/interview-notes-dark-mode.md`). Use a short, descriptive slug based on what the user describes.
 - Tell the user to ask for the `pm-update-plan` skill next to integrate this feature into the project brief and roadmap.
 
 DO NOT:

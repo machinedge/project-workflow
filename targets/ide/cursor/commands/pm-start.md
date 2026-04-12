@@ -9,12 +9,12 @@ The user may specify a task: $ARGUMENTS
 Read these files automatically — do not ask the user to provide them:
 1. `docs/project-brief.md`
 2. `docs/roadmap.md` (if it exists)
-3. `issues/issues-list.md` (if it exists)
+3. `.workflow/issues/issues-list.md` (if it exists)
 4. The task issue:
-   - If user specified an issue (e.g. "pm-feature-006" or a description), find and read it from `issues/`
+   - If user specified an issue (e.g. "pm-feature-006" or a description), find and read it from `.workflow/issues/`
    - If not, check project brief's "Next task" field for the issue filename
-   - If still unclear, scan `issues/planned/` and `issues/in-progress/` for PM tasks and ask
-5. Most recent handoff note in `docs/handoff-notes/pm/` (if any exist)
+   - If still unclear, scan `.workflow/issues/planned/` and `.workflow/issues/in-progress/` for PM tasks and ask
+5. Most recent handoff note in `.workflow/handoff-notes/pm/` (if any exist)
 6. `docs/architecture.md` (if it exists) — understand system-level context relevant to this task
 
 Confirm understanding with the user:

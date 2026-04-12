@@ -16,7 +16,7 @@ Interview them about this project, one category at a time, in this order:
 10. **Operations & Compliance** — Are there regulatory, safety, or compliance requirements? Who maintains this after it ships? What does monitoring or observability look like today?
 
 Rules:
-- Review `docs` for previous interview notes and content to develop session context.
+- Review `.workflow` for previous interview notes and content to develop session context.
 - First, ask the user if they'd like an abbreviated or extended interview.
 - Ask questions one-at-a-time per category, then WAIT for answers before moving on.
 - Keep questions short and conversational — the user may be speaking, not typing.
@@ -25,7 +25,7 @@ Rules:
 - Don't penalize typos, incomplete sentences, or speech-to-text artifacts — interpret intent.
 - Categories 9 and 10 are intentionally open-ended. They work whether the answer is "it's a Rails app on Heroku" or "we flash firmware via JTAG to PLCs on a factory floor." Don't assume any particular technology or delivery mechanism.
 - After all categories, produce a structured summary and flag any contradictions or gaps.
-- Save the summary to `docs/interview-notes.md`.
+- Save the summary to `.workflow/interview-notes.md`.
 - Tell the user to ask for the `pm-vision` skill next to generate the project brief.
 
 DO NOT:

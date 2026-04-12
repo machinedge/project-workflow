@@ -19,9 +19,9 @@ Walk through every gate in `docs/release-plan.md` and verify it's met:
 
 **Code gates:**
 Check the local issue files:
-- Scan `issues/backlog/`, `issues/planned/`, and `issues/in-progress/` for any issues with **Severity: must-fix** — these must be resolved
+- Scan `.workflow/issues/backlog/`, `.workflow/issues/planned/`, and `.workflow/issues/in-progress/` for any issues with **Severity: must-fix** — these must be resolved
 - Scan for any issues with **Severity: blocker** — these must be resolved
-- Check that all issues for the milestone are in `issues/done/` (none remaining in other status folders)
+- Check that all issues for the milestone are in `.workflow/issues/done/` (none remaining in other status folders)
 
 **Test gates:**
 - Verify test results (run tests or check most recent results)
@@ -56,7 +56,7 @@ Present the gate check results:
 **Overall: READY / NOT READY**
 ```
 
-**If any gate FAILS: STOP.** Report what's not met and what needs to happen to fix it. Do NOT proceed with deployment. Create issue files in `issues/backlog/` for any blocking items if they don't already exist. Run `.claude/scripts/next-issue-number.sh` for the next number, then run `.claude/scripts/update-issues-list.sh` after creating the issue.
+**If any gate FAILS: STOP.** Report what's not met and what needs to happen to fix it. Do NOT proceed with deployment. Create issue files in `.workflow/issues/backlog/` for any blocking items if they don't already exist. Run `.claude/scripts/next-issue-number.sh` for the next number, then run `.claude/scripts/update-issues-list.sh` after creating the issue.
 
 **If all gates PASS:** Confirm with the user before proceeding to deployment.
 
@@ -122,9 +122,9 @@ After deployment completes:
 [Was rollback needed? If so, what triggered it and was it successful?]
 ```
 
-If the deployment failed or was rolled back, create an issue file in `issues/backlog/`. Run `.claude/scripts/next-issue-number.sh` for the next number.
+If the deployment failed or was rolled back, create an issue file in `.workflow/issues/backlog/`. Run `.claude/scripts/next-issue-number.sh` for the next number.
 
-Create `issues/backlog/devops-bug-[number].md`:
+Create `.workflow/issues/backlog/devops-bug-[number].md`:
 
 ```markdown
 # Deployment failure: [Milestone name] — [brief description]
