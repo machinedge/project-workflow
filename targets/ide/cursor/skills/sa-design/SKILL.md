@@ -12,7 +12,7 @@ The user may specify a scope or focus area: $ARGUMENTS
 Read these files automatically:
 1. `docs/project-brief.md`
 2. `docs/roadmap.md` (if it exists)
-3. `docs/interview-notes*.md` (if any exist — raw requirements context)
+3. `.workflow/interview-notes*.md` (if any exist — raw requirements context)
 4. `docs/architecture.md` (if it exists — you may be extending, not starting fresh)
 5. `docs/env-context.md` (if it exists — deployment and infrastructure constraints)
 

@@ -134,9 +134,9 @@ After user approval, discuss how to implement this pipeline:
 - Should we generate CI config files (GitHub Actions, Makefile, scripts)?
 - Are there existing pipeline configs to modify?
 
-If CI config generation is needed, that's an SWE task — create an issue file for it in `issues/backlog/`. Run `.claude/scripts/next-issue-number.sh` for the next number.
+If CI config generation is needed, that's an SWE task — create an issue file for it in `.workflow/issues/backlog/`. Run `.claude/scripts/next-issue-number.sh` for the next number.
 
-Create `issues/backlog/devops-feature-[number].md`:
+Create `.workflow/issues/backlog/devops-feature-[number].md`:
 
 ```markdown
 # DevOps: Implement CI pipeline from pipeline definition

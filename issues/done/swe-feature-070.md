@@ -29,3 +29,9 @@ Update all SKILL.md files in `targets/ide/claude-code/skills/` to replace old pa
 **Dependencies:** sa-feature-063, swe-feature-066 (use Cursor skills as reference for consistency)
 **Inputs:** `docs/project-brief.md`, sa-feature-063 path mapping, `targets/ide/claude-code/skills/`
 **Out of scope:** Rules, commands, and scripts
+
+## Session 37 Summary
+
+**What was done:** Updated all 18 SKILL.md files in `targets/ide/claude-code/skills/` to replace `docs/handoff-notes/`, `docs/lessons-log.md`, `docs/interview-notes`, and `issues/` paths with `.workflow/` equivalents. Verified zero stale references via grep.
+**Handoff note:** `docs/handoff-notes/swe/session-37.md`
+**All acceptance criteria met:** Yes

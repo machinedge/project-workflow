@@ -67,11 +67,11 @@
 | sa-feature-063 | Design .workflow Directory Structure and Path Mapping | sa | feature | [Workflow Directory] Update structure and references (M13) | — | done |
 | swe-feature-064 | Update Cursor Rules for .workflow Paths | swe | feature | [Workflow Directory] Update structure and references (M13) | sa-feature-063 | done |
 | swe-feature-065 | Update Cursor Commands for .workflow Paths | swe | feature | [Workflow Directory] Update structure and references (M13) | sa-feature-063 | done |
-| swe-feature-066 | Update Cursor Skills for .workflow Paths | swe | feature | [Workflow Directory] Update structure and references (M13) | sa-feature-063 | backlog |
+| swe-feature-066 | Update Cursor Skills for .workflow Paths | swe | feature | [Workflow Directory] Update structure and references (M13) | sa-feature-063 | done |
 | swe-feature-067 | Update Cursor Scripts for .workflow Paths | swe | feature | [Workflow Directory] Update structure and references (M13) | sa-feature-063 | backlog |
 | swe-feature-068 | Update Claude Code Rules for .workflow Paths | swe | feature | [Workflow Directory] Update structure and references (M13) | sa-feature-063, swe-feature-064 | done |
 | swe-feature-069 | Update Claude Code Commands for .workflow Paths | swe | feature | [Workflow Directory] Update structure and references (M13) | sa-feature-063, swe-feature-065 | done |
-| swe-feature-070 | Update Claude Code Skills for .workflow Paths | swe | feature | [Workflow Directory] Update structure and references (M13) | sa-feature-063, swe-feature-066 | backlog |
+| swe-feature-070 | Update Claude Code Skills for .workflow Paths | swe | feature | [Workflow Directory] Update structure and references (M13) | sa-feature-063, swe-feature-066 | done |
 | swe-feature-071 | Update Claude Code Scripts for .workflow Paths | swe | feature | [Workflow Directory] Update structure and references (M13) | sa-feature-063, swe-feature-067 | backlog |
 | swe-feature-072 | Update Install Scripts for Fresh .workflow Structure | swe | feature | [Workflow Directory] Update structure and references (M13) | sa-feature-063 | backlog |
 | swe-feature-073 | Update agent-reference.md and READMEs for .workflow Paths | swe | feature | [Workflow Directory] Update structure and references (M13) | sa-feature-063 | backlog |

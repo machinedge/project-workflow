@@ -29,3 +29,9 @@ Update all SKILL.md files in `targets/ide/cursor/skills/` to replace old path re
 **Dependencies:** sa-feature-063
 **Inputs:** `docs/project-brief.md`, sa-feature-063 path mapping, `targets/ide/cursor/skills/`
 **Out of scope:** Rules, commands, and scripts
+
+## Session 37 Summary
+
+**What was done:** Updated all 18 SKILL.md files in `targets/ide/cursor/skills/` to replace `docs/handoff-notes/`, `docs/lessons-log.md`, `docs/interview-notes`, and `issues/` paths with `.workflow/` equivalents. Verified zero stale references via grep.
+**Handoff note:** `docs/handoff-notes/swe/session-37.md`
+**All acceptance criteria met:** Yes

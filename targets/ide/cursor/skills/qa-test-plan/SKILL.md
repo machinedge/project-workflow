@@ -14,10 +14,10 @@ Read these files:
 2. `docs/roadmap.md` — understand the milestone structure
 3. `docs/env-context.md` (if it exists) — understand environment constraints, test infrastructure, and hardware requirements
 4. `docs/architecture.md` (if it exists) — understand system-level constraints and component boundaries relevant to testing
-5. Most recent handoff note in `docs/handoff-notes/qa/` (if any exist) — understand what QA has already covered
+5. Most recent handoff note in `.workflow/handoff-notes/qa/` (if any exist) — understand what QA has already covered
 6. The relevant issue files:
-   - If a milestone was specified: scan all `issues/` subdirectories for files matching that milestone
-   - If a task was specified: find and read the issue file from `issues/`
+   - If a milestone was specified: scan all `.workflow/issues/` subdirectories for files matching that milestone
+   - If a task was specified: find and read the issue file from `.workflow/issues/`
    - If nothing specified: ask the user what to scope the test plan to
 
 For each issue in scope, read the acceptance criteria carefully — these are the behaviors that must be tested.
