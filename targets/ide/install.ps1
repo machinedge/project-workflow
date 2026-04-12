@@ -43,23 +43,36 @@ Write-Host ""
 # Create shared project structure
 # ─────────────────────────────────────────────
 
-foreach ($dir in @(
-    "docs/handoff-notes",
-    "issues/backlog",
-    "issues/planned",
-    "issues/in-progress",
-    "issues/done"
-)) {
-    New-Item -ItemType Directory -Path (Join-Path $Target $dir) -Force | Out-Null
-}
+# docs/ always needed for core planning docs (project-brief, roadmap, architecture, etc.)
+New-Item -ItemType Directory -Path (Join-Path $Target "docs") -Force | Out-Null
 
-foreach ($expert in @("pm", "swe", "qa", "devops", "system-architect")) {
-    New-Item -ItemType Directory -Path (Join-Path $Target "docs/handoff-notes/$expert") -Force | Out-Null
-}
+$oldHandoff = Join-Path $Target "docs/handoff-notes"
+$oldIssues = Join-Path $Target "issues"
 
-$lessonsLog = Join-Path $Target "docs/lessons-log.md"
-if (-not (Test-Path $lessonsLog)) {
-    @"
+if ((Test-Path $oldHandoff) -or (Test-Path $oldIssues)) {
+    # Existing install with old directory layout — migration is M14
+    Write-Host "  Note: Existing install detected with old directory layout."
+    Write-Host "        Managed artifacts are in docs/handoff-notes/ and issues/."
+    Write-Host "        A future update will provide migration to .workflow/."
+    Write-Host ""
+} else {
+    # Fresh install (or already migrated) — create .workflow/ structure
+    foreach ($dir in @(
+        ".workflow/issues/backlog",
+        ".workflow/issues/planned",
+        ".workflow/issues/in-progress",
+        ".workflow/issues/done"
+    )) {
+        New-Item -ItemType Directory -Path (Join-Path $Target $dir) -Force | Out-Null
+    }
+
+    foreach ($expert in @("pm", "swe", "qa", "devops", "system-architect")) {
+        New-Item -ItemType Directory -Path (Join-Path $Target ".workflow/handoff-notes/$expert") -Force | Out-Null
+    }
+
+    $lessonsLog = Join-Path $Target ".workflow/lessons-log.md"
+    if (-not (Test-Path $lessonsLog)) {
+        @"
 # Lessons Log
 
 Record project-specific gotchas, patterns, and knowledge here. Future sessions will read this to avoid repeating mistakes.
@@ -67,6 +80,7 @@ Record project-specific gotchas, patterns, and knowledge here. Future sessions w
 | Lesson | Context |
 |--------|---------|
 "@ | Set-Content -Path $lessonsLog -Encoding UTF8
+    }
 }
 
 # ─────────────────────────────────────────────
@@ -279,5 +293,5 @@ if ($Editor -eq "claude" -or $Editor -eq "both") {
     Write-Host "    Remove-Item .claude/scripts/ -Recurse"
     Write-Host "    # Manually remove hooks from .claude/settings.json if desired"
 }
-Write-Host "  Project documents (docs/, issues/) are yours - they are not removed."
+Write-Host "  Project documents (docs/, .workflow/) are yours - they are not removed."
 Write-Host ""

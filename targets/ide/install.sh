@@ -82,18 +82,28 @@ echo ""
 # Create shared project structure
 # ─────────────────────────────────────────────
 
-mkdir -p "$TARGET/docs/handoff-notes"
-mkdir -p "$TARGET/issues/backlog"
-mkdir -p "$TARGET/issues/planned"
-mkdir -p "$TARGET/issues/in-progress"
-mkdir -p "$TARGET/issues/done"
+# docs/ always needed for core planning docs (project-brief, roadmap, architecture, etc.)
+mkdir -p "$TARGET/docs"
 
-for expert in pm swe qa devops system-architect; do
-    mkdir -p "$TARGET/docs/handoff-notes/$expert"
-done
+if [ -d "$TARGET/docs/handoff-notes" ] || [ -d "$TARGET/issues" ]; then
+    # Existing install with old directory layout — migration is M14
+    echo "  Note: Existing install detected with old directory layout."
+    echo "        Managed artifacts are in docs/handoff-notes/ and issues/."
+    echo "        A future update will provide migration to .workflow/."
+    echo ""
+else
+    # Fresh install (or already migrated) — create .workflow/ structure
+    mkdir -p "$TARGET/.workflow/issues/backlog"
+    mkdir -p "$TARGET/.workflow/issues/planned"
+    mkdir -p "$TARGET/.workflow/issues/in-progress"
+    mkdir -p "$TARGET/.workflow/issues/done"
 
-if [ ! -f "$TARGET/docs/lessons-log.md" ]; then
-cat > "$TARGET/docs/lessons-log.md" << 'EOF'
+    for expert in pm swe qa devops system-architect; do
+        mkdir -p "$TARGET/.workflow/handoff-notes/$expert"
+    done
+
+    if [ ! -f "$TARGET/.workflow/lessons-log.md" ]; then
+cat > "$TARGET/.workflow/lessons-log.md" << 'EOF'
 # Lessons Log
 
 Record project-specific gotchas, patterns, and knowledge here. Future sessions will read this to avoid repeating mistakes.
@@ -101,6 +111,7 @@ Record project-specific gotchas, patterns, and knowledge here. Future sessions w
 | Lesson | Context |
 |--------|---------|
 EOF
+    fi
 fi
 
 # ─────────────────────────────────────────────
@@ -324,5 +335,5 @@ if [ "$EDITOR" = "claude" ] || [ "$EDITOR" = "both" ]; then
     echo "    rm -rf .claude/scripts/"
     echo "    # Manually remove hooks from .claude/settings.json if desired"
 fi
-echo "  Project documents (docs/, issues/) are yours — they are not removed."
+echo "  Project documents (docs/, .workflow/) are yours — they are not removed."
 echo ""
