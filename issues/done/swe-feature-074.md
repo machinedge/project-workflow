@@ -27,3 +27,9 @@ Run the install script on this project to copy updated source files into `.curso
 **Dependencies:** swe-feature-064 through swe-feature-073 (all path updates must be complete)
 **Inputs:** `targets/ide/install.sh`, all updated source files
 **Out of scope:** Migration testing (M14)
+
+## Session 41 Summary
+
+**What was done:** Ran install script, verified all installed files reference `.workflow/` paths via grep audit — zero stale references across 81 files. Also completed swe-feature-073 (docs/READMEs) as prerequisite.
+**Handoff note:** `docs/handoff-notes/swe/session-41.md`
+**All acceptance criteria met:** Yes
