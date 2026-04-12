@@ -17,7 +17,7 @@ if ($target -notin $validStatuses) {
 if ($filename -notmatch '\.md$') { $filename += ".md" }
 
 $sourceFile = $null
-foreach ($dir in @("issues/backlog", "issues/planned", "issues/in-progress", "issues/done")) {
+foreach ($dir in @(".workflow/issues/backlog", ".workflow/issues/planned", ".workflow/issues/in-progress", ".workflow/issues/done")) {
     $candidate = Join-Path $dir $filename
     if (Test-Path $candidate) {
         $sourceFile = $candidate
@@ -30,7 +30,7 @@ if (-not $sourceFile) {
     exit 1
 }
 
-$targetDir = "issues/$target"
+$targetDir = ".workflow/issues/$target"
 $targetFile = Join-Path $targetDir $filename
 
 if ($sourceFile -eq $targetFile) {

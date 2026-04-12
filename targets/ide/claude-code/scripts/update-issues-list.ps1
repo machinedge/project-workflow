@@ -1,11 +1,11 @@
 $ErrorActionPreference = "Stop"
 
-if (-not (Test-Path "issues")) {
-    Write-Error "'issues/' directory not found. Run this script from the project root."
+if (-not (Test-Path ".workflow/issues")) {
+    Write-Error "'.workflow/issues/' directory not found. Run this script from the project root."
     exit 1
 }
 
-$output = "issues/issues-list.md"
+$output = ".workflow/issues/issues-list.md"
 
 $header = @"
 # Issues List
@@ -15,7 +15,7 @@ $header = @"
 "@
 
 $rows = @()
-foreach ($dir in @("issues/backlog", "issues/planned", "issues/in-progress", "issues/done")) {
+foreach ($dir in @(".workflow/issues/backlog", ".workflow/issues/planned", ".workflow/issues/in-progress", ".workflow/issues/done")) {
     if (-not (Test-Path $dir)) { continue }
     $status = Split-Path $dir -Leaf
     foreach ($file in Get-ChildItem -Path $dir -Filter "*.md") {

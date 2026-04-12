@@ -77,8 +77,8 @@ cd "$TMPDIR"
 
 create_issue() {
   local dir="$1" filename="$2" title="$3" type="$4" expert="$5" milestone="$6" deps="$7"
-  mkdir -p "issues/$dir"
-  cat > "issues/$dir/$filename" << EOF
+  mkdir -p ".workflow/issues/$dir"
+  cat > ".workflow/issues/$dir/$filename" << EOF
 # $title
 
 **Type:** $type
@@ -95,8 +95,8 @@ EOF
 
 create_session() {
   local expert="$1" number="$2"
-  mkdir -p "docs/handoff-notes/$expert"
-  echo "# Session $number handoff" > "docs/handoff-notes/$expert/session-${number}.md"
+  mkdir -p ".workflow/handoff-notes/$expert"
+  echo "# Session $number handoff" > ".workflow/handoff-notes/$expert/session-${number}.md"
 }
 
 # ============================================================
@@ -104,7 +104,7 @@ echo "=== next-issue-number ==="
 # ============================================================
 
 echo "[empty project]"
-mkdir -p issues/{backlog,planned,in-progress,done}
+mkdir -p .workflow/issues/{backlog,planned,in-progress,done}
 result=$("$SCRIPT_DIR/next-issue-number.sh")
 assert_eq "empty dirs → 001" "001" "$result"
 
@@ -116,8 +116,8 @@ result=$("$SCRIPT_DIR/next-issue-number.sh")
 assert_eq "highest is 045 → 046" "046" "$result"
 
 echo "[single issue]"
-rm -rf issues
-mkdir -p issues/{backlog,planned,in-progress,done}
+rm -rf .workflow/issues
+mkdir -p .workflow/issues/{backlog,planned,in-progress,done}
 create_issue "backlog" "swe-feature-010.md" "Only" "feature" "swe" "M1" "None"
 result=$("$SCRIPT_DIR/next-issue-number.sh")
 assert_eq "only 010 → 011" "011" "$result"
@@ -128,7 +128,7 @@ echo "=== next-session-number ==="
 # ============================================================
 
 echo "[no sessions yet]"
-mkdir -p docs/handoff-notes
+mkdir -p .workflow/handoff-notes
 result=$("$SCRIPT_DIR/next-session-number.sh" swe)
 assert_eq "no swe sessions → 01" "01" "$result"
 
@@ -162,18 +162,18 @@ echo "=== move-issue ==="
 # ============================================================
 
 echo "[basic move]"
-rm -rf issues
-mkdir -p issues/{backlog,planned,in-progress,done}
+rm -rf .workflow/issues
+mkdir -p .workflow/issues/{backlog,planned,in-progress,done}
 create_issue "backlog" "swe-feature-050.md" "Test" "feature" "swe" "M1" "None"
 result=$("$SCRIPT_DIR/move-issue.sh" "swe-feature-050.md" "in-progress")
-assert_file_exists "file in in-progress" "issues/in-progress/swe-feature-050.md"
-assert_file_not_exists "file gone from backlog" "issues/backlog/swe-feature-050.md"
+assert_file_exists "file in in-progress" ".workflow/issues/in-progress/swe-feature-050.md"
+assert_file_not_exists "file gone from backlog" ".workflow/issues/backlog/swe-feature-050.md"
 assert_contains "confirmation message" "Moved" "$result"
 
 echo "[move without .md extension]"
 create_issue "backlog" "qa-bug-051.md" "Bug" "bug" "qa" "M1" "None"
 result=$("$SCRIPT_DIR/move-issue.sh" "qa-bug-051" "done")
-assert_file_exists "file in done" "issues/done/qa-bug-051.md"
+assert_file_exists "file in done" ".workflow/issues/done/qa-bug-051.md"
 
 echo "[already in target]"
 create_issue "done" "swe-feature-052.md" "Done" "feature" "swe" "M1" "None"
@@ -209,17 +209,17 @@ echo "=== update-issues-list ==="
 # ============================================================
 
 echo "[regenerate from fixtures]"
-rm -rf issues
-mkdir -p issues/{backlog,planned,in-progress,done}
+rm -rf .workflow/issues
+mkdir -p .workflow/issues/{backlog,planned,in-progress,done}
 create_issue "done" "swe-feature-001.md" "Create System Architect" "feature" "swe" "M3" "None"
 create_issue "done" "swe-bug-007.md" "Fix architecture loading" "bug" "swe" "M5" "None"
 create_issue "backlog" "swe-feature-034.md" "Create Shell Scripts" "feature" "swe" "M11" "sa-feature-033 (design defines script locations)"
 create_issue "backlog" "swe-feature-036.md" "Create PM Skills" "feature" "swe" "M11" "sa-feature-033 (design), swe-feature-034 (scripts), swe-feature-035 (structure)"
 
 "$SCRIPT_DIR/update-issues-list.sh"
-assert_file_exists "issues-list.md created" "issues/issues-list.md"
+assert_file_exists "issues-list.md created" ".workflow/issues/issues-list.md"
 
-content=$(cat issues/issues-list.md)
+content=$(cat .workflow/issues/issues-list.md)
 assert_contains "has header" "| File | Title | Expert | Type | Milestone | Prerequisites | Status |" "$content"
 assert_contains "has swe-feature-001" "swe-feature-001" "$content"
 assert_contains "has swe-bug-007" "swe-bug-007" "$content"
@@ -233,16 +233,16 @@ assert_contains "status from dir: done" "| done |" "$content"
 assert_contains "status from dir: backlog" "| backlog |" "$content"
 
 echo "[sorted by issue number]"
-lines=$(grep '| swe-' issues/issues-list.md | head -2)
+lines=$(grep '| swe-' .workflow/issues/issues-list.md | head -2)
 first_line=$(echo "$lines" | head -1)
 assert_contains "first row is 001" "swe-feature-001" "$first_line"
 
 echo "[empty project]"
-rm -rf issues
-mkdir -p issues/{backlog,planned,in-progress,done}
+rm -rf .workflow/issues
+mkdir -p .workflow/issues/{backlog,planned,in-progress,done}
 "$SCRIPT_DIR/update-issues-list.sh"
-assert_file_exists "issues-list.md created even when empty" "issues/issues-list.md"
-content=$(cat issues/issues-list.md)
+assert_file_exists "issues-list.md created even when empty" ".workflow/issues/issues-list.md"
+content=$(cat .workflow/issues/issues-list.md)
 assert_contains "has header even when empty" "| File | Title |" "$content"
 
 # ============================================================
