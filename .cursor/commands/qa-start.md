@@ -10,11 +10,11 @@ Read these files automatically — do not ask the user to provide them:
 1. `docs/project-brief.md`
 2. `docs/roadmap.md` — understand the current milestone scope
 3. The task issue:
-   - If user specified an issue (e.g. "qa-feature-005" or a description), find and read it from `issues/`
+   - If user specified an issue (e.g. "qa-feature-005" or a description), find and read it from `.workflow/issues/`
    - If not, check project brief's "Next task" field for the issue filename
-   - If still unclear, scan `issues/planned/` and `issues/in-progress/` for QA tasks and ask
-4. Most recent handoff note in `docs/handoff-notes/qa/` (if any exist)
-5. Relevant SWE handoff notes in `docs/handoff-notes/swe/` — understand what was built and what changed
+   - If still unclear, scan `.workflow/issues/planned/` and `.workflow/issues/in-progress/` for QA tasks and ask
+4. Most recent handoff note in `.workflow/handoff-notes/qa/` (if any exist)
+5. Relevant SWE handoff notes in `.workflow/handoff-notes/swe/` — understand what was built and what changed
 6. `docs/test-plan.md` (if it exists) — evaluate coverage against it
 7. `docs/env-context.md` (if it exists) — check for environment-specific concerns
 8. `docs/architecture.md` (if it exists) — understand system-level constraints and review against architectural intent
@@ -76,7 +76,7 @@ If any criterion is not met, go back to Phase 3 and address it. Do not proceed u
 
 For each issue found, run `.cursor/scripts/next-issue-number.sh` to get the next available issue number.
 
-Create an issue file in `issues/backlog/` for each finding with a clear title, description, and severity. Reference the source file and line numbers where applicable. Include reproduction steps or evidence.
+Create an issue file in `.workflow/issues/backlog/` for each finding with a clear title, description, and severity. Reference the source file and line numbers where applicable. Include reproduction steps or evidence.
 
 If no issues are found, say so explicitly — a clean review is a valid outcome.
 

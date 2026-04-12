@@ -19,10 +19,10 @@ Figure out what to review based on what the user provides:
 
 Read these files:
 1. `docs/project-brief.md` — understand the project goals and constraints
-2. `docs/lessons-log.md` — know what gotchas have already been identified
-3. The relevant issue file(s) from `issues/` — find them in `in-progress/`, `done/`, or `planned/` and read each one for acceptance criteria and scope
-4. The relevant SWE handoff note(s) in `docs/handoff-notes/swe/` — understand what was done and what decisions were made
-5. Most recent handoff note in `docs/handoff-notes/qa/` (if any exist) — understand what QA has already reviewed
+2. `.workflow/lessons-log.md` — know what gotchas have already been identified
+3. The relevant issue file(s) from `.workflow/issues/` — find them in `in-progress/`, `done/`, or `planned/` and read each one for acceptance criteria and scope
+4. The relevant SWE handoff note(s) in `.workflow/handoff-notes/swe/` — understand what was done and what decisions were made
+5. Most recent handoff note in `.workflow/handoff-notes/qa/` (if any exist) — understand what QA has already reviewed
 6. `docs/test-plan.md` (if it exists) — understand what QA has defined as test requirements
 7. `docs/env-context.md` (if it exists) — understand environment-specific constraints
 8. `docs/architecture.md` (if it exists) — understand architectural intent for evaluating architecture fit
@@ -100,14 +100,14 @@ For each finding:
 
 ## Step 6: Create Issue Files for Findings
 
-After the user reviews and approves the findings, create issue files in `issues/backlog/` for **Must Fix** and **Should Fix** items. Do NOT create issues for Nits — those are informational only.
+After the user reviews and approves the findings, create issue files in `.workflow/issues/backlog/` for **Must Fix** and **Should Fix** items. Do NOT create issues for Nits — those are informational only.
 
 Run `.cursor/scripts/next-issue-number.sh` to get the next available issue number.
 
 Identify the expert who will fix each finding — use that expert as the filename prefix (executor convention, not finder).
 
-For must-fix findings: `issues/backlog/swe-bug-[number].md`
-For should-fix / tech debt findings: `issues/backlog/swe-techdebt-[number].md`
+For must-fix findings: `.workflow/issues/backlog/swe-bug-[number].md`
+For should-fix / tech debt findings: `.workflow/issues/backlog/swe-techdebt-[number].md`
 
 Use this template:
 
@@ -143,8 +143,8 @@ As a [persona], I [need | want] [what the fix provides] so that I can [why it ma
 ## Step 7: Update Documents
 
 After creating issue files:
-- Run `.cursor/scripts/update-issues-list.sh` to regenerate `issues/issues-list.md`
-- Add any new lessons to `docs/lessons-log.md` (patterns that should be caught earlier next time)
+- Run `.cursor/scripts/update-issues-list.sh` to regenerate `.workflow/issues/issues-list.md`
+- Add any new lessons to `.workflow/lessons-log.md` (patterns that should be caught earlier next time)
 - If the review found scope drift or incorrect decisions, flag these for the user to update in `docs/project-brief.md`
 - List the created issue filenames so the user has a clear action list
 

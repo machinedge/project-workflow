@@ -6,7 +6,7 @@ set -euo pipefail
 #
 # Usage: next-session-number.sh <expert-name>
 # Output: two-digit session number (e.g., "07")
-# Side effect: creates docs/handoff-notes/<expert>/session-NN.md placeholder
+# Side effect: creates .workflow/handoff-notes/<expert>/session-NN.md placeholder
 
 if [ -z "${1:-}" ]; then
   echo "Usage: next-session-number.sh <expert-name>" >&2
@@ -14,7 +14,7 @@ if [ -z "${1:-}" ]; then
 fi
 
 expert="$1"
-dir="docs/handoff-notes/$expert"
+dir=".workflow/handoff-notes/$expert"
 
 mkdir -p "$dir"
 

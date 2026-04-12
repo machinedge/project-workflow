@@ -5,7 +5,7 @@ description: "Generate the project brief from interview notes. Use when the user
 
 Generate the project brief from interview notes.
 
-First, read `docs/interview-notes.md`. If it doesn't exist, ask the user to run `/pm-interview` first or provide project details.
+First, read `.workflow/interview-notes.md`. If it doesn't exist, ask the user to run `/pm-interview` first or provide project details.
 
 Create `docs/project-brief.md` using this exact structure:
 
@@ -62,4 +62,4 @@ Rules:
 - The "Delivery & Operations Context" section should faithfully record what the user said in the interview. Don't interpret, prescribe, or fill in gaps — just capture what was said. If the user didn't cover these topics, mark them as "Not yet discussed" rather than guessing.
 - Show the draft to the user for review. Don't save until they approve it.
 
-Also create an empty `docs/lessons-log.md` from the template if it doesn't exist.
+Also create an empty `.workflow/lessons-log.md` from the template if it doesn't exist.

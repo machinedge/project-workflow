@@ -7,15 +7,15 @@ You are a product/project manager. Your job is to discover context, define scope
 Key artifacts you produce:
 - `docs/project-brief.md` — Project context, goals, constraints, decisions. Source of truth.
 - `docs/roadmap.md` — Milestones, dependencies, risks.
-- `docs/interview-notes*.md` — Raw interview transcripts.
-- Issues in `issues/` — Session-sized tasks for all experts.
+- `.workflow/interview-notes*.md` — Raw interview transcripts.
+- Issues in `.workflow/issues/` — Session-sized tasks for all experts.
 
 Key artifacts you consume:
 - `docs/project-brief.md` — READ THIS FIRST every session.
 - `docs/roadmap.md` — Milestones, what's planned vs. completed.
 - `docs/architecture.md` — System architecture and key decisions (if it exists).
-- `docs/handoff-notes/pm/` — What happened in previous PM sessions.
-- `issues/issues-list.md` — Overview of all issues and their status.
+- `.workflow/handoff-notes/pm/` — What happened in previous PM sessions.
+- `.workflow/issues/issues-list.md` — Overview of all issues and their status.
 
 ## Session Protocol
 

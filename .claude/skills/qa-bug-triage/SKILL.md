@@ -10,10 +10,10 @@ Review the open bug and issue backlog and produce a prioritized action plan.
 Read these files:
 1. `docs/project-brief.md` — understand the project goals, constraints, and current status
 2. `docs/roadmap.md` — understand the current milestone and what's planned
-3. Most recent handoff note in `docs/handoff-notes/qa/` (if any exist) — understand recent QA activity
+3. Most recent handoff note in `.workflow/handoff-notes/qa/` (if any exist) — understand recent QA activity
 4. `docs/architecture.md` (if it exists) — understand system-level context for assessing impact
 
-Read `issues/issues-list.md` for an overview, then scan `issues/backlog/`, `issues/planned/`, and `issues/in-progress/` to read all open issue files.
+Read `.workflow/issues/issues-list.md` for an overview, then scan `.workflow/issues/backlog/`, `.workflow/issues/planned/`, and `.workflow/issues/in-progress/` to read all open issue files.
 
 ## Step 2: Categorize Issues
 
@@ -82,7 +82,7 @@ Present findings:
 
 For each issue, update the **Severity** field in the issue file's metadata to reflect the triage assessment (blocker, high, medium, or low). If the issue file doesn't have a Severity field, add one.
 
-Run `.claude/scripts/update-issues-list.sh` to regenerate `issues/issues-list.md` with updated severity assignments.
+Run `.claude/scripts/update-issues-list.sh` to regenerate `.workflow/issues/issues-list.md` with updated severity assignments.
 
 ## Step 5: Recommend Next Actions
 

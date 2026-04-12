@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-if [ ! -d "issues" ]; then
-  echo "Error: 'issues/' directory not found. Run this script from the project root." >&2
+if [ ! -d ".workflow/issues" ]; then
+  echo "Error: '.workflow/issues/' directory not found. Run this script from the project root." >&2
   exit 1
 fi
 
-output="issues/issues-list.md"
+output=".workflow/issues/issues-list.md"
 
 cat > "$output" << 'HEADER'
 # Issues List
@@ -17,7 +17,7 @@ HEADER
 
 # Collect rows: sort key | table row
 {
-  for dir in issues/backlog issues/planned issues/in-progress issues/done; do
+  for dir in .workflow/issues/backlog .workflow/issues/planned .workflow/issues/in-progress .workflow/issues/done; do
     [ -d "$dir" ] || continue
     status=$(basename "$dir")
     for file in "$dir"/*.md; do

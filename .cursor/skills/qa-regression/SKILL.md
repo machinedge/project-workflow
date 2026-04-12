@@ -12,13 +12,13 @@ The user may specify a milestone: $ARGUMENTS
 Read these files:
 1. `docs/project-brief.md` — understand the project goals and constraints
 2. `docs/roadmap.md` — identify the milestone scope
-3. ALL SWE handoff notes in `docs/handoff-notes/swe/` — understand what was built across the milestone
-4. ALL QA handoff notes in `docs/handoff-notes/qa/` — understand what's already been reviewed
+3. ALL SWE handoff notes in `.workflow/handoff-notes/swe/` — understand what was built across the milestone
+4. ALL QA handoff notes in `.workflow/handoff-notes/qa/` — understand what's already been reviewed
 5. `docs/test-plan.md` (if it exists) — the defined test requirements
-6. `docs/lessons-log.md` — known gotchas
+6. `.workflow/lessons-log.md` — known gotchas
 7. `docs/architecture.md` (if it exists) — understand architectural intent for evaluating coherence across tasks
 
-Scan all `issues/` subdirectories for files matching the milestone (check the **Milestone** field in each file). Read each issue to get its acceptance criteria and scope.
+Scan all `.workflow/issues/` subdirectories for files matching the milestone (check the **Milestone** field in each file). Read each issue to get its acceptance criteria and scope.
 
 If the user didn't specify a milestone, determine which one was most recently completed based on the roadmap. Confirm with the user before proceeding.
 
@@ -91,7 +91,7 @@ Present findings:
 
 For each regression failure, run `.cursor/scripts/next-issue-number.sh` to get the next available issue number.
 
-Create an issue file in `issues/backlog/` using the executor prefix convention: `issues/backlog/swe-bug-[number].md` (or the appropriate expert who will fix it).
+Create an issue file in `.workflow/issues/backlog/` using the executor prefix convention: `.workflow/issues/backlog/swe-bug-[number].md` (or the appropriate expert who will fix it).
 
 Template:
 
@@ -125,6 +125,6 @@ After creating issue files, run `.cursor/scripts/update-issues-list.sh` to regen
 
 ## Step 6: Update Documents
 
-- Add any patterns to `docs/lessons-log.md` (e.g., "tasks that modify shared config should re-run all tests")
+- Add any patterns to `.workflow/lessons-log.md` (e.g., "tasks that modify shared config should re-run all tests")
 - Note in `docs/roadmap.md` change log that regression was run and how many issues were found
 - The regression report feeds into PM's `pm-postmortem` skill for the milestone

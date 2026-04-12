@@ -13,11 +13,11 @@ Run `.claude/scripts/next-session-number.sh pm` to atomically claim the next ses
 
 Determine which issue was worked on this session. Check the conversation context or read `docs/project-brief.md` to see what task was in progress. If unclear, ask the user.
 
-Read the issue file from `issues/` (check `in-progress/`, `planned/`, or `backlog/`) to get the acceptance criteria.
+Read the issue file from `.workflow/issues/` (check `in-progress/`, `planned/`, or `backlog/`) to get the acceptance criteria.
 
 ## Step 3: Write the handoff note
 
-Save to `docs/handoff-notes/pm/session-NN.md`:
+Save to `.workflow/handoff-notes/pm/session-NN.md`:
 
 ```markdown
 # Handoff Note: [Task Name]
@@ -57,12 +57,12 @@ Add a session summary section to the issue file:
 ## Session [NN] Summary
 
 **What was done:** [1-2 sentences]
-**Handoff note:** `docs/handoff-notes/pm/session-NN.md`
+**Handoff note:** `.workflow/handoff-notes/pm/session-NN.md`
 **All acceptance criteria met:** [Yes / No — if no, explain what remains]
 ```
 
 If all acceptance criteria are met:
-1. Run `.claude/scripts/move-issue.sh <filename> done` to move the issue to `issues/done/`.
+1. Run `.claude/scripts/move-issue.sh <filename> done` to move the issue to `.workflow/issues/done/`.
 2. Run `.claude/scripts/update-issues-list.sh` to regenerate the issues list.
 
 If acceptance criteria are NOT all met, leave the issue file in its current folder and note what remains in the session summary.
@@ -75,6 +75,6 @@ If new decisions were made during this session, append them to the "Key Decision
 
 ## Step 6: Update the lessons log
 
-If anything was learned during this session (a planning gotcha, a scoping pattern, a process improvement), add it to `docs/lessons-log.md`.
+If anything was learned during this session (a planning gotcha, a scoping pattern, a process improvement), add it to `.workflow/lessons-log.md`.
 
 Be honest in the handoff note. If something is incomplete or a gap remains, say so. The next session needs the truth, not optimism.

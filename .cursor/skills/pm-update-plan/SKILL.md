@@ -12,9 +12,9 @@ If the user provided a reference: $ARGUMENTS
 Read these files:
 1. `docs/project-brief.md` — if it doesn't exist, tell the user to run `/pm-interview` and ask for the `pm-vision` skill first.
 2. `docs/roadmap.md` — if it doesn't exist, tell the user to ask for the `pm-roadmap` skill first.
-3. The most recent `docs/interview-notes-*.md` file (by modification date), or the one the user specifies.
+3. The most recent `.workflow/interview-notes-*.md` file (by modification date), or the one the user specifies.
 
-If no feature interview notes exist (`docs/interview-notes-*.md`), tell the user to run `/pm-add-feature` first.
+If no feature interview notes exist (`.workflow/interview-notes-*.md`), tell the user to run `/pm-add-feature` first.
 
 ## Step 2: Update the project brief
 
