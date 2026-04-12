@@ -2,7 +2,7 @@
 
 ## What This Is
 
-A toolkit that defines AI expert roles for coordinated software development. Each expert (PM, SWE, QA, DevOps, etc.) has a role definition, structured skills, and tools. Platform-native implementations for Cursor and Claude Code leverage each platform's rules, skills, hooks, and tool capabilities directly.
+A toolkit that defines AI expert roles for coordinated software development. Each expert (PM, SWE, QA, DevOps, System Architect) has a role definition, structured skills, and scripts. Platform-native implementations for Cursor and Claude Code leverage each platform's rules, skills, commands, and scripting capabilities directly.
 
 ## Who It's For
 
@@ -10,42 +10,22 @@ Developers using AI coding assistants who want structured, repeatable workflows 
 
 ## How It Works
 
-- **Standalone mode:** Expert definitions install into a project as platform-native rules, skills, and tools. The AI loads the right expert context automatically; autonomous skills are discoverable without commands. Human-interactive workflows (interviews, deployment) remain explicit commands.
-- **Team mode (OpenClaw):** PM orchestrates a multi-agent team over Matrix. The human talks to PM; PM delegates to other experts.
+- Expert definitions install into a project as platform-native rules, skills, and scripts. The AI loads the right expert context automatically; autonomous skills are discoverable without commands. Human-interactive workflows (interviews, deployment) remain explicit commands.
 - **Documents are memory.** Experts have no memory between sessions. All state lives in `docs/` and `issues/`.
 
 ## Success Looks Like
 
-- [ ] Core experts (PM, SWE, QA, DevOps) have complete, tested skill sets
-- [ ] Framework tooling (scaffold, validate, install, package) works reliably
-- [ ] Users can install into a project and immediately start a productive session
-- [x] [Expert Skill Restructure] System Architect expert exists with design, research, review, update, start, handoff skills
-- [x] [Expert Skill Restructure] Every expert has `/start` and `/handoff` for executing issues
-- [x] [Expert Skill Restructure] SWE `/start` consumes `architecture.md` and enforces checkpoints
-- [x] [Expert Skill Restructure] All experts escalate out-of-scope decisions to PM or System Architect
-- [x] [Deployment Restructure] Directory layout organized by target class (IDE, Desktop/Code, Autonomous)
-- [x] [Deployment Restructure] Adding a new deployment target is atomic and self-contained
-- [x] [Deployment Restructure] OpenClaw code preserved but isolated in its own target directory
-- [x] [Deployment Restructure] `CLAUDE.md` removed
-- [x] [PM Planning Improvements] PM stops producing calendar dates in generated artifacts
-- [x] [PM Planning Improvements] `/add-feature` assesses complexity and shortens interview for small features
-- [x] [PM Planning Improvements] PM states assumptions when shortening interview so user can correct
-- [x] [Date Removal] No expert skill template produces or consumes calendar dates
-- [x] [Context Optimization] Expert x document matrix with essential/nice-to-have/unnecessary ratings
-- [x] [Context Optimization] Recommendation with proposed changes and rationale
-- [x] [Platform-Native Refactor] Cursor and Claude Code each have native implementations (not translated from canonical)
-- [x] [Platform-Native Refactor] Autonomous skills discoverable without slash commands
-- [x] [Platform-Native Refactor] Handoffs auto-trigger on session end
-- [x] [Platform-Native Refactor] Mechanical operations handled by hidden shell scripts
-- [x] [Platform-Native Refactor] Sync command keeps platform implementations aligned
+- [x] Core experts (PM, SWE, QA, DevOps, System Architect) have complete, tested skill sets on both platforms
+- [x] Users can install into a project and immediately start a productive session
+- [ ] [Repo Alignment] Remove legacy directories (`experts/`, `tools/`, `targets/desktop-cli/`, `targets/autonomous/`)
+- [ ] [Repo Alignment] `CONTRIBUTING.md` reflects current platform-native paradigm
+- [ ] [Repo Alignment] All docs free of stale references to removed directories
 
 ## Constraints
 
-- Platform implementations in `targets/ide/cursor/` and `targets/ide/claude-code/` are first-class; `experts/technical/` retained as reference only
+- Platform-native implementations in `targets/ide/cursor/` and `targets/ide/claude-code/` are the source of truth
 - Project brief must stay under 1,000 words
 - Issues tracked in `issues/`, not external services
-- Every expert needs `role.md`, `skills/`, and `tools/` directories
-- Breaking changes to `framework/` and `package/` paths accepted for deployment restructure
 
 ## Key Decisions Made
 
@@ -53,7 +33,7 @@ Developers using AI coding assistants who want structured, repeatable workflows 
 |------|----------|-----------|
 | Pre-existing | Documents are memory, not conversation history | Experts have no cross-session memory; docs are the only continuity mechanism |
 | Pre-existing | PM is the orchestrator in team mode | Single point of coordination; human talks to PM, PM delegates |
-| Pre-existing | Platform-agnostic canonical definitions | Avoids lock-in; translation layer handles platform differences |
+| Pre-existing | Platform-agnostic canonical definitions | ~~Superseded~~ — retired in favor of platform-native implementations |
 | 2026-03-12 | Add System Architect expert | Ad-hoc architecture decisions by SWE caused rework |
 | 2026-03-12 | Standardize `/start` and `/handoff` across all experts | Consistent issue pickup and session close |
 | 2026-03-12 | SWE `/start` consumes `architecture.md` | Backward compatible; separates system-level from domain-level |
@@ -76,19 +56,17 @@ Developers using AI coding assistants who want structured, repeatable workflows 
 | — | Lockfile-based atomic project brief updates via `update-brief-status.sh` | Concurrent handoff sessions can't silently overwrite each other's status line; 5s stale lock timeout for crash recovery |
 | — | Drop `--experts`/`--domain` CLI flags from install script | Pre-built platform files are a coherent set; partial install would require regenerating routing configs, defeating direct-copy purpose |
 | — | Commands keep `/` prefix; skills listed without `/` as bold names | Explicit distinction between 9 user-invoked commands and 21 agent-discoverable skills; "These are not slash commands" explainer in role files |
+| — | Remove `experts/`, `tools/`, `targets/desktop-cli/`, `targets/autonomous/` | Legacy directories from pre-platform-native era; platform-native `targets/ide/` is the only deliverable |
 
 ## Current Status
 
-- **Milestones:** M1-M11 complete. All planned milestones delivered.
+- **Milestones:** M1-M11 complete. M12 (Repo Alignment) in progress.
 - **Core experts:** PM (10 skills), SWE (2 skills), QA (6 skills), DevOps (6 skills), System Architect (6 skills), team-status (1 shared) — functional on both platforms
-- **Under development:** Data Analyst, User Experience
-- **Tooling:** scaffold, validate, install, sync — functional (in `tools/` and `targets/`)
 - **Blockers:** None
-- **Last updated:** swe-session-32 — Fixed Cursor README alwaysApply inaccuracy (swe-bug-062). Zero open issues remaining.
+- **Last updated:** pm-session — Scoped M12 (Repo Alignment Cleanup). Removing legacy directories and aligning docs with platform-native paradigm.
 
 ## Notes for AI
 
-- Use full expert directory names (`project-manager`, not `pm`; `data-analyst`, not `eda`)
-- Read `experts/technical/shared/docs-protocol.md` for cross-expert document contracts
-- Read `docs/agent-reference.md` before modifying tooling or expert definitions
+- Platform-native implementations live in `targets/ide/cursor/` and `targets/ide/claude-code/`
+- Read `docs/agent-reference.md` before modifying expert definitions
 - The System Architect owns `docs/architecture.md`; all other experts consume it

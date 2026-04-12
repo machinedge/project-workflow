@@ -15,6 +15,7 @@
 | M9 | [Date Removal] Remove date references from all remaining expert templates | Done | M8 | 1 |
 | M10 | [Context Optimization] Research essential vs. unnecessary startup context per expert | Done | M1 | 1-2 |
 | M11 | [Platform-Native Refactor] Fork to platform-native implementations with rules, skills, tools, hooks + context optimization | Done | M7, M10 | 5-8 (actual: ~24) |
+| M12 | [Repo Alignment] Remove legacy directories, align docs and CONTRIBUTING.md with platform-native paradigm | Planned | M11 | 1-2 |
 
 ## Dependency Map
 
@@ -25,7 +26,8 @@ M1 (Core experts) ──┬──> M3 (System Architect)  ──┐
 M2 (Framework) ──────────> M6 (Deployment Restructure) ──> M7 (Docs + verify) ──┐
 M1 (Core experts) ──────> M8 (PM Planning Improvements) ──> M9 (Date Removal)  │
 M1 (Core experts) ──────> M10 (Context Optimization research) ──────────────────┼──> M11 (Platform-Native Refactor)
-                                                                                 └──────┘
+                                                                                 └──────┘       │
+                                                                                                └──> M12 (Repo Alignment)
 ```
 
 ## Risk Register
@@ -36,12 +38,12 @@ M1 (Core experts) ──────> M10 (Context Optimization research) ──
 | Naming confusion between System Architect expert and domain-level architecture in `/start` | Medium | Medium | Clear documentation in role files and docs-protocol; distinct naming conventions |
 | Backward compatibility broken for existing projects | High | Low | SWE `/start` updated, not replaced; existing flow preserved; new skills are additive |
 | First-draft skill content requires significant iteration | Medium | High | Flesh out fully for working baseline; user tests on real projects and refines |
-| Restructure design doesn't accommodate unforeseen target types | Medium | Medium | Design for known target classes (IDE, Desktop/Code, Autonomous); iterate structure as new targets are added |
+| Restructure design doesn't accommodate unforeseen target types | Medium | Low | Simplified to IDE-only (`targets/ide/`); new target classes can be added later |
 | Complexity assessment misjudges feature size, shortening interview when it shouldn't | Medium | Low | PM states assumptions explicitly; user can push back and request full interview |
 | Removing context that appears unnecessary but is actually essential degrades expert output | High | Medium | Research errs conservative; flag uncertainty; validate recommendations before implementing |
-| Platform divergence between Cursor and Claude Code becomes maintenance burden | Medium | High | Sync/management command keeps implementations aligned |
+| Platform divergence between Cursor and Claude Code becomes maintenance burden | Medium | High | Manual alignment for now; rebuild sync tooling as needed |
 | Auto-triggered skills (handoff, context loading) fire unreliably or at wrong time | Medium | Medium | QA acceptance testing; respond as bugs |
-| Retiring canonical definitions makes future platform additions harder | Medium | Low | `experts/technical/` retained as reference; new platforms can fork from it |
+| Retiring canonical definitions makes future platform additions harder | Medium | Low | 5 working experts in `targets/ide/` serve as living examples for new platforms |
 
 ## Change Log
 
@@ -66,3 +68,4 @@ M1 (Core experts) ──────> M10 (Context Optimization research) ──
 | — | Decomposed M11 into 13 tasks: sa-feature-033 (design), swe-feature-034 through swe-feature-038 (Cursor implementation), qa-feature-039 (Cursor QA), swe-feature-040 and swe-feature-041 (Claude Code implementation), qa-feature-042 (Claude Code QA), swe-feature-043 (sync command), swe-feature-044 (install + docs), qa-feature-045 (final regression). |
 | — | Post sa-feature-033: reconciled all M11 backlog issues with architecture design. Renamed `tools/` → `scripts/` per ADR-007. Aligned script list with architecture spec (4 + session-context.sh). Added settings.json hook to Claude Code tasks. No new tasks or milestones needed. |
 | — | Postmortem: M11 marked Done. 13 planned issues, 29 delivered (2.2x). 24 sessions used vs. 5-8 estimated. 10 ADRs produced (005-010 + 4 operational decisions). 4 QA sessions filed 9 issues (1 must-fix, 6 should-fix, 2 nits), all resolved. Architecture design phase (5 SA sessions) prevented implementation rework. Persistent gap: PowerShell untested on Windows. |
+| — | Added [Repo Alignment] milestone (M12) from interview notes. Remove `experts/`, `tools/`, `targets/desktop-cli/`, `targets/autonomous/`. Rewrite `CONTRIBUTING.md`. Update all docs with stale references. |

@@ -251,9 +251,6 @@ if ($Editor -eq "claude" -or $Editor -eq "both") {
 # Summary
 # ─────────────────────────────────────────────
 
-$ToolkitRoot = (Resolve-Path (Join-Path $ScriptDir ".." "..")).Path
-$SyncPs1 = Join-Path $ToolkitRoot "tools/sync.ps1"
-
 Write-Host ""
 Write-Host "Done! Installed to: $TargetFull"
 Write-Host ""
@@ -265,13 +262,6 @@ if ($Editor -eq "claude") {
     Write-Host "  2. Open Cursor and run /pm-interview in Agent mode to start a new project"
 } else {
     Write-Host "  2. Open Claude Code or Cursor and run /pm-interview to start a new project"
-}
-Write-Host "  3. Or run /team-status to see the project health summary"
-Write-Host ""
-if (Test-Path $SyncPs1) {
-    Write-Host "Maintenance:"
-    Write-Host "  To check for updates:  $SyncPs1 check $TargetFull"
-    Write-Host "  To apply updates:      $SyncPs1 apply $TargetFull"
 }
 Write-Host ""
 Write-Host "Uninstall:"

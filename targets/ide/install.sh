@@ -295,9 +295,6 @@ fi
 # Summary
 # ─────────────────────────────────────────────
 
-TOOLKIT_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
-SYNC_SH="$TOOLKIT_ROOT/tools/sync.sh"
-
 echo ""
 echo "Done! Installed to: $(cd "$TARGET" && pwd)"
 echo ""
@@ -311,12 +308,6 @@ else
     echo "  2. Open Claude Code or Cursor and run /pm-interview to start a new project"
 fi
 echo "  3. Or run /team-status to see the project health summary"
-echo ""
-if [ -f "$SYNC_SH" ]; then
-    echo "Maintenance:"
-    echo "  To check for updates:  $SYNC_SH check $(cd "$TARGET" && pwd)"
-    echo "  To apply updates:      $SYNC_SH apply $(cd "$TARGET" && pwd)"
-fi
 echo ""
 echo "Uninstall:"
 echo "  To remove the toolkit, delete the managed files:"

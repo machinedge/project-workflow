@@ -2,35 +2,15 @@
 
 ## Overview
 
-This repo's infrastructure layer handles getting platform-agnostic expert definitions into users' environments. Three fundamentally different deployment mechanisms exist — IDE integration, desktop/CLI tool packaging, and autonomous multi-agent deployment — each with its own install/package workflow. The architecture organizes these by **target class**, replacing the current tangled `framework/` and `package/` split with a layout where each class and each target within it is self-contained.
+This repo contains platform-native expert implementations for Cursor and Claude Code. Each platform has its own first-class implementation installed to users' projects via direct copy. No translation pipeline — the files in `targets/ide/<platform>/` are the source of truth.
 
 ## Directory Layout
 
 ### Top Level
 
 ```
-experts/                    ← UNCHANGED (expert definitions)
-docs/                       ← UNCHANGED + absorbs framework/docs/agent-reference.md
-issues/                     ← UNCHANGED
-CONTRIBUTING.md             ← moved from framework/docs/ to repo root (convention)
-
-targets/                    ← NEW: all deployment targets (replaces framework/ + package/)
-  ide/                      ← Target class 1: IDE-based
-  desktop-cli/              ← Target class 2: Desktop/CLI environments
-  autonomous/               ← Target class 3: Autonomous agent frameworks
-
-tools/                      ← NEW: repo development + management utilities
-  scaffold/                 ← Expert authoring
-  validate/                 ← Expert validation
-  new-repo.sh / .ps1        ← Create new project repos
-  list-experts.sh / .ps1    ← Enumerate available experts
-```
-
-### Targets
-
-```
 targets/
-  ide/                          ← IDE-based targets
+  ide/                          ← IDE-based targets (only target class)
     install.sh                  ← Shared standalone installer
     install.ps1
     cursor/                     ← Cursor platform-native implementation
@@ -47,123 +27,36 @@ targets/
       commands/                 ← Explicit command files
       skills/                   ← Discoverable skill folders (SKILL.md)
       scripts/                  ← Mechanical operation scripts
-    # Future: kiro/, vscode/, continue-io/
-
-  desktop-cli/                  ← Desktop/CLI environments
-    claude/                     ← Claude Desktop, Claude Code, Cowork (.skill packaging)
-      package.sh
-      package.ps1
-      install-skill.sh
-      install-skill.ps1
-      uninstall-skill.sh
-      uninstall-skill.ps1
-      SKILL.md
-      build/                    ← Build scripts + output (output gitignored)
-    # Future: gemini/, warp/
-
-  autonomous/                   ← Autonomous agent frameworks
-    openclaw/                   ← OpenClaw (Matrix + Docker)
-      install-team.sh
-      install-team.ps1
-      templates/                ← Docker Compose, Matrix, conduit, etc.
-    # Future: hermes/, beeai/
-```
-
-### Tools
-
-```
-tools/
-  scaffold/                     ← Expert authoring
-    create-expert.sh
-    create-expert.ps1
-    templates/
-      role.md.tmpl
-      skills/                   ← Skill templates (interview, review, brief, etc.)
-  validate/                     ← Expert validation
-    validate.sh
-  new-repo.sh                   ← Create new project repos
-  new-repo.ps1
-  list-experts.sh               ← Enumerate available experts
-  list-experts.ps1
+docs/                           ← Documentation
+issues/                         ← File-based issue tracking
 ```
 
 ## Data Flow
 
 ```
-experts/ ──→ targets/<class>/<target>/<scripts> ──→ user's environment
-               ↑
-tools/ (scaffold creates experts, validate checks them)
+targets/ide/<platform>/ ──(install.sh)──→ user's .cursor/ or .claude/
 ```
 
-- For **IDE targets** (Cursor, Claude Code): platform-native implementations in `targets/ide/<platform>/` are self-contained and installed directly to the user's project via file copy. `experts/technical/` is retained as a reference but is not the source of truth for IDE targets.
-- For **other target classes** (desktop-cli, autonomous): targets read from `experts/` and transform/install into users' environments.
-- Target scripts are **independent**. Each target class has its own mechanism; they share no code.
-- Development tools operate **on expert definitions**, not on targets.
-- Repo utilities (`new-repo`, `list-experts`) are **end-user tools** that ship with the toolkit but aren't part of any deployment mechanism.
+- Platform-native implementations in `targets/ide/<platform>/` are self-contained and installed directly to the user's project via file copy.
+- The install script is a copy operation — no transformation or generation.
 
 ## Extensibility Model
 
-Adding a new target follows one pattern across all three classes:
-
 **New IDE target (e.g., Kiro):**
 1. Create `targets/ide/kiro/`
-2. Add Kiro-specific translation config or install overrides
-3. No changes to other targets or core files
+2. Add Kiro-specific implementation (rules/roles, commands, skills, scripts)
+3. No changes to other targets
 
-**New desktop-cli target (e.g., Gemini):**
-1. Create `targets/desktop-cli/gemini/`
-2. Add Gemini-specific packaging scripts and config
-3. No changes to Claude or other target directories
-
-**New autonomous target (e.g., BeeAI):**
-1. Create `targets/autonomous/beeai/`
-2. Add BeeAI-specific install script and templates
-3. No changes to OpenClaw or other directories
-
-The rule: **one directory, optionally one script, zero changes elsewhere.**
-
-## Migration Mapping
-
-| Current Location | New Location |
-|------------------|-------------|
-| `framework/install/install.sh` | `targets/ide/install.sh` |
-| `framework/install/install.ps1` | `targets/ide/install.ps1` |
-| `framework/install/targets/cursor/` | `targets/ide/cursor/` |
-| `framework/install/targets/claude-code/` | `targets/ide/claude-code/` |
-| `framework/install/install-team.sh` | `targets/autonomous/openclaw/install-team.sh` |
-| `framework/install/install-team.ps1` | `targets/autonomous/openclaw/install-team.ps1` |
-| `framework/install/templates/team/*` | `targets/autonomous/openclaw/templates/*` |
-| `framework/install/targets/openclaw/` | `targets/autonomous/openclaw/` (merged) |
-| `framework/scaffold/*` | `tools/scaffold/*` |
-| `framework/validate/*` | `tools/validate/*` |
-| `framework/docs/agent-reference.md` | `docs/agent-reference.md` |
-| `framework/docs/CONTRIBUTING.md` | `CONTRIBUTING.md` (repo root) |
-| `package/package.sh` | `targets/desktop-cli/claude/package.sh` |
-| `package/package.ps1` | `targets/desktop-cli/claude/package.ps1` |
-| `package/install-skill.sh` | `targets/desktop-cli/claude/install-skill.sh` |
-| `package/install-skill.ps1` | `targets/desktop-cli/claude/install-skill.ps1` |
-| `package/uninstall-skill.sh` | `targets/desktop-cli/claude/uninstall-skill.sh` |
-| `package/uninstall-skill.ps1` | `targets/desktop-cli/claude/uninstall-skill.ps1` |
-| `package/SKILL.md` | `targets/desktop-cli/claude/SKILL.md` |
-| `package/build/*` | `targets/desktop-cli/claude/build/*` |
-| `package/tools/new_repo.sh` | `tools/new-repo.sh` |
-| `package/tools/new_repo.ps1` | `tools/new-repo.ps1` |
-| `package/tools/list-experts.sh` | `tools/list-experts.sh` |
-| `package/tools/list-experts.ps1` | `tools/list-experts.ps1` |
-| `CLAUDE.md` | Deleted (separate task, M7) |
-
-**Deleted after migration:**
-- `framework/` — fully replaced by `targets/` + `tools/` + `docs/`
-- `package/` — fully replaced by `targets/desktop-cli/claude/` + `tools/`
+The rule: **one directory, zero changes elsewhere.**
 
 ## Architecture Decisions
 
 | ID | Decision | Status | Date |
 |----|----------|--------|------|
 | ADR-001 | Organize targets by class hierarchy | Accepted | 2026-03-12 |
-| ADR-002 | Top-level `tools/` for development and repo utilities | Accepted | 2026-03-12 |
+| ADR-002 | Top-level `tools/` for development and repo utilities | Superseded (removed in M12) | 2026-03-12 |
 | ADR-003 | Merge framework docs into `docs/` and repo root | Accepted | 2026-03-12 |
-| ADR-004 | Name second target class `desktop-cli` with per-target subdirectories | Accepted | 2026-03-12 |
+| ADR-004 | Name second target class `desktop-cli` with per-target subdirectories | Superseded (removed in M12) | 2026-03-12 |
 | ADR-005 | Handoffs and autonomous skills as discoverable skills (not commands) | Accepted | — |
 | ADR-006 | Soft auto-trigger for handoff on both platforms | Accepted | — |
 | ADR-007 | Shell scripts in `.cursor/scripts/` and `.claude/scripts/` | Accepted | — |
@@ -300,17 +193,14 @@ The rule: **one directory, optionally one script, zero changes elsewhere.**
 
 ## Constraints
 
-- Expert definitions (`experts/`) are unchanged — this restructure is infrastructure only
-- Breaking changes to `framework/` and `package/` paths are accepted
-- OpenClaw code is preserved, not deleted — isolated in `targets/autonomous/openclaw/`
-- `CLAUDE.md` removal is a separate task (M7)
-- No implementation in this task — design only
+- Platform-native implementations in `targets/ide/` are the source of truth
+- `experts/`, `tools/`, `targets/desktop-cli/`, and `targets/autonomous/` were removed in M12
 
 ## Platform-Native Architecture
 
 ### Overview
 
-Each IDE target platform (Cursor, Claude Code) has its own first-class implementation in `targets/ide/<platform>/`. These are the source of truth for their platform — not translations from canonical definitions. `experts/technical/` is retained as a reference only.
+Each IDE target platform (Cursor, Claude Code) has its own first-class implementation in `targets/ide/<platform>/`. These are the source of truth.
 
 The install script copies pre-built platform files directly to the user's project. No translation pipeline.
 
@@ -324,7 +214,7 @@ The install script copies pre-built platform files directly to the user's projec
 
 ### File Categories
 
-The 36 in-scope canonical files (excluding Data Analyst, which is out of scope for M11) fall into 5 categories based on their interaction pattern:
+The 36 expert files fall into 5 categories based on their interaction pattern:
 
 | Category | Count | Platform Concept | Invocation |
 |----------|-------|-----------------|------------|
@@ -335,9 +225,9 @@ The 36 in-scope canonical files (excluding Data Analyst, which is out of scope f
 | Handoff skills | 5 | Skill with SKILL.md (both) | Agent-discovered or explicit `/prefix-handoff` |
 | Shared protocol | 1 | Absorbed into role files | N/A |
 
-### Canonical File Mapping
+### File Mapping
 
-| # | Canonical File | Category | Cursor Path | Claude Code Path |
+| # | Expert File | Category | Cursor Path | Claude Code Path |
 |---|---------------|----------|-------------|-----------------|
 | 1 | `project-manager/role.md` | Role | `rules/project-manager-os.mdc` | `roles/project-manager.md` |
 | 2 | `project-manager/skills/start.md` | Start | `commands/pm-start.md` | `commands/pm-start.md` |
@@ -479,7 +369,7 @@ description: <What this skill does. When to use it. Max 1024 chars.>
 ---
 ```
 
-Body: the skill instructions adapted from the canonical file. Internal command references use platform prefixes (e.g., `/pm-interview` not `/interview`). Skills that need context include their own loading phase.
+Body: the skill instructions. Internal command references use platform prefixes (e.g., `/pm-interview` not `/interview`). Skills that need context include their own loading phase.
 
 **Cursor skill discovery flow:**
 1. Cursor scans `.cursor/skills/` at startup, reads SKILL.md frontmatter
@@ -628,15 +518,14 @@ This is Claude Code's bonus over Cursor — automatic context injection at sessi
 
 ### Shared Specifications
 
-#### Skill Content Adaptation Rules
+#### Skill Content Rules
 
-When SWE converts canonical skill files to platform-native SKILL.md:
+When creating or modifying SKILL.md files:
 
 1. Add YAML frontmatter with `name` (matching folder name) and `description` (discovery trigger, max 1024 chars)
-2. Update internal command references to use platform prefixes (e.g., `/interview` → `/pm-interview`)
-3. Skills that relied on session protocol for context loading must include their own loading phase
+2. Use platform prefixes in command references (e.g., `/pm-interview`, not `/interview`)
+3. Skills must include their own context loading phase
 4. Reference `.cursor/scripts/` or `.claude/scripts/` for mechanical operations instead of inline logic
-5. Remove "Using these commands by platform" sections from role files (no longer needed)
 
 #### Script Specifications
 
@@ -654,10 +543,7 @@ Additionally, Claude Code has `session-primer.sh` (Claude Code only, no `.ps1` c
 
 #### Install Script Changes
 
-The install script (`targets/ide/install.sh`) simplifies from a translation pipeline to a copy operation:
-
-- **Current flow:** Read `experts/technical/` → parse → generate platform files → write to `.cursor/` or `.claude/`
-- **New flow:** Copy `targets/ide/<platform>/` → `.cursor/` or `.claude/`
+The install script (`targets/ide/install.sh`) copies pre-built platform files:
 
 Specific steps:
 1. Detect target platform (cursor / claude-code) from CLI argument or auto-detection
