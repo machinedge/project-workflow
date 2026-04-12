@@ -60,6 +60,7 @@
 | swe-bug-056 | Install script creates wrong PM handoff directory | swe | bug | M11 | — | done |
 | swe-bug-057 | update-brief-status script missing from install cleanup and READMEs | swe | bug | M11 | — | done |
 | swe-bug-058 | Sync check command flags intentionally excluded files as MISSING | swe | bug | M11 | — | done |
-| qa-feature-059 | QA Review: Commands vs Skills Slash Prefix Cleanup | qa | feature | M11 | — | done |
-| swe-bug-060 | Data-analyst role.md has mixed command/skill treatment | swe | bug | M11 | — | backlog |
-| swe-bug-061 | pm-add-feature.md wording inconsistency between Cursor and Claude Code | swe | bug | M11 | — | backlog |
+| qa-feature-059 | QA Review: Commands vs Skills Slash Prefix Cleanup | QA | feature (review) | Platform-Native Refactor (M11) | — | done |
+| swe-bug-060 | Data-analyst role.md has mixed command/skill treatment | SWE | bug | Platform-Native Refactor (M11) — data-analyst cleanup | — | done |
+| swe-bug-061 | pm-add-feature.md wording inconsistency between Cursor and Claude Code | SWE | bug | Platform-Native Refactor (M11) | — | done |
+| swe-bug-062 | Cursor README incorrectly describes expert rules as alwaysApply: true | swe | bug | — | — | done |

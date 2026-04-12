@@ -33,11 +33,11 @@ Developers using AI coding assistants who want structured, repeatable workflows 
 - [x] [Date Removal] No expert skill template produces or consumes calendar dates
 - [x] [Context Optimization] Expert x document matrix with essential/nice-to-have/unnecessary ratings
 - [x] [Context Optimization] Recommendation with proposed changes and rationale
-- [ ] [Platform-Native Refactor] Cursor and Claude Code each have native implementations (not translated from canonical)
-- [ ] [Platform-Native Refactor] Autonomous skills discoverable without slash commands
-- [ ] [Platform-Native Refactor] Handoffs auto-trigger on session end
-- [ ] [Platform-Native Refactor] Mechanical operations handled by hidden shell scripts
-- [ ] [Platform-Native Refactor] Sync command keeps platform implementations aligned
+- [x] [Platform-Native Refactor] Cursor and Claude Code each have native implementations (not translated from canonical)
+- [x] [Platform-Native Refactor] Autonomous skills discoverable without slash commands
+- [x] [Platform-Native Refactor] Handoffs auto-trigger on session end
+- [x] [Platform-Native Refactor] Mechanical operations handled by hidden shell scripts
+- [x] [Platform-Native Refactor] Sync command keeps platform implementations aligned
 
 ## Constraints
 
@@ -73,16 +73,18 @@ Developers using AI coding assistants who want structured, repeatable workflows 
 | — | Session primer is a raw extractor script, not an agent summarizer (ADR-009) | Summarization is agent work, but raw file extraction is mechanical; agent processes raw output naturally |
 | — | Team-prefixed skills run roleless (ADR-010) | Cross-expert skills should not adopt a single-expert persona; self-contained SKILL.md + project-os context is sufficient |
 | — | Atomic session claiming via `set -C` (noclobber) in `next-session-number.sh` | Prevents concurrent sessions from claiming the same handoff note number; kernel-level `O_CREAT\|O_EXCL` is simplest correct solution |
+| — | Lockfile-based atomic project brief updates via `update-brief-status.sh` | Concurrent handoff sessions can't silently overwrite each other's status line; 5s stale lock timeout for crash recovery |
+| — | Drop `--experts`/`--domain` CLI flags from install script | Pre-built platform files are a coherent set; partial install would require regenerating routing configs, defeating direct-copy purpose |
+| — | Commands keep `/` prefix; skills listed without `/` as bold names | Explicit distinction between 9 user-invoked commands and 21 agent-discoverable skills; "These are not slash commands" explainer in role files |
 
 ## Current Status
 
-- **Milestones:** M1-M10 complete. Platform-Native Refactor (M11) in progress — both Cursor and Claude Code implementations at full parity (21 skills, 9 commands each). All QA-found issues resolved. Install script and sync command remaining.
+- **Milestones:** M1-M11 complete. All planned milestones delivered.
 - **Core experts:** PM (10 skills), SWE (2 skills), QA (6 skills), DevOps (6 skills), System Architect (6 skills), team-status (1 shared) — functional on both platforms
 - **Under development:** Data Analyst, User Experience
-- **Tooling:** scaffold, validate, install, package — functional (in `tools/` and `targets/`)
+- **Tooling:** scaffold, validate, install, sync — functional (in `tools/` and `targets/`)
 - **Blockers:** None
-- **Next task:** Install script and sync command (M11 remaining work)
-- **Last updated:** swe-session-31 — Fixed swe-bug-060 (data-analyst mixed command/skill treatment) and swe-bug-061 (pm-add-feature wording inconsistency). All QA-filed issues from qa-session-06 resolved.
+- **Last updated:** swe-session-32 — Fixed Cursor README alwaysApply inaccuracy (swe-bug-062). Zero open issues remaining.
 
 ## Notes for AI
 

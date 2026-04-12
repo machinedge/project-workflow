@@ -85,7 +85,7 @@ issues/
 Rules use Cursor's `.mdc` format with YAML frontmatter.
 
 - **`project-os.mdc`** is always applied (`alwaysApply: true`). It provides expert routing (which role file to load based on command/skill prefix) and shared principles. This is loaded on every message.
-- **Expert role rules** (e.g., `swe-os.mdc`) are also set to `alwaysApply: true`. Cursor loads all of them, but only the one matching the active session is relevant. The agent identifies the correct expert from the command prefix or user request.
+- **Expert role rules** (e.g., `swe-os.mdc`) are set to `alwaysApply: false` (agent-decided). Cursor loads them when it identifies the relevant expert from the command prefix or user request — only the matching role is loaded, not all of them.
 
 ### Commands
 
