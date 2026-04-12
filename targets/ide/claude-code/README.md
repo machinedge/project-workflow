@@ -55,7 +55,7 @@ The install script copies files from this directory into your project's `.claude
     move-issue.ps1
     next-session-number.sh      # Claim next handoff note number (atomic)
     next-session-number.ps1
-    update-issues-list.sh       # Regenerate issues/issues-list.md
+    update-issues-list.sh       # Regenerate .workflow/issues/issues-list.md
     update-issues-list.ps1
     update-brief-status.sh      # Atomically update project brief status line
     update-brief-status.ps1
@@ -65,19 +65,20 @@ The install script copies files from this directory into your project's `.claude
 The install script also creates the project scaffolding:
 
 ```
-docs/
-  lessons-log.md                # Seeded if it doesn't exist
+docs/                           # For planning docs (project-brief, roadmap, etc.)
+.workflow/
   handoff-notes/
     pm/
     swe/
     qa/
     devops/
     system-architect/
-issues/
-  backlog/
-  planned/
-  in-progress/
-  done/
+  issues/
+    backlog/
+    planned/
+    in-progress/
+    done/
+  lessons-log.md                # Seeded if it doesn't exist
 ```
 
 ## How It Works
@@ -113,10 +114,10 @@ Skills are discoverable by Claude Code's agent. Each skill folder contains a `SK
 
 Scripts in `.claude/scripts/` handle mechanical operations. Same set as Cursor, plus `session-primer.sh` (Claude Code only — used by the SessionStart hook).
 
-- **`next-issue-number.sh`** — scans `issues/` to find the next unused issue number.
+- **`next-issue-number.sh`** — scans `.workflow/issues/` to find the next unused issue number.
 - **`move-issue.sh`** — moves an issue file between status directories (`backlog/` → `in-progress/`, etc.).
 - **`next-session-number.sh`** — atomically claims the next handoff note number using `set -C` (noclobber) to prevent concurrent session collisions.
-- **`update-issues-list.sh`** — regenerates `issues/issues-list.md` from all issue files.
+- **`update-issues-list.sh`** — regenerates `.workflow/issues/issues-list.md` from all issue files.
 - **`update-brief-status.sh`** — atomically updates the "Last updated" line in `docs/project-brief.md` under a lockfile to prevent concurrent overwrites.
 - **`session-primer.sh`** — extracts raw project context for the SessionStart hook (Claude Code only).
 
@@ -174,7 +175,7 @@ rm -rf .claude/scripts/
 # Hooks — manually edit .claude/settings.json to remove the SessionStart hook
 ```
 
-Project documents (`docs/`, `issues/`) are yours and are not removed. Any custom commands or skills you created (without the managed prefixes above) are also preserved.
+Project documents (`docs/`, `.workflow/`) are yours and are not removed. Any custom commands or skills you created (without the managed prefixes above) are also preserved.
 
 ## Source Structure
 

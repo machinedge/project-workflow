@@ -54,7 +54,7 @@ The install script copies files from this directory into your project's `.cursor
     move-issue.ps1
     next-session-number.sh      # Claim next handoff note number (atomic)
     next-session-number.ps1
-    update-issues-list.sh       # Regenerate issues/issues-list.md
+    update-issues-list.sh       # Regenerate .workflow/issues/issues-list.md
     update-issues-list.ps1
     update-brief-status.sh      # Atomically update project brief status line
     update-brief-status.ps1
@@ -63,19 +63,20 @@ The install script copies files from this directory into your project's `.cursor
 The install script also creates the project scaffolding:
 
 ```
-docs/
-  lessons-log.md                # Seeded if it doesn't exist
+docs/                           # For planning docs (project-brief, roadmap, etc.)
+.workflow/
   handoff-notes/
     pm/
     swe/
     qa/
     devops/
     system-architect/
-issues/
-  backlog/
-  planned/
-  in-progress/
-  done/
+  issues/
+    backlog/
+    planned/
+    in-progress/
+    done/
+  lessons-log.md                # Seeded if it doesn't exist
 ```
 
 ## How It Works
@@ -118,10 +119,10 @@ Skills cover autonomous operations (vision, roadmap, review, etc.) and handoffs.
 
 Scripts are hidden shell utilities in `.cursor/scripts/` for mechanical operations:
 
-- **`next-issue-number.sh`** — scans `issues/` to find the next unused issue number.
+- **`next-issue-number.sh`** — scans `.workflow/issues/` to find the next unused issue number.
 - **`move-issue.sh`** — moves an issue file between status directories (`backlog/` → `in-progress/`, etc.).
 - **`next-session-number.sh`** — atomically claims the next handoff note number using `set -C` (noclobber) to prevent concurrent session collisions.
-- **`update-issues-list.sh`** — regenerates `issues/issues-list.md` from all issue files.
+- **`update-issues-list.sh`** — regenerates `.workflow/issues/issues-list.md` from all issue files.
 - **`update-brief-status.sh`** — atomically updates the "Last updated" line in `docs/project-brief.md` under a lockfile to prevent concurrent overwrites.
 
 Each `.sh` script has a `.ps1` companion for Windows. Skills and commands reference these scripts via `Shell` tool calls rather than reimplementing the logic.
@@ -169,7 +170,7 @@ rm -rf .cursor/skills/{pm,swe,qa,ops,sa,team}-*/
 rm -rf .cursor/scripts/
 ```
 
-Project documents (`docs/`, `issues/`) are yours and are not removed. Any custom rules, commands, or skills you created (without the managed prefixes above) are also preserved.
+Project documents (`docs/`, `.workflow/`) are yours and are not removed. Any custom rules, commands, or skills you created (without the managed prefixes above) are also preserved.
 
 ## Source Structure
 

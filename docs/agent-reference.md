@@ -39,7 +39,7 @@ targets/ide/
     skills/                      ← Discoverable skill folders (SKILL.md)
     scripts/                     ← Mechanical shell scripts (.sh + .ps1)
 docs/                            ← Vision, architecture, guides
-issues/                          ← File-based issue tracking
+.workflow/                       ← Managed artifacts (handoff notes, issues, lessons log)
 ```
 
 ### Current Experts
@@ -120,21 +120,21 @@ Experts communicate through shared documents and issues:
 |----------|----------|-------------|
 | Project Manager | `docs/project-brief.md` | All experts |
 | Project Manager | `docs/roadmap.md` | All experts |
-| Project Manager | `issues/` (task issues) | SWE, QA, DevOps |
+| Project Manager | `.workflow/issues/` (task issues) | SWE, QA, DevOps |
 | SWE | Code + tests | QA, DevOps |
-| SWE | `docs/handoff-notes/swe/session-NN.md` | Project Manager, QA |
+| SWE | `.workflow/handoff-notes/swe/session-NN.md` | Project Manager, QA |
 | QA | `docs/test-plan.md` | SWE, DevOps |
 | QA | Review issues | SWE, Project Manager |
-| QA | `docs/handoff-notes/qa/session-NN.md` | Project Manager, SWE |
+| QA | `.workflow/handoff-notes/qa/session-NN.md` | Project Manager, SWE |
 | DevOps | `docs/env-context.md` | SWE, QA |
 | DevOps | `docs/release-plan.md` | Project Manager, QA |
-| DevOps | `docs/handoff-notes/devops/session-NN.md` | Project Manager |
+| DevOps | `.workflow/handoff-notes/devops/session-NN.md` | Project Manager |
 | System Architect | `docs/architecture.md` | SWE, QA, DevOps, Project Manager |
-| System Architect | `docs/handoff-notes/system-architect/session-NN.md` | Project Manager, SWE |
+| System Architect | `.workflow/handoff-notes/system-architect/session-NN.md` | Project Manager, SWE |
 
 ### In-Repo Issue Tracking
 
-Issues are tracked as files in `issues/` within the deployed project. The project manager manages issue lifecycle. Skills that create, read, or close issues reference `issues/` rather than any external service.
+Issues are tracked as files in `.workflow/issues/` within the deployed project. The project manager manages issue lifecycle. Skills that create, read, or close issues reference `.workflow/issues/` rather than any external service.
 
 ## Common Mistakes When Editing This Repo
 
@@ -144,4 +144,4 @@ Issues are tracked as files in `issues/` within the deployed project. The projec
 
 **Forgetting script companions.** Every `.sh` script needs a `.ps1` companion. They must maintain behavioral parity.
 
-**Referencing external services in skills.** Skills should reference `issues/` for task tracking, not GitHub Issues or any other external service. The system is designed to work in disconnected environments.
+**Referencing external services in skills.** Skills should reference `.workflow/issues/` for task tracking, not GitHub Issues or any other external service. The system is designed to work in disconnected environments.
