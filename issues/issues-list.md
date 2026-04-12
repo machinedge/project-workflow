@@ -65,7 +65,7 @@
 | swe-bug-061 | pm-add-feature.md wording inconsistency between Cursor and Claude Code | SWE | bug | Platform-Native Refactor (M11) | — | done |
 | swe-bug-062 | Cursor README incorrectly describes expert rules as alwaysApply: true | swe | bug | — | — | done |
 | sa-feature-063 | Design .workflow Directory Structure and Path Mapping | sa | feature | [Workflow Directory] Update structure and references (M13) | — | done |
-| swe-feature-064 | Update Cursor Rules for .workflow Paths | swe | feature | [Workflow Directory] Update structure and references (M13) | sa-feature-063 | backlog |
+| swe-feature-064 | Update Cursor Rules for .workflow Paths | swe | feature | [Workflow Directory] Update structure and references (M13) | sa-feature-063 | done |
 | swe-feature-065 | Update Cursor Commands for .workflow Paths | swe | feature | [Workflow Directory] Update structure and references (M13) | sa-feature-063 | backlog |
 | swe-feature-066 | Update Cursor Skills for .workflow Paths | swe | feature | [Workflow Directory] Update structure and references (M13) | sa-feature-063 | backlog |
 | swe-feature-067 | Update Cursor Scripts for .workflow Paths | swe | feature | [Workflow Directory] Update structure and references (M13) | sa-feature-063 | backlog |

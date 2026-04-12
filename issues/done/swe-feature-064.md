@@ -29,3 +29,9 @@ Update `project-os.mdc` and all 5 expert role files in `targets/ide/cursor/rules
 **Dependencies:** sa-feature-063
 **Inputs:** `docs/project-brief.md`, sa-feature-063 path mapping, `targets/ide/cursor/rules/`
 **Out of scope:** Commands, skills, and scripts — those are separate tasks
+
+## Session 34 Summary
+
+**What was done:** Updated all 6 Cursor rule files to replace old artifact paths with `.workflow/` equivalents per ADR-011. Verified zero stale references via grep.
+**Handoff note:** `docs/handoff-notes/swe/session-34.md`
+**All acceptance criteria met:** Yes

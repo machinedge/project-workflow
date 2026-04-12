@@ -69,7 +69,7 @@ Developers using AI coding assistants who want structured, repeatable workflows 
 - **Core experts:** PM (10 skills), SWE (2 skills), QA (6 skills), DevOps (6 skills), System Architect (6 skills), team-status (1 shared) — functional on both platforms
 - **Blockers:** None
 - **Next task:** swe-feature-064 (Update Cursor rules for .workflow paths)
-- **Last updated:** sa-feature-063 complete; Designed .workflow/ directory structure (ADR-011) with path mapping for M13 implementation.
+- **Last updated:** swe-feature-064 complete; Updated Cursor rules for .workflow paths (M13 step 1)
 
 ## Notes for AI
 
