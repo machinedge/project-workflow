@@ -28,7 +28,7 @@ Developers using AI coding assistants who want structured, repeatable workflows 
 
 - Platform-native implementations in `targets/ide/cursor/` and `targets/ide/claude-code/` are the source of truth
 - Project brief must stay under 1,000 words
-- Issues tracked in `issues/`, not external services
+- Issues tracked in `.workflow/issues/`, not external services
 
 ## Key Decisions Made
 
@@ -65,11 +65,11 @@ Developers using AI coding assistants who want structured, repeatable workflows 
 
 ## Current Status
 
-- **Milestones:** M1-M12 complete. M13-M14 planned ([Workflow Directory]).
+- **Milestones:** M1-M13 complete. M14 in progress ([Workflow Directory] Migration).
 - **Core experts:** PM (10 skills), SWE (2 skills), QA (6 skills), DevOps (6 skills), System Architect (6 skills), team-status (1 shared) — functional on both platforms
 - **Blockers:** None
-- **Next task:** swe-feature-064 (Update Cursor rules for .workflow paths)
-- **Last updated:** qa-feature-075 complete; Grep audit found 1 should-fix (swe-bug-080: stale `issues/` in brief constraints), M13 verified clean
+- **Next task:** swe-feature-078 (Test migration on this project)
+- **Last updated:** swe-bug-080, swe-feature-076, swe-feature-077 complete; M13 clean, M14 migration logic done (078 remaining)
 
 ## Notes for AI
 

@@ -27,3 +27,9 @@ Port the migration logic from `install.sh` (swe-feature-076) to `targets/ide/ins
 **Dependencies:** swe-feature-076 (bash version must be implemented first as reference)
 **Inputs:** `docs/project-brief.md`, `targets/ide/install.ps1`, completed `targets/ide/install.sh`
 **Out of scope:** Testing on Windows (persistent gap from M11)
+
+## Session 02 Summary
+
+**What was done:** Ported migration logic from bash to PowerShell with `Migrate-Directory`/`Migrate-File` functions. Syntax-checked with `pwsh`.
+**Handoff note:** `.workflow/handoff-notes/swe/session-02.md`
+**All acceptance criteria met:** Yes

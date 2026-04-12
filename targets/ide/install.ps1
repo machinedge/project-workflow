@@ -46,33 +46,86 @@ Write-Host ""
 # docs/ always needed for core planning docs (project-brief, roadmap, architecture, etc.)
 New-Item -ItemType Directory -Path (Join-Path $Target "docs") -Force | Out-Null
 
+# ─────────────────────────────────────────────
+# Migrate old directory layout to .workflow/
+# ─────────────────────────────────────────────
+
+function Migrate-Directory {
+    param([string]$Src, [string]$Dest)
+    if (-not (Test-Path $Src)) { return $false }
+    if (Test-Path $Dest) {
+        Copy-Item "$Src/*" -Destination $Dest -Recurse -Force
+        Remove-Item $Src -Recurse -Force
+    } else {
+        $parent = Split-Path $Dest -Parent
+        New-Item -ItemType Directory -Path $parent -Force | Out-Null
+        Move-Item $Src -Destination $Dest
+    }
+    return $true
+}
+
+function Migrate-File {
+    param([string]$Src, [string]$Dest)
+    if (-not (Test-Path $Src)) { return $false }
+    $parent = Split-Path $Dest -Parent
+    New-Item -ItemType Directory -Path $parent -Force | Out-Null
+    if (Test-Path $Dest) {
+        Remove-Item $Src -Force
+    } else {
+        Move-Item $Src -Destination $Dest
+    }
+    return $true
+}
+
 $oldHandoff = Join-Path $Target "docs/handoff-notes"
 $oldIssues = Join-Path $Target "issues"
 
 if ((Test-Path $oldHandoff) -or (Test-Path $oldIssues)) {
-    # Existing install with old directory layout — migration is M14
-    Write-Host "  Note: Existing install detected with old directory layout."
-    Write-Host "        Managed artifacts are in docs/handoff-notes/ and issues/."
-    Write-Host "        A future update will provide migration to .workflow/."
+    Write-Host "  Migrating artifacts to .workflow/..."
+
+    if (Migrate-Directory -Src (Join-Path $Target "docs/handoff-notes") -Dest (Join-Path $Target ".workflow/handoff-notes")) {
+        Write-Host "    docs/handoff-notes/ -> .workflow/handoff-notes/"
+    }
+    if (Migrate-Directory -Src (Join-Path $Target "issues") -Dest (Join-Path $Target ".workflow/issues")) {
+        Write-Host "    issues/ -> .workflow/issues/"
+    }
+
+    if (Migrate-File -Src (Join-Path $Target "docs/lessons-log.md") -Dest (Join-Path $Target ".workflow/lessons-log.md")) {
+        Write-Host "    docs/lessons-log.md -> .workflow/lessons-log.md"
+    }
+
+    Get-ChildItem (Join-Path $Target "docs/interview-notes*.md") -ErrorAction SilentlyContinue | ForEach-Object {
+        if (Migrate-File -Src $_.FullName -Dest (Join-Path $Target ".workflow/$($_.Name)")) {
+            Write-Host "    docs/$($_.Name) -> .workflow/$($_.Name)"
+        }
+    }
+
+    Get-ChildItem (Join-Path $Target "docs/research-*.md") -ErrorAction SilentlyContinue | ForEach-Object {
+        if (Migrate-File -Src $_.FullName -Dest (Join-Path $Target ".workflow/$($_.Name)")) {
+            Write-Host "    docs/$($_.Name) -> .workflow/$($_.Name)"
+        }
+    }
+
     Write-Host ""
-} else {
-    # Fresh install (or already migrated) — create .workflow/ structure
-    foreach ($dir in @(
-        ".workflow/issues/backlog",
-        ".workflow/issues/planned",
-        ".workflow/issues/in-progress",
-        ".workflow/issues/done"
-    )) {
-        New-Item -ItemType Directory -Path (Join-Path $Target $dir) -Force | Out-Null
-    }
+}
 
-    foreach ($expert in @("pm", "swe", "qa", "devops", "system-architect")) {
-        New-Item -ItemType Directory -Path (Join-Path $Target ".workflow/handoff-notes/$expert") -Force | Out-Null
-    }
+# Ensure .workflow/ structure is complete (fresh install or post-migration)
+foreach ($dir in @(
+    ".workflow/issues/backlog",
+    ".workflow/issues/planned",
+    ".workflow/issues/in-progress",
+    ".workflow/issues/done"
+)) {
+    New-Item -ItemType Directory -Path (Join-Path $Target $dir) -Force | Out-Null
+}
 
-    $lessonsLog = Join-Path $Target ".workflow/lessons-log.md"
-    if (-not (Test-Path $lessonsLog)) {
-        @"
+foreach ($expert in @("pm", "swe", "qa", "devops", "system-architect")) {
+    New-Item -ItemType Directory -Path (Join-Path $Target ".workflow/handoff-notes/$expert") -Force | Out-Null
+}
+
+$lessonsLog = Join-Path $Target ".workflow/lessons-log.md"
+if (-not (Test-Path $lessonsLog)) {
+    @"
 # Lessons Log
 
 Record project-specific gotchas, patterns, and knowledge here. Future sessions will read this to avoid repeating mistakes.
@@ -80,7 +133,6 @@ Record project-specific gotchas, patterns, and knowledge here. Future sessions w
 | Lesson | Context |
 |--------|---------|
 "@ | Set-Content -Path $lessonsLog -Encoding UTF8
-    }
 }
 
 # ─────────────────────────────────────────────

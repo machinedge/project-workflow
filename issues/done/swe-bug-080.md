@@ -35,3 +35,9 @@ All other path references in the project brief are correct. The conventions sect
 
 **Estimated effort:** Small session (single-line change)
 **File(s):** `docs/project-brief.md`
+
+## Session 02 Summary
+
+**What was done:** Fixed `issues/` → `.workflow/issues/` in project brief Constraints section.
+**Handoff note:** `.workflow/handoff-notes/swe/session-02.md`
+**All acceptance criteria met:** Yes

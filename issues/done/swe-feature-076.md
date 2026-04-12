@@ -32,3 +32,9 @@ Add migration logic to `targets/ide/install.sh` that detects the old directory s
 **Dependencies:** swe-feature-072 (fresh install logic must exist first)
 **Inputs:** `docs/project-brief.md`, sa-feature-063 path mapping, `targets/ide/install.sh`
 **Out of scope:** PowerShell migration (separate task), testing on this project (separate task)
+
+## Session 02 Summary
+
+**What was done:** Added `migrate_dir`/`migrate_file` helpers and real migration logic to `install.sh`. Restructured scaffold to run unconditionally. Tested fresh install, migration, and idempotency.
+**Handoff note:** `.workflow/handoff-notes/swe/session-02.md`
+**All acceptance criteria met:** Yes

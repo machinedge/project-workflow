@@ -85,24 +85,71 @@ echo ""
 # docs/ always needed for core planning docs (project-brief, roadmap, architecture, etc.)
 mkdir -p "$TARGET/docs"
 
-if [ -d "$TARGET/docs/handoff-notes" ] || [ -d "$TARGET/issues" ]; then
-    # Existing install with old directory layout — migration is M14
-    echo "  Note: Existing install detected with old directory layout."
-    echo "        Managed artifacts are in docs/handoff-notes/ and issues/."
-    echo "        A future update will provide migration to .workflow/."
-    echo ""
-else
-    # Fresh install (or already migrated) — create .workflow/ structure
-    mkdir -p "$TARGET/.workflow/issues/backlog"
-    mkdir -p "$TARGET/.workflow/issues/planned"
-    mkdir -p "$TARGET/.workflow/issues/in-progress"
-    mkdir -p "$TARGET/.workflow/issues/done"
+# ─────────────────────────────────────────────
+# Migrate old directory layout to .workflow/
+# ─────────────────────────────────────────────
 
-    for expert in pm swe qa devops system-architect; do
-        mkdir -p "$TARGET/.workflow/handoff-notes/$expert"
+migrate_dir() {
+    local src="$1" dest="$2"
+    [ -d "$src" ] || return 1
+    if [ -d "$dest" ]; then
+        cp -R "$src"/. "$dest"/ && rm -rf "$src"
+    else
+        mkdir -p "$(dirname "$dest")"
+        mv "$src" "$dest"
+    fi
+}
+
+migrate_file() {
+    local src="$1" dest="$2"
+    [ -f "$src" ] || return 1
+    mkdir -p "$(dirname "$dest")"
+    if [ -f "$dest" ]; then
+        rm "$src"
+    else
+        mv "$src" "$dest"
+    fi
+}
+
+if [ -d "$TARGET/docs/handoff-notes" ] || [ -d "$TARGET/issues" ]; then
+    echo "  Migrating artifacts to .workflow/..."
+
+    migrate_dir "$TARGET/docs/handoff-notes" "$TARGET/.workflow/handoff-notes" \
+        && echo "    docs/handoff-notes/ → .workflow/handoff-notes/"
+    migrate_dir "$TARGET/issues" "$TARGET/.workflow/issues" \
+        && echo "    issues/ → .workflow/issues/"
+
+    migrate_file "$TARGET/docs/lessons-log.md" "$TARGET/.workflow/lessons-log.md" \
+        && echo "    docs/lessons-log.md → .workflow/lessons-log.md"
+
+    for f in "$TARGET"/docs/interview-notes*.md; do
+        [ -f "$f" ] || continue
+        fname=$(basename "$f")
+        migrate_file "$f" "$TARGET/.workflow/$fname" \
+            && echo "    docs/$fname → .workflow/$fname"
     done
 
-    if [ ! -f "$TARGET/.workflow/lessons-log.md" ]; then
+    for f in "$TARGET"/docs/research-*.md; do
+        [ -f "$f" ] || continue
+        fname=$(basename "$f")
+        migrate_file "$f" "$TARGET/.workflow/$fname" \
+            && echo "    docs/$fname → .workflow/$fname"
+    done
+
+    echo ""
+fi
+
+# Ensure .workflow/ structure is complete (fresh install or post-migration)
+mkdir -p "$TARGET/.workflow/issues/backlog"
+mkdir -p "$TARGET/.workflow/issues/planned"
+mkdir -p "$TARGET/.workflow/issues/in-progress"
+mkdir -p "$TARGET/.workflow/issues/done"
+
+for expert in pm swe qa devops system-architect; do
+    mkdir -p "$TARGET/.workflow/handoff-notes/$expert"
+done
+
+if [ ! -f "$TARGET/.workflow/lessons-log.md" ]; then
 cat > "$TARGET/.workflow/lessons-log.md" << 'EOF'
 # Lessons Log
 
@@ -111,7 +158,6 @@ Record project-specific gotchas, patterns, and knowledge here. Future sessions w
 | Lesson | Context |
 |--------|---------|
 EOF
-    fi
 fi
 
 # ─────────────────────────────────────────────
