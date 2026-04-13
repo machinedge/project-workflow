@@ -82,4 +82,4 @@
 | swe-feature-078 | Test Migration on This Project | swe | feature | [Workflow Directory] Migration from old structure (M14) | swe-feature-076, swe-feature-074 | done |
 | qa-feature-079 | QA: Verify Migration End-to-End | qa | feature | [Workflow Directory] Migration from old structure (M14) | — | done |
 | swe-bug-080 | Project Brief Constraints Section Has Stale `issues/` Path | swe | bug | [Workflow Directory] Update structure and references (M13) | — | done |
-| swe-bug-081 | architecture.md Has Stale Paths in Non-ADR Sections | swe | bug | [Workflow Directory] Update structure and references (M13) | — | backlog |
+| swe-bug-081 | architecture.md Has Stale Paths in Non-ADR Sections | swe | bug | [Workflow Directory] Update structure and references (M13) | — | done |

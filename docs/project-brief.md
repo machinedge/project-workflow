@@ -69,7 +69,7 @@ Developers using AI coding assistants who want structured, repeatable workflows 
 - **Core experts:** PM (10 skills), SWE (2 skills), QA (6 skills), DevOps (6 skills), System Architect (6 skills), team-status (1 shared) — functional on both platforms
 - **Blockers:** None
 - **Next task:** swe-feature-078 (Test migration on this project)
-- **Last updated:** qa-feature-079 complete; M14 migration verified end-to-end; 1 should-fix filed (swe-bug-081)
+- **Last updated:** swe-bug-081 complete; Fixed 4 stale paths in architecture.md non-ADR sections
 
 ## Notes for AI
 

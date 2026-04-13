@@ -28,7 +28,7 @@ targets/
       skills/                   ← Discoverable skill folders (SKILL.md)
       scripts/                  ← Mechanical operation scripts
 docs/                           ← Documentation
-issues/                         ← File-based issue tracking
+.workflow/                      ← Managed artifacts (handoff notes, issues, lessons)
 ```
 
 ## Data Flow
@@ -343,7 +343,7 @@ Content (~40 lines, simplified from current ~70):
 - Expert list with `.cursor/rules/<expert>-os.mdc` paths
 - Routing logic: infer expert from skill/command prefix (pm, swe, qa, ops, sa, team)
 - Instruction: "Always load the expert role file before executing any skill or command"
-- Shared principles (no memory, project brief is truth, verify work, issues in `issues/`)
+- Shared principles (no memory, project brief is truth, verify work, issues in `.workflow/issues/`)
 - Script reference: `.cursor/scripts/` for mechanical operations
 - Handoff instruction: "When the user signals they're wrapping up, invoke the handoff skill"
 - **No longer lists all skills** — each expert role lists its own, and skills are discoverable
@@ -510,7 +510,7 @@ Identical to Cursor. Skills use SKILL.md with frontmatter. Commands use plain ma
 Script behavior:
 1. Extract project identity (first few lines of `docs/project-brief.md`)
 2. Extract the "Current Status" section from `docs/project-brief.md`
-3. Find the most recent handoff note across `docs/handoff-notes/` and output its content
+3. Find the most recent handoff note across `.workflow/handoff-notes/` and output its content
 4. Cap total output to avoid flooding the agent context with verbose handoff notes
 
 This is Claude Code's bonus over Cursor — automatic context injection at session start. Cursor has no session-start hook; Cursor users rely on `/start` commands and per-skill context loading.
@@ -534,7 +534,7 @@ When creating or modifying SKILL.md files:
 |--------|-----------|--------|---------|
 | `next-issue-number.sh` | — | Next available issue number (integer) | QA review, any skill creating issues |
 | `move-issue.sh` | `<filename> <target-dir>` | Confirmation message | Handoff, start (moving to in-progress) |
-| `update-issues-list.sh` | — | Regenerated `issues/issues-list.md` | After any issue creation or movement |
+| `update-issues-list.sh` | — | Regenerated `.workflow/issues/issues-list.md` | After any issue creation or movement |
 | `next-session-number.sh` | `<expert-name>` | Next session number for that expert (integer). **Side effect:** atomically creates a placeholder file at the claimed path to prevent concurrent sessions from colliding. | Handoff skills |
 | `update-brief-status.sh` | `<issue-id> <status-description>` | `"OK"` on success. **Side effect:** atomically updates the `- **Last updated:**` line in `docs/project-brief.md` under a lockfile to prevent concurrent sessions from overwriting each other's status. | Handoff skills |
 
