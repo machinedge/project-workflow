@@ -75,9 +75,11 @@
 | swe-feature-071 | Update Claude Code Scripts for .workflow Paths | swe | feature | [Workflow Directory] Update structure and references (M13) | sa-feature-063, swe-feature-067 | done |
 | swe-feature-072 | Update Install Scripts for Fresh .workflow Structure | swe | feature | [Workflow Directory] Update structure and references (M13) | sa-feature-063 | done |
 | swe-feature-073 | Update agent-reference.md and READMEs for .workflow Paths | swe | feature | [Workflow Directory] Update structure and references (M13) | sa-feature-063 | done |
-| swe-feature-074 | Reinstall Into Project and Verify All Paths | swe | feature | [Workflow Directory] Update structure and references (M13) | swe-feature-064 through swe-feature-073 | backlog |
-| qa-feature-075 | QA: Grep Audit for Stale Path References | qa | feature | [Workflow Directory] Update structure and references (M13) | — | backlog |
-| swe-feature-076 | Implement Migration Logic in install.sh | swe | feature | [Workflow Directory] Migration from old structure (M14) | swe-feature-072 | backlog |
-| swe-feature-077 | Implement Migration Logic in install.ps1 | swe | feature | [Workflow Directory] Migration from old structure (M14) | swe-feature-076 | backlog |
-| swe-feature-078 | Test Migration on This Project | swe | feature | [Workflow Directory] Migration from old structure (M14) | swe-feature-076, swe-feature-074 | backlog |
-| qa-feature-079 | QA: Verify Migration End-to-End | qa | feature | [Workflow Directory] Migration from old structure (M14) | — | backlog |
+| swe-feature-074 | Reinstall Into Project and Verify All Paths | swe | feature | [Workflow Directory] Update structure and references (M13) | swe-feature-064 through swe-feature-073 | done |
+| qa-feature-075 | QA: Grep Audit for Stale Path References | qa | feature | [Workflow Directory] Update structure and references (M13) | — | done |
+| swe-feature-076 | Implement Migration Logic in install.sh | swe | feature | [Workflow Directory] Migration from old structure (M14) | swe-feature-072 | done |
+| swe-feature-077 | Implement Migration Logic in install.ps1 | swe | feature | [Workflow Directory] Migration from old structure (M14) | swe-feature-076 | done |
+| swe-feature-078 | Test Migration on This Project | swe | feature | [Workflow Directory] Migration from old structure (M14) | swe-feature-076, swe-feature-074 | done |
+| qa-feature-079 | QA: Verify Migration End-to-End | qa | feature | [Workflow Directory] Migration from old structure (M14) | — | done |
+| swe-bug-080 | Project Brief Constraints Section Has Stale `issues/` Path | swe | bug | [Workflow Directory] Update structure and references (M13) | — | done |
+| swe-bug-081 | architecture.md Has Stale Paths in Non-ADR Sections | swe | bug | [Workflow Directory] Update structure and references (M13) | — | backlog |

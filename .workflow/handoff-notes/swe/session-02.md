@@ -1,61 +1,49 @@
-# Handoff Note: Migration Logic + Brief Bug Fix
+# Handoff Note: Add /start and /handoff Skills to QA and DevOps
 
-**Issues:** swe-bug-080, swe-feature-076, swe-feature-077
+**Session date:** 2026-03-12
+**Issue:** swe-feature-003 — Add /start and /handoff Skills to QA and DevOps
 
 ## What Was Accomplished
 
-Fixed the last M13 stale path reference (`issues/` → `.workflow/issues/` in the project brief Constraints section). Implemented migration logic in both `install.sh` and `install.ps1` that detects old directory layouts (`docs/handoff-notes/`, top-level `issues/`) and moves artifacts to `.workflow/`. The `.workflow/` scaffold now runs unconditionally after migration, ensuring completeness in all scenarios.
+Created `/start` and `/handoff` skill files for both QA and DevOps experts, modeled on SWE's existing skills but adapted for each expert's domain. Updated both `role.md` files to list the new skills. All 10 acceptance criteria met.
 
 ## Acceptance Criteria Status
-
-### swe-bug-080
-- [x] `docs/project-brief.md` Constraints section references `.workflow/issues/` instead of `issues/`
-
-### swe-feature-076
-- [x] Script detects old structure by checking for `docs/handoff-notes/` or top-level `issues/`
-- [x] Moves `docs/handoff-notes/` to `.workflow/handoff-notes/`
-- [x] Moves `docs/interview-notes*.md` to `.workflow/`
-- [x] Moves `docs/lessons-log.md` to `.workflow/`
-- [x] Moves `docs/research-*.md` to `.workflow/`
-- [x] Moves `issues/` to `.workflow/issues/`
-- [x] Does NOT move planning docs or unknown user files
-- [x] Idempotent: running twice doesn't fail or duplicate files
-- [x] Prints clear output showing what was migrated
-
-### swe-feature-077
-- [x] Same detection and migration behavior as `install.sh`
-- [x] Moves all artifact categories to `.workflow/`
-- [x] Does NOT move planning docs or unknown user files
-- [x] Idempotent
-- [x] Prints clear output showing what was migrated
+- [x] Skill files exist at `experts/technical/qa/skills/start.md` and `handoff.md`
+- [x] Skill files exist at `experts/technical/devops/skills/start.md` and `handoff.md`
+- [x] QA `/start` loads: project brief, roadmap, SWE handoff notes, test plan, assigned issue
+- [x] DevOps `/start` loads: project brief, env-context, release-plan, SWE handoff notes, assigned issue
+- [x] Both `/start` skills confirm understanding before executing
+- [x] Both `/handoff` skills produce handoff notes and update project brief if needed
+- [x] QA `role.md` updated to list `/start` and `/handoff` in Skills section
+- [x] DevOps `role.md` updated to list `/start` and `/handoff` in Skills section
+- [x] Existing QA skills (review, test-plan, regression, bug-triage) unchanged
+- [x] Existing DevOps skills (env-discovery, pipeline, release-plan, deploy) unchanged
 
 ## Decisions Made This Session
-
 | Decision | Reasoning |
 |----------|-----------|
-| Scaffold runs unconditionally (not in else branch) | After migration, the old dirs are gone but `.workflow/` may be incomplete. Unconditional scaffold with `mkdir -p` is naturally idempotent and fills gaps. |
-| `mv` for common case, `cp -R && rm -rf` for merge | `mv` is atomic and fast. The merge fallback uses `&&` to prevent data loss on copy failure. |
+| QA `/start` has a dedicated "Record Findings" phase | QA's primary output is issues/findings, not code — needs its own phase |
+| DevOps `/start` includes pipeline status check in context loading | Matches DevOps session protocol step 4 |
+| QA handoff template uses "Findings Summary" section | More useful than SWE's generic "Files Created or Modified" for QA context |
+| DevOps handoff template uses "Environment Changes" section | Captures what changed in infra, more useful than generic file list |
+| `/start` and `/handoff` listed first in Skills sections | Matches SWE's ordering — execution skills before domain-specific skills |
 
 ## Problems Encountered
-
-None. All three tasks were straightforward.
+None. Straightforward task with clear structural references (SWE's existing skills).
 
 ## Scope Changes
-
-Bundled three issues (swe-bug-080 + swe-feature-076 + swe-feature-077) into one session to compress the schedule. No scope creep within any individual issue.
+No scope changes. Task went exactly as planned.
 
 ## Files Created or Modified
-
-- `docs/project-brief.md` — fixed `issues/` → `.workflow/issues/` in Constraints (swe-bug-080)
-- `targets/ide/install.sh` — replaced migration placeholder with real migration logic + helpers (swe-feature-076)
-- `targets/ide/install.ps1` — ported migration logic from bash to PowerShell (swe-feature-077)
+- `experts/technical/qa/skills/start.md` — QA execution skill (5 phases)
+- `experts/technical/qa/skills/handoff.md` — QA session close-out (6 steps)
+- `experts/technical/devops/skills/start.md` — DevOps execution skill (5 phases)
+- `experts/technical/devops/skills/handoff.md` — DevOps session close-out (6 steps)
+- `experts/technical/qa/role.md` — added `/start` and `/handoff` to Skills section
+- `experts/technical/devops/role.md` — added `/start` and `/handoff` to Skills section
 
 ## What the Next Session Needs to Know
-
-- **swe-feature-078 is the remaining M14 task:** Run the migration on this project itself and verify everything works. This is the only task left before M14 is complete.
-- The install scripts now handle three scenarios: fresh install (no old dirs), migration (old dirs detected), and re-run (already migrated). All tested on bash; PowerShell syntax-checked only.
-- The `install.ps1` port has NOT been functionally tested — consistent with the project's existing Windows testing gap.
+QA now has 6 skills and DevOps now has 6 skills. The `/start` and `/handoff` patterns are consistent across SWE, QA, and DevOps — all three follow the same structural template with domain-appropriate phases and context loading. PM still needs `/start` and `/handoff` (swe-feature-002). swe-feature-004 will update SWE's `/start` to consume `architecture.md`.
 
 ## Open Questions
-
-- [ ] swe-feature-078: Should migration on this project happen via `install.sh` or manually? The install script would also reinstall all toolkit files, which may or may not be desired.
+- None

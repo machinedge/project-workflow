@@ -15,15 +15,15 @@ Run `install.sh` on this project to trigger the migration. Verify that all artif
 
 ## Acceptance Criteria
 
-- [ ] `.workflow/handoff-notes/` contains all expert subdirectories with existing handoff notes
-- [ ] `.workflow/issues/` contains `backlog/`, `planned/`, `in-progress/`, `done/`, and `issues-list.md`
-- [ ] `.workflow/` contains all `interview-notes-*.md` files
-- [ ] `.workflow/lessons-log.md` exists
-- [ ] `.workflow/` contains all `research-*.md` files
-- [ ] `docs/` contains only `project-brief.md`, `roadmap.md`, `test-plan.md`, `architecture.md`, `agent-reference.md`, and any user docs
-- [ ] Top-level `issues/` directory no longer exists
-- [ ] `docs/handoff-notes/` directory no longer exists
-- [ ] At least one expert session starts successfully and reads from `.workflow/` paths
+- [x] `.workflow/handoff-notes/` contains all expert subdirectories with existing handoff notes
+- [x] `.workflow/issues/` contains `backlog/`, `planned/`, `in-progress/`, `done/`, and `issues-list.md`
+- [x] `.workflow/` contains all `interview-notes-*.md` files
+- [x] `.workflow/lessons-log.md` exists
+- [x] `.workflow/` contains all `research-*.md` files
+- [x] `docs/` contains only `project-brief.md`, `roadmap.md`, `test-plan.md`, `architecture.md`, `agent-reference.md`, and any user docs
+- [x] Top-level `issues/` directory no longer exists
+- [x] `docs/handoff-notes/` directory no longer exists
+- [x] At least one expert session starts successfully and reads from `.workflow/` paths
 
 ## Technical Notes
 
@@ -31,3 +31,9 @@ Run `install.sh` on this project to trigger the migration. Verify that all artif
 **Dependencies:** swe-feature-076 (migration logic), swe-feature-074 (all path references updated)
 **Inputs:** This project's existing file structure
 **Out of scope:** Full regression testing (that's the QA task)
+
+## Session 42 Summary
+
+**What was done:** Ran migration on this project using both `install.sh` and `install.ps1`. Both correctly migrated all artifacts to `.workflow/`, left `docs/` clean, and removed old directories. Scripts verified working with new paths.
+**Handoff note:** `.workflow/handoff-notes/swe/session-42.md`
+**All acceptance criteria met:** Yes
