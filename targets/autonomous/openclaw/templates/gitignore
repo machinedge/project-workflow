@@ -1,8 +1,0 @@
-# Runtime data (volumes, databases, logs)
-data/
-
-# Sensitive configuration
-.env
-
-# Docker runtime
-*.log

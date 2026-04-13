@@ -13,7 +13,11 @@
 | M7 | [Deployment Restructure] Update docs, remove CLAUDE.md, verify functionality | Done | M6 | 3 |
 | M8 | [PM Planning Improvements] Adaptive interview and date-free PM output | Done | M1 | 1-2 |
 | M9 | [Date Removal] Remove date references from all remaining expert templates | Done | M8 | 1 |
-| M10 | [Context Optimization] Research essential vs. unnecessary startup context per expert | Planned | M1 | 1-2 |
+| M10 | [Context Optimization] Research essential vs. unnecessary startup context per expert | Done | M1 | 1-2 |
+| M11 | [Platform-Native Refactor] Fork to platform-native implementations with rules, skills, tools, hooks + context optimization | Done | M7, M10 | 5-8 (actual: ~24) |
+| M12 | [Repo Alignment] Remove legacy directories, align docs and CONTRIBUTING.md with platform-native paradigm | Done | M11 | 1-2 (actual: 1) |
+| M13 | [Workflow Directory] Update structure and references — all paths point to `.workflow/`, fresh install creates new layout | Planned | M12 | 3-5 |
+| M14 | [Workflow Directory] Migration from old structure — install script detects old layout and migrates artifacts | Planned | M13 | 2-3 |
 
 ## Dependency Map
 
@@ -21,9 +25,13 @@
 M1 (Core experts) ──┬──> M3 (System Architect)  ──┐
                      │                              ├──> M5 (SWE update + docs-protocol)
                      └──> M4 (Standardize start/handoff) ─┘
-M2 (Framework) ──────────> M6 (Deployment Restructure) ──> M7 (Docs + verify)
-M1 (Core experts) ──────> M8 (PM Planning Improvements) ──> M9 (Date Removal)
-M1 (Core experts) ──────> M10 (Context Optimization research)
+M2 (Framework) ──────────> M6 (Deployment Restructure) ──> M7 (Docs + verify) ──┐
+M1 (Core experts) ──────> M8 (PM Planning Improvements) ──> M9 (Date Removal)  │
+M1 (Core experts) ──────> M10 (Context Optimization research) ──────────────────┼──> M11 (Platform-Native Refactor)
+                                                                                 └──────┘       │
+                                                                                                └──> M12 (Repo Alignment)
+                                                                                                       │
+                                                                                                       └──> M13 (Workflow Directory: structure + refs) ──> M14 (Workflow Directory: migration)
 ```
 
 ## Risk Register
@@ -34,9 +42,15 @@ M1 (Core experts) ──────> M10 (Context Optimization research)
 | Naming confusion between System Architect expert and domain-level architecture in `/start` | Medium | Medium | Clear documentation in role files and docs-protocol; distinct naming conventions |
 | Backward compatibility broken for existing projects | High | Low | SWE `/start` updated, not replaced; existing flow preserved; new skills are additive |
 | First-draft skill content requires significant iteration | Medium | High | Flesh out fully for working baseline; user tests on real projects and refines |
-| Restructure design doesn't accommodate unforeseen target types | Medium | Medium | Design for known target classes (IDE, Desktop/Code, Autonomous); iterate structure as new targets are added |
+| Restructure design doesn't accommodate unforeseen target types | Medium | Low | Simplified to IDE-only (`targets/ide/`); new target classes can be added later |
 | Complexity assessment misjudges feature size, shortening interview when it shouldn't | Medium | Low | PM states assumptions explicitly; user can push back and request full interview |
 | Removing context that appears unnecessary but is actually essential degrades expert output | High | Medium | Research errs conservative; flag uncertainty; validate recommendations before implementing |
+| Platform divergence between Cursor and Claude Code becomes maintenance burden | Medium | High | Manual alignment for now; rebuild sync tooling as needed |
+| Auto-triggered skills (handoff, context loading) fire unreliably or at wrong time | Medium | Medium | QA acceptance testing; respond as bugs |
+| Retiring canonical definitions makes future platform additions harder | Medium | Low | 5 working experts in `targets/ide/` serve as living examples for new platforms |
+| Path reference coverage — missing a `.workflow/` reference means an expert silently reads/writes the wrong location | High | Medium | Systematic grep audit of all path references across both platforms |
+| Migration moves or misses user-created files in `docs/` | Medium | Medium | Migration only moves known artifacts by name pattern; leaves everything else |
+| Partial migration leaves files split between old and new locations | High | Low | Migration script should be idempotent (safe to re-run) |
 
 ## Change Log
 
@@ -56,3 +70,12 @@ M1 (Core experts) ──────> M10 (Context Optimization research)
 | — | Decomposed M9 into 1 task: swe-feature-031 (remove dates from all remaining experts + lessons-log). |
 | — | Postmortem: M9 marked Done. 1 issue planned, 1 delivered. M8+M9 together delivered full date removal across all experts in 3 sessions with zero rework. |
 | — | Added [Context Optimization] milestone (M10) from interview notes. |
+| — | Decomposed M10 into 1 task: sa-research-032 (audit startup context, produce matrix + recommendations). |
+| — | Added [Platform-Native Refactor] milestone (M11) from interview notes. Absorbs M10 context optimization implementation. Retires platform-agnostic canonical definitions in favor of platform-native implementations. |
+| — | Decomposed M11 into 13 tasks: sa-feature-033 (design), swe-feature-034 through swe-feature-038 (Cursor implementation), qa-feature-039 (Cursor QA), swe-feature-040 and swe-feature-041 (Claude Code implementation), qa-feature-042 (Claude Code QA), swe-feature-043 (sync command), swe-feature-044 (install + docs), qa-feature-045 (final regression). |
+| — | Post sa-feature-033: reconciled all M11 backlog issues with architecture design. Renamed `tools/` → `scripts/` per ADR-007. Aligned script list with architecture spec (4 + session-context.sh). Added settings.json hook to Claude Code tasks. No new tasks or milestones needed. |
+| — | Postmortem: M11 marked Done. 13 planned issues, 29 delivered (2.2x). 24 sessions used vs. 5-8 estimated. 10 ADRs produced (005-010 + 4 operational decisions). 4 QA sessions filed 9 issues (1 must-fix, 6 should-fix, 2 nits), all resolved. Architecture design phase (5 SA sessions) prevented implementation rework. Persistent gap: PowerShell untested on Windows. |
+| — | Added [Repo Alignment] milestone (M12) from interview notes. Remove `experts/`, `tools/`, `targets/desktop-cli/`, `targets/autonomous/`. Rewrite `CONTRIBUTING.md`. Update all docs with stale references. |
+| — | Postmortem: M12 marked Done. Scoped and executed in 1 combined PM+SWE session. 105 files changed (~10,400 lines removed). No formal issue file — scope was clear enough to execute directly from interview notes. No QA rework needed — deletion + doc rewrite with systematic grep verification. All 12 milestones now complete. |
+| — | Added [Workflow Directory] milestones (M13-M14) from interview notes. Split managed artifacts (`.workflow/`) from user-facing docs (`docs/`). |
+| — | Decomposed M13 into 13 tasks: sa-feature-063 (design), swe-feature-064 through swe-feature-067 (Cursor: rules, commands, skills, scripts), swe-feature-068 through swe-feature-071 (Claude Code: rules, commands, skills, scripts), swe-feature-072 (install fresh), swe-feature-073 (docs + READMEs), swe-feature-074 (reinstall + verify), qa-feature-075 (grep audit). Decomposed M14 into 4 tasks: swe-feature-076 (bash migration), swe-feature-077 (PowerShell migration), swe-feature-078 (test on this project), qa-feature-079 (end-to-end verification). |

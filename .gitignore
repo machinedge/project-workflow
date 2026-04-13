@@ -28,16 +28,5 @@ Desktop.ini
 .env
 .env.*
 
-# builds
-targets/desktop-cli/claude/build
-*.skill
-package_skill.py
-quick_validate.py
-
 # Python
 __pycache__
-
-# other
-.claude
-.cursor
-.octeam
