@@ -16,8 +16,8 @@
 | M10 | [Context Optimization] Research essential vs. unnecessary startup context per expert | Done | M1 | 1-2 |
 | M11 | [Platform-Native Refactor] Fork to platform-native implementations with rules, skills, tools, hooks + context optimization | Done | M7, M10 | 5-8 (actual: ~24) |
 | M12 | [Repo Alignment] Remove legacy directories, align docs and CONTRIBUTING.md with platform-native paradigm | Done | M11 | 1-2 (actual: 1) |
-| M13 | [Workflow Directory] Update structure and references — all paths point to `.workflow/`, fresh install creates new layout | Planned | M12 | 3-5 |
-| M14 | [Workflow Directory] Migration from old structure — install script detects old layout and migrates artifacts | Planned | M13 | 2-3 |
+| M13 | [Workflow Directory] Update structure and references — all paths point to `.workflow/`, fresh install creates new layout | Done | M12 | 3-5 (actual: 8 SWE + 2 QA + 1 SA + 2 bugfix) |
+| M14 | [Workflow Directory] Migration from old structure — install script detects old layout and migrates artifacts | Done | M13 | 2-3 (actual: 3) |
 
 ## Dependency Map
 
@@ -46,6 +46,7 @@ M1 (Core experts) ──────> M10 (Context Optimization research) ──
 | Complexity assessment misjudges feature size, shortening interview when it shouldn't | Medium | Low | PM states assumptions explicitly; user can push back and request full interview |
 | Removing context that appears unnecessary but is actually essential degrades expert output | High | Medium | Research errs conservative; flag uncertainty; validate recommendations before implementing |
 | Platform divergence between Cursor and Claude Code becomes maintenance burden | Medium | High | Manual alignment for now; rebuild sync tooling as needed |
+| ~~PowerShell scripts untested on Windows~~ | ~~Medium~~ | ~~Medium~~ | **Resolved in M14:** `install.ps1` functionally tested on macOS PowerShell during swe-feature-078; produces identical results to `install.sh` |
 | Auto-triggered skills (handoff, context loading) fire unreliably or at wrong time | Medium | Medium | QA acceptance testing; respond as bugs |
 | Retiring canonical definitions makes future platform additions harder | Medium | Low | 5 working experts in `targets/ide/` serve as living examples for new platforms |
 | Path reference coverage — missing a `.workflow/` reference means an expert silently reads/writes the wrong location | High | Medium | Systematic grep audit of all path references across both platforms |
@@ -79,3 +80,5 @@ M1 (Core experts) ──────> M10 (Context Optimization research) ──
 | — | Postmortem: M12 marked Done. Scoped and executed in 1 combined PM+SWE session. 105 files changed (~10,400 lines removed). No formal issue file — scope was clear enough to execute directly from interview notes. No QA rework needed — deletion + doc rewrite with systematic grep verification. All 12 milestones now complete. |
 | — | Added [Workflow Directory] milestones (M13-M14) from interview notes. Split managed artifacts (`.workflow/`) from user-facing docs (`docs/`). |
 | — | Decomposed M13 into 13 tasks: sa-feature-063 (design), swe-feature-064 through swe-feature-067 (Cursor: rules, commands, skills, scripts), swe-feature-068 through swe-feature-071 (Claude Code: rules, commands, skills, scripts), swe-feature-072 (install fresh), swe-feature-073 (docs + READMEs), swe-feature-074 (reinstall + verify), qa-feature-075 (grep audit). Decomposed M14 into 4 tasks: swe-feature-076 (bash migration), swe-feature-077 (PowerShell migration), swe-feature-078 (test on this project), qa-feature-079 (end-to-end verification). |
+| — | Postmortem: M13 marked Done. 13 planned / 13 delivered + 2 stale-path bugs from QA (swe-bug-080, swe-bug-081) — both resolved. Mechanical execution; ADR-011 left no ambiguity. 2-3x QA rework multiplier did not apply (low cross-expert interaction). |
+| — | Postmortem: M14 marked Done. 4 planned / 4 delivered. Install scripts verified on both bash and PowerShell — closes long-standing PowerShell-untested gap from M11. All 14 project milestones now complete. |

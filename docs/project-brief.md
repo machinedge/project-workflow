@@ -20,9 +20,9 @@ Developers using AI coding assistants who want structured, repeatable workflows 
 - [x] [Repo Alignment] Remove legacy directories (`experts/`, `tools/`, `targets/desktop-cli/`, `targets/autonomous/`)
 - [x] [Repo Alignment] `CONTRIBUTING.md` reflects current platform-native paradigm
 - [x] [Repo Alignment] All docs free of stale references to removed directories
-- [ ] [Workflow Directory] Managed artifacts (handoff notes, interview notes, lessons-log, research reports, issues) live under `.workflow/`
-- [ ] [Workflow Directory] `docs/` contains only core planning docs and user-generated content
-- [ ] [Workflow Directory] Install over existing project migrates artifacts to `.workflow/` without data loss
+- [x] [Workflow Directory] Managed artifacts (handoff notes, interview notes, lessons-log, research reports, issues) live under `.workflow/`
+- [x] [Workflow Directory] `docs/` contains only core planning docs and user-generated content
+- [x] [Workflow Directory] Install over existing project migrates artifacts to `.workflow/` without data loss
 
 ## Constraints
 
@@ -62,14 +62,16 @@ Developers using AI coding assistants who want structured, repeatable workflows 
 | — | Remove `experts/`, `tools/`, `targets/desktop-cli/`, `targets/autonomous/` | Legacy directories from pre-platform-native era; platform-native `targets/ide/` is the only deliverable |
 | — | Split docs into user-facing (`docs/`) and managed (`.workflow/`) | Handoff notes, issues, and session artifacts are agent memory — noisy for humans; `.workflow/` boundary defines future persistence surface |
 | — | `.workflow/` not auto-added to `.gitignore` | User's choice whether to commit agent memory; teams may want shared history |
+| — | Flat `.workflow/` layout (no sub-categories beyond expert dirs) — ADR-011 | Artifacts already have clear names; a prefix change is simpler than a reorganization |
+| — | Install migrates files but does not rewrite path references inside migrated documents | Historical handoff notes and interview notes are records of what was true when written; rewriting would be revisionist and error-prone |
 
 ## Current Status
 
-- **Milestones:** M1-M13 complete. M14 in progress ([Workflow Directory] Migration).
+- **Milestones:** M1-M14 complete. All 14 milestones delivered. No active work.
 - **Core experts:** PM (10 skills), SWE (2 skills), QA (6 skills), DevOps (6 skills), System Architect (6 skills), team-status (1 shared) — functional on both platforms
 - **Blockers:** None
-- **Next task:** swe-feature-078 (Test migration on this project)
-- **Last updated:** swe-bug-081 complete; Fixed 4 stale paths in architecture.md non-ADR sections
+- **Next task:** None queued. Candidates: new experts (Data Analyst, UX) or new platform targets — both require a fresh `/pm-interview`.
+- **Last updated:** M13 + M14 postmortem complete; project in clean state with zero open issues.
 
 ## Notes for AI
 
