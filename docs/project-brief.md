@@ -23,12 +23,18 @@ Developers using AI coding assistants who want structured, repeatable workflows 
 - [x] [Workflow Directory] Managed artifacts (handoff notes, interview notes, lessons-log, research reports, issues) live under `.workflow/`
 - [x] [Workflow Directory] `docs/` contains only core planning docs and user-generated content
 - [x] [Workflow Directory] Install over existing project migrates artifacts to `.workflow/` without data loss
+- [ ] [Security Expert] New `sec-` expert on both IDE platforms with FIPS skill set
+- [ ] [Security Expert] Engages parallel to SA (emits constraints) and parallel to QA (emits advisory findings)
+- [ ] [Security Expert] `pm-decompose` emits paired `sec-` tasks; new PM reconciliation skill merges parallel outputs
+- [ ] [Security Expert] Worked demonstration exercises both engagement gates end-to-end
 
 ## Constraints
 
 - Platform-native implementations in `targets/ide/cursor/` and `targets/ide/claude-code/` are the source of truth
 - Project brief must stay under 1,000 words
 - Issues tracked in `.workflow/issues/`, not external services
+- Security expert scope is FIPS 140-2/140-3 only; broader security concerns deferred
+- Security findings are advisory, not release-gating
 
 ## Key Decisions Made
 
@@ -64,14 +70,17 @@ Developers using AI coding assistants who want structured, repeatable workflows 
 | — | `.workflow/` not auto-added to `.gitignore` | User's choice whether to commit agent memory; teams may want shared history |
 | — | Flat `.workflow/` layout (no sub-categories beyond expert dirs) — ADR-011 | Artifacts already have clear names; a prefix change is simpler than a reorganization |
 | — | Install migrates files but does not rewrite path references inside migrated documents | Historical handoff notes and interview notes are records of what was true when written; rewriting would be revisionist and error-prone |
+| — | Add Security expert (FIPS-only) as new persona | Credibility for regulated environments; no active customer, quality bar high |
+| — | Security engages via bookend model: constraints at design-time (with SA), validation at review-time (with QA) | Per-task engagement would be expensive and noisy; piggyback on SA + QA cadence |
+| — | `pm-decompose` emits paired `sec-` tasks; add new PM reconciliation skill to align parallel outputs | Security must be integral, not opt-in; reconciliation handles contradictory parallel findings |
 
 ## Current Status
 
-- **Milestones:** M1-M14 complete. All 14 milestones delivered. No active work.
+- **Milestones:** M1-M14 complete. M15 [Security Expert] scoped, not started.
 - **Core experts:** PM (10 skills), SWE (2 skills), QA (6 skills), DevOps (6 skills), System Architect (6 skills), team-status (1 shared) — functional on both platforms
 - **Blockers:** None
-- **Next task:** None queued. Candidates: new experts (Data Analyst, UX) or new platform targets — both require a fresh `/pm-interview`.
-- **Last updated:** M13 + M14 postmortem complete; project in clean state with zero open issues.
+- **Next task:** Decompose [Security Expert] (M15) into tasks.
+- **Last updated:** M15 [Security Expert] scoped from interview notes; brief and roadmap updated.
 
 ## Notes for AI
 

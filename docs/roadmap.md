@@ -18,6 +18,7 @@
 | M12 | [Repo Alignment] Remove legacy directories, align docs and CONTRIBUTING.md with platform-native paradigm | Done | M11 | 1-2 (actual: 1) |
 | M13 | [Workflow Directory] Update structure and references — all paths point to `.workflow/`, fresh install creates new layout | Done | M12 | 3-5 (actual: 8 SWE + 2 QA + 1 SA + 2 bugfix) |
 | M14 | [Workflow Directory] Migration from old structure — install script detects old layout and migrates artifacts | Done | M13 | 2-3 (actual: 3) |
+| M15 | [Security Expert] FIPS-focused new expert — design (`sec-` contract, skill inventory, `pm-decompose` change spec, PM reconciliation skill spec) + implementation on both IDE platforms (role, skills, `/sec-start`, `/sec-handoff`, design-time constraints skill, review-time validation skill, `pm-decompose` update, reconciliation skill) + worked demonstration through both engagement gates + CONTRIBUTING/README/agent-reference positioning | Not started | M14 | 9-14 |
 
 ## Dependency Map
 
@@ -31,7 +32,7 @@ M1 (Core experts) ──────> M10 (Context Optimization research) ──
                                                                                  └──────┘       │
                                                                                                 └──> M12 (Repo Alignment)
                                                                                                        │
-                                                                                                       └──> M13 (Workflow Directory: structure + refs) ──> M14 (Workflow Directory: migration)
+                                                                                                       └──> M13 (Workflow Directory: structure + refs) ──> M14 (Workflow Directory: migration) ──> M15 (Security Expert: FIPS)
 ```
 
 ## Risk Register
@@ -52,6 +53,11 @@ M1 (Core experts) ──────> M10 (Context Optimization research) ──
 | Path reference coverage — missing a `.workflow/` reference means an expert silently reads/writes the wrong location | High | Medium | Systematic grep audit of all path references across both platforms |
 | Migration moves or misses user-created files in `docs/` | Medium | Medium | Migration only moves known artifacts by name pattern; leaves everything else |
 | Partial migration leaves files split between old and new locations | High | Low | Migration script should be idempotent (safe to re-run) |
+| [Security] FIPS depth — model isn't a certified compliance officer; constraints/findings could be plausible-but-wrong | High | Medium | Accept and iterate; real users surface gaps; demonstration must produce substantive non-generic output |
+| [Security] `pm-decompose` change emits `sec-` tasks on milestones with no FIPS surface → noise that dilutes signal | Medium | Medium | Empty/short constraint doc is acceptable when nothing applies; design phase defines the low-signal case |
+| [Security] Parallel SA+Security and QA+Security produce contradictory or overlapping findings | Medium | Medium | New PM reconciliation skill (scoped into M15) owns merging into a single coherent picture |
+| [Security] Shallow or formulaic Security output undermines credibility for regulated audiences (worse than not shipping) | High | Medium | Quality bar enforced in M15 demonstration; positioning in CONTRIBUTING/README reinforces first-class status |
+| [Security] M15 estimate (9-14 sessions) is on the larger side; risk of sprawl as in M11 (5-8 → ~24) | Medium | Medium | Postmortem checkpoint; willingness to split into sub-milestones if scope drifts |
 
 ## Change Log
 
@@ -82,3 +88,4 @@ M1 (Core experts) ──────> M10 (Context Optimization research) ──
 | — | Decomposed M13 into 13 tasks: sa-feature-063 (design), swe-feature-064 through swe-feature-067 (Cursor: rules, commands, skills, scripts), swe-feature-068 through swe-feature-071 (Claude Code: rules, commands, skills, scripts), swe-feature-072 (install fresh), swe-feature-073 (docs + READMEs), swe-feature-074 (reinstall + verify), qa-feature-075 (grep audit). Decomposed M14 into 4 tasks: swe-feature-076 (bash migration), swe-feature-077 (PowerShell migration), swe-feature-078 (test on this project), qa-feature-079 (end-to-end verification). |
 | — | Postmortem: M13 marked Done. 13 planned / 13 delivered + 2 stale-path bugs from QA (swe-bug-080, swe-bug-081) — both resolved. Mechanical execution; ADR-011 left no ambiguity. 2-3x QA rework multiplier did not apply (low cross-expert interaction). |
 | — | Postmortem: M14 marked Done. 4 planned / 4 delivered. Install scripts verified on both bash and PowerShell — closes long-standing PowerShell-untested gap from M11. All 14 project milestones now complete. |
+| — | Added [Security Expert] milestone (M15) from interview notes. FIPS-focused new persona; bookend workflow (constraints parallel to SA, validation parallel to QA); `pm-decompose` change + new PM reconciliation skill in scope. Single milestone covering design, implementation across both platforms, and worked demonstration. |
