@@ -83,3 +83,8 @@
 | qa-feature-079 | QA: Verify Migration End-to-End | qa | feature | [Workflow Directory] Migration from old structure (M14) | — | done |
 | swe-bug-080 | Project Brief Constraints Section Has Stale `issues/` Path | swe | bug | [Workflow Directory] Update structure and references (M13) | — | done |
 | swe-bug-081 | architecture.md Has Stale Paths in Non-ADR Sections | swe | bug | [Workflow Directory] Update structure and references (M13) | — | done |
+| sa-research-082 | Decide transport protocol for expert servers (MCP vs REST vs JSON-RPC) | system-architect | research | M1 — End-to-end "hello expert" spike | — | backlog |
+| sa-research-083 | Decide filesystem-context mechanism for Dockerized expert servers | system-architect | research | M1 — End-to-end "hello expert" spike | — | backlog |
+| sa-research-084 | Decide framework for the expert-server Python authoring library | system-architect | research | M1 — End-to-end "hello expert" spike | sa-research-082 | backlog |
+| swe-feature-085 | Build "hello expert" end-to-end spike server | swe | feature | M1 — End-to-end "hello expert" spike | sa-research-082, sa-research-083, sa-research-084 | backlog |
+| qa-feature-086 | QA: Verify "hello expert" spike end-to-end and confirm M1 decisions hold | qa | feature | M1 — End-to-end "hello expert" spike | — | backlog |
