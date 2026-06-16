@@ -17,7 +17,7 @@ Read these files:
 
 If `docs/env-context.md` doesn't exist, tell the user: "No environment context found. Run `/ops-env-discovery` first so I understand your deployment targets and failure/recovery characteristics."
 
-Scan all `.workflow/issues/` subdirectories for files matching the milestone (check the **Milestone** field in each file). Read `.workflow/issues/issues-list.md` for a quick overview.
+Scan all `.sdlc/issues/` subdirectories for files matching the milestone (check the **Milestone** field in each file). Read `.sdlc/issues/issues-list.md` for a quick overview.
 
 If the user didn't specify a milestone, determine the current or next milestone from the roadmap. Confirm with the user.
 
@@ -26,8 +26,8 @@ If the user didn't specify a milestone, determine the current or next milestone 
 Based on the project context, define the gates that must pass before release:
 
 **Code gates:**
-- All must-fix issues resolved (check: scan `.workflow/issues/backlog/`, `.workflow/issues/planned/`, `.workflow/issues/in-progress/` for files with **Severity: must-fix**)
-- All acceptance criteria verified (check SWE handoff notes and issue files in `.workflow/issues/done/`)
+- All must-fix issues resolved (check: scan `.sdlc/issues/backlog/`, `.sdlc/issues/planned/`, `.sdlc/issues/in-progress/` for files with **Severity: must-fix**)
+- All acceptance criteria verified (check SWE handoff notes and issue files in `.sdlc/issues/done/`)
 - No open blocker issues (check: scan open issue folders for files with **Severity: blocker**)
 
 **Test gates:**

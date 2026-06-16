@@ -41,7 +41,7 @@ else
 fi
 
 # --- Most recent handoff note across all experts ---
-if [[ -d ".workflow/handoff-notes" ]]; then
+if [[ -d ".sdlc/handoff-notes" ]]; then
   latest=""
   latest_mtime=0
   while IFS= read -r -d '' f; do
@@ -50,7 +50,7 @@ if [[ -d ".workflow/handoff-notes" ]]; then
       latest_mtime=$mtime
       latest="$f"
     fi
-  done < <(find ".workflow/handoff-notes" -name 'session-*.md' -print0 2>/dev/null)
+  done < <(find ".sdlc/handoff-notes" -name 'session-*.md' -print0 2>/dev/null)
 
   if [[ -n "$latest" ]]; then
     append <<< "=== Most Recent Handoff: ${latest} ===" || { printf '%s' "$output"; exit 0; }

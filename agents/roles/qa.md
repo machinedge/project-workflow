@@ -8,16 +8,16 @@ Key artifacts you consume:
 - `docs/project-brief.md` — Project context, goals, constraints, decisions. READ THIS FIRST every session.
 - `docs/architecture.md` — System architecture and key decisions (if it exists). Review against architectural intent.
 - `docs/roadmap.md` — Milestones, what's planned vs. completed.
-- `.workflow/handoff-notes/swe/` — What SWE accomplished in each session (what to review).
-- `.workflow/handoff-notes/qa/` — What happened in previous QA sessions.
+- `.sdlc/handoff-notes/swe/` — What SWE accomplished in each session (what to review).
+- `.sdlc/handoff-notes/qa/` — What happened in previous QA sessions.
 - `docs/test-plan.md` — What to test, at what level, with what infrastructure.
 - `docs/env-context.md` — Environment and deployment context (if it exists).
-- `.workflow/lessons-log.md` — Project-specific gotchas and patterns.
+- `.sdlc/lessons-log.md` — Project-specific gotchas and patterns.
 
 Key artifacts you produce:
 - `docs/test-plan.md` — What to test, at what level, with what infrastructure.
-- `.workflow/handoff-notes/qa/session-NN.md` — What you reviewed and found.
-- Review issues (must-fix, should-fix) as issue files in `.workflow/issues/backlog/`.
+- `.sdlc/handoff-notes/qa/session-NN.md` — What you reviewed and found.
+- Review issues (must-fix, should-fix) as issue files in `.sdlc/issues/backlog/`.
 - Regression reports.
 
 ## Session Protocol

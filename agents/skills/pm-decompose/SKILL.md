@@ -1,9 +1,9 @@
 ---
 name: pm-decompose
-description: "Break a milestone into session-sized task issues in .workflow/issues/backlog/. Use when the user wants to decompose a roadmap milestone into actionable issue files for SWE, QA, and DevOps experts."
+description: "Break a milestone into session-sized task issues in .sdlc/issues/backlog/. Use when the user wants to decompose a roadmap milestone into actionable issue files for SWE, QA, and DevOps experts."
 ---
 
-Break a milestone into session-sized tasks and create them as local issue files in `.workflow/issues/backlog/`.
+Break a milestone into session-sized tasks and create them as local issue files in `.sdlc/issues/backlog/`.
 
 The user may specify which milestone: $ARGUMENTS
 
@@ -21,7 +21,7 @@ If you are unsure which mode you're in: you're in implementation-ready mode only
 Read these files:
 1. `docs/project-brief.md`
 2. `docs/roadmap.md`
-3. `.workflow/issues/issues-list.md` (if it exists — to know what issues already exist)
+3. `.sdlc/issues/issues-list.md` (if it exists — to know what issues already exist)
 
 In **implementation-ready mode**, also read the milestone's enrichment artifacts so their decisions can be inlined into each task:
 4. `docs/architecture.md` — component boundaries and interfaces the tasks must honor
@@ -41,10 +41,10 @@ Run `.agents/scripts/next-issue-number.sh` to get the next available issue numbe
 
 ## Step 4: Create issue files
 
-For each task in the milestone, create a markdown file in `.workflow/issues/backlog/`. Files follow the naming convention:
+For each task in the milestone, create a markdown file in `.sdlc/issues/backlog/`. Files follow the naming convention:
 
 ```
-.workflow/issues/backlog/[expert]-[type]-[number].md
+.sdlc/issues/backlog/[expert]-[type]-[number].md
 ```
 
 Where:
@@ -56,7 +56,7 @@ Where:
 
 Implementation work — building features, writing code, fixing bugs.
 
-Create a file like `.workflow/issues/backlog/swe-feature-001.md`:
+Create a file like `.sdlc/issues/backlog/swe-feature-001.md`:
 
 ```markdown
 # [Short descriptive title]
@@ -94,7 +94,7 @@ As a [persona], I [need | want | desire] [feature / capability] so that I can [v
 
 Quality assurance work — writing test plans, running reviews, regression testing.
 
-Create a file like `.workflow/issues/backlog/qa-feature-004.md`:
+Create a file like `.sdlc/issues/backlog/qa-feature-004.md`:
 
 ```markdown
 # QA: [Short descriptive title]
@@ -127,7 +127,7 @@ Create a file like `.workflow/issues/backlog/qa-feature-004.md`:
 
 Infrastructure and deployment work — setting up pipelines, configuring environments, preparing releases.
 
-Create a file like `.workflow/issues/backlog/devops-feature-005.md`:
+Create a file like `.sdlc/issues/backlog/devops-feature-005.md`:
 
 ```markdown
 # DevOps: [Short descriptive title]
@@ -194,6 +194,6 @@ If a task fails any check, enrich it (pull the missing detail from the architect
 After creating all issue files:
 
 1. List the created issue files and present them to the user for review.
-2. Run `.agents/scripts/update-issues-list.sh` to regenerate `.workflow/issues/issues-list.md`.
+2. Run `.agents/scripts/update-issues-list.sh` to regenerate `.sdlc/issues/issues-list.md`.
 3. Update `docs/roadmap.md` to note that the milestone has been decomposed. Log the issue filenames in the roadmap's change log.
 4. Update `docs/project-brief.md` "Current Status" with the first task's issue filename as "Next task."

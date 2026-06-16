@@ -135,7 +135,7 @@ if (stage === 'compile') {
   phase('Compile')
   log(`Compiling ${milestone} into implementation-ready tasks.`)
   const decomp = await agent(
-    `Run pm-decompose in IMPLEMENTATION-READY mode for milestone "${milestone}". Read and follow .agents/skills/pm-decompose/SKILL.md (its Modes + implementation-ready template) and docs/task-detail-standard.md. Inline the architecture contracts, SR-NNN security constraints, and test cases from the enrichment artifacts. Create the issue files under .workflow/issues/backlog/ and return the list of created task files with their dependency order.`,
+    `Run pm-decompose in IMPLEMENTATION-READY mode for milestone "${milestone}". Read and follow .agents/skills/pm-decompose/SKILL.md (its Modes + implementation-ready template) and docs/task-detail-standard.md. Inline the architecture contracts, SR-NNN security constraints, and test cases from the enrichment artifacts. Create the issue files under .sdlc/issues/backlog/ and return the list of created task files with their dependency order.`,
     { label: 'compile:decompose', phase: 'Compile', schema: DECOMP_SCHEMA }
   )
   const tasks = (decomp && decomp.tasks) || []
@@ -219,7 +219,7 @@ if (stage === 'review') {
   let filed = 0
   if (actionable.length) {
     const res = await agent(
-      `File these ${actionable.length} review findings as issue files in .workflow/issues/backlog/. Process them ONE AT A TIME: for each, run .agents/scripts/next-issue-number.sh to claim a number, write a swe-bug-NNN.md (or swe-techdebt-NNN.md) issue referencing the location and recommendation. After all are filed, run .agents/scripts/update-issues-list.sh. Return the count filed. Findings: ${JSON.stringify(actionable)}`,
+      `File these ${actionable.length} review findings as issue files in .sdlc/issues/backlog/. Process them ONE AT A TIME: for each, run .agents/scripts/next-issue-number.sh to claim a number, write a swe-bug-NNN.md (or swe-techdebt-NNN.md) issue referencing the location and recommendation. After all are filed, run .agents/scripts/update-issues-list.sh. Return the count filed. Findings: ${JSON.stringify(actionable)}`,
       { label: 'review:file-issues', phase: 'Review' }
     )
     filed = actionable.length

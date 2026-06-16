@@ -86,7 +86,7 @@ echo ""
 mkdir -p "$TARGET/docs"
 
 # ─────────────────────────────────────────────
-# Migrate old directory layout to .workflow/
+# Migrate old directory layout to .sdlc/
 # ─────────────────────────────────────────────
 
 migrate_dir() {
@@ -112,45 +112,45 @@ migrate_file() {
 }
 
 if [ -d "$TARGET/docs/handoff-notes" ] || [ -d "$TARGET/issues" ]; then
-    echo "  Migrating artifacts to .workflow/..."
+    echo "  Migrating artifacts to .sdlc/..."
 
-    migrate_dir "$TARGET/docs/handoff-notes" "$TARGET/.workflow/handoff-notes" \
-        && echo "    docs/handoff-notes/ → .workflow/handoff-notes/"
-    migrate_dir "$TARGET/issues" "$TARGET/.workflow/issues" \
-        && echo "    issues/ → .workflow/issues/"
+    migrate_dir "$TARGET/docs/handoff-notes" "$TARGET/.sdlc/handoff-notes" \
+        && echo "    docs/handoff-notes/ → .sdlc/handoff-notes/"
+    migrate_dir "$TARGET/issues" "$TARGET/.sdlc/issues" \
+        && echo "    issues/ → .sdlc/issues/"
 
-    migrate_file "$TARGET/docs/lessons-log.md" "$TARGET/.workflow/lessons-log.md" \
-        && echo "    docs/lessons-log.md → .workflow/lessons-log.md"
+    migrate_file "$TARGET/docs/lessons-log.md" "$TARGET/.sdlc/lessons-log.md" \
+        && echo "    docs/lessons-log.md → .sdlc/lessons-log.md"
 
     for f in "$TARGET"/docs/interview-notes*.md; do
         [ -f "$f" ] || continue
         fname=$(basename "$f")
-        migrate_file "$f" "$TARGET/.workflow/$fname" \
-            && echo "    docs/$fname → .workflow/$fname"
+        migrate_file "$f" "$TARGET/.sdlc/$fname" \
+            && echo "    docs/$fname → .sdlc/$fname"
     done
 
     for f in "$TARGET"/docs/research-*.md; do
         [ -f "$f" ] || continue
         fname=$(basename "$f")
-        migrate_file "$f" "$TARGET/.workflow/$fname" \
-            && echo "    docs/$fname → .workflow/$fname"
+        migrate_file "$f" "$TARGET/.sdlc/$fname" \
+            && echo "    docs/$fname → .sdlc/$fname"
     done
 
     echo ""
 fi
 
-# Ensure .workflow/ structure is complete (fresh install or post-migration)
-mkdir -p "$TARGET/.workflow/issues/backlog"
-mkdir -p "$TARGET/.workflow/issues/planned"
-mkdir -p "$TARGET/.workflow/issues/in-progress"
-mkdir -p "$TARGET/.workflow/issues/done"
+# Ensure .sdlc/ structure is complete (fresh install or post-migration)
+mkdir -p "$TARGET/.sdlc/issues/backlog"
+mkdir -p "$TARGET/.sdlc/issues/planned"
+mkdir -p "$TARGET/.sdlc/issues/in-progress"
+mkdir -p "$TARGET/.sdlc/issues/done"
 
 for expert in pm swe qa devops system-architect; do
-    mkdir -p "$TARGET/.workflow/handoff-notes/$expert"
+    mkdir -p "$TARGET/.sdlc/handoff-notes/$expert"
 done
 
-if [ ! -f "$TARGET/.workflow/lessons-log.md" ]; then
-cat > "$TARGET/.workflow/lessons-log.md" << 'EOF'
+if [ ! -f "$TARGET/.sdlc/lessons-log.md" ]; then
+cat > "$TARGET/.sdlc/lessons-log.md" << 'EOF'
 # Lessons Log
 
 Record project-specific gotchas, patterns, and knowledge here. Future sessions will read this to avoid repeating mistakes.
@@ -162,7 +162,7 @@ fi
 
 # ─────────────────────────────────────────────
 # Clean previous installation (managed files only)
-# Preserves user content in docs/, .workflow/, and
+# Preserves user content in docs/, .sdlc/, and
 # user-owned .claude/settings*.json.
 # ─────────────────────────────────────────────
 
@@ -356,5 +356,5 @@ echo "  rm -f AGENTS.md CLAUDE.md"
 echo "  rm -rf .agents"
 echo "  rm -f .claude/commands .claude/skills .claude/roles .claude/scripts .claude/workflows   # symlinks"
 echo "  # Manually remove the SessionStart hook from .claude/settings.json if desired"
-echo "  Project documents (docs/, .workflow/) are yours — they are not removed."
+echo "  Project documents (docs/, .sdlc/) are yours — they are not removed."
 echo ""

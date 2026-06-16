@@ -13,7 +13,7 @@ Read these files automatically:
 1. `docs/project-brief.md` — constraints, compliance needs, what the system handles (secrets, PII, money, etc.)
 2. `docs/architecture.md` (if it exists) — components and the trust boundaries between them
 3. `docs/roadmap.md` (if it exists) — the milestone being scoped
-4. `.workflow/interview-notes*.md` (if any exist — raw requirements context)
+4. `.sdlc/interview-notes*.md` (if any exist — raw requirements context)
 5. `docs/security-requirements.md` (if it exists — you may be extending, not starting fresh)
 
 If `docs/architecture.md` doesn't exist, you can still proceed from the brief, but tell the user: "No architecture document exists yet — trust boundaries will be inferred from the brief. Ask for the `sa-design` skill if you want boundaries pinned down first."

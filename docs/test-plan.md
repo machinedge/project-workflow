@@ -28,7 +28,7 @@ Validates the Expert Skill Restructure feature: System Architect expert creation
 |---|----------|--------|-----------|----------|---------------|----------|
 | 1 | System Architect expert passes structural validation | swe-feature-001, AC 10 | Unit | Run `./tools/validate/validate.sh technical/system-architect` | Local | P1 |
 | 2 | All original experts still pass structural validation | Backward compat constraint | Unit | Run `validate.sh` for each of: `technical/project-manager`, `technical/swe`, `technical/qa`, `technical/devops` | Local | P1 |
-| 3 | Default install produces the AGENTS.md layout | ADR-012 | Integration | Run `./install.sh /tmp/test-proj`; verify `AGENTS.md`, `CLAUDE.md`→`AGENTS.md` symlink, `.agents/{roles,commands,skills,scripts}`, `.claude/*` symlinks, settings hook, `.workflow/` | Local | P1 |
+| 3 | Default install produces the AGENTS.md layout | ADR-012 | Integration | Run `./install.sh /tmp/test-proj`; verify `AGENTS.md`, `CLAUDE.md`→`AGENTS.md` symlink, `.agents/{roles,commands,skills,scripts}`, `.claude/*` symlinks, settings hook, `.sdlc/` | Local | P1 |
 | 4 | `--no-claude` install omits `.claude/` | ADR-012 | Integration | Run `./install.sh --no-claude /tmp/test-generic`; verify `AGENTS.md` + `.agents/` present and no `.claude/` | Local | P2 |
 | 5 | Claude discovery resolves through symlinks | ADR-012 | Integration | In a default install, verify `.claude/skills/pm-vision/SKILL.md` and `.claude/scripts/session-primer.sh` are readable via the symlinks | Local | P1 |
 | 6 | Existing user `AGENTS.md` is backed up, not clobbered | ADR-012 | Integration | Pre-create `AGENTS.md`, install, verify `AGENTS.md.pre-install.bak` holds the original | Local | P2 |
@@ -77,7 +77,7 @@ Validates the Expert Skill Restructure feature: System Architect expert creation
 5. Verify `.claude/{commands,skills,roles,scripts}` are symlinks into `../.agents/*`
 6. Verify `.claude/skills/pm-vision/SKILL.md` and `.claude/scripts/session-primer.sh` are readable via the symlinks
 7. Verify `.claude/settings.json` contains the `SessionStart` → `session-primer.sh` hook
-8. Verify `.workflow/issues/{backlog,planned,in-progress,done}` and `.workflow/handoff-notes/<expert>/` exist
+8. Verify `.sdlc/issues/{backlog,planned,in-progress,done}` and `.sdlc/handoff-notes/<expert>/` exist
 9. Clean up: `rm -rf /tmp/test-install`
 **Expected result:** Full AGENTS.md layout present; Claude wiring resolves through symlinks
 

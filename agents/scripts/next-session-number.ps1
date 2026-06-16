@@ -5,7 +5,7 @@ $ErrorActionPreference = "Stop"
 #
 # Usage: next-session-number.ps1 <expert-name>
 # Output: two-digit session number (e.g., "07")
-# Side effect: creates .workflow/handoff-notes/<expert>/session-NN.md placeholder
+# Side effect: creates .sdlc/handoff-notes/<expert>/session-NN.md placeholder
 
 if ($args.Count -lt 1) {
     Write-Error "Usage: next-session-number.ps1 <expert-name>"
@@ -13,7 +13,7 @@ if ($args.Count -lt 1) {
 }
 
 $expert = $args[0]
-$dir = ".workflow/handoff-notes/$expert"
+$dir = ".sdlc/handoff-notes/$expert"
 
 if (-not (Test-Path $dir)) {
     New-Item -ItemType Directory -Path $dir -Force | Out-Null

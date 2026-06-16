@@ -13,11 +13,11 @@ Run `.agents/scripts/next-session-number.sh qa` to atomically claim the next ses
 
 Determine which issue was worked on this session. Check the conversation context or read `docs/project-brief.md` to see what task was in progress. If unclear, ask the user.
 
-Read the issue file from `.workflow/issues/` (check `in-progress/`, `planned/`, or `backlog/`) to get the acceptance criteria.
+Read the issue file from `.sdlc/issues/` (check `in-progress/`, `planned/`, or `backlog/`) to get the acceptance criteria.
 
 ## Step 3: Write the handoff note
 
-Save to `.workflow/handoff-notes/qa/session-NN.md`:
+Save to `.sdlc/handoff-notes/qa/session-NN.md`:
 
 ```markdown
 # Handoff Note: [Task Name]
@@ -31,7 +31,7 @@ Save to `.workflow/handoff-notes/qa/session-NN.md`:
 - **Must-fix:** [count] issues
 - **Should-fix:** [count] issues
 - **Nit:** [count] issues
-- [Link to each issue file created in `.workflow/issues/backlog/`]
+- [Link to each issue file created in `.sdlc/issues/backlog/`]
 
 ## Acceptance Criteria Status
 - [x] [Criterion that was verified as met]
@@ -62,12 +62,12 @@ Add a session summary section to the issue file:
 ## Session [NN] Summary
 
 **What was done:** [1-2 sentences]
-**Handoff note:** `.workflow/handoff-notes/qa/session-NN.md`
+**Handoff note:** `.sdlc/handoff-notes/qa/session-NN.md`
 **All acceptance criteria met:** [Yes / No — if no, explain what remains]
 ```
 
 If all acceptance criteria are met:
-1. Run `.agents/scripts/move-issue.sh <filename> done` to move the issue to `.workflow/issues/done/`.
+1. Run `.agents/scripts/move-issue.sh <filename> done` to move the issue to `.sdlc/issues/done/`.
 2. Run `.agents/scripts/update-issues-list.sh` to regenerate the issues list.
 
 If acceptance criteria are NOT all met, leave the issue file in its current folder and note what remains in the session summary.
@@ -80,6 +80,6 @@ If new decisions were made during this session, append them to the "Key Decision
 
 ## Step 6: Update the lessons log
 
-If anything was learned during this session (a gotcha, a review pattern, a quality concern), add it to `.workflow/lessons-log.md`.
+If anything was learned during this session (a gotcha, a review pattern, a quality concern), add it to `.sdlc/lessons-log.md`.
 
 Be honest in the handoff note. If something is incomplete or a review was shallow, say so. The next session needs the truth, not optimism.

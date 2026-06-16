@@ -13,7 +13,7 @@ Read these files automatically:
 1. `docs/security-requirements.md` — the requirements to evaluate against (your checklist)
 2. `docs/project-brief.md` — constraints, compliance, what's sensitive
 3. `docs/architecture.md` (if it exists) — trust boundaries
-4. Recent SWE handoff notes in `.workflow/handoff-notes/swe/` — what was built and changed
+4. Recent SWE handoff notes in `.sdlc/handoff-notes/swe/` — what was built and changed
 
 If `docs/security-requirements.md` doesn't exist, tell the user: "No security requirements exist yet. Ask for the `sec-requirements` skill first to establish the bar, or this review will have no baseline to evaluate against." You may still do a best-effort review from common categories, but say so.
 
@@ -54,7 +54,7 @@ For each finding:
 
 ## Step 5: File Issues
 
-For must-fix and should-fix findings, create issue files in `.workflow/issues/backlog/`. Run `.agents/scripts/next-issue-number.sh` for the next available number.
+For must-fix and should-fix findings, create issue files in `.sdlc/issues/backlog/`. Run `.agents/scripts/next-issue-number.sh` for the next available number.
 
 - Use the naming convention `[expert]-[type]-[number].md` with `swe-` as the executor (fixes are implemented by SWE) and `bug` or `techdebt` as the type — e.g. `swe-bug-014.md`.
 - Reference the security requirement (`SR-NNN`) or threat (`T-NNN`) being violated, and include the file:line evidence so the fix is unambiguous.

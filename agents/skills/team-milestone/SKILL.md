@@ -74,7 +74,7 @@ Once the user gives the go:
 
 1. Run `pm-postmortem` for the milestone (honest assessment, lessons, plan adjustments).
 2. Update `docs/roadmap.md` (mark the milestone complete) and `docs/project-brief.md` status.
-3. Move completed issues to `.workflow/issues/done/` (`move-issue.sh`) and regenerate the list (`update-issues-list.sh`).
+3. Move completed issues to `.sdlc/issues/done/` (`move-issue.sh`) and regenerate the list (`update-issues-list.sh`).
 4. Write handoff notes for the experts that did substantive work, via their `*-handoff` skills.
 
 Report what was built, what's deferred to the backlog, and what the next milestone needs to know.
@@ -83,4 +83,4 @@ Report what was built, what's deferred to the backlog, and what the next milesto
 
 - **Gated, not autonomous.** The orchestration moves fast between gates but never past one without the user. Phases 1, 2, and 4 each end in an explicit human decision.
 - **Reuse, don't reinvent.** Every phase is an existing skill. This runbook sequences them and carries their outputs forward; it doesn't re-implement their logic.
-- **Documents are memory.** All state lands in `docs/` and `.workflow/` so a resumed or parallel run — and the next session — can pick up without this conversation.
+- **Documents are memory.** All state lands in `docs/` and `.sdlc/` so a resumed or parallel run — and the next session — can pick up without this conversation.

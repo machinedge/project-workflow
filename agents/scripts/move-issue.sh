@@ -18,7 +18,7 @@ esac
 [[ "$filename" == *.md ]] || filename="${filename}.md"
 
 source_file=""
-for dir in .workflow/issues/backlog .workflow/issues/planned .workflow/issues/in-progress .workflow/issues/done; do
+for dir in .sdlc/issues/backlog .sdlc/issues/planned .sdlc/issues/in-progress .sdlc/issues/done; do
   if [ -f "$dir/$filename" ]; then
     source_file="$dir/$filename"
     break
@@ -30,7 +30,7 @@ if [ -z "$source_file" ]; then
   exit 1
 fi
 
-target_dir=".workflow/issues/$target"
+target_dir=".sdlc/issues/$target"
 target_file="$target_dir/$filename"
 
 if [ "$source_file" = "$target_file" ]; then

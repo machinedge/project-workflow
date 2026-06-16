@@ -12,23 +12,23 @@ Read all available project artifacts and produce a concise status report. Check 
 Read these if they exist:
 - `docs/project-brief.md` — project identity, goals, current status
 - `docs/roadmap.md` — milestones, what's planned vs. completed
-- `.workflow/lessons-log.md` — accumulated gotchas and patterns
+- `.sdlc/lessons-log.md` — accumulated gotchas and patterns
 
 If `docs/project-brief.md` doesn't exist, tell the user: "No project brief found. Run `/pm-interview` and ask for the `pm-vision` skill to get started." and stop.
 
 ## Step 2: Check issues
 
-Read `.workflow/issues/issues-list.md` for an overview. Then count issue files in each status folder:
-- `.workflow/issues/backlog/` — items not yet scheduled
-- `.workflow/issues/planned/` — items scheduled for work
-- `.workflow/issues/in-progress/` — items currently being worked on
-- `.workflow/issues/done/` — completed items
+Read `.sdlc/issues/issues-list.md` for an overview. Then count issue files in each status folder:
+- `.sdlc/issues/backlog/` — items not yet scheduled
+- `.sdlc/issues/planned/` — items scheduled for work
+- `.sdlc/issues/in-progress/` — items currently being worked on
+- `.sdlc/issues/done/` — completed items
 
 Summarize: total by status, any with severity `must-fix` or `blocker`, any bugs (files with `-bug-` in the name).
 
 ## Step 3: Check handoff notes
 
-Look for handoff notes in `.workflow/handoff-notes/` subdirectories (swe/, qa/, devops/, pm/, system-architect/). For each workflow that has notes, report:
+Look for handoff notes in `.sdlc/handoff-notes/` subdirectories (swe/, qa/, devops/, pm/, system-architect/). For each workflow that has notes, report:
 - Number of sessions completed
 - Most recent session summary (from the last note)
 

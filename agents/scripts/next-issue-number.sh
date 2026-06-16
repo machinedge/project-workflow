@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-if [ ! -d ".workflow/issues" ]; then
-  echo "Error: '.workflow/issues/' directory not found. Run this script from the project root." >&2
+if [ ! -d ".sdlc/issues" ]; then
+  echo "Error: '.sdlc/issues/' directory not found. Run this script from the project root." >&2
   exit 1
 fi
 
 max=0
-for dir in .workflow/issues/backlog .workflow/issues/planned .workflow/issues/in-progress .workflow/issues/done; do
+for dir in .sdlc/issues/backlog .sdlc/issues/planned .sdlc/issues/in-progress .sdlc/issues/done; do
   [ -d "$dir" ] || continue
   for file in "$dir"/*.md; do
     [ -f "$file" ] || continue

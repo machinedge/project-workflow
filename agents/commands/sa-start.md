@@ -9,12 +9,12 @@ The user may specify a task: $ARGUMENTS
 Read these files automatically — do not ask the user to provide them:
 1. `docs/project-brief.md`
 2. `docs/architecture.md` (if it exists)
-3. `.workflow/lessons-log.md`
+3. `.sdlc/lessons-log.md`
 4. The task issue:
-   - If user specified an issue (e.g. "sa-feature-001" or a description), find and read it from `.workflow/issues/`
+   - If user specified an issue (e.g. "sa-feature-001" or a description), find and read it from `.sdlc/issues/`
    - If not, check project brief's "Next task" field for the issue filename
-   - If still unclear, scan `.workflow/issues/planned/` and `.workflow/issues/in-progress/` for architect-scoped tasks and ask
-5. Most recent handoff note in `.workflow/handoff-notes/system-architect/` (if any exist)
+   - If still unclear, scan `.sdlc/issues/planned/` and `.sdlc/issues/in-progress/` for architect-scoped tasks and ask
+5. Most recent handoff note in `.sdlc/handoff-notes/system-architect/` (if any exist)
 6. `docs/roadmap.md` (if it exists) — understand the current milestone scope
 7. `docs/env-context.md` (if it exists) — skim for constraints relevant to this task
 

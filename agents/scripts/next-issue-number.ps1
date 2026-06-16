@@ -1,12 +1,12 @@
 $ErrorActionPreference = "Stop"
 
-if (-not (Test-Path ".workflow/issues")) {
-    Write-Error "'.workflow/issues/' directory not found. Run this script from the project root."
+if (-not (Test-Path ".sdlc/issues")) {
+    Write-Error "'.sdlc/issues/' directory not found. Run this script from the project root."
     exit 1
 }
 
 $max = 0
-foreach ($dir in @(".workflow/issues/backlog", ".workflow/issues/planned", ".workflow/issues/in-progress", ".workflow/issues/done")) {
+foreach ($dir in @(".sdlc/issues/backlog", ".sdlc/issues/planned", ".sdlc/issues/in-progress", ".sdlc/issues/done")) {
     if (-not (Test-Path $dir)) { continue }
     Get-ChildItem -Path $dir -Filter "*.md" | ForEach-Object {
         if ($_.BaseName -match '(\d+)$') {

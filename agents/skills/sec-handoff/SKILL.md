@@ -13,11 +13,11 @@ Run `.agents/scripts/next-session-number.sh security-engineer` to atomically cla
 
 Determine which issue or milestone was worked on this session. Check the conversation context or read `docs/project-brief.md` to see what was in progress. If unclear, ask the user.
 
-If an issue file applies, read it from `.workflow/issues/` (check `in-progress/`, `planned/`, or `backlog/`) to get the acceptance criteria.
+If an issue file applies, read it from `.sdlc/issues/` (check `in-progress/`, `planned/`, or `backlog/`) to get the acceptance criteria.
 
 ## Step 3: Write the handoff note
 
-Save to `.workflow/handoff-notes/security-engineer/session-NN.md`:
+Save to `.sdlc/handoff-notes/security-engineer/session-NN.md`:
 
 ```markdown
 # Handoff Note: [Task Name]
@@ -32,7 +32,7 @@ Save to `.workflow/handoff-notes/security-engineer/session-NN.md`:
 - **Must-fix:** [count] issues
 - **Should-fix:** [count] issues
 - **Observations:** [count]
-- [Link to each issue file created in `.workflow/issues/backlog/`]
+- [Link to each issue file created in `.sdlc/issues/backlog/`]
 
 ## Acceptance Criteria Status
 - [x] [Criterion verified as met]
@@ -60,12 +60,12 @@ If an issue was worked, add a session summary section to it:
 ## Session [NN] Summary
 
 **What was done:** [1-2 sentences]
-**Handoff note:** `.workflow/handoff-notes/security-engineer/session-NN.md`
+**Handoff note:** `.sdlc/handoff-notes/security-engineer/session-NN.md`
 **All acceptance criteria met:** [Yes / No — if no, explain what remains]
 ```
 
 If all acceptance criteria are met:
-1. Run `.agents/scripts/move-issue.sh <filename> done` to move the issue to `.workflow/issues/done/`.
+1. Run `.agents/scripts/move-issue.sh <filename> done` to move the issue to `.sdlc/issues/done/`.
 2. Run `.agents/scripts/update-issues-list.sh` to regenerate the issues list.
 
 If acceptance criteria are NOT all met, leave the issue file in its current folder and note what remains in the session summary.
@@ -78,6 +78,6 @@ If new decisions were made during this session, append them to the "Key Decision
 
 ## Step 6: Update the lessons log
 
-If anything was learned during this session (a recurring vulnerability class, a control that's easy to miss, a dependency gotcha), add it to `.workflow/lessons-log.md`.
+If anything was learned during this session (a recurring vulnerability class, a control that's easy to miss, a dependency gotcha), add it to `.sdlc/lessons-log.md`.
 
 Be honest in the handoff note. If a review was shallow or a control is unverified, say so. The next session needs the truth, not optimism.

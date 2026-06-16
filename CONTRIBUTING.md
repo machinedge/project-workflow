@@ -24,7 +24,7 @@ agents/                          # Single source of truth (harness-neutral)
   skills/                        # Discoverable skill folders (SKILL.md)
   scripts/                       # Mechanical shell scripts (.sh + .ps1)
 docs/                            # Project documentation and architecture
-.workflow/                       # Managed artifacts (issues, handoff notes, lessons log)
+.sdlc/                       # Managed artifacts (issues, handoff notes, lessons log)
 ```
 
 The installer copies `agents/` to `.agents/` in the target project, writes a top-level `AGENTS.md`, symlinks `CLAUDE.md → AGENTS.md`, and (unless `--no-claude`) symlinks `.claude/{commands,skills,roles,scripts}` into `.agents/` for native Claude Code discovery.

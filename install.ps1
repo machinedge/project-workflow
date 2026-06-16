@@ -57,7 +57,7 @@ Write-Host ""
 New-Item -ItemType Directory -Path (Join-Path $Target "docs") -Force | Out-Null
 
 # ─────────────────────────────────────────────
-# Migrate old directory layout to .workflow/
+# Migrate old directory layout to .sdlc/
 # ─────────────────────────────────────────────
 
 function Migrate-Directory {
@@ -91,49 +91,49 @@ $oldHandoff = Join-Path $Target "docs/handoff-notes"
 $oldIssues = Join-Path $Target "issues"
 
 if ((Test-Path $oldHandoff) -or (Test-Path $oldIssues)) {
-    Write-Host "  Migrating artifacts to .workflow/..."
+    Write-Host "  Migrating artifacts to .sdlc/..."
 
-    if (Migrate-Directory -Src (Join-Path $Target "docs/handoff-notes") -Dest (Join-Path $Target ".workflow/handoff-notes")) {
-        Write-Host "    docs/handoff-notes/ -> .workflow/handoff-notes/"
+    if (Migrate-Directory -Src (Join-Path $Target "docs/handoff-notes") -Dest (Join-Path $Target ".sdlc/handoff-notes")) {
+        Write-Host "    docs/handoff-notes/ -> .sdlc/handoff-notes/"
     }
-    if (Migrate-Directory -Src (Join-Path $Target "issues") -Dest (Join-Path $Target ".workflow/issues")) {
-        Write-Host "    issues/ -> .workflow/issues/"
+    if (Migrate-Directory -Src (Join-Path $Target "issues") -Dest (Join-Path $Target ".sdlc/issues")) {
+        Write-Host "    issues/ -> .sdlc/issues/"
     }
 
-    if (Migrate-File -Src (Join-Path $Target "docs/lessons-log.md") -Dest (Join-Path $Target ".workflow/lessons-log.md")) {
-        Write-Host "    docs/lessons-log.md -> .workflow/lessons-log.md"
+    if (Migrate-File -Src (Join-Path $Target "docs/lessons-log.md") -Dest (Join-Path $Target ".sdlc/lessons-log.md")) {
+        Write-Host "    docs/lessons-log.md -> .sdlc/lessons-log.md"
     }
 
     Get-ChildItem (Join-Path $Target "docs/interview-notes*.md") -ErrorAction SilentlyContinue | ForEach-Object {
-        if (Migrate-File -Src $_.FullName -Dest (Join-Path $Target ".workflow/$($_.Name)")) {
-            Write-Host "    docs/$($_.Name) -> .workflow/$($_.Name)"
+        if (Migrate-File -Src $_.FullName -Dest (Join-Path $Target ".sdlc/$($_.Name)")) {
+            Write-Host "    docs/$($_.Name) -> .sdlc/$($_.Name)"
         }
     }
 
     Get-ChildItem (Join-Path $Target "docs/research-*.md") -ErrorAction SilentlyContinue | ForEach-Object {
-        if (Migrate-File -Src $_.FullName -Dest (Join-Path $Target ".workflow/$($_.Name)")) {
-            Write-Host "    docs/$($_.Name) -> .workflow/$($_.Name)"
+        if (Migrate-File -Src $_.FullName -Dest (Join-Path $Target ".sdlc/$($_.Name)")) {
+            Write-Host "    docs/$($_.Name) -> .sdlc/$($_.Name)"
         }
     }
 
     Write-Host ""
 }
 
-# Ensure .workflow/ structure is complete (fresh install or post-migration)
+# Ensure .sdlc/ structure is complete (fresh install or post-migration)
 foreach ($dir in @(
-    ".workflow/issues/backlog",
-    ".workflow/issues/planned",
-    ".workflow/issues/in-progress",
-    ".workflow/issues/done"
+    ".sdlc/issues/backlog",
+    ".sdlc/issues/planned",
+    ".sdlc/issues/in-progress",
+    ".sdlc/issues/done"
 )) {
     New-Item -ItemType Directory -Path (Join-Path $Target $dir) -Force | Out-Null
 }
 
 foreach ($expert in @("pm", "swe", "qa", "devops", "system-architect")) {
-    New-Item -ItemType Directory -Path (Join-Path $Target ".workflow/handoff-notes/$expert") -Force | Out-Null
+    New-Item -ItemType Directory -Path (Join-Path $Target ".sdlc/handoff-notes/$expert") -Force | Out-Null
 }
 
-$lessonsLog = Join-Path $Target ".workflow/lessons-log.md"
+$lessonsLog = Join-Path $Target ".sdlc/lessons-log.md"
 if (-not (Test-Path $lessonsLog)) {
     @"
 # Lessons Log
@@ -147,7 +147,7 @@ Record project-specific gotchas, patterns, and knowledge here. Future sessions w
 
 # ─────────────────────────────────────────────
 # Clean previous installation (managed files only)
-# Preserves user content in docs/, .workflow/, and
+# Preserves user content in docs/, .sdlc/, and
 # user-owned .claude/settings*.json.
 # ─────────────────────────────────────────────
 
@@ -373,5 +373,5 @@ Write-Host "  Remove-Item AGENTS.md, CLAUDE.md -Force"
 Write-Host "  Remove-Item .agents -Recurse -Force"
 Write-Host "  Remove-Item .claude/commands, .claude/skills, .claude/roles, .claude/scripts -Recurse -Force"
 Write-Host "  # Manually remove the SessionStart hook from .claude/settings.json if desired"
-Write-Host "  Project documents (docs/, .workflow/) are yours - they are not removed."
+Write-Host "  Project documents (docs/, .sdlc/) are yours - they are not removed."
 Write-Host ""

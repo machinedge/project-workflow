@@ -19,7 +19,7 @@ agents/                         ← Single source of truth (harness-neutral)
   scripts/                      ← Mechanical operation scripts (.sh + .ps1)
   workflows/                    ← Claude Code multi-agent workflow scripts (.js)
 docs/                           ← Documentation
-.workflow/                      ← Managed artifacts (handoff notes, issues, lessons)
+.sdlc/                      ← Managed artifacts (handoff notes, issues, lessons)
 ```
 
 ### Installed Layout (user's project)
@@ -33,7 +33,7 @@ CLAUDE.md → AGENTS.md           ← symlink (Claude Code reads the same file)
   roles    → ../.agents/roles      scripts   → ../.agents/scripts
   workflows → ../.agents/workflows               (Workflow tool named-workflow discovery)
   settings.json                 ← SessionStart hook (merged, not overwritten)
-docs/        .workflow/
+docs/        .sdlc/
 ```
 
 ## Data Flow
@@ -68,7 +68,7 @@ The rule: **one source, harness-specific wiring is symlinks only.**
 | ADR-008 | Direct-copy install replaces translation pipeline | Superseded (ADR-012) | — |
 | ADR-009 | Session primer as raw extractor, not agent summarizer | Accepted | — |
 | ADR-010 | Team-prefixed skills run roleless (no expert role loaded) | Accepted | — |
-| ADR-011 | Split managed artifacts into `.workflow/` directory | Accepted | — |
+| ADR-011 | Split managed artifacts into `.sdlc/` directory | Accepted | — |
 
 ### ADR-013: Milestone workflows + Security Engineer role
 
@@ -262,7 +262,7 @@ The in-scope expert files fall into these categories:
 
 ### AGENTS.md
 
-`AGENTS.md` is the always-loaded operating-system file. It contains the expert routing table (prefix → `.agents/roles/<expert>.md`), the `team-` roleless rule (ADR-010), shared conventions (handoff-note and issue path patterns under `.workflow/`), a `.agents/scripts/` reference, and shared principles. Claude Code reads it through the `CLAUDE.md → AGENTS.md` symlink; Codex and other harnesses read it directly.
+`AGENTS.md` is the always-loaded operating-system file. It contains the expert routing table (prefix → `.agents/roles/<expert>.md`), the `team-` roleless rule (ADR-010), shared conventions (handoff-note and issue path patterns under `.sdlc/`), a `.agents/scripts/` reference, and shared principles. Claude Code reads it through the `CLAUDE.md → AGENTS.md` symlink; Codex and other harnesses read it directly.
 
 ### Skills and Commands
 
@@ -282,8 +282,8 @@ The `description` is the discovery trigger. Command references inside skills use
 | Script | Arguments | Output |
 |--------|-----------|--------|
 | `next-issue-number.sh` | — | Next available issue number |
-| `move-issue.sh` | `<filename> <target-dir>` | Confirmation; moves issue between `.workflow/issues/` dirs |
-| `update-issues-list.sh` | — | Regenerated `.workflow/issues/issues-list.md` |
+| `move-issue.sh` | `<filename> <target-dir>` | Confirmation; moves issue between `.sdlc/issues/` dirs |
+| `update-issues-list.sh` | — | Regenerated `.sdlc/issues/issues-list.md` |
 | `next-session-number.sh` | `<expert-name>` | Next session number; atomically claims a placeholder to avoid collisions |
 | `update-brief-status.sh` | `<issue-id> <status>` | `"OK"`; atomically updates the "Last updated" line in `docs/project-brief.md` under a lock |
 
@@ -312,7 +312,7 @@ The `team-milestone` skill runs one roadmap milestone through its full lifecycle
 | Phase | Reuses | Output | Gate |
 |-------|--------|--------|------|
 | 1. Enrich | `sa-design`, `sec-requirements`, `qa-test-plan`, `ops-pipeline` | architecture, security requirements, test plan, pipeline | **Foundations approval** |
-| 2. Compile | `pm-decompose` (implementation-ready mode) + completeness verifier | dense task issues in `.workflow/issues/backlog/` | **Task set approval** |
+| 2. Compile | `pm-decompose` (implementation-ready mode) + completeness verifier | dense task issues in `.sdlc/issues/backlog/` | **Task set approval** |
 | 3. Implement | per-task code + tests; verify; retry/escalate | working, tested code | — |
 | 4. Review | `qa-review`, `sa-review`, `sec-review`, `qa-regression` | findings → fix loop / backlog issues | **Go / no-go** |
 | 5. Wrap-up | `pm-postmortem`, handoff skills | postmortem, updated roadmap/brief, closed issues | — |
@@ -328,30 +328,30 @@ Implementation-ready task density is the contract in `docs/task-detail-standard.
 
 The installer (`install.sh` / `install.ps1`) performs:
 
-1. Create `docs/` and the `.workflow/` structure; migrate any legacy `issues/` and `docs/handoff-notes/` into `.workflow/`.
+1. Create `docs/` and the `.sdlc/` structure; migrate any legacy `issues/` and `docs/handoff-notes/` into `.sdlc/`.
 2. Copy `agents/{roles,commands,skills,scripts,workflows}`, `AGENTS.md`, and `settings.json` into `.agents/`.
 3. Write a top-level `AGENTS.md` (backing up a pre-existing user `AGENTS.md`) and symlink `CLAUDE.md → AGENTS.md`.
 4. Unless `--no-claude`: symlink `.claude/{commands,skills,roles,scripts,workflows} → ../.agents/*` and merge the `settings.json` hook.
 
 On Windows, symlink creation falls back to copies when Developer Mode is unavailable.
 
-### ADR-011: Split managed artifacts into `.workflow/` directory
+### ADR-011: Split managed artifacts into `.sdlc/` directory
 
 **Context:** Managed workflow artifacts (handoff notes, issues, interview notes, lessons log, research reports) are agent memory — noisy for humans browsing the project tree. Currently they live in `docs/` and top-level `issues/`. How should user-facing planning docs be separated from agent-managed artifacts?
 
 **Options considered:**
-- **(A) Flat `.workflow/`** — All moved artifacts directly under `.workflow/` (e.g., `.workflow/lessons-log.md`, `.workflow/issues/`, `.workflow/handoff-notes/`). Simple, mirrors current structure with a prefix change.
-- **(B) Nested `.workflow/docs/`** — Keep a `docs/` subdirectory inside `.workflow/` for non-issue artifacts. Preserves old mental model but adds unnecessary nesting.
-- **(C) Categorized `.workflow/`** — Group by type: `.workflow/memory/` for handoff/lessons, `.workflow/tracking/` for issues. Adds structure but also complexity for zero benefit.
+- **(A) Flat `.sdlc/`** — All moved artifacts directly under `.sdlc/` (e.g., `.sdlc/lessons-log.md`, `.sdlc/issues/`, `.sdlc/handoff-notes/`). Simple, mirrors current structure with a prefix change.
+- **(B) Nested `.sdlc/docs/`** — Keep a `docs/` subdirectory inside `.sdlc/` for non-issue artifacts. Preserves old mental model but adds unnecessary nesting.
+- **(C) Categorized `.sdlc/`** — Group by type: `.sdlc/memory/` for handoff/lessons, `.sdlc/tracking/` for issues. Adds structure but also complexity for zero benefit.
 
-**Decision:** Option A. The artifacts already have clear names; adding sub-categories creates depth without value. The move is a prefix change from `docs/` or top-level to `.workflow/`.
+**Decision:** Option A. The artifacts already have clear names; adding sub-categories creates depth without value. The move is a prefix change from `docs/` or top-level to `.sdlc/`.
 
-**Consequences:** Every path reference across ~90 files per platform changes. The change is mechanical (string replacement) but high-surface-area. `.workflow/` is not auto-added to `.gitignore` — user's choice whether to commit agent memory.
+**Consequences:** Every path reference across ~90 files per platform changes. The change is mechanical (string replacement) but high-surface-area. `.sdlc/` is not auto-added to `.gitignore` — user's choice whether to commit agent memory.
 
 #### Directory Tree
 
 ```
-.workflow/
+.sdlc/
   handoff-notes/
     pm/
     swe/
@@ -374,18 +374,18 @@ On Windows, symlink creation falls back to copies when Developer Mode is unavail
 
 | Old Path | New Path | Code References |
 |----------|----------|-----------------|
-| `docs/handoff-notes/` | `.workflow/handoff-notes/` | ~45 files/platform |
-| `docs/handoff-notes/<expert>/session-NN.md` | `.workflow/handoff-notes/<expert>/session-NN.md` | (included above) |
-| `docs/interview-notes.md` | `.workflow/interview-notes.md` | ~7 files/platform |
-| `docs/interview-notes-*.md` | `.workflow/interview-notes-*.md` | (included above) |
-| `docs/lessons-log.md` | `.workflow/lessons-log.md` | ~19 files/platform |
-| `docs/research-*.md` | `.workflow/research-*.md` | 0 (no code refs) |
-| `issues/` | `.workflow/issues/` | ~40 files/platform |
-| `issues/backlog/` | `.workflow/issues/backlog/` | (included above) |
-| `issues/planned/` | `.workflow/issues/planned/` | (included above) |
-| `issues/in-progress/` | `.workflow/issues/in-progress/` | (included above) |
-| `issues/done/` | `.workflow/issues/done/` | (included above) |
-| `issues/issues-list.md` | `.workflow/issues/issues-list.md` | (included above) |
+| `docs/handoff-notes/` | `.sdlc/handoff-notes/` | ~45 files/platform |
+| `docs/handoff-notes/<expert>/session-NN.md` | `.sdlc/handoff-notes/<expert>/session-NN.md` | (included above) |
+| `docs/interview-notes.md` | `.sdlc/interview-notes.md` | ~7 files/platform |
+| `docs/interview-notes-*.md` | `.sdlc/interview-notes-*.md` | (included above) |
+| `docs/lessons-log.md` | `.sdlc/lessons-log.md` | ~19 files/platform |
+| `docs/research-*.md` | `.sdlc/research-*.md` | 0 (no code refs) |
+| `issues/` | `.sdlc/issues/` | ~40 files/platform |
+| `issues/backlog/` | `.sdlc/issues/backlog/` | (included above) |
+| `issues/planned/` | `.sdlc/issues/planned/` | (included above) |
+| `issues/in-progress/` | `.sdlc/issues/in-progress/` | (included above) |
+| `issues/done/` | `.sdlc/issues/done/` | (included above) |
+| `issues/issues-list.md` | `.sdlc/issues/issues-list.md` | (included above) |
 
 #### docs/ Retention List
 
@@ -405,12 +405,12 @@ These files stay in `docs/` — they are core planning docs or user-generated co
 
 | Script | Old Path | New Path |
 |--------|----------|----------|
-| `next-session-number.sh/.ps1` | `docs/handoff-notes/$expert` | `.workflow/handoff-notes/$expert` |
-| `move-issue.sh/.ps1` | `issues/backlog` ... `issues/done`, `issues/$target` | `.workflow/issues/backlog` ... `.workflow/issues/done`, `.workflow/issues/$target` |
-| `next-issue-number.sh/.ps1` | `issues/backlog` ... `issues/done` | `.workflow/issues/backlog` ... `.workflow/issues/done` |
-| `update-issues-list.sh/.ps1` | `issues/issues-list.md`, `issues/backlog` ... `issues/done` | `.workflow/issues/issues-list.md`, `.workflow/issues/backlog` ... `.workflow/issues/done` |
-| `session-primer.sh` (Claude Code only) | `docs/handoff-notes` | `.workflow/handoff-notes` |
-| `test-scripts.sh` | `docs/handoff-notes` + `issues/` | `.workflow/handoff-notes` + `.workflow/issues/` |
+| `next-session-number.sh/.ps1` | `docs/handoff-notes/$expert` | `.sdlc/handoff-notes/$expert` |
+| `move-issue.sh/.ps1` | `issues/backlog` ... `issues/done`, `issues/$target` | `.sdlc/issues/backlog` ... `.sdlc/issues/done`, `.sdlc/issues/$target` |
+| `next-issue-number.sh/.ps1` | `issues/backlog` ... `issues/done` | `.sdlc/issues/backlog` ... `.sdlc/issues/done` |
+| `update-issues-list.sh/.ps1` | `issues/issues-list.md`, `issues/backlog` ... `issues/done` | `.sdlc/issues/issues-list.md`, `.sdlc/issues/backlog` ... `.sdlc/issues/done` |
+| `session-primer.sh` (Claude Code only) | `docs/handoff-notes` | `.sdlc/handoff-notes` |
+| `test-scripts.sh` | `docs/handoff-notes` + `issues/` | `.sdlc/handoff-notes` + `.sdlc/issues/` |
 | `update-brief-status.sh/.ps1` | `docs/project-brief.md` | No change (stays in `docs/`) |
 
 #### Conventions Update
@@ -419,8 +419,8 @@ The conventions sections in `project-os.mdc` (Cursor) and `CLAUDE.md` (Claude Co
 
 | Current Convention | New Convention |
 |--------------------|----------------|
-| `docs/handoff-notes/<expert>/session-NN.md` | `.workflow/handoff-notes/<expert>/session-NN.md` |
-| `issues/<status>/[expert]-[type]-[NNN].md` | `.workflow/issues/<status>/[expert]-[type]-[NNN].md` |
+| `docs/handoff-notes/<expert>/session-NN.md` | `.sdlc/handoff-notes/<expert>/session-NN.md` |
+| `issues/<status>/[expert]-[type]-[NNN].md` | `.sdlc/issues/<status>/[expert]-[type]-[NNN].md` |
 
 #### Edge Cases
 
@@ -430,9 +430,9 @@ The conventions sections in `project-os.mdc` (Cursor) and `CLAUDE.md` (Claude Co
 
 3. **Conventions are the routing hub:** `project-os.mdc` and `CLAUDE.md` define the canonical path patterns. Update these first — they're the reference all other files point back to.
 
-4. **Install script scaffolding:** `install.sh` and `install.ps1` create directory structures on fresh install. These change from `docs/handoff-notes/`, `docs/lessons-log.md`, and `issues/` to `.workflow/handoff-notes/`, `.workflow/lessons-log.md`, and `.workflow/issues/`. The `docs/` directory is still created for core planning docs.
+4. **Install script scaffolding:** `install.sh` and `install.ps1` create directory structures on fresh install. These change from `docs/handoff-notes/`, `docs/lessons-log.md`, and `issues/` to `.sdlc/handoff-notes/`, `.sdlc/lessons-log.md`, and `.sdlc/issues/`. The `docs/` directory is still created for core planning docs.
 
-5. **Top-level `issues/` disappears:** On fresh installs, there is no top-level `issues/` directory. It becomes `.workflow/issues/`. Migration (M14) handles moving existing `issues/` content.
+5. **Top-level `issues/` disappears:** On fresh installs, there is no top-level `issues/` directory. It becomes `.sdlc/issues/`. Migration (M14) handles moving existing `issues/` content.
 
 6. **`docs/architecture.md` self-referential updates:** This document's own non-ADR sections reference old paths: the Top Level directory layout (line ~31), session-primer.sh behavior description (lines ~511-513), and script specifications table (lines ~534-539). Update these when the corresponding scripts and install logic are updated — not before, to avoid a half-current/half-future document.
 

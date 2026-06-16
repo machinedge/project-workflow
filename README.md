@@ -62,7 +62,7 @@ docs/
   project-brief.md              # Source of truth — goals, constraints, decisions, status
   architecture.md               # System architecture and key decisions
   roadmap.md                    # Milestone plan
-.workflow/
+.sdlc/
   lessons-log.md                # Project-specific gotchas and patterns
   handoff-notes/                # What each expert accomplished per session
     pm/ swe/ qa/ devops/ system-architect/
@@ -109,7 +109,7 @@ CLAUDE.md → AGENTS.md   # Symlink, so Claude Code reads the same file.
   workflows → ../.agents/workflows # symlink — Workflow tool named-workflow discovery
   settings.json     # SessionStart hook (merged, not overwritten)
 docs/               # Core planning docs (created)
-.workflow/          # Managed artifacts — issues, handoff notes, lessons log
+.sdlc/          # Managed artifacts — issues, handoff notes, lessons log
 ```
 
 One `.agents/` payload feeds both flows: AGENTS.md-aware harnesses read `AGENTS.md` + `.agents/` directly; Claude Code additionally gets native slash-command and skill discovery plus a `SessionStart` hook that extracts project context at the start of every session. On Windows, the installer falls back to copies when symlinks aren't available (enable Developer Mode for symlinks).

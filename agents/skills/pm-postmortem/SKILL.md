@@ -12,12 +12,12 @@ The user may specify which milestone: $ARGUMENTS
 Read these files:
 1. `docs/project-brief.md`
 2. `docs/roadmap.md`
-3. ALL handoff notes across all workflows — read every file in `.workflow/handoff-notes/swe/`, `.workflow/handoff-notes/qa/`, `.workflow/handoff-notes/devops/`, `.workflow/handoff-notes/pm/`, and `.workflow/handoff-notes/system-architect/`
-4. `.workflow/lessons-log.md`
+3. ALL handoff notes across all workflows — read every file in `.sdlc/handoff-notes/swe/`, `.sdlc/handoff-notes/qa/`, `.sdlc/handoff-notes/devops/`, `.sdlc/handoff-notes/pm/`, and `.sdlc/handoff-notes/system-architect/`
+4. `.sdlc/lessons-log.md`
 5. `docs/test-plan.md` (if it exists — QA's test plan)
 6. `docs/release-plan.md` (if it exists — DevOps release plan)
 
-Also read the milestone's issues: scan all `.workflow/issues/` subdirectories for files matching the milestone (check the **Milestone** field in each file). Read `.workflow/issues/issues-list.md` for a quick overview.
+Also read the milestone's issues: scan all `.sdlc/issues/` subdirectories for files matching the milestone (check the **Milestone** field in each file). Read `.sdlc/issues/issues-list.md` for a quick overview.
 
 If the user didn't specify a milestone, determine which one was most recently completed based on the handoff notes and roadmap.
 
@@ -26,7 +26,7 @@ If the user didn't specify a milestone, determine which one was most recently co
 Analyze and present:
 
 **1. Progress Assessment**
-Is the milestone actually done? Compare what was planned vs. what was delivered. Check the issue files — are all tasks in `.workflow/issues/done/`? Any still in `backlog/`, `planned/`, or `in-progress/`? Any review findings (`must-fix`, `should-fix`) unresolved?
+Is the milestone actually done? Compare what was planned vs. what was delivered. Check the issue files — are all tasks in `.sdlc/issues/done/`? Any still in `backlog/`, `planned/`, or `in-progress/`? Any review findings (`must-fix`, `should-fix`) unresolved?
 
 **2. Plan Impact**
 Based on what we learned, do remaining milestones need to change? New risks? Scope adjustments?
@@ -68,6 +68,6 @@ What should the first task of the next milestone be? Any blockers to resolve fir
 After user reviews and approves:
 - Save updated `docs/project-brief.md`
 - Update `docs/roadmap.md` — mark milestone complete, adjust risks
-- Add lessons to `.workflow/lessons-log.md`
+- Add lessons to `.sdlc/lessons-log.md`
 
 Be critical, not encouraging. The user needs an honest assessment, not cheerleading.

@@ -8,12 +8,12 @@ The user may specify a task: $ARGUMENTS
 
 Read these files automatically — do not ask the user to provide them:
 1. `docs/project-brief.md`
-2. `.workflow/lessons-log.md`
+2. `.sdlc/lessons-log.md`
 3. The task issue:
-   - If user specified an issue (e.g. "swe-feature-001" or a description), find and read it from `.workflow/issues/`
+   - If user specified an issue (e.g. "swe-feature-001" or a description), find and read it from `.sdlc/issues/`
    - If not, check project brief's "Next task" field for the issue filename
-   - If still unclear, scan `.workflow/issues/planned/` and `.workflow/issues/in-progress/` for SWE tasks and ask
-4. Most recent handoff note in `.workflow/handoff-notes/swe/` (if any exist)
+   - If still unclear, scan `.sdlc/issues/planned/` and `.sdlc/issues/in-progress/` for SWE tasks and ask
+4. Most recent handoff note in `.sdlc/handoff-notes/swe/` (if any exist)
 5. `docs/test-plan.md` (if it exists) — skim for test requirements relevant to this task
 6. `docs/env-context.md` (if it exists) — skim for environment constraints relevant to this task
 7. `docs/architecture.md` (if it exists) — understand system-level constraints, component boundaries, and technology decisions relevant to this task

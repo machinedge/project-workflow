@@ -11,7 +11,7 @@ Developers using AI coding assistants who want structured, repeatable workflows 
 ## How It Works
 
 - Expert definitions install into a project as `AGENTS.md` + a `.agents/` payload of roles, skills, and scripts. The AI loads the right expert context automatically; autonomous skills are discoverable without commands. Human-interactive workflows (interviews, deployment) remain explicit commands. Claude Code additionally gets native slash-command/skill discovery and a SessionStart hook via `.claude/` symlinks.
-- **Documents are memory.** Experts have no memory between sessions. All state lives in `docs/` and `.workflow/`.
+- **Documents are memory.** Experts have no memory between sessions. All state lives in `docs/` and `.sdlc/`.
 
 ## Success Looks Like
 
@@ -21,9 +21,9 @@ Developers using AI coding assistants who want structured, repeatable workflows 
 - [x] [Repo Alignment] Remove legacy directories (`experts/`, `tools/`, `targets/desktop-cli/`, `targets/autonomous/`)
 - [x] [Repo Alignment] `CONTRIBUTING.md` reflects current platform-native paradigm
 - [x] [Repo Alignment] All docs free of stale references to removed directories
-- [x] [Workflow Directory] Managed artifacts (handoff notes, interview notes, lessons-log, research reports, issues) live under `.workflow/`
+- [x] [Workflow Directory] Managed artifacts (handoff notes, interview notes, lessons-log, research reports, issues) live under `.sdlc/`
 - [x] [Workflow Directory] `docs/` contains only core planning docs and user-generated content
-- [x] [Workflow Directory] Install over existing project migrates artifacts to `.workflow/` without data loss
+- [x] [Workflow Directory] Install over existing project migrates artifacts to `.sdlc/` without data loss
 - [ ] [Milestone Workflows] `team-milestone` runs a milestone end-to-end (enrich → compile → implement → review) with human gates; Claude Code accelerator parallelizes it (ADR-013)
 - [ ] [Milestone Workflows] Security Engineer (`sec`) role owns security requirements (kickoff) and the security review gate (close-out)
 - [ ] [Milestone Workflows] `pm-decompose` emits implementation-ready tasks meeting `docs/task-detail-standard.md`, enforced by a completeness verifier
@@ -32,7 +32,7 @@ Developers using AI coding assistants who want structured, repeatable workflows 
 
 - `agents/` is the single source of truth; payload paths use `.agents/...` to resolve across harnesses
 - Project brief must stay under 1,000 words
-- Issues tracked in `.workflow/issues/`, not external services
+- Issues tracked in `.sdlc/issues/`, not external services
 
 ## Key Decisions Made
 
@@ -64,9 +64,9 @@ Developers using AI coding assistants who want structured, repeatable workflows 
 | — | Drop `--experts`/`--domain` CLI flags from install script | Pre-built platform files are a coherent set; partial install would require regenerating routing configs, defeating direct-copy purpose |
 | — | Commands keep `/` prefix; skills listed without `/` as bold names | Explicit distinction between 9 user-invoked commands and 21 agent-discoverable skills; "These are not slash commands" explainer in role files |
 | — | Remove `experts/`, `tools/`, `targets/desktop-cli/`, `targets/autonomous/` | Legacy directories from pre-platform-native era; platform-native `targets/ide/` is the only deliverable |
-| — | Split docs into user-facing (`docs/`) and managed (`.workflow/`) | Handoff notes, issues, and session artifacts are agent memory — noisy for humans; `.workflow/` boundary defines future persistence surface |
-| — | `.workflow/` not auto-added to `.gitignore` | User's choice whether to commit agent memory; teams may want shared history |
-| — | Flat `.workflow/` layout (no sub-categories beyond expert dirs) — ADR-011 | Artifacts already have clear names; a prefix change is simpler than a reorganization |
+| — | Split docs into user-facing (`docs/`) and managed (`.sdlc/`) | Handoff notes, issues, and session artifacts are agent memory — noisy for humans; `.sdlc/` boundary defines future persistence surface |
+| — | `.sdlc/` not auto-added to `.gitignore` | User's choice whether to commit agent memory; teams may want shared history |
+| — | Flat `.sdlc/` layout (no sub-categories beyond expert dirs) — ADR-011 | Artifacts already have clear names; a prefix change is simpler than a reorganization |
 | — | Install migrates files but does not rewrite path references inside migrated documents | Historical handoff notes and interview notes are records of what was true when written; rewriting would be revisionist and error-prone |
 | 2026-06-16 | Generic AGENTS.md model; drop Cursor and `targets/` (ADR-012) | One harness-neutral `agents/` source ends dual-platform maintenance; `AGENTS.md` covers Claude + Codex, with Claude native discovery preserved via symlinks |
 | 2026-06-16 | Milestone workflows + Security Engineer role (ADR-013) | Hand off a whole milestone and have every expert lens applied automatically; portable runbook stays harness-neutral, Claude Code accelerator adds parallelism + a small-model build loop; security becomes a first-class gate |

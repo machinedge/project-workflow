@@ -10,12 +10,12 @@ Read these files automatically — do not ask the user to provide them:
 1. `docs/project-brief.md`
 2. `docs/security-requirements.md` (if it exists — you own this)
 3. `docs/architecture.md` (if it exists) — trust boundaries
-4. `.workflow/lessons-log.md`
+4. `.sdlc/lessons-log.md`
 5. The task issue:
-   - If user specified an issue (e.g. "sec-feature-001" or a description), find and read it from `.workflow/issues/`
+   - If user specified an issue (e.g. "sec-feature-001" or a description), find and read it from `.sdlc/issues/`
    - If not, check project brief's "Next task" field for the issue filename
-   - If still unclear, scan `.workflow/issues/planned/` and `.workflow/issues/in-progress/` for security-scoped tasks and ask
-6. Most recent handoff note in `.workflow/handoff-notes/security-engineer/` (if any exist)
+   - If still unclear, scan `.sdlc/issues/planned/` and `.sdlc/issues/in-progress/` for security-scoped tasks and ask
+6. Most recent handoff note in `.sdlc/handoff-notes/security-engineer/` (if any exist)
 7. `docs/roadmap.md` (if it exists) — understand the current milestone scope
 
 Confirm understanding with the user:

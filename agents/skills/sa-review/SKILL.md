@@ -12,7 +12,7 @@ The user may specify what to review: $ARGUMENTS
 Read these files automatically:
 1. `docs/architecture.md` — the architectural intent to evaluate against
 2. `docs/project-brief.md` — project constraints and decisions
-3. Recent SWE handoff notes in `.workflow/handoff-notes/swe/` — what was built and what changed
+3. Recent SWE handoff notes in `.sdlc/handoff-notes/swe/` — what was built and what changed
 
 If `docs/architecture.md` doesn't exist, tell the user: "No architecture document exists yet. Ask for the `sa-design` skill first to establish the architectural intent, or this review will have no baseline to evaluate against."
 
@@ -50,7 +50,7 @@ For each finding:
 
 ## Step 5: File Issues
 
-For must-fix and should-fix findings, create issue files in `.workflow/issues/backlog/`. Run `.agents/scripts/next-issue-number.sh` for the next available number.
+For must-fix and should-fix findings, create issue files in `.sdlc/issues/backlog/`. Run `.agents/scripts/next-issue-number.sh` for the next available number.
 
 - Use the naming convention: `[expert]-[type]-[number].md`
 - Assign to the appropriate expert (usually SWE for implementation fixes, system-architect for architectural changes)
