@@ -2,7 +2,7 @@
 
 ## What This Is
 
-A toolkit that defines AI expert roles for coordinated software development. Each expert (PM, SWE, QA, DevOps, System Architect) has a role definition, structured skills, and scripts. A single harness-neutral source (`agents/`) installs as a root `AGENTS.md` plus a `.agents/` payload, working with Claude Code, Codex, and any harness that reads `AGENTS.md`.
+A toolkit that defines AI expert roles for coordinated software development. Each expert (PM, SWE, QA, DevOps, System Architect, Security Engineer) has a role definition, structured skills, and scripts. A single harness-neutral source (`agents/`) installs as a root `AGENTS.md` plus a `.agents/` payload, working with Claude Code, Codex, and any harness that reads `AGENTS.md`. Cross-expert **workflows** chain the skills into a full milestone lifecycle.
 
 ## Who It's For
 
@@ -24,6 +24,9 @@ Developers using AI coding assistants who want structured, repeatable workflows 
 - [x] [Workflow Directory] Managed artifacts (handoff notes, interview notes, lessons-log, research reports, issues) live under `.workflow/`
 - [x] [Workflow Directory] `docs/` contains only core planning docs and user-generated content
 - [x] [Workflow Directory] Install over existing project migrates artifacts to `.workflow/` without data loss
+- [ ] [Milestone Workflows] `team-milestone` runs a milestone end-to-end (enrich → compile → implement → review) with human gates; Claude Code accelerator parallelizes it (ADR-013)
+- [ ] [Milestone Workflows] Security Engineer (`sec`) role owns security requirements (kickoff) and the security review gate (close-out)
+- [ ] [Milestone Workflows] `pm-decompose` emits implementation-ready tasks meeting `docs/task-detail-standard.md`, enforced by a completeness verifier
 
 ## Constraints
 
@@ -66,17 +69,19 @@ Developers using AI coding assistants who want structured, repeatable workflows 
 | — | Flat `.workflow/` layout (no sub-categories beyond expert dirs) — ADR-011 | Artifacts already have clear names; a prefix change is simpler than a reorganization |
 | — | Install migrates files but does not rewrite path references inside migrated documents | Historical handoff notes and interview notes are records of what was true when written; rewriting would be revisionist and error-prone |
 | 2026-06-16 | Generic AGENTS.md model; drop Cursor and `targets/` (ADR-012) | One harness-neutral `agents/` source ends dual-platform maintenance; `AGENTS.md` covers Claude + Codex, with Claude native discovery preserved via symlinks |
+| 2026-06-16 | Milestone workflows + Security Engineer role (ADR-013) | Hand off a whole milestone and have every expert lens applied automatically; portable runbook stays harness-neutral, Claude Code accelerator adds parallelism + a small-model build loop; security becomes a first-class gate |
 
 ## Current Status
 
-- **Milestones:** M1-M14 complete. M15 (AGENTS.md install model, ADR-012) delivered.
-- **Core experts:** PM (10 skills), SWE (2 skills), QA (6 skills), DevOps (6 skills), System Architect (6 skills), team-status (1 shared) — one harness-neutral implementation
+- **Milestones:** M1-M15 complete. M16 (Milestone Workflows + Security Engineer, ADR-013) in progress.
+- **Experts:** PM, SWE, QA, DevOps, System Architect, Security Engineer — one harness-neutral implementation. 6 roles, 10 commands, 25 skills.
 - **Blockers:** None
-- **Next task:** None queued. Candidates: new experts (Data Analyst, UX) or new harness wiring — would start with a fresh `/pm-interview`.
-- **Last updated:** M15 migrated the toolkit to the generic AGENTS.md + `.agents/` model; `targets/` and Cursor removed.
+- **Next task:** Verify M16 end-to-end on a real milestone (run `team-milestone` and the `workflows/milestone.js` accelerator against a sample milestone in a consuming project).
+- **Last updated:** M16 added the `team-milestone` workflow, the Security Engineer role, the implementation-ready task standard, and the Claude Code accelerator.
 
 ## Notes for AI
 
 - The single source of truth is `agents/`; the installer copies it into projects
 - Read `docs/agent-reference.md` before modifying expert definitions
-- The System Architect owns `docs/architecture.md`; all other experts consume it
+- The System Architect owns `docs/architecture.md`; the Security Engineer owns `docs/security-requirements.md`; all other experts consume them
+- `team-milestone` chains the expert skills into a milestone lifecycle; `agents/workflows/milestone.js` is its Claude Code accelerator

@@ -155,14 +155,14 @@ Record project-specific gotchas, patterns, and knowledge here. Future sessions w
 Remove-Item (Join-Path $Target ".cursor") -Recurse -Force -ErrorAction SilentlyContinue
 
 # Managed .agents/ payload (leave any user-added files in .agents/ alone)
-foreach ($name in @("roles", "commands", "skills", "scripts")) {
+foreach ($name in @("roles", "commands", "skills", "scripts", "workflows")) {
     Remove-Item (Join-Path $Target ".agents/$name") -Recurse -Force -ErrorAction SilentlyContinue
 }
 Remove-Item (Join-Path $Target ".agents/AGENTS.md") -Force -ErrorAction SilentlyContinue
 Remove-Item (Join-Path $Target ".agents/settings.json") -Force -ErrorAction SilentlyContinue
 
 # Managed .claude/ links (symlinks or prior copies); preserve real settings files
-foreach ($name in @("commands", "skills", "roles", "scripts")) {
+foreach ($name in @("commands", "skills", "roles", "scripts", "workflows")) {
     Remove-Item (Join-Path $Target ".claude/$name") -Recurse -Force -ErrorAction SilentlyContinue
 }
 # Legacy real CLAUDE.md from prior copy-based installs (now a root link)
@@ -297,6 +297,12 @@ Copy-Item (Join-Path $Source "roles/*.md") -Destination $agentsRoles -Force
 Copy-Commands -Src (Join-Path $Source "commands") -Dest (Join-Path $Target ".agents/commands")
 Copy-Skills   -Src (Join-Path $Source "skills")   -Dest (Join-Path $Target ".agents/skills")
 Copy-Scripts  -Src (Join-Path $Source "scripts")  -Dest (Join-Path $Target ".agents/scripts")
+$srcWorkflows = Join-Path $Source "workflows"
+if (Test-Path $srcWorkflows) {
+    $destWorkflows = Join-Path $Target ".agents/workflows"
+    New-Item -ItemType Directory -Path $destWorkflows -Force | Out-Null
+    Copy-Item (Join-Path $srcWorkflows "*.js") -Destination $destWorkflows -Force -ErrorAction SilentlyContinue
+}
 Copy-Item $SrcAgents -Destination (Join-Path $Target ".agents/AGENTS.md") -Force
 $srcSettings = Join-Path $Source "settings.json"
 if (Test-Path $srcSettings) {
@@ -330,7 +336,9 @@ if (-not $NoClaude) {
     New-Item -ItemType Directory -Path $claudeDir -Force | Out-Null
 
     $copied = $false
-    foreach ($name in @("commands", "skills", "roles", "scripts")) {
+    $claudeLinks = @("commands", "skills", "roles", "scripts")
+    if (Test-Path (Join-Path $Target ".agents/workflows")) { $claudeLinks += "workflows" }
+    foreach ($name in $claudeLinks) {
         $linkPath = Join-Path $claudeDir $name
         $targetPath = Join-Path $Target ".agents/$name"
         $linked = New-LinkOrCopy -LinkPath $linkPath -TargetPath (Resolve-Path $targetPath).Path -Directory
@@ -339,7 +347,7 @@ if (-not $NoClaude) {
     if ($copied) {
         Write-Host "    NOTE: symlinks unavailable — .claude/* written as copies (enable Developer Mode for symlinks)"
     } else {
-        Write-Host "    Symlinks: .claude/{commands,skills,roles,scripts} -> ../.agents/*"
+        Write-Host "    Symlinks: .claude/{commands,skills,roles,scripts,workflows} -> ../.agents/*"
     }
     Merge-Settings -TargetDir $Target
 }

@@ -7,12 +7,27 @@ Break a milestone into session-sized tasks and create them as local issue files 
 
 The user may specify which milestone: $ARGUMENTS
 
+## Modes
+
+This skill runs in one of two detail modes:
+
+- **Standard mode** (default, invoked directly): session-sized tasks with acceptance criteria and referenced file paths, using the templates below.
+- **Implementation-ready mode** (invoked as the *Compile* phase of the `team-milestone` workflow): denser tasks that a small language model can implement — code and tests — with no further design. SA, Security, QA, and DevOps have already enriched the milestone; their outputs are inlined into each task. Use the implementation-ready SWE template and follow the bar in `docs/task-detail-standard.md`, then run the completeness check in Step 4.5.
+
+If you are unsure which mode you're in: you're in implementation-ready mode only when the milestone workflow says so, or when `docs/security-requirements.md` and the enrichment artifacts for this milestone exist and the user asks for implementation-ready tasks.
+
 ## Step 1: Load context
 
 Read these files:
 1. `docs/project-brief.md`
 2. `docs/roadmap.md`
 3. `.workflow/issues/issues-list.md` (if it exists — to know what issues already exist)
+
+In **implementation-ready mode**, also read the milestone's enrichment artifacts so their decisions can be inlined into each task:
+4. `docs/architecture.md` — component boundaries and interfaces the tasks must honor
+5. `docs/security-requirements.md` — the `SR-NNN` controls that apply to this milestone
+6. `docs/test-plan.md` — the test strategy and cases QA defined
+7. `docs/task-detail-standard.md` — the bar each task must meet
 
 If the user didn't specify a milestone, look at the roadmap and identify the next milestone that hasn't been started. Confirm with the user before proceeding.
 
@@ -72,6 +87,8 @@ As a [persona], I [need | want | desire] [feature / capability] so that I can [v
 **Inputs:** project brief (always), [other files or resources needed — give paths]
 **Out of scope:** [What NOT to do — prevents scope creep]
 ```
+
+**In implementation-ready mode**, use the denser SWE template in `docs/task-detail-standard.md` instead of the one above. It adds *Files to Create or Modify*, *Interfaces and Data Models*, an *Implementation Outline*, a *Test Specification* (explicit input→output cases), and inlined *Security Constraints* (`SR-NNN`) and *Architecture Contracts* drawn from the enrichment artifacts. The goal: a small model can write the code and tests from the task alone, without inventing any design decision.
 
 ### QA tasks
 
@@ -158,6 +175,19 @@ Bad: "- [ ] Input validation is implemented"
 - Every task MUST have acceptance criteria. No "trust me."
 - Reference specific file paths in Inputs so the AI can read them directly (no copy-paste).
 - Not every milestone needs QA or DevOps tasks. Only create them when the milestone genuinely requires that work.
+
+## Step 4.5: Completeness check (implementation-ready mode only)
+
+Before finalizing, verify each implementation-ready task against the completeness checklist in `docs/task-detail-standard.md`. Be the skeptical small model: "Could I implement this and its tests without asking a single question or making a single design choice?"
+
+For each task, confirm:
+- Every referenced file path is exact, not vague.
+- Every interface/type/schema the code must implement is specified, not just described.
+- The test specification has explicit input→output cases (not "test it").
+- Applicable security requirements (`SR-NNN` for this surface) are reflected.
+- Every acceptance criterion is verifiable.
+
+If a task fails any check, enrich it (pull the missing detail from the architecture, security-requirements, or test-plan artifacts — or flag the gap to the user if the source artifact itself is silent). Do not finalize a task that still requires the implementer to invent a design decision.
 
 ## Step 5: Finalize
 

@@ -17,6 +17,7 @@ agents/                         ← Single source of truth (harness-neutral)
   commands/                     ← Explicit command files
   skills/                       ← Discoverable skill folders (SKILL.md)
   scripts/                      ← Mechanical operation scripts (.sh + .ps1)
+  workflows/                    ← Claude Code multi-agent workflow scripts (.js)
 docs/                           ← Documentation
 .workflow/                      ← Managed artifacts (handoff notes, issues, lessons)
 ```
@@ -28,8 +29,9 @@ AGENTS.md                       ← copy of agents/AGENTS.md
 CLAUDE.md → AGENTS.md           ← symlink (Claude Code reads the same file)
 .agents/                        ← copy of agents/ (roles, commands, skills, scripts)
 .claude/                        ← Claude-native wiring (skipped with --no-claude)
-  commands → ../.agents/commands   skills → ../.agents/skills
-  roles    → ../.agents/roles      scripts → ../.agents/scripts
+  commands → ../.agents/commands   skills    → ../.agents/skills
+  roles    → ../.agents/roles      scripts   → ../.agents/scripts
+  workflows → ../.agents/workflows               (Workflow tool named-workflow discovery)
   settings.json                 ← SessionStart hook (merged, not overwritten)
 docs/        .workflow/
 ```
@@ -54,6 +56,7 @@ The rule: **one source, harness-specific wiring is symlinks only.**
 
 | ID | Decision | Status | Date |
 |----|----------|--------|------|
+| ADR-013 | Milestone workflows + Security Engineer role — portable `team-milestone` runbook with a Claude Code multi-agent accelerator; new `sec` expert | Accepted | 2026-06-16 |
 | ADR-012 | Generic AGENTS.md model — single `agents/` source, `.agents/` copy + symlinked `CLAUDE.md`/`.claude/`, Cursor dropped | Accepted | 2026-06-16 |
 | ADR-001 | Organize targets by class hierarchy | Superseded (ADR-012) | 2026-03-12 |
 | ADR-002 | Top-level `tools/` for development and repo utilities | Superseded (removed in M12) | 2026-03-12 |
@@ -66,6 +69,19 @@ The rule: **one source, harness-specific wiring is symlinks only.**
 | ADR-009 | Session primer as raw extractor, not agent summarizer | Accepted | — |
 | ADR-010 | Team-prefixed skills run roleless (no expert role loaded) | Accepted | — |
 | ADR-011 | Split managed artifacts into `.workflow/` directory | Accepted | — |
+
+### ADR-013: Milestone workflows + Security Engineer role
+
+**Context:** Each expert skill had to be invoked by hand, one hop at a time — a milestone went from roadmap to shipped only by a human walking it through `sa-design` → `qa-test-plan` → `pm-decompose` → `/swe-start` → `qa-review` → … The user wanted to hand off a whole milestone and have every expert lens applied automatically, producing tasks dense enough for a small model to implement, then implemented and reviewed. Two gaps blocked this: there was no security capability (only incidental "security" bullets inside `qa-review`/`sa-review`), and no orchestration construct or task-detail bar.
+
+**Options considered:**
+- **(A) Portable runbook + Claude Code accelerator** — A `team-` runbook skill (`team-milestone`) that any AGENTS.md harness can follow, reusing the existing expert skills, plus a Claude Code Workflow-tool script (`workflows/milestone.js`) that parallelizes the fan-out phases and drives a small-model implementation loop. New Security Engineer role for the security lens.
+- **(B) Claude-Code-only workflow** — Implement the whole thing as a Workflow script. Real parallelism, but it strands every non-Claude harness and breaks harness neutrality.
+- **(C) One monolithic autonomous workflow** — A single unattended run from milestone to done. Maximal automation, but a Workflow script is non-interactive and can't pause for the human approval gates the user explicitly wanted between phases.
+
+**Decision:** Option A. The portable `team-milestone` runbook is the harness-neutral source of truth and the executable spec; the Claude Code accelerator is an optional speed layer that implements the same phases with parallel subagents. Human approval gates (foundations, task set, go/no-go) live in the main conversation, so the accelerator runs **one phase per invocation** and returns structured results to the gate — it never tries to pause mid-run. Security becomes a first-class peer expert (`sec` prefix) owning `docs/security-requirements.md` (kickoff) and the `sec-review` gate (close-out), so its constraints are inlined into tasks and enforced at release. Implementation-ready task density is defined once in `docs/task-detail-standard.md` and enforced by a completeness verifier in `pm-decompose`.
+
+**Consequences:** A new expert role, three `sec-*` skills + `sec-start`, the `team-milestone` runbook, `docs/task-detail-standard.md`, and `workflows/milestone.js` ship in the payload. The accelerator lives in `agents/workflows/` and reaches Claude Code through a new `.claude/workflows → ../.agents/workflows` symlink; the installer wires it. Auto-invocation of the review gates lives **inside** the workflow script (which `agent()`s each gate), not in a `settings.json` hook — Claude Code hooks are event-driven shell commands and cannot spawn subagents, and a global review hook would fire on unrelated sessions. Non-Claude harnesses run the runbook sequentially and lose only parallelism. `pm-decompose` gains an implementation-ready mode but its default behavior is unchanged.
 
 ### ADR-012: Generic AGENTS.md model
 
@@ -230,18 +246,19 @@ There is one implementation under `agents/`. The installer copies it to `.agents
 
 ### File Categories
 
-The 36 in-scope expert files fall into 5 categories:
+The in-scope expert files fall into these categories:
 
 | Category | Count | Form | Invocation |
 |----------|-------|------|------------|
-| Role definitions | 5 | `roles/<expert>.md` | Loaded by prefix when expert is identified |
-| Start commands | 5 | `commands/<prefix>-start.md` | Explicit `/prefix-start` |
+| Role definitions | 6 | `roles/<expert>.md` | Loaded by prefix when expert is identified |
+| Start commands | 6 | `commands/<prefix>-start.md` | Explicit `/prefix-start` |
 | Interactive commands | 4 | `commands/<prefix>-<name>.md` | Explicit `/prefix-name` |
-| Autonomous skills | 16 | `skills/<prefix>-<name>/SKILL.md` | Agent-discovered or explicit `/prefix-name` |
-| Handoff skills | 5 | `skills/<prefix>-handoff/SKILL.md` | Agent-discovered or explicit `/prefix-handoff` |
+| Autonomous skills | 19 | `skills/<prefix>-<name>/SKILL.md` | Agent-discovered or explicit `/prefix-name` |
+| Handoff skills | 6 | `skills/<prefix>-handoff/SKILL.md` | Agent-discovered or explicit `/prefix-handoff` |
+| Workflow scripts | 1 | `workflows/<name>.js` | Claude Code Workflow tool (named workflow) |
 | Shared protocol | 1 | Absorbed into `AGENTS.md` | N/A |
 
-**Totals:** 5 roles + 9 commands + 21 skills = 35 installed files, plus `AGENTS.md`.
+**Totals:** 6 roles + 10 commands + 25 skills = 41 installed files, plus `AGENTS.md` and the Claude Code `workflows/` accelerator. The sixth role is the Security Engineer (`sec`); the new skills are `sec-requirements`, `sec-review`, `sec-handoff`, and the cross-expert `team-milestone` runbook.
 
 ### AGENTS.md
 
@@ -288,14 +305,33 @@ Each `.sh` has a `.ps1` companion. Additionally, `session-primer.sh` (no `.ps1` 
 
 The command resolves through the `.claude/scripts → ../.agents/scripts` symlink. The hook runs only under Claude Code; harnesses without a session-start hook rely on `/start` commands and per-skill context loading.
 
+### Milestone Workflow (ADR-013)
+
+The `team-milestone` skill runs one roadmap milestone through its full lifecycle, reusing existing expert skills and pausing at three human gates:
+
+| Phase | Reuses | Output | Gate |
+|-------|--------|--------|------|
+| 1. Enrich | `sa-design`, `sec-requirements`, `qa-test-plan`, `ops-pipeline` | architecture, security requirements, test plan, pipeline | **Foundations approval** |
+| 2. Compile | `pm-decompose` (implementation-ready mode) + completeness verifier | dense task issues in `.workflow/issues/backlog/` | **Task set approval** |
+| 3. Implement | per-task code + tests; verify; retry/escalate | working, tested code | — |
+| 4. Review | `qa-review`, `sa-review`, `sec-review`, `qa-regression` | findings → fix loop / backlog issues | **Go / no-go** |
+| 5. Wrap-up | `pm-postmortem`, handoff skills | postmortem, updated roadmap/brief, closed issues | — |
+
+Two layers implement the same phases:
+
+- **Portable runbook** — `skills/team-milestone/SKILL.md`. Harness-neutral instructions; runs the phases sequentially in any AGENTS.md harness. It is the source of truth and the spec the accelerator follows.
+- **Claude Code accelerator** — `workflows/milestone.js`, a Workflow-tool script invoked **once per phase** (`args.phase`). It parallelizes the enrich and review fan-outs, verifies tasks adversarially, and drives the Phase-3 implementation loop with a small model (`model: 'haiku'`), escalating on failure. It returns structured results to the main conversation, where the human gate for that phase happens — it never pauses mid-run, because Workflow scripts are non-interactive.
+
+Implementation-ready task density is the contract in `docs/task-detail-standard.md`: exact files, interfaces, test cases, and inlined `SR-NNN` security / architecture constraints — enough for a small model to implement code and tests with no further design. `pm-decompose`'s completeness verifier enforces it.
+
 ### Install Steps
 
 The installer (`install.sh` / `install.ps1`) performs:
 
 1. Create `docs/` and the `.workflow/` structure; migrate any legacy `issues/` and `docs/handoff-notes/` into `.workflow/`.
-2. Copy `agents/{roles,commands,skills,scripts}`, `AGENTS.md`, and `settings.json` into `.agents/`.
+2. Copy `agents/{roles,commands,skills,scripts,workflows}`, `AGENTS.md`, and `settings.json` into `.agents/`.
 3. Write a top-level `AGENTS.md` (backing up a pre-existing user `AGENTS.md`) and symlink `CLAUDE.md → AGENTS.md`.
-4. Unless `--no-claude`: symlink `.claude/{commands,skills,roles,scripts} → ../.agents/*` and merge the `settings.json` hook.
+4. Unless `--no-claude`: symlink `.claude/{commands,skills,roles,scripts,workflows} → ../.agents/*` and merge the `settings.json` hook.
 
 On Windows, symlink creation falls back to copies when Developer Mode is unavailable.
 

@@ -13,6 +13,7 @@ Load the active expert's role file before executing any skill or command:
 | QA Engineer | `.agents/roles/qa.md` | qa |
 | DevOps Engineer | `.agents/roles/devops.md` | ops |
 | System Architect | `.agents/roles/system-architect.md` | sa |
+| Security Engineer | `.agents/roles/security-engineer.md` | sec |
 
 Infer the expert from the skill or command prefix (e.g. `/swe-start` → SWE, `/pm-interview` → PM). For `team-` prefixed skills, no expert role is loaded — these are cross-expert skills that run with only project-os context and their own SKILL.md instructions.
 

@@ -26,7 +26,7 @@ Then open the project in your harness:
 
 ### Experts
 
-Five core experts, each with a defined role and set of skills:
+Six experts, each with a defined role and set of skills:
 
 | Expert | Prefix | What It Does |
 |--------|--------|-------------|
@@ -35,20 +35,23 @@ Five core experts, each with a defined role and set of skills:
 | **QA** | `qa-` | Reviews code, creates test plans, runs regressions, triages bugs |
 | **DevOps** | `ops-` | Captures environment context, defines pipelines, plans releases, executes deployments |
 | **System Architect** | `sa-` | Designs system architecture, researches technical questions, reviews implementation against intent |
+| **Security Engineer** | `sec-` | Defines security requirements and threat models, reviews implementation for vulnerabilities and authz/secrets risk |
 
-A shared `team-` prefix covers cross-expert operations like project health summaries.
+A shared `team-` prefix covers cross-expert operations: project health summaries (`team-status`) and the full milestone lifecycle (`team-milestone`).
 
 ### Skills, Commands, and Scripts
 
 The toolkit installs three types of files:
 
-**Commands** (9) are explicit workflows you invoke with `/command-name`:
-- Start commands (`/pm-start`, `/swe-start`, `/qa-start`, `/ops-start`, `/sa-start`) begin a session with full context loading and approval gates.
+**Commands** (10) are explicit workflows you invoke with `/command-name`:
+- Start commands (`/pm-start`, `/swe-start`, `/qa-start`, `/ops-start`, `/sa-start`, `/sec-start`) begin a session with full context loading and approval gates.
 - Interactive commands (`/pm-interview`, `/pm-add-feature`, `/ops-deploy`, `/ops-env-discovery`) require back-and-forth with the user.
 
-**Skills** (21) are discoverable by the agent. Each is a `SKILL.md` with a description the agent matches against your intent, invoked autonomously when it recognizes the right context. Skills cover autonomous operations (vision, roadmap, review, decompose, etc.) and session handoffs. Under Claude Code they also surface in the `/` menu via the `.claude/skills` symlink.
+**Skills** (25) are discoverable by the agent. Each is a `SKILL.md` with a description the agent matches against your intent, invoked autonomously when it recognizes the right context. Skills cover autonomous operations (vision, roadmap, review, decompose, etc.), session handoffs, and the cross-expert `team-milestone` lifecycle. Under Claude Code they also surface in the `/` menu via the `.claude/skills` symlink.
 
 **Scripts** (5) are hidden shell utilities for mechanical operations — issue numbering, file movement, session claiming, issues list regeneration, and atomic project brief updates. Skills call these via shell instead of reimplementing the logic.
+
+**Workflows** (Claude Code) are multi-agent scripts under `workflows/`. `team-milestone`'s accelerator (`workflows/milestone.js`) runs the milestone's enrich and review phases as parallel subagents and drives a small-model implementation loop. Other harnesses run the portable `team-milestone` runbook sequentially.
 
 ### Documents Are Memory
 
@@ -79,9 +82,12 @@ Interview → Brief → Roadmap → Decompose → Execute → Review → Handoff
 2. **PM generates** the project brief, roadmap, and task issues
 3. **SWE picks up** an issue (`/swe-start`), implements with tests, produces a handoff note
 4. **QA reviews** the implementation, files bugs if needed
-5. **DevOps** handles deployment when ready
-6. **System Architect** makes cross-cutting design decisions as needed
-7. **PM runs a postmortem** at milestone boundaries
+5. **Security Engineer** sets security requirements and gates the close-out review
+6. **DevOps** handles deployment when ready
+7. **System Architect** makes cross-cutting design decisions as needed
+8. **PM runs a postmortem** at milestone boundaries
+
+Or hand off a whole milestone to **`team-milestone`**, which chains these into one gated lifecycle — enrich (SA + Security + QA + DevOps) → compile implementation-ready tasks → implement + verify → close-out review.
 
 ## What Gets Installed
 
@@ -90,15 +96,17 @@ AGENTS.md           # The operating-system file — expert routing + conventions
                     #   Read by Codex and any AGENTS.md-aware harness.
 CLAUDE.md → AGENTS.md   # Symlink, so Claude Code reads the same file.
 .agents/            # The toolkit payload — one generic copy:
-  roles/            #   5 expert role files
-  commands/         #   9 explicit command files
-  skills/           #   21 discoverable skill folders (SKILL.md each)
+  roles/            #   6 expert role files
+  commands/         #   10 explicit command files
+  skills/           #   25 discoverable skill folders (SKILL.md each)
   scripts/          #   5 shell scripts + PowerShell companions + session-primer.sh
+  workflows/        #   Claude Code multi-agent workflow scripts (.js)
 .claude/            # Claude Code wiring (skipped with --no-claude):
   commands → ../.agents/commands   # symlink — native /command discovery
   skills   → ../.agents/skills     # symlink — native skill discovery
   roles    → ../.agents/roles      # symlink
   scripts  → ../.agents/scripts    # symlink
+  workflows → ../.agents/workflows # symlink — Workflow tool named-workflow discovery
   settings.json     # SessionStart hook (merged, not overwritten)
 docs/               # Core planning docs (created)
 .workflow/          # Managed artifacts — issues, handoff notes, lessons log
@@ -116,7 +124,7 @@ project-workflow/
 ├── install.sh / install.ps1        ← Installer (copies agents/ into a project)
 ├── agents/                         ← Single source of truth
 │   ├── AGENTS.md                   ← Operating-system file
-│   ├── roles/  commands/  skills/  scripts/
+│   ├── roles/  commands/  skills/  scripts/  workflows/
 │   └── settings.json               ← Claude SessionStart hook
 └── docs/                           ← Documentation
     ├── agent-reference.md          ← Reference for AI assistants working on this repo
@@ -146,7 +154,7 @@ project-workflow/
 
 | Term | Meaning |
 |------|---------|
-| **Expert** | An AI agent with a defined role, operating rules, and skills (PM, SWE, QA, DevOps, SA) |
+| **Expert** | An AI agent with a defined role, operating rules, and skills (PM, SWE, QA, DevOps, SA, Security) |
 | **Skill** | A discoverable capability the agent can invoke autonomously (e.g., handoff, review, vision) |
 | **Command** | An explicit workflow the user invokes (e.g., `/swe-start`, `/pm-interview`) |
 | **Script** | A hidden shell utility for mechanical operations (issue numbering, file movement) |

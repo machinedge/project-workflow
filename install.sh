@@ -171,11 +171,12 @@ rm -rf "$TARGET/.cursor" 2>/dev/null || true
 
 # Managed .agents/ payload (leave any user-added files in .agents/ alone)
 rm -rf "$TARGET/.agents/roles" "$TARGET/.agents/commands" \
-       "$TARGET/.agents/skills" "$TARGET/.agents/scripts" 2>/dev/null || true
+       "$TARGET/.agents/skills" "$TARGET/.agents/scripts" \
+       "$TARGET/.agents/workflows" 2>/dev/null || true
 rm -f "$TARGET/.agents/AGENTS.md" "$TARGET/.agents/settings.json" 2>/dev/null || true
 
 # Managed .claude/ symlinks (only remove symlinks; preserve real settings files)
-for name in commands skills roles scripts; do
+for name in commands skills roles scripts workflows; do
     [ -L "$TARGET/.claude/$name" ] && rm -f "$TARGET/.claude/$name"
 done
 # Legacy real CLAUDE.md from prior copy-based installs (now a root symlink)
@@ -296,6 +297,10 @@ cp "$SOURCE"/roles/*.md "$TARGET/.agents/roles/"
 copy_commands "$SOURCE/commands" "$TARGET/.agents/commands"
 copy_skills   "$SOURCE/skills"   "$TARGET/.agents/skills"
 copy_scripts  "$SOURCE/scripts"  "$TARGET/.agents/scripts"
+if [ -d "$SOURCE/workflows" ]; then
+    mkdir -p "$TARGET/.agents/workflows"
+    cp "$SOURCE"/workflows/*.js "$TARGET/.agents/workflows/" 2>/dev/null || true
+fi
 cp "$SRC_AGENTS" "$TARGET/.agents/AGENTS.md"
 [ -f "$SOURCE/settings.json" ] && cp "$SOURCE/settings.json" "$TARGET/.agents/settings.json"
 
@@ -320,11 +325,13 @@ echo "    Scripts: $script_count files"
 if [ "$CLAUDE_WIRING" = "1" ]; then
     echo "  Wiring .claude/ for Claude Code ..."
     mkdir -p "$TARGET/.claude"
-    for name in commands skills roles scripts; do
+    claude_links="commands skills roles scripts"
+    [ -d "$TARGET/.agents/workflows" ] && claude_links="$claude_links workflows"
+    for name in $claude_links; do
         rm -rf "$TARGET/.claude/$name" 2>/dev/null || true
         ln -s "../.agents/$name" "$TARGET/.claude/$name"
     done
-    echo "    Symlinks: .claude/{commands,skills,roles,scripts} → ../.agents/*"
+    echo "    Symlinks: .claude/{commands,skills,roles,scripts,workflows} → ../.agents/*"
     merge_settings "$TARGET"
 fi
 
@@ -347,7 +354,7 @@ echo ""
 echo "Uninstall:"
 echo "  rm -f AGENTS.md CLAUDE.md"
 echo "  rm -rf .agents"
-echo "  rm -f .claude/commands .claude/skills .claude/roles .claude/scripts   # symlinks"
+echo "  rm -f .claude/commands .claude/skills .claude/roles .claude/scripts .claude/workflows   # symlinks"
 echo "  # Manually remove the SessionStart hook from .claude/settings.json if desired"
 echo "  Project documents (docs/, .workflow/) are yours — they are not removed."
 echo ""
