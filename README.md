@@ -2,22 +2,22 @@
 
 AI expert roles for structured software development. Install into your project and get a coordinated team of specialists — PM, SWE, QA, DevOps, System Architect — each with discoverable skills, structured workflows, and document-based memory.
 
-Supports **Cursor** and **Claude Code** with platform-native implementations.
+Works with **Claude Code**, **Codex**, and any harness that reads an `AGENTS.md` at the project root.
 
 ## Quick Start
 
 ```bash
-# Both editors
-./targets/ide/install.sh ~/projects/my-app
+# Full install (AGENTS.md flow + Claude Code wiring)
+./install.sh ~/projects/my-app
 
-# Cursor only
-./targets/ide/install.sh --editor cursor ~/projects/my-app
+# Generic only — for Codex and other AGENTS.md-only harnesses
+./install.sh --no-claude ~/projects/my-app
 
-# Claude Code only
-./targets/ide/install.sh --editor claude ~/projects/my-app
+# Windows
+.\install.ps1 -Target ~\projects\my-app
 ```
 
-Then open the project in your editor:
+Then open the project in your harness:
 - Run `/pm-interview` to start a new project
 - Run `/swe-start` to pick up an implementation task
 - Ask for a "team status" to see the project health summary
@@ -46,7 +46,7 @@ The toolkit installs three types of files:
 - Start commands (`/pm-start`, `/swe-start`, `/qa-start`, `/ops-start`, `/sa-start`) begin a session with full context loading and approval gates.
 - Interactive commands (`/pm-interview`, `/pm-add-feature`, `/ops-deploy`, `/ops-env-discovery`) require back-and-forth with the user.
 
-**Skills** (21) are discoverable by the agent — they are not slash commands and don't appear in the `/` menu. Each is a `SKILL.md` with a description the agent matches against your intent. The agent invokes them autonomously when it recognizes the right context. Skills cover autonomous operations (vision, roadmap, review, decompose, etc.) and session handoffs.
+**Skills** (21) are discoverable by the agent. Each is a `SKILL.md` with a description the agent matches against your intent, invoked autonomously when it recognizes the right context. Skills cover autonomous operations (vision, roadmap, review, decompose, etc.) and session handoffs. Under Claude Code they also surface in the `/` menu via the `.claude/skills` symlink.
 
 **Scripts** (5) are hidden shell utilities for mechanical operations — issue numbering, file movement, session claiming, issues list regeneration, and atomic project brief updates. Skills call these via shell instead of reimplementing the logic.
 
@@ -57,12 +57,14 @@ Experts have no memory between sessions. All state lives in project documents:
 ```
 docs/
   project-brief.md              # Source of truth — goals, constraints, decisions, status
-  lessons-log.md                # Project-specific gotchas and patterns
   architecture.md               # System architecture and key decisions
+  roadmap.md                    # Milestone plan
+.workflow/
+  lessons-log.md                # Project-specific gotchas and patterns
   handoff-notes/                # What each expert accomplished per session
     pm/ swe/ qa/ devops/ system-architect/
-issues/
-  backlog/ planned/ in-progress/ done/
+  issues/
+    backlog/ planned/ in-progress/ done/
 ```
 
 The PM creates the project brief and roadmap. SWE picks up issues and produces handoff notes. QA reviews and files bugs. Each expert reads the previous session's handoff note to resume where the last session left off.
@@ -83,31 +85,26 @@ Interview → Brief → Roadmap → Decompose → Execute → Review → Handoff
 
 ## What Gets Installed
 
-### Cursor
-
 ```
-.cursor/
-  rules/          # Expert role rules (.mdc) — loaded contextually
-  commands/       # 9 explicit command files
-  skills/         # 21 discoverable skill folders (SKILL.md each)
-  scripts/        # 5 shell scripts + PowerShell companions
-```
-
-### Claude Code
-
-```
-.claude/
-  CLAUDE.md       # Shared principles + expert routing (always loaded)
-  settings.json   # SessionStart hook (merged, not overwritten)
-  roles/          # 5 expert role files
-  commands/       # 9 explicit command files
-  skills/         # 21 discoverable skill folders (SKILL.md each)
-  scripts/        # 5 shell scripts + PowerShell companions + session-primer.sh
+AGENTS.md           # The operating-system file — expert routing + conventions.
+                    #   Read by Codex and any AGENTS.md-aware harness.
+CLAUDE.md → AGENTS.md   # Symlink, so Claude Code reads the same file.
+.agents/            # The toolkit payload — one generic copy:
+  roles/            #   5 expert role files
+  commands/         #   9 explicit command files
+  skills/           #   21 discoverable skill folders (SKILL.md each)
+  scripts/          #   5 shell scripts + PowerShell companions + session-primer.sh
+.claude/            # Claude Code wiring (skipped with --no-claude):
+  commands → ../.agents/commands   # symlink — native /command discovery
+  skills   → ../.agents/skills     # symlink — native skill discovery
+  roles    → ../.agents/roles      # symlink
+  scripts  → ../.agents/scripts    # symlink
+  settings.json     # SessionStart hook (merged, not overwritten)
+docs/               # Core planning docs (created)
+.workflow/          # Managed artifacts — issues, handoff notes, lessons log
 ```
 
-Claude Code has one platform advantage: a `SessionStart` hook that automatically extracts project context at the start of every session. Cursor users rely on `/start` commands for context loading.
-
-See [Cursor README](targets/ide/cursor/README.md) and [Claude Code README](targets/ide/claude-code/README.md) for full details.
+One `.agents/` payload feeds both flows: AGENTS.md-aware harnesses read `AGENTS.md` + `.agents/` directly; Claude Code additionally gets native slash-command and skill discovery plus a `SessionStart` hook that extracts project context at the start of every session. On Windows, the installer falls back to copies when symlinks aren't available (enable Developer Mode for symlinks).
 
 ## Repository Structure
 
@@ -116,31 +113,30 @@ project-workflow/
 ├── README.md                       ← You are here
 ├── LICENSE                         ← Apache 2.0
 ├── CONTRIBUTING.md                 ← How to contribute
-├── docs/                           ← Documentation
-│   ├── agent-reference.md          ← Reference for AI assistants working on this repo
-│   ├── architecture.md             ← System architecture and key decisions
-│   └── ...                         ← Project docs (brief, roadmap, test plan, etc.)
-└── targets/                        ← Deployment targets
-    └── ide/                        ← IDE-based (Cursor, Claude Code)
-        ├── install.sh / install.ps1
-        ├── cursor/                 ← Cursor platform-native implementation
-        └── claude-code/            ← Claude Code platform-native implementation
+├── install.sh / install.ps1        ← Installer (copies agents/ into a project)
+├── agents/                         ← Single source of truth
+│   ├── AGENTS.md                   ← Operating-system file
+│   ├── roles/  commands/  skills/  scripts/
+│   └── settings.json               ← Claude SessionStart hook
+└── docs/                           ← Documentation
+    ├── agent-reference.md          ← Reference for AI assistants working on this repo
+    ├── architecture.md             ← System architecture and key decisions
+    └── ...                         ← Project docs (brief, roadmap, test plan, etc.)
 ```
 
 ## Documentation
 
 | Guide | Audience | Description |
 |-------|----------|-------------|
-| [Cursor Target](targets/ide/cursor/README.md) | Users | What's installed, how skills work, uninstall instructions for Cursor |
-| [Claude Code Target](targets/ide/claude-code/README.md) | Users | What's installed, hooks, settings.json, uninstall instructions for Claude Code |
 | [Agent Reference](docs/agent-reference.md) | AI assistants + Contributors | How to work on this repo |
+| [Architecture](docs/architecture.md) | Contributors | System architecture and key decisions |
 | [Contributing](CONTRIBUTING.md) | Contributors | How to contribute |
 
 ## Design Principles
 
 **Documents are memory.** No memory between sessions. If it's not written down, it didn't happen.
 
-**Platform-native, not translated.** Each platform (Cursor, Claude Code) has its own first-class implementation. The install script copies pre-built files directly — no translation pipeline.
+**One generic source, harness-neutral.** A single `agents/` payload drives every target. The installer copies it to `.agents/` and wires `AGENTS.md` (+ a `CLAUDE.md` symlink and optional `.claude/` symlinks) — no per-platform forks, no translation pipeline.
 
 **Skills are discoverable.** Most expert capabilities are agent-discovered skills, not commands you have to remember. The agent finds and invokes the right skill based on what you're doing.
 
@@ -159,7 +155,7 @@ project-workflow/
 
 ## Prerequisites
 
-- Cursor or Claude Code
+- Claude Code, Codex, or another harness that reads `AGENTS.md`
 - Bash (macOS/Linux) or PowerShell (Windows)
 
 ## License

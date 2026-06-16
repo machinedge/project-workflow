@@ -2,7 +2,7 @@
 
 ## What This Is
 
-A toolkit that defines AI expert roles for coordinated software development. Each expert (PM, SWE, QA, DevOps, System Architect) has a role definition, structured skills, and scripts. Platform-native implementations for Cursor and Claude Code leverage each platform's rules, skills, commands, and scripting capabilities directly.
+A toolkit that defines AI expert roles for coordinated software development. Each expert (PM, SWE, QA, DevOps, System Architect) has a role definition, structured skills, and scripts. A single harness-neutral source (`agents/`) installs as a root `AGENTS.md` plus a `.agents/` payload, working with Claude Code, Codex, and any harness that reads `AGENTS.md`.
 
 ## Who It's For
 
@@ -10,13 +10,14 @@ Developers using AI coding assistants who want structured, repeatable workflows 
 
 ## How It Works
 
-- Expert definitions install into a project as platform-native rules, skills, and scripts. The AI loads the right expert context automatically; autonomous skills are discoverable without commands. Human-interactive workflows (interviews, deployment) remain explicit commands.
+- Expert definitions install into a project as `AGENTS.md` + a `.agents/` payload of roles, skills, and scripts. The AI loads the right expert context automatically; autonomous skills are discoverable without commands. Human-interactive workflows (interviews, deployment) remain explicit commands. Claude Code additionally gets native slash-command/skill discovery and a SessionStart hook via `.claude/` symlinks.
 - **Documents are memory.** Experts have no memory between sessions. All state lives in `docs/` and `.workflow/`.
 
 ## Success Looks Like
 
-- [x] Core experts (PM, SWE, QA, DevOps, System Architect) have complete, tested skill sets on both platforms
+- [x] Core experts (PM, SWE, QA, DevOps, System Architect) have complete, tested skill sets
 - [x] Users can install into a project and immediately start a productive session
+- [x] [AGENTS.md Model] Single `agents/` source installs as root `AGENTS.md` + `.agents/` + `CLAUDE.md` and `.claude/` symlinks; `targets/` and Cursor removed (ADR-012)
 - [x] [Repo Alignment] Remove legacy directories (`experts/`, `tools/`, `targets/desktop-cli/`, `targets/autonomous/`)
 - [x] [Repo Alignment] `CONTRIBUTING.md` reflects current platform-native paradigm
 - [x] [Repo Alignment] All docs free of stale references to removed directories
@@ -26,7 +27,7 @@ Developers using AI coding assistants who want structured, repeatable workflows 
 
 ## Constraints
 
-- Platform-native implementations in `targets/ide/cursor/` and `targets/ide/claude-code/` are the source of truth
+- `agents/` is the single source of truth; payload paths use `.agents/...` to resolve across harnesses
 - Project brief must stay under 1,000 words
 - Issues tracked in `.workflow/issues/`, not external services
 
@@ -64,17 +65,18 @@ Developers using AI coding assistants who want structured, repeatable workflows 
 | — | `.workflow/` not auto-added to `.gitignore` | User's choice whether to commit agent memory; teams may want shared history |
 | — | Flat `.workflow/` layout (no sub-categories beyond expert dirs) — ADR-011 | Artifacts already have clear names; a prefix change is simpler than a reorganization |
 | — | Install migrates files but does not rewrite path references inside migrated documents | Historical handoff notes and interview notes are records of what was true when written; rewriting would be revisionist and error-prone |
+| 2026-06-16 | Generic AGENTS.md model; drop Cursor and `targets/` (ADR-012) | One harness-neutral `agents/` source ends dual-platform maintenance; `AGENTS.md` covers Claude + Codex, with Claude native discovery preserved via symlinks |
 
 ## Current Status
 
-- **Milestones:** M1-M14 complete. All 14 milestones delivered. No active work.
-- **Core experts:** PM (10 skills), SWE (2 skills), QA (6 skills), DevOps (6 skills), System Architect (6 skills), team-status (1 shared) — functional on both platforms
+- **Milestones:** M1-M14 complete. M15 (AGENTS.md install model, ADR-012) delivered.
+- **Core experts:** PM (10 skills), SWE (2 skills), QA (6 skills), DevOps (6 skills), System Architect (6 skills), team-status (1 shared) — one harness-neutral implementation
 - **Blockers:** None
-- **Next task:** None queued. Candidates: new experts (Data Analyst, UX) or new platform targets — both require a fresh `/pm-interview`.
-- **Last updated:** M13 + M14 postmortem complete; project in clean state with zero open issues.
+- **Next task:** None queued. Candidates: new experts (Data Analyst, UX) or new harness wiring — would start with a fresh `/pm-interview`.
+- **Last updated:** M15 migrated the toolkit to the generic AGENTS.md + `.agents/` model; `targets/` and Cursor removed.
 
 ## Notes for AI
 
-- Platform-native implementations live in `targets/ide/cursor/` and `targets/ide/claude-code/`
+- The single source of truth is `agents/`; the installer copies it into projects
 - Read `docs/agent-reference.md` before modifying expert definitions
 - The System Architect owns `docs/architecture.md`; all other experts consume it

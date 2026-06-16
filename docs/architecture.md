@@ -2,68 +2,83 @@
 
 ## Overview
 
-This repo contains platform-native expert implementations for Cursor and Claude Code. Each platform has its own first-class implementation installed to users' projects via direct copy. No translation pipeline — the files in `targets/ide/<platform>/` are the source of truth.
+This repo contains a single, harness-neutral set of expert implementations under `agents/`. The installer copies that one source into a project as `.agents/` and wires it to `AGENTS.md` — the operating-system file read by Claude Code, Codex, and any harness that follows the AGENTS.md convention. There is no per-platform fork and no translation pipeline; `agents/` is the source of truth.
 
 ## Directory Layout
 
-### Top Level
+### Top Level (toolkit repo)
 
 ```
-targets/
-  ide/                          ← IDE-based targets (only target class)
-    install.sh                  ← Shared standalone installer
-    install.ps1
-    cursor/                     ← Cursor platform-native implementation
-      README.md
-      rules/                    ← Rule files (.mdc)
-      commands/                 ← Explicit command files
-      skills/                   ← Discoverable skill folders (SKILL.md)
-      scripts/                  ← Mechanical operation scripts
-    claude-code/                ← Claude Code platform-native implementation
-      README.md
-      CLAUDE.md                 ← Shared principles + expert routing
-      settings.json             ← Hook definitions
-      roles/                    ← Expert role definitions
-      commands/                 ← Explicit command files
-      skills/                   ← Discoverable skill folders (SKILL.md)
-      scripts/                  ← Mechanical operation scripts
+install.sh / install.ps1        ← Installer (copies agents/ into a project)
+agents/                         ← Single source of truth (harness-neutral)
+  AGENTS.md                     ← Operating-system file (expert routing + conventions)
+  settings.json                 ← Claude Code SessionStart hook definition
+  roles/                        ← Expert role definitions
+  commands/                     ← Explicit command files
+  skills/                       ← Discoverable skill folders (SKILL.md)
+  scripts/                      ← Mechanical operation scripts (.sh + .ps1)
 docs/                           ← Documentation
 .workflow/                      ← Managed artifacts (handoff notes, issues, lessons)
+```
+
+### Installed Layout (user's project)
+
+```
+AGENTS.md                       ← copy of agents/AGENTS.md
+CLAUDE.md → AGENTS.md           ← symlink (Claude Code reads the same file)
+.agents/                        ← copy of agents/ (roles, commands, skills, scripts)
+.claude/                        ← Claude-native wiring (skipped with --no-claude)
+  commands → ../.agents/commands   skills → ../.agents/skills
+  roles    → ../.agents/roles      scripts → ../.agents/scripts
+  settings.json                 ← SessionStart hook (merged, not overwritten)
+docs/        .workflow/
 ```
 
 ## Data Flow
 
 ```
-targets/ide/<platform>/ ──(install.sh)──→ user's .cursor/ or .claude/
+agents/ ──(install.sh)──→ project AGENTS.md + .agents/  (+ .claude/ symlinks)
 ```
 
-- Platform-native implementations in `targets/ide/<platform>/` are self-contained and installed directly to the user's project via file copy.
-- The install script is a copy operation — no transformation or generation.
+- `agents/` is self-contained and installed to the user's project via file copy.
+- The install script is a copy operation plus symlink wiring — no transformation or generation.
+- One `.agents/` payload serves every harness: AGENTS.md-aware tools read `AGENTS.md` + `.agents/` directly; Claude Code additionally gets native slash-command / skill discovery and a `SessionStart` hook through the `.claude/` symlinks.
 
 ## Extensibility Model
 
-**New IDE target (e.g., Kiro):**
-1. Create `targets/ide/kiro/`
-2. Add Kiro-specific implementation (rules/roles, commands, skills, scripts)
-3. No changes to other targets
+**New harness:** if it reads `AGENTS.md`, it works out of the box — no changes. If it needs native wiring like Claude's `.claude/` symlinks, add a small wiring branch to the installer that points the harness's config dir at `.agents/`. The payload itself never forks.
 
-The rule: **one directory, zero changes elsewhere.**
+The rule: **one source, harness-specific wiring is symlinks only.**
 
 ## Architecture Decisions
 
 | ID | Decision | Status | Date |
 |----|----------|--------|------|
-| ADR-001 | Organize targets by class hierarchy | Accepted | 2026-03-12 |
+| ADR-012 | Generic AGENTS.md model — single `agents/` source, `.agents/` copy + symlinked `CLAUDE.md`/`.claude/`, Cursor dropped | Accepted | 2026-06-16 |
+| ADR-001 | Organize targets by class hierarchy | Superseded (ADR-012) | 2026-03-12 |
 | ADR-002 | Top-level `tools/` for development and repo utilities | Superseded (removed in M12) | 2026-03-12 |
 | ADR-003 | Merge framework docs into `docs/` and repo root | Accepted | 2026-03-12 |
 | ADR-004 | Name second target class `desktop-cli` with per-target subdirectories | Superseded (removed in M12) | 2026-03-12 |
 | ADR-005 | Handoffs and autonomous skills as discoverable skills (not commands) | Accepted | — |
 | ADR-006 | Soft auto-trigger for handoff on both platforms | Accepted | — |
 | ADR-007 | Shell scripts in `.cursor/scripts/` and `.claude/scripts/` | Accepted | — |
-| ADR-008 | Direct-copy install replaces translation pipeline | Accepted | — |
+| ADR-008 | Direct-copy install replaces translation pipeline | Superseded (ADR-012) | — |
 | ADR-009 | Session primer as raw extractor, not agent summarizer | Accepted | — |
 | ADR-010 | Team-prefixed skills run roleless (no expert role loaded) | Accepted | — |
 | ADR-011 | Split managed artifacts into `.workflow/` directory | Accepted | — |
+
+### ADR-012: Generic AGENTS.md model
+
+**Context:** The toolkit shipped two pre-built platform copies under `targets/ide/` (Cursor `.mdc` rules and Claude Code roles), kept byte-for-byte aligned by hand. The `agents/` directory already held a generic copy identical to the Claude implementation. Maintaining parallel forks is pure overhead, and the ecosystem has converged on a root `AGENTS.md` convention (Claude Code, Codex, and others) that makes a single neutral source viable.
+
+**Options considered:**
+- **(A) Generic single source** — One `agents/` payload. Install copies it to `.agents/`, writes a top-level `AGENTS.md`, symlinks `CLAUDE.md → AGENTS.md`, and symlinks `.claude/{commands,skills,roles,scripts} → .agents/*` for Claude's native discovery. Drop Cursor.
+- **(B) Keep platform forks** — Continue maintaining `targets/ide/cursor/` and `targets/ide/claude-code/` separately. No new convention to rely on, but double the maintenance and a Cursor implementation nobody is driving.
+- **(C) Generic source + keep Cursor** — Neutral `agents/` plus a retained Cursor `.mdc` target. Keeps Cursor but reintroduces a fork for the one harness that doesn't read `AGENTS.md`.
+
+**Decision:** Option A. A single harness-neutral source eliminates the dual-maintenance burden. `AGENTS.md` covers Claude Code and Codex directly; Claude's native slash-command/skill discovery and `SessionStart` hook are preserved through symlinks into the same `.agents/` payload (no duplicated content). Cursor is dropped — it does not read `AGENTS.md` and keeping it would mean a fork for zero current users. `--no-claude` installs the pure-generic layout for Codex-only projects.
+
+**Consequences:** `targets/` is deleted; `experts/` etc. were already removed in M12. Path references in the payload move from `.claude/...` to `.agents/...` so they resolve for every harness. Native Claude discovery now depends on Claude Code resolving symlinked `.claude/skills`/`.claude/commands` directories (verified). Windows installs fall back to copies when symlinks are unavailable (no Developer Mode). Adding Cursor back later would require either re-introducing a `.mdc` fork or a translation step. Supersedes ADR-001 (target-class hierarchy) and ADR-008 (direct-copy of platform dirs).
 
 ### ADR-001: Organize targets by class hierarchy
 
@@ -194,174 +209,47 @@ The rule: **one directory, zero changes elsewhere.**
 
 ## Constraints
 
-- Platform-native implementations in `targets/ide/` are the source of truth
-- `experts/`, `tools/`, `targets/desktop-cli/`, and `targets/autonomous/` were removed in M12
+- `agents/` is the single source of truth; the installer copies it into a project
+- Payload path references use `.agents/...` so they resolve across harnesses
+- `experts/`, `tools/`, `targets/desktop-cli/`, and `targets/autonomous/` were removed in M12; `targets/` (Cursor + Claude forks) was removed under ADR-012
 
-## Platform-Native Architecture
+## Implementation Model
 
 ### Overview
 
-Each IDE target platform (Cursor, Claude Code) has its own first-class implementation in `targets/ide/<platform>/`. These are the source of truth.
-
-The install script copies pre-built platform files directly to the user's project. No translation pipeline.
+There is one implementation under `agents/`. The installer copies it to `.agents/` in the project and wires `AGENTS.md`. Harness-specific behavior (Claude's native discovery and `SessionStart` hook) is added by symlinks into the same payload — never by a fork.
 
 ### Design Principles
 
-1. **Platform-native, not translated.** Each platform implementation uses the platform's native concepts directly. No abstraction layer.
-2. **Skills are discoverable.** Autonomous skills use platform-native discovery (SKILL.md) so the agent can find and invoke them without explicit user commands.
-3. **Commands are intentional.** Interactive workflows and approval-gated processes remain explicit commands the user invokes.
-4. **Context is loaded on demand.** Expert roles are loaded conditionally (one per session). Document loading happens in individual skills, not in a global session protocol.
-5. **Mechanical operations are scripted.** Repetitive file operations (issue numbering, file movement) are handled by hidden shell scripts, not reimplemented in every skill.
+1. **One generic source.** A single `agents/` payload drives every harness. No per-platform implementation, no abstraction layer.
+2. **Skills are discoverable.** Autonomous skills are `SKILL.md` folders the agent matches against intent. Claude Code also surfaces them in the `/` menu via the `.claude/skills` symlink.
+3. **Commands are intentional.** Interactive workflows and approval-gated processes are explicit commands the user invokes.
+4. **Context is loaded on demand.** Expert roles load by prefix (one per session). Document loading happens in individual skills, not a global protocol.
+5. **Mechanical operations are scripted.** Repetitive file operations (issue numbering, file movement) live in `scripts/`, not inline in skills.
+6. **Harness-neutral paths.** Payload files reference `.agents/...`, which resolves for every harness; `.claude/...` exists only when Claude wiring is installed.
 
 ### File Categories
 
-The 36 expert files fall into 5 categories based on their interaction pattern:
+The 36 in-scope expert files fall into 5 categories:
 
-| Category | Count | Platform Concept | Invocation |
-|----------|-------|-----------------|------------|
-| Role definitions | 5 | Conditional rule (Cursor) / Role (Claude Code) | Auto-loaded when expert is identified |
-| Start commands | 5 | Command (both) | Explicit `/prefix-start` by user |
-| Interactive commands | 4 | Command (both) | Explicit `/prefix-name` by user |
-| Autonomous skills | 16 | Skill with SKILL.md (both) | Agent-discovered or explicit `/prefix-name` |
-| Handoff skills | 5 | Skill with SKILL.md (both) | Agent-discovered or explicit `/prefix-handoff` |
-| Shared protocol | 1 | Absorbed into role files | N/A |
+| Category | Count | Form | Invocation |
+|----------|-------|------|------------|
+| Role definitions | 5 | `roles/<expert>.md` | Loaded by prefix when expert is identified |
+| Start commands | 5 | `commands/<prefix>-start.md` | Explicit `/prefix-start` |
+| Interactive commands | 4 | `commands/<prefix>-<name>.md` | Explicit `/prefix-name` |
+| Autonomous skills | 16 | `skills/<prefix>-<name>/SKILL.md` | Agent-discovered or explicit `/prefix-name` |
+| Handoff skills | 5 | `skills/<prefix>-handoff/SKILL.md` | Agent-discovered or explicit `/prefix-handoff` |
+| Shared protocol | 1 | Absorbed into `AGENTS.md` | N/A |
 
-### File Mapping
+**Totals:** 5 roles + 9 commands + 21 skills = 35 installed files, plus `AGENTS.md`.
 
-| # | Expert File | Category | Cursor Path | Claude Code Path |
-|---|---------------|----------|-------------|-----------------|
-| 1 | `project-manager/role.md` | Role | `rules/project-manager-os.mdc` | `roles/project-manager.md` |
-| 2 | `project-manager/skills/start.md` | Start | `commands/pm-start.md` | `commands/pm-start.md` |
-| 3 | `project-manager/skills/handoff.md` | Handoff | `skills/pm-handoff/SKILL.md` | `skills/pm-handoff/SKILL.md` |
-| 4 | `project-manager/skills/interview.md` | Interactive | `commands/pm-interview.md` | `commands/pm-interview.md` |
-| 5 | `project-manager/skills/add_feature.md` | Interactive | `commands/pm-add-feature.md` | `commands/pm-add-feature.md` |
-| 6 | `project-manager/skills/vision.md` | Autonomous | `skills/pm-vision/SKILL.md` | `skills/pm-vision/SKILL.md` |
-| 7 | `project-manager/skills/roadmap.md` | Autonomous | `skills/pm-roadmap/SKILL.md` | `skills/pm-roadmap/SKILL.md` |
-| 8 | `project-manager/skills/decompose.md` | Autonomous | `skills/pm-decompose/SKILL.md` | `skills/pm-decompose/SKILL.md` |
-| 9 | `project-manager/skills/update_plan.md` | Autonomous | `skills/pm-update-plan/SKILL.md` | `skills/pm-update-plan/SKILL.md` |
-| 10 | `project-manager/skills/postmortem.md` | Autonomous | `skills/pm-postmortem/SKILL.md` | `skills/pm-postmortem/SKILL.md` |
-| 11 | `swe/role.md` | Role | `rules/swe-os.mdc` | `roles/swe.md` |
-| 12 | `swe/skills/start.md` | Start | `commands/swe-start.md` | `commands/swe-start.md` |
-| 13 | `swe/skills/handoff.md` | Handoff | `skills/swe-handoff/SKILL.md` | `skills/swe-handoff/SKILL.md` |
-| 14 | `qa/role.md` | Role | `rules/qa-os.mdc` | `roles/qa.md` |
-| 15 | `qa/skills/start.md` | Start | `commands/qa-start.md` | `commands/qa-start.md` |
-| 16 | `qa/skills/handoff.md` | Handoff | `skills/qa-handoff/SKILL.md` | `skills/qa-handoff/SKILL.md` |
-| 17 | `qa/skills/review.md` | Autonomous | `skills/qa-review/SKILL.md` | `skills/qa-review/SKILL.md` |
-| 18 | `qa/skills/test-plan.md` | Autonomous | `skills/qa-test-plan/SKILL.md` | `skills/qa-test-plan/SKILL.md` |
-| 19 | `qa/skills/regression.md` | Autonomous | `skills/qa-regression/SKILL.md` | `skills/qa-regression/SKILL.md` |
-| 20 | `qa/skills/bug-triage.md` | Autonomous | `skills/qa-bug-triage/SKILL.md` | `skills/qa-bug-triage/SKILL.md` |
-| 21 | `devops/role.md` | Role | `rules/devops-os.mdc` | `roles/devops.md` |
-| 22 | `devops/skills/start.md` | Start | `commands/ops-start.md` | `commands/ops-start.md` |
-| 23 | `devops/skills/handoff.md` | Handoff | `skills/ops-handoff/SKILL.md` | `skills/ops-handoff/SKILL.md` |
-| 24 | `devops/skills/deploy.md` | Interactive | `commands/ops-deploy.md` | `commands/ops-deploy.md` |
-| 25 | `devops/skills/env-discovery.md` | Interactive | `commands/ops-env-discovery.md` | `commands/ops-env-discovery.md` |
-| 26 | `devops/skills/pipeline.md` | Autonomous | `skills/ops-pipeline/SKILL.md` | `skills/ops-pipeline/SKILL.md` |
-| 27 | `devops/skills/release-plan.md` | Autonomous | `skills/ops-release-plan/SKILL.md` | `skills/ops-release-plan/SKILL.md` |
-| 28 | `system-architect/role.md` | Role | `rules/system-architect-os.mdc` | `roles/system-architect.md` |
-| 29 | `system-architect/skills/start.md` | Start | `commands/sa-start.md` | `commands/sa-start.md` |
-| 30 | `system-architect/skills/handoff.md` | Handoff | `skills/sa-handoff/SKILL.md` | `skills/sa-handoff/SKILL.md` |
-| 31 | `system-architect/skills/design.md` | Autonomous | `skills/sa-design/SKILL.md` | `skills/sa-design/SKILL.md` |
-| 32 | `system-architect/skills/research.md` | Autonomous | `skills/sa-research/SKILL.md` | `skills/sa-research/SKILL.md` |
-| 33 | `system-architect/skills/review.md` | Autonomous | `skills/sa-review/SKILL.md` | `skills/sa-review/SKILL.md` |
-| 34 | `system-architect/skills/update.md` | Autonomous | `skills/sa-update/SKILL.md` | `skills/sa-update/SKILL.md` |
-| 35 | `shared/docs-protocol.md` | Absorbed | — | — |
-| 36 | `shared/skills/status.md` | Autonomous | `skills/team-status/SKILL.md` | `skills/team-status/SKILL.md` |
-| 37–45 | `data-analyst/*.md` (9 files) | Out of scope | — | — |
+### AGENTS.md
 
-**Totals:** 5 roles + 9 commands + 21 skills + 1 absorbed = 36 in-scope files.
+`AGENTS.md` is the always-loaded operating-system file. It contains the expert routing table (prefix → `.agents/roles/<expert>.md`), the `team-` roleless rule (ADR-010), shared conventions (handoff-note and issue path patterns under `.workflow/`), a `.agents/scripts/` reference, and shared principles. Claude Code reads it through the `CLAUDE.md → AGENTS.md` symlink; Codex and other harnesses read it directly.
 
-### Cursor Implementation
+### Skills and Commands
 
-#### Installed Directory Structure
-
-```
-.cursor/
-  rules/
-    project-os.mdc              # Always-applied — expert routing + shared principles
-    project-manager-os.mdc      # Agent-decided — PM role
-    swe-os.mdc                  # Agent-decided — SWE role
-    qa-os.mdc                   # Agent-decided — QA role
-    devops-os.mdc               # Agent-decided — DevOps role
-    system-architect-os.mdc     # Agent-decided — SA role
-  commands/
-    pm-start.md
-    pm-interview.md
-    pm-add-feature.md
-    swe-start.md
-    qa-start.md
-    ops-start.md
-    ops-deploy.md
-    ops-env-discovery.md
-    sa-start.md
-  skills/
-    pm-vision/SKILL.md
-    pm-roadmap/SKILL.md
-    pm-decompose/SKILL.md
-    pm-update-plan/SKILL.md
-    pm-postmortem/SKILL.md
-    pm-handoff/SKILL.md
-    swe-handoff/SKILL.md
-    qa-review/SKILL.md
-    qa-test-plan/SKILL.md
-    qa-regression/SKILL.md
-    qa-bug-triage/SKILL.md
-    qa-handoff/SKILL.md
-    ops-pipeline/SKILL.md
-    ops-release-plan/SKILL.md
-    ops-handoff/SKILL.md
-    sa-design/SKILL.md
-    sa-research/SKILL.md
-    sa-review/SKILL.md
-    sa-update/SKILL.md
-    sa-handoff/SKILL.md
-    team-status/SKILL.md
-  scripts/
-    next-issue-number.sh
-    move-issue.sh
-    update-issues-list.sh
-    next-session-number.sh
-```
-
-#### Toolkit Repo Structure
-
-```
-targets/ide/cursor/
-  README.md                     # Platform documentation
-  rules/                        # → installed to .cursor/rules/
-  commands/                     # → installed to .cursor/commands/
-  skills/                       # → installed to .cursor/skills/
-  scripts/                      # → installed to .cursor/scripts/
-```
-
-#### Rule Configuration
-
-**`project-os.mdc` (Always Applied)**
-
-Frontmatter: `alwaysApply: true`
-
-Content (~40 lines, simplified from current ~70):
-- Expert list with `.cursor/rules/<expert>-os.mdc` paths
-- Routing logic: infer expert from skill/command prefix (pm, swe, qa, ops, sa, team)
-- Instruction: "Always load the expert role file before executing any skill or command"
-- Shared principles (no memory, project brief is truth, verify work, issues in `.workflow/issues/`)
-- Script reference: `.cursor/scripts/` for mechanical operations
-- Handoff instruction: "When the user signals they're wrapping up, invoke the handoff skill"
-- **No longer lists all skills** — each expert role lists its own, and skills are discoverable
-
-**Expert role rules (Agent-Decided)**
-
-Frontmatter: `alwaysApply: false`, `description: "<Expert> role — <one-line summary>"`
-
-Content (updated per M10 recommendations):
-- Identity and purpose
-- Document Locations (what this expert produces / consumes)
-- Simplified session protocol — no specific file-loading steps; defers to `/start` command and individual skills
-- Available skills list (skill names + one-line descriptions)
-- Expert-specific principles
-
-#### Skill Configuration
-
-Each skill is a folder in `.cursor/skills/` containing a `SKILL.md` with YAML frontmatter:
+Each skill is a `skills/<prefix>-<name>/` folder with a `SKILL.md` carrying YAML frontmatter:
 
 ```yaml
 ---
@@ -370,196 +258,46 @@ description: <What this skill does. When to use it. Max 1024 chars.>
 ---
 ```
 
-Body: the skill instructions. Internal command references use platform prefixes (e.g., `/pm-interview` not `/interview`). Skills that need context include their own loading phase.
+The `description` is the discovery trigger. Command references inside skills use full prefixes (e.g. `/pm-interview`). Skills that need context include their own loading phase. Commands are plain markdown using `$ARGUMENTS`, reserved for approval-gated `/start` sessions and interactive workflows (interview, add-feature, deploy, env-discovery).
 
-**Cursor skill discovery flow:**
-1. Cursor scans `.cursor/skills/` at startup, reads SKILL.md frontmatter
-2. Skills appear in the "Agent Decides" category
-3. When user sends a message, agent evaluates skill descriptions against user intent
-4. Matching skills are loaded into context and followed
-5. Explicit `/skill-name` invocation always works as fallback
+### Scripts
 
-#### Command Configuration
+| Script | Arguments | Output |
+|--------|-----------|--------|
+| `next-issue-number.sh` | — | Next available issue number |
+| `move-issue.sh` | `<filename> <target-dir>` | Confirmation; moves issue between `.workflow/issues/` dirs |
+| `update-issues-list.sh` | — | Regenerated `.workflow/issues/issues-list.md` |
+| `next-session-number.sh` | `<expert-name>` | Next session number; atomically claims a placeholder to avoid collisions |
+| `update-brief-status.sh` | `<issue-id> <status>` | `"OK"`; atomically updates the "Last updated" line in `docs/project-brief.md` under a lock |
 
-Commands in `.cursor/commands/` are plain markdown files. They use `$ARGUMENTS` for user input. Unchanged from current format.
+Each `.sh` has a `.ps1` companion. Additionally, `session-primer.sh` (no `.ps1` needed) is invoked by Claude Code's `SessionStart` hook to extract raw project context — see ADR-009.
 
-#### Handoff Auto-Trigger
+### Claude Code Hook
 
-Primary: `project-os.mdc` includes "When the user signals they're wrapping up, invoke the appropriate handoff skill."
-
-Secondary: Handoff SKILL.md descriptions include trigger phrases (e.g., "End the current SWE session and produce a handoff note. Use when the user signals they're done, wrapping up, or ending the session.").
-
-Fallback: User invokes `/prefix-handoff` explicitly.
-
-Estimated auto-trigger reliability: ~70-80%.
-
-#### Context Auto-Loading
-
-- The `/start` command handles full context loading (Phase 1) — reads project brief, task issue, handoff notes, etc. This is unchanged.
-- For skills invoked directly (without `/start`): `project-os.mdc` (always loaded) instructs agent to load the expert role first. Individual skills include their own context loading where needed.
-- No Cursor hook equivalent exists for session-level auto-loading.
-
-### Claude Code Implementation
-
-#### Installed Directory Structure
-
-```
-.claude/
-  CLAUDE.md                     # Shared principles + expert routing (always loaded)
-  settings.json                 # Hook definitions
-  roles/
-    project-manager.md
-    swe.md
-    qa.md
-    devops.md
-    system-architect.md
-  commands/                     # Same 9 commands as Cursor
-    pm-start.md
-    pm-interview.md
-    pm-add-feature.md
-    swe-start.md
-    qa-start.md
-    ops-start.md
-    ops-deploy.md
-    ops-env-discovery.md
-    sa-start.md
-  skills/                       # Same 21 skills as Cursor
-    pm-vision/SKILL.md
-    pm-roadmap/SKILL.md
-    pm-decompose/SKILL.md
-    pm-update-plan/SKILL.md
-    pm-postmortem/SKILL.md
-    pm-handoff/SKILL.md
-    swe-handoff/SKILL.md
-    qa-review/SKILL.md
-    qa-test-plan/SKILL.md
-    qa-regression/SKILL.md
-    qa-bug-triage/SKILL.md
-    qa-handoff/SKILL.md
-    ops-pipeline/SKILL.md
-    ops-release-plan/SKILL.md
-    ops-handoff/SKILL.md
-    sa-design/SKILL.md
-    sa-research/SKILL.md
-    sa-review/SKILL.md
-    sa-update/SKILL.md
-    sa-handoff/SKILL.md
-    team-status/SKILL.md
-  scripts/                      # Same scripts as Cursor + session primer
-    next-issue-number.sh
-    move-issue.sh
-    update-issues-list.sh
-    next-session-number.sh
-    session-primer.sh            # SessionStart hook — raw project context injection
-```
-
-#### Toolkit Repo Structure
-
-```
-targets/ide/claude-code/
-  README.md                     # Platform documentation
-  CLAUDE.md                     # → installed to .claude/CLAUDE.md
-  settings.json                 # → merged into .claude/settings.json
-  roles/                        # → installed to .claude/roles/
-  commands/                     # → installed to .claude/commands/
-  skills/                       # → installed to .claude/skills/
-  scripts/                      # → installed to .claude/scripts/
-```
-
-#### CLAUDE.md Configuration
-
-Equivalent to Cursor's `project-os.mdc`. Contains:
-- Expert list with `.claude/roles/<expert>.md` paths
-- Instruction to select expert role at session start or infer from prefix
-- `team-` prefix routing: no role loaded; skills are self-contained (ADR-010)
-- Shared principles
-- Script reference: `.claude/scripts/`
-- Handoff instruction (same as Cursor)
-
-#### Role Configuration
-
-Roles in `.claude/roles/` are plain markdown files. Claude Code's role selection UI lets users pick which role to activate at session start. Content structure matches Cursor expert rules (identity, document locations, simplified session protocol, skills list, principles).
-
-#### Skill and Command Configuration
-
-Identical to Cursor. Skills use SKILL.md with frontmatter. Commands use plain markdown with `$ARGUMENTS`. Cross-platform consistency.
-
-#### Hook Configuration
-
-`settings.json` defines hooks for Claude Code's event system:
+`agents/settings.json` defines the hook, merged into a project's `.claude/settings.json` (never overwritten):
 
 ```json
 {
   "hooks": {
     "SessionStart": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": ".claude/scripts/session-primer.sh"
-          }
-        ]
-      }
+      { "hooks": [ { "type": "command", "command": ".claude/scripts/session-primer.sh" } ] }
     ]
   }
 }
 ```
 
-**`SessionStart` hook:** Runs `session-primer.sh` which extracts and outputs raw content from project documents to prime the session. This is a mechanical operation (file extraction, not summarization — see ADR-009). The agent processes the raw text naturally.
+The command resolves through the `.claude/scripts → ../.agents/scripts` symlink. The hook runs only under Claude Code; harnesses without a session-start hook rely on `/start` commands and per-skill context loading.
 
-Script behavior:
-1. Extract project identity (first few lines of `docs/project-brief.md`)
-2. Extract the "Current Status" section from `docs/project-brief.md`
-3. Find the most recent handoff note across `.workflow/handoff-notes/` and output its content
-4. Cap total output to avoid flooding the agent context with verbose handoff notes
+### Install Steps
 
-This is Claude Code's bonus over Cursor — automatic context injection at session start. Cursor has no session-start hook; Cursor users rely on `/start` commands and per-skill context loading.
+The installer (`install.sh` / `install.ps1`) performs:
 
-**Handoff auto-trigger:** Same soft mechanism as Cursor (role instruction + discoverable skill). Claude Code's `Stop` event could add a safety-net prompt hook in the future, but is not implemented in M11 to keep both platforms consistent.
+1. Create `docs/` and the `.workflow/` structure; migrate any legacy `issues/` and `docs/handoff-notes/` into `.workflow/`.
+2. Copy `agents/{roles,commands,skills,scripts}`, `AGENTS.md`, and `settings.json` into `.agents/`.
+3. Write a top-level `AGENTS.md` (backing up a pre-existing user `AGENTS.md`) and symlink `CLAUDE.md → AGENTS.md`.
+4. Unless `--no-claude`: symlink `.claude/{commands,skills,roles,scripts} → ../.agents/*` and merge the `settings.json` hook.
 
-### Shared Specifications
-
-#### Skill Content Rules
-
-When creating or modifying SKILL.md files:
-
-1. Add YAML frontmatter with `name` (matching folder name) and `description` (discovery trigger, max 1024 chars)
-2. Use platform prefixes in command references (e.g., `/pm-interview`, not `/interview`)
-3. Skills must include their own context loading phase
-4. Reference `.cursor/scripts/` or `.claude/scripts/` for mechanical operations instead of inline logic
-
-#### Script Specifications
-
-| Script | Arguments | Output | Used By |
-|--------|-----------|--------|---------|
-| `next-issue-number.sh` | — | Next available issue number (integer) | QA review, any skill creating issues |
-| `move-issue.sh` | `<filename> <target-dir>` | Confirmation message | Handoff, start (moving to in-progress) |
-| `update-issues-list.sh` | — | Regenerated `.workflow/issues/issues-list.md` | After any issue creation or movement |
-| `next-session-number.sh` | `<expert-name>` | Next session number for that expert (integer). **Side effect:** atomically creates a placeholder file at the claimed path to prevent concurrent sessions from colliding. | Handoff skills |
-| `update-brief-status.sh` | `<issue-id> <status-description>` | `"OK"` on success. **Side effect:** atomically updates the `- **Last updated:**` line in `docs/project-brief.md` under a lockfile to prevent concurrent sessions from overwriting each other's status. | Handoff skills |
-
-Each `.sh` script has a companion `.ps1` for Windows.
-
-Additionally, Claude Code has `session-primer.sh` (Claude Code only, no `.ps1` companion needed — Claude Code runs on macOS/Linux). This script is invoked by the `SessionStart` hook, not by skills. See Hook Configuration for its specification.
-
-#### Install Script Changes
-
-The install script (`targets/ide/install.sh`) copies pre-built platform files:
-
-Specific steps:
-1. Detect target platform (cursor / claude-code) from CLI argument or auto-detection
-2. Copy rules/roles, commands, skills, scripts directories
-3. For Claude Code: merge `settings.json` hooks into existing `.claude/settings.json` (don't overwrite user settings)
-4. Create `docs/` and `.workflow/` directories if they don't exist (see ADR-011 for `.workflow/` layout)
-
-#### M10 Recommendations Implementation
-
-| Rec | Change | Implementation |
-|-----|--------|----------------|
-| 1 | Conditional expert roles | Cursor: expert `.mdc` rules set to `alwaysApply: false` with `description`. Claude Code: roles in `.claude/roles/`, `CLAUDE.md` has routing. Saves ~280 lines of always-loaded context. |
-| 2 | Remove doc loading from session protocols | Role files simplified: session protocol says "use `/start` for context loading; for direct skill invocation, load relevant artifacts as needed." Individual skills include their own loading phases. |
-| 3 | Scope handoff note loading | Role files changed: "read most recent handoff in own subdirectory" only. Cross-expert handoffs loaded by specific skills that need them (`/pm-postmortem`, `/qa-regression`). |
-| 4 | Fix QA handoff gap | QA role file updated to include own handoff notes. Aligned between role file and `/qa-start` command. |
+On Windows, symlink creation falls back to copies when Developer Mode is unavailable.
 
 ### ADR-011: Split managed artifacts into `.workflow/` directory
 

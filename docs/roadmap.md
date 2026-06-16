@@ -18,6 +18,7 @@
 | M12 | [Repo Alignment] Remove legacy directories, align docs and CONTRIBUTING.md with platform-native paradigm | Done | M11 | 1-2 (actual: 1) |
 | M13 | [Workflow Directory] Update structure and references — all paths point to `.workflow/`, fresh install creates new layout | Done | M12 | 3-5 (actual: 8 SWE + 2 QA + 1 SA + 2 bugfix) |
 | M14 | [Workflow Directory] Migration from old structure — install script detects old layout and migrates artifacts | Done | M13 | 2-3 (actual: 3) |
+| M15 | [AGENTS.md Model] Single `agents/` source installs as root `AGENTS.md` + `.agents/` + `CLAUDE.md`/`.claude/` symlinks; drop Cursor and `targets/` (ADR-012) | Done | M14 | 1 |
 
 ## Dependency Map
 
@@ -82,3 +83,4 @@ M1 (Core experts) ──────> M10 (Context Optimization research) ──
 | — | Decomposed M13 into 13 tasks: sa-feature-063 (design), swe-feature-064 through swe-feature-067 (Cursor: rules, commands, skills, scripts), swe-feature-068 through swe-feature-071 (Claude Code: rules, commands, skills, scripts), swe-feature-072 (install fresh), swe-feature-073 (docs + READMEs), swe-feature-074 (reinstall + verify), qa-feature-075 (grep audit). Decomposed M14 into 4 tasks: swe-feature-076 (bash migration), swe-feature-077 (PowerShell migration), swe-feature-078 (test on this project), qa-feature-079 (end-to-end verification). |
 | — | Postmortem: M13 marked Done. 13 planned / 13 delivered + 2 stale-path bugs from QA (swe-bug-080, swe-bug-081) — both resolved. Mechanical execution; ADR-011 left no ambiguity. 2-3x QA rework multiplier did not apply (low cross-expert interaction). |
 | — | Postmortem: M14 marked Done. 4 planned / 4 delivered. Install scripts verified on both bash and PowerShell — closes long-standing PowerShell-untested gap from M11. All 14 project milestones now complete. |
+| 2026-06-16 | Added [AGENTS.md Model] milestone (M15) and ADR-012. Collapsed the dual Cursor/Claude `targets/` forks to one harness-neutral `agents/` source. Rewrote root `install.sh`/`install.ps1` to produce a top-level `AGENTS.md`, `CLAUDE.md → AGENTS.md` symlink, `.agents/` payload, and (unless `--no-claude`) `.claude/` discovery symlinks + SessionStart hook. Deleted `targets/` (Cursor dropped); repointed payload paths from `.claude/` to `.agents/`; dogfooded this repo onto the new layout; updated README, CONTRIBUTING, agent-reference, architecture, test-plan, and project-brief. |

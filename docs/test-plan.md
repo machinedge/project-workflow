@@ -28,10 +28,10 @@ Validates the Expert Skill Restructure feature: System Architect expert creation
 |---|----------|--------|-----------|----------|---------------|----------|
 | 1 | System Architect expert passes structural validation | swe-feature-001, AC 10 | Unit | Run `./tools/validate/validate.sh technical/system-architect` | Local | P1 |
 | 2 | All original experts still pass structural validation | Backward compat constraint | Unit | Run `validate.sh` for each of: `technical/project-manager`, `technical/swe`, `technical/qa`, `technical/devops` | Local | P1 |
-| 3 | Install script produces correct structure with SA included | swe-feature-006 | Integration | Run `./targets/ide/install.sh /tmp/test-proj` and verify output files | Local | P1 |
-| 4 | Install script works with `--experts` flag excluding SA | swe-feature-006 | Integration | Run `./install.sh --experts pm,swe,qa,devops /tmp/test-proj-no-sa` and verify SA files absent | Local | P2 |
-| 5 | Generated CLAUDE.md includes SA expert and skills | swe-feature-006 | Integration | Inspect `/tmp/test-proj/.claude/CLAUDE.md` for SA entries | Local | P1 |
-| 6 | Generated project-os.mdc includes SA expert and skills | swe-feature-006 | Integration | Inspect `/tmp/test-proj/.cursor/rules/project-os.mdc` for SA entries | Local | P1 |
+| 3 | Default install produces the AGENTS.md layout | ADR-012 | Integration | Run `./install.sh /tmp/test-proj`; verify `AGENTS.md`, `CLAUDE.md`→`AGENTS.md` symlink, `.agents/{roles,commands,skills,scripts}`, `.claude/*` symlinks, settings hook, `.workflow/` | Local | P1 |
+| 4 | `--no-claude` install omits `.claude/` | ADR-012 | Integration | Run `./install.sh --no-claude /tmp/test-generic`; verify `AGENTS.md` + `.agents/` present and no `.claude/` | Local | P2 |
+| 5 | Claude discovery resolves through symlinks | ADR-012 | Integration | In a default install, verify `.claude/skills/pm-vision/SKILL.md` and `.claude/scripts/session-primer.sh` are readable via the symlinks | Local | P1 |
+| 6 | Existing user `AGENTS.md` is backed up, not clobbered | ADR-012 | Integration | Pre-create `AGENTS.md`, install, verify `AGENTS.md.pre-install.bak` holds the original | Local | P2 |
 | 7 | Every expert's `/start` loads `architecture.md` | swe-bug-007, swe-feature-004 | System | Grep all `start.md` files for `architecture.md` reference; verify `(if it exists)` qualifier present | Local | P1 |
 | 8 | Every expert's role.md lists `/start` and `/handoff` in Skills | swe-feature-002, -003 | System | Grep all `role.md` files for `/start` and `/handoff` entries | Local | P1 |
 | 9 | SWE, QA, DevOps role files include escalation principle | swe-techdebt-008, swe-feature-004 | System | Grep `role.md` files for "Escalate" in Principles section | Local | P1 |
@@ -67,30 +67,28 @@ Validates the Expert Skill Restructure feature: System Architect expert creation
 5. Run `./tools/validate/validate.sh technical/devops`
 **Expected result:** All experts pass with 0 failures and 0 warnings
 
-### ATP-2: Install Script Full Test (Tests #3, #5, #6)
-**Tests:** Matrix rows 3, 5, 6
+### ATP-2: Install Model — Default (Tests #3, #5)
+**Tests:** Matrix rows 3, 5
 **Prerequisites:** Clean target directory
-1. Run `./targets/ide/install.sh /tmp/test-expert-install`
-2. Verify `system-architect` appears in the installed experts list output
-3. Verify `.claude/roles/system-architect.md` exists
-4. Verify `.cursor/rules/system-architect-os.mdc` exists
-5. Verify `.claude/commands/sa-*.md` files exist (6 skills)
-6. Verify `.cursor/commands/sa-*.md` files exist (6 skills)
-7. Open `.claude/CLAUDE.md` — verify "System Architect" appears in Experts list and skill list
-8. Open `.cursor/rules/project-os.mdc` — verify "System Architect" appears in Experts list and skill list with `sa=System Architect` in prefix mapping
-9. Verify `docs/handoff-notes/system-architect/` directory exists
-10. Clean up: `rm -rf /tmp/test-expert-install`
-**Expected result:** All files present, SA expert fully represented in generated configs
+1. Run `./install.sh /tmp/test-install`
+2. Verify top-level `AGENTS.md` exists (regular file)
+3. Verify `CLAUDE.md` is a symlink resolving to `AGENTS.md`
+4. Verify `.agents/roles` (5), `.agents/commands` (9), `.agents/skills` (21), `.agents/scripts` are populated
+5. Verify `.claude/{commands,skills,roles,scripts}` are symlinks into `../.agents/*`
+6. Verify `.claude/skills/pm-vision/SKILL.md` and `.claude/scripts/session-primer.sh` are readable via the symlinks
+7. Verify `.claude/settings.json` contains the `SessionStart` → `session-primer.sh` hook
+8. Verify `.workflow/issues/{backlog,planned,in-progress,done}` and `.workflow/handoff-notes/<expert>/` exist
+9. Clean up: `rm -rf /tmp/test-install`
+**Expected result:** Full AGENTS.md layout present; Claude wiring resolves through symlinks
 
-### ATP-3: Install Script Exclude Test (Test #4)
-**Tests:** Matrix row 4
+### ATP-3: Install Model — Generic and Safety (Tests #4, #6)
+**Tests:** Matrix rows 4, 6
 **Prerequisites:** Clean target directory
-1. Run `./targets/ide/install.sh --experts pm,swe,qa,devops /tmp/test-no-sa`
-2. Verify no `sa-*.md` files in `.claude/commands/` or `.cursor/commands/`
-3. Verify no `system-architect.md` in `.claude/roles/`
-4. Verify no `system-architect-os.mdc` in `.cursor/rules/`
-5. Clean up: `rm -rf /tmp/test-no-sa`
-**Expected result:** SA expert absent when excluded from `--experts` list
+1. Run `./install.sh --no-claude /tmp/test-generic`; verify `AGENTS.md` + `.agents/` present and **no** `.claude/` directory
+2. Re-run `./install.sh /tmp/test-generic` (idempotency); verify symlinks intact and the settings hook is not duplicated
+3. In a fresh dir, pre-create `AGENTS.md` with custom content, run `./install.sh`, verify the original is preserved at `AGENTS.md.pre-install.bak`
+4. Clean up the temp directories
+**Expected result:** `--no-claude` omits Claude wiring; re-runs are idempotent; a user's AGENTS.md is never silently overwritten
 
 ### ATP-4: Cross-Expert Consistency Check (Tests #7-16)
 **Tests:** Matrix rows 7-16
