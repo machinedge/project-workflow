@@ -1,6 +1,6 @@
 ---
 name: team-milestone
-description: "Compile and build one roadmap milestone end-to-end: enrich it across SA, Security, QA, and DevOps, synthesize implementation-ready tasks, implement and verify them, then run the close-out review gates. Use when the user hands off a whole milestone and wants the full lifecycle run, not a single skill."
+description: "Compile and build one roadmap milestone end-to-end: enrich it across SA, Security, UX, QA, and DevOps, synthesize implementation-ready tasks, implement and verify them, then run the close-out review gates. Use when the user hands off a whole milestone and wants the full lifecycle run, not a single skill."
 ---
 
 Run one roadmap milestone through its full lifecycle. This is a **cross-expert** skill — no single expert role is loaded; it orchestrates the expert skills in sequence, pausing at each **[GATE]** for human approval.
@@ -15,7 +15,7 @@ Read `docs/project-brief.md` and `docs/roadmap.md`. Identify the named milestone
 
 If `docs/roadmap.md` doesn't exist, stop and tell the user: "No roadmap exists. Ask for the `pm-roadmap` skill first — there's no milestone to compile."
 
-State the plan: "I'll decompose this milestone into an execution plan first, then enrich it across SA, Security, QA, and DevOps, densify the tasks to implementation-ready and promote the approved ones for execution, implement and verify each, then run the close-out reviews. I'll pause for your approval at the plan gate, the foundations gate, the planned-set gate, and the go/no-go gate." Wait for the user to start.
+State the plan: "I'll decompose this milestone into an execution plan first, then enrich it across SA, Security, UX, QA, and DevOps, densify the tasks to implementation-ready and promote the approved ones for execution, implement and verify each, then run the close-out reviews. I'll pause for your approval at the plan gate, the foundations gate, the planned-set gate, and the go/no-go gate." Wait for the user to start.
 
 **Timebox the enrichment** — the standing risk on a foundations milestone is analysis paralysis. Aim for sufficient, not exhaustive.
 
@@ -29,10 +29,11 @@ Present the task list and dependency order. **Wait for the user to approve the e
 
 ## Phase 2: Enrich (cross-expert review of the milestone)
 
-Produce the four foundation artifacts for this milestone, each **scoped to the planned task set** from Phase 1. On Claude Code these run in parallel; otherwise run them in order. Each is the existing skill, scoped to this milestone:
+Produce the foundation artifacts for this milestone, each **scoped to the planned task set** from Phase 1. On Claude Code these run in parallel; otherwise run them in order. Each is the existing skill, scoped to this milestone:
 
 - **System Architect** → `sa-design` (scoped to the milestone): component boundaries, interfaces, data flow, contracts → `docs/architecture.md`.
 - **Security** → `sec-requirements`: threat model + verifiable controls (`SR-NNN`) → `docs/security-requirements.md`.
+- **UX Designer** → `ux-guidelines`: user flows, interaction, accessibility, content & CLI ergonomics (`UX-NNN`) → `docs/ux-guidelines.md` (says so and produces a minimal note if the milestone has no user-facing surface).
 - **QA** → `qa-test-plan`: test strategy, acceptance criteria, explicit test cases → `docs/test-plan.md`.
 - **DevOps** → `ops-pipeline`: build/test/deploy stages and environment needs.
 
@@ -40,7 +41,7 @@ Each skill has its own user-approval step; honor them. If an upstream artifact a
 
 ### [GATE 2] Foundations approval
 
-Consolidate the four artifacts into a short walkthrough (the milestone's "Foundations defined" demo): the architecture slice, the top threats and their controls, the test strategy, and the pipeline. Present it. **Wait for the user to approve the foundations before the tasks are densified.** If they want changes, loop back to the relevant skill.
+Consolidate the foundation artifacts into a short walkthrough (the milestone's "Foundations defined" demo): the architecture slice, the top threats and their controls, the key UX flows and their requirements, the test strategy, and the pipeline. Present it. **Wait for the user to approve the foundations before the tasks are densified.** If they want changes, loop back to the relevant skill.
 
 ## Phase 3: Compile (densify the tasks and promote them for execution)
 
@@ -69,6 +70,7 @@ Run the review gates over the milestone's implemented work. On Claude Code these
 - **QA** → `qa-review` (code vs. intent and test plan)
 - **System Architect** → `sa-review` (conformance to architecture)
 - **Security** → `sec-review` (controls enforced; vuln/authz/secrets/deps)
+- **UX** → `ux-review` (`UX-NNN` conformance; flow completeness; accessibility; consistency; CLI ergonomics)
 - **QA** → `qa-regression` (acceptance criteria still pass across the milestone)
 
 Collect all findings. **Must-fix** findings loop back to Phase 4 (implement the fix, re-verify). Other findings become backlog issues via the skills' own issue-filing steps.

@@ -2,7 +2,7 @@
 
 ## What This Is
 
-A toolkit that defines AI expert roles for coordinated software development. Each expert (PM, SWE, QA, DevOps, System Architect, Security Engineer) has a role definition, structured skills, and scripts. A single harness-neutral source (`agents/`) installs as a root `AGENTS.md` plus a `.agents/` payload, working with Claude Code, Codex, and any harness that reads `AGENTS.md`. Cross-expert **workflows** chain the skills into a full milestone lifecycle.
+A toolkit that defines AI expert roles for coordinated software development. Each expert (PM, SWE, QA, DevOps, System Architect, Security Engineer, UX Designer) has a role definition, structured skills, and scripts. A single harness-neutral source (`agents/`) installs as a root `AGENTS.md` plus a `.agents/` payload, working with Claude Code, Codex, and any harness that reads `AGENTS.md`. Cross-expert **workflows** chain the skills into a full milestone lifecycle.
 
 ## Who It's For
 
@@ -24,9 +24,10 @@ Developers using AI coding assistants who want structured, repeatable workflows 
 - [x] [Workflow Directory] Managed artifacts (handoff notes, interview notes, lessons-log, research reports, issues) live under `.sdlc/`
 - [x] [Workflow Directory] `docs/` contains only core planning docs and user-generated content
 - [x] [Workflow Directory] Install over existing project migrates artifacts to `.sdlc/` without data loss
-- [ ] [Milestone Workflows] `team-milestone` runs a milestone end-to-end (enrich → compile → implement → review) with human gates; Claude Code accelerator parallelizes it (ADR-013)
-- [ ] [Milestone Workflows] Security Engineer (`sec`) role owns security requirements (kickoff) and the security review gate (close-out)
-- [ ] [Milestone Workflows] `pm-decompose` emits implementation-ready tasks meeting `docs/task-detail-standard.md`, enforced by a completeness verifier
+- [x] [Milestone Workflows] `team-milestone` runs a milestone end-to-end (enrich → compile → implement → review) with human gates; Claude Code accelerator parallelizes it (ADR-013)
+- [x] [Milestone Workflows] Security Engineer (`sec`) role owns security requirements (kickoff) and the security review gate (close-out)
+- [x] [Milestone Workflows] `pm-decompose` emits implementation-ready tasks meeting `docs/task-detail-standard.md`, enforced by a completeness verifier
+- [x] [UX Advisor] UX Designer (`ux`) role owns UX guidelines (kickoff) and the UX review gate (close-out), wired as a standing lens into the milestone enrich and review fan-outs
 
 ## Constraints
 
@@ -70,18 +71,19 @@ Developers using AI coding assistants who want structured, repeatable workflows 
 | — | Install migrates files but does not rewrite path references inside migrated documents | Historical handoff notes and interview notes are records of what was true when written; rewriting would be revisionist and error-prone |
 | 2026-06-16 | Generic AGENTS.md model; drop Cursor and `targets/` (ADR-012) | One harness-neutral `agents/` source ends dual-platform maintenance; `AGENTS.md` covers Claude + Codex, with Claude native discovery preserved via symlinks |
 | 2026-06-16 | Milestone workflows + Security Engineer role (ADR-013) | Hand off a whole milestone and have every expert lens applied automatically; portable runbook stays harness-neutral, Claude Code accelerator adds parallelism + a small-model build loop; security becomes a first-class gate |
+| 2026-06-17 | Add UX Designer advisor role (`ux`) | No expert evaluated usability or accessibility; UX joins as an advisor (like Security) — owns `docs/ux-guidelines.md`, gates close-out review, and runs as a standing lens in the milestone enrich/review fan-outs (graceful no-op when a milestone has no user-facing surface) |
 
 ## Current Status
 
-- **Milestones:** M1-M15 complete. M16 (Milestone Workflows + Security Engineer, ADR-013) in progress.
-- **Experts:** PM, SWE, QA, DevOps, System Architect, Security Engineer — one harness-neutral implementation. 6 roles, 6 commands, 25 skills.
+- **Milestones:** M1-M16 complete. M17 (UX Advisor role) added.
+- **Experts:** PM, SWE, QA, DevOps, System Architect, Security Engineer, UX Designer — one harness-neutral implementation. 7 roles, 6 commands, 28 skills.
 - **Blockers:** None
-- **Next task:** Verify M16 end-to-end on a real milestone (run `team-milestone` and the `workflows/milestone.js` accelerator against a sample milestone in a consuming project).
-- **Last updated:** Plan-first milestone lifecycle (decompose → enrich → compile/promote → implement → review) on a `backlog → planned → in-progress → done` status flow; the six `*-start` commands consolidated into a role-agnostic `/start-task` + `/resume-task`, with each role's execution discipline relocated into its role file.
+- **Next task:** Verify the milestone lifecycle end-to-end on a real milestone (run `team-milestone` and the `workflows/milestone.js` accelerator against a sample milestone in a consuming project), now including the UX enrich/review lenses.
+- **Last updated:** Added the UX Designer advisor role (`ux`) with `ux-guidelines`, `ux-review`, `ux-handoff`, wired into the milestone enrich/review fan-outs; marked M16 complete and reflected it across the roadmap and brief.
 
 ## Notes for AI
 
 - The single source of truth is `agents/`; the installer copies it into projects
 - Read `docs/agent-reference.md` before modifying expert definitions
-- The System Architect owns `docs/architecture.md`; the Security Engineer owns `docs/security-requirements.md`; all other experts consume them
+- The System Architect owns `docs/architecture.md`; the Security Engineer owns `docs/security-requirements.md`; the UX Designer owns `docs/ux-guidelines.md`; all other experts consume them
 - `team-milestone` chains the expert skills into a milestone lifecycle; `agents/workflows/milestone.js` is its Claude Code accelerator

@@ -145,7 +145,7 @@ mkdir -p "$TARGET/.sdlc/issues/planned"
 mkdir -p "$TARGET/.sdlc/issues/in-progress"
 mkdir -p "$TARGET/.sdlc/issues/done"
 
-for expert in pm swe qa devops system-architect; do
+for expert in pm swe qa devops system-architect security-engineer ux; do
     mkdir -p "$TARGET/.sdlc/handoff-notes/$expert"
 done
 

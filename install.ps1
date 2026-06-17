@@ -129,7 +129,7 @@ foreach ($dir in @(
     New-Item -ItemType Directory -Path (Join-Path $Target $dir) -Force | Out-Null
 }
 
-foreach ($expert in @("pm", "swe", "qa", "devops", "system-architect")) {
+foreach ($expert in @("pm", "swe", "qa", "devops", "system-architect", "security-engineer", "ux")) {
     New-Item -ItemType Directory -Path (Join-Path $Target ".sdlc/handoff-notes/$expert") -Force | Out-Null
 }
 

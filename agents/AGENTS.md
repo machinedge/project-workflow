@@ -14,8 +14,9 @@ Load the active expert's role file before executing any skill or command:
 | DevOps Engineer | `.agents/roles/devops.md` | ops |
 | System Architect | `.agents/roles/system-architect.md` | sa |
 | Security Engineer | `.agents/roles/security-engineer.md` | sec |
+| UX Designer | `.agents/roles/ux-designer.md` | ux |
 
-Infer the expert from the skill or command prefix (e.g. `/pm-interview` → PM, `/sec-review` → Security). The generic `/start-task` and `/resume-task` commands carry no prefix — they infer the expert from the selected issue's `**Expert:**` field and load that role file. For `team-` prefixed skills, no expert role is loaded — these are cross-expert skills that run with only project-os context and their own SKILL.md instructions.
+Infer the expert from the skill or command prefix (e.g. `/pm-interview` → PM, `/sec-review` → Security, `/ux-review` → UX). The generic `/start-task` and `/resume-task` commands carry no prefix — they infer the expert from the selected issue's `**Expert:**` field and load that role file. For `team-` prefixed skills, no expert role is loaded — these are cross-expert skills that run with only project-os context and their own SKILL.md instructions.
 
 ## Conventions
 
