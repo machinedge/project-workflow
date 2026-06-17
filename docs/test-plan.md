@@ -44,12 +44,12 @@ Validates the Expert Skill Restructure feature: System Architect expert creation
 | 16 | PM role.md references correct docs-protocol path | swe-techdebt-012 | System | Verify `experts/technical/shared/docs-protocol.md` (not `experts/shared/`) | Local | P2 |
 | 17 | Backward compat: SWE /start still has all 7 phases | Backward compat constraint | System | Read SWE start.md, verify Phase 1-7 present | Local | P1 |
 | 18 | Backward compat: existing skills unmodified | swe-feature-002 AC 8, -003 AC 9-10 | System | Verify QA review/test-plan/regression/bug-triage unchanged; DevOps env-discovery/pipeline/release-plan/deploy unchanged | Local | P1 |
-| 19 | SA `/start` behavioral test: pick up issue, load context, execute | swe-feature-001, AC 7 | Acceptance | Install into test project, create an SA-scoped issue, run `/sa-start`, verify it loads context and executes | Real project | P1 |
-| 20 | PM `/start` behavioral test: pick up PM issue and execute | swe-feature-002, AC 3-5 | Acceptance | Install into test project, create a PM-scoped issue, run `/pm-start`, verify it loads context and executes PM work | Real project | P1 |
-| 21 | SWE `/start` behavioral test: respects architecture.md | swe-feature-004, AC 1-3 | Acceptance | Install into test project, create `docs/architecture.md`, run `/swe-start`, verify it loads architecture and scopes to domain-level | Real project | P1 |
-| 22 | QA `/start` behavioral test: loads architecture.md | swe-bug-007 | Acceptance | Install into test project, create `docs/architecture.md`, run `/qa-start`, verify it loads architecture context | Real project | P2 |
-| 23 | Escalation behavioral test: SWE flags out-of-scope decision | swe-feature-004, AC 3 | Acceptance | Run `/swe-start` on a task requiring an architectural decision not covered by architecture.md; verify agent flags it rather than assuming | Real project | P1 |
-| 24 | Graceful degradation: experts proceed without architecture.md | swe-feature-004, AC 11 | Acceptance | Install into test project with NO `docs/architecture.md`; run `/swe-start`; verify session starts normally without errors | Real project | P2 |
+| 19 | SA `/start` behavioral test: pick up issue, load context, execute | swe-feature-001, AC 7 | Acceptance | Install into test project, create an SA-scoped issue, run `/start-task`, verify it loads context and executes | Real project | P1 |
+| 20 | PM `/start` behavioral test: pick up PM issue and execute | swe-feature-002, AC 3-5 | Acceptance | Install into test project, create a PM-scoped issue, run `/start-task`, verify it loads context and executes PM work | Real project | P1 |
+| 21 | SWE `/start` behavioral test: respects architecture.md | swe-feature-004, AC 1-3 | Acceptance | Install into test project, create `docs/architecture.md`, run `/start-task`, verify it loads architecture and scopes to domain-level | Real project | P1 |
+| 22 | QA `/start` behavioral test: loads architecture.md | swe-bug-007 | Acceptance | Install into test project, create `docs/architecture.md`, run `/start-task`, verify it loads architecture context | Real project | P2 |
+| 23 | Escalation behavioral test: SWE flags out-of-scope decision | swe-feature-004, AC 3 | Acceptance | Run `/start-task` on a task requiring an architectural decision not covered by architecture.md; verify agent flags it rather than assuming | Real project | P1 |
+| 24 | Graceful degradation: experts proceed without architecture.md | swe-feature-004, AC 11 | Acceptance | Install into test project with NO `docs/architecture.md`; run `/start-task`; verify session starts normally without errors | Real project | P2 |
 
 ### Priority Key
 - **P1** — Must test. Core functionality, high risk, or blocking.
@@ -106,7 +106,7 @@ Validates the Expert Skill Restructure feature: System Architect expert creation
 **Tests:** Matrix row 19
 **Prerequisites:** Toolkit installed into a test project
 1. Create a file `issues/backlog/sa-feature-001.md` with a simple architectural task
-2. Run `/sa-start sa-feature-001`
+2. Run `/start-task sa-feature-001`
 3. Verify the agent reads: project brief, architecture.md (if present), roadmap, lessons log, the issue file, most recent SA handoff note
 4. Verify the agent confirms understanding and waits for approval
 5. Verify the agent produces architectural artifacts (not code)
@@ -116,7 +116,7 @@ Validates the Expert Skill Restructure feature: System Architect expert creation
 **Tests:** Matrix row 23
 **Prerequisites:** Toolkit installed into a test project with a minimal `docs/architecture.md`
 1. Create an SWE issue that requires a decision about a new component boundary (something NOT covered in architecture.md)
-2. Run `/swe-start` on the issue
+2. Run `/start-task` on the issue
 3. During Phase 3 (Architect), verify the agent flags the uncovered decision and asks the user rather than assuming
 **Expected result:** SWE agent escalates rather than making system-level assumptions
 

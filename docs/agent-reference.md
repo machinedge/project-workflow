@@ -63,7 +63,7 @@ All live under `agents/`:
 | Type | Location | Purpose |
 |------|----------|---------|
 | Role | `roles/<expert>.md` | Expert identity, session protocols, principles |
-| Command | `commands/<prefix>-<name>.md` | Explicit user-invoked workflows (`/start`, `/interview`, etc.) |
+| Command | `commands/<name>.md` | Explicit user-invoked workflows. The role-agnostic `start-task`/`resume-task` infer the expert from the issue; others are prefixed (`pm-interview`, `ops-deploy`, …) |
 | Skill | `skills/<prefix>-<name>/SKILL.md` | Agent-discoverable autonomous operations |
 | Script | `scripts/<name>.sh` + `.ps1` | Mechanical shell utilities |
 
@@ -99,8 +99,8 @@ The body contains the skill instructions — steps, context loading, output spec
 ### Writing a Command
 
 Commands are plain markdown files. They use `$ARGUMENTS` for user input. Commands are used for workflows that need:
-- Full context loading with approval gates (`/start` commands)
-- Back-and-forth interaction with the user (`/interview`, `/deploy`)
+- Full context loading with approval gates (`/start-task`, `/resume-task`)
+- Back-and-forth interaction with the user (`/pm-interview`, `/ops-deploy`)
 
 ### Adding Scripts
 

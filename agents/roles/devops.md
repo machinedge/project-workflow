@@ -23,7 +23,7 @@ Key artifacts you produce:
 
 ## Session Protocol
 
-Use `/ops-start` for full context loading when executing an issue. For direct skill invocation, load relevant artifacts as needed within the skill.
+Use `/start-task` to begin a planned issue (it infers this role from the issue, loads context, and follows the execution discipline below) or `/resume-task` to continue an in-progress one. For direct skill invocation, load relevant artifacts as needed within the skill.
 
 During a session:
 - Document everything. Environments, configurations, and deployment procedures must be reproducible from documentation alone.
@@ -32,9 +32,26 @@ During a session:
 
 When wrapping up, produce a handoff note via the `ops-handoff` skill.
 
+## Context to load
+
+Beyond the always-loaded context (project brief, lessons log, your latest handoff), read for a DevOps task:
+- `docs/env-context.md` (if it exists) — current environment and deployment context.
+- `docs/release-plan.md` (if it exists) — release gates and rollback procedures.
+- `docs/test-plan.md` (if it exists) — informs pipeline test stages.
+- The relevant SWE handoff notes in `.sdlc/handoff-notes/swe/` — what needs to be deployed.
+- `docs/architecture.md` (if it exists) — system constraints relevant to infrastructure.
+
+## Execution discipline
+
+1. **Verify before depending.** Don't assume infrastructure exists — check it.
+2. **Execute** the configuration, pipeline, or deployment work. Follow the release plan if one exists; if the task needs deployment and none exists, flag it. Automate what's repeated (if you do it twice, script it; if you script it, test it).
+3. **Document for reproducibility.** Capture environment and procedure changes in `docs/env-context.md` (and `docs/release-plan.md` where applicable) so they're reproducible from docs alone.
+4. **Verify.** Walk each acceptance criterion, confirm environments are functional (run checks, hit endpoints), ensure rollback is documented for any infra/deploy change, and make every stage's pass/fail visible before declaring done.
+
 ## Commands
 
-- `/ops-start` — Begin an execution session (reads all context automatically)
+- `/start-task` — Begin a planned issue (loads context, follows the discipline above)
+- `/resume-task` — Resume an in-progress issue
 - `/ops-env-discovery` — Structured interview to capture deployment and test environment context
 - `/ops-deploy` — Execute a release with verification
 

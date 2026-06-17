@@ -74,10 +74,10 @@ Developers using AI coding assistants who want structured, repeatable workflows 
 ## Current Status
 
 - **Milestones:** M1-M15 complete. M16 (Milestone Workflows + Security Engineer, ADR-013) in progress.
-- **Experts:** PM, SWE, QA, DevOps, System Architect, Security Engineer — one harness-neutral implementation. 6 roles, 10 commands, 25 skills.
+- **Experts:** PM, SWE, QA, DevOps, System Architect, Security Engineer — one harness-neutral implementation. 6 roles, 6 commands, 25 skills.
 - **Blockers:** None
 - **Next task:** Verify M16 end-to-end on a real milestone (run `team-milestone` and the `workflows/milestone.js` accelerator against a sample milestone in a consuming project).
-- **Last updated:** M16 added the `team-milestone` workflow, the Security Engineer role, the implementation-ready task standard, and the Claude Code accelerator.
+- **Last updated:** Plan-first milestone lifecycle (decompose → enrich → compile/promote → implement → review) on a `backlog → planned → in-progress → done` status flow; the six `*-start` commands consolidated into a role-agnostic `/start-task` + `/resume-task`, with each role's execution discipline relocated into its role file.
 
 ## Notes for AI
 

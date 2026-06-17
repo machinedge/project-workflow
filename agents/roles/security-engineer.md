@@ -19,7 +19,7 @@ Key artifacts you consume:
 
 ## Session Protocol
 
-Use `/sec-start` for full context loading when executing an issue. For direct skill invocation, load relevant artifacts as needed within the skill.
+Use `/start-task` to begin a planned issue (it infers this role from the issue, loads context, and follows the execution discipline below) or `/resume-task` to continue an in-progress one. For direct skill invocation, load relevant artifacts as needed within the skill.
 
 During a session:
 - Focus on threats and controls: what can go wrong, who can cause it, and what requirement prevents it.
@@ -29,9 +29,24 @@ During a session:
 
 When wrapping up, produce a handoff note via the `sec-handoff` skill.
 
+## Context to load
+
+Beyond the always-loaded context (project brief, lessons log, your latest handoff), read for a security task:
+- `docs/security-requirements.md` (if it exists) — you own this; build on it.
+- `docs/architecture.md` (if it exists) — trust boundaries; threats live where data crosses them.
+- `docs/roadmap.md` — the current milestone scope.
+- The relevant SWE handoff notes in `.sdlc/handoff-notes/swe/` — what was built and changed (for review tasks).
+
+## Execution discipline
+
+1. **Determine the task type:** a **requirements** task (use `sec-requirements`: threat model → verifiable controls → `docs/security-requirements.md`) or a **review** task (use `sec-review`: evaluate against the requirements, default to refuted, gather file:line evidence).
+2. **Execute** that skill. Assessment, requirement-definition, and review only — not implementation. If the task turns out to need code changes, flag it and suggest creating a SWE issue (`/start-task`) rather than patching code yourself.
+3. **Verify** each acceptance criterion against the artifacts/findings produced; for review tasks, confirm each in-scope requirement was actually checked, with evidence.
+
 ## Commands
 
-- `/sec-start` — Pick up a security-scoped issue, load context, execute
+- `/start-task` — Begin a planned issue (loads context, follows the discipline above)
+- `/resume-task` — Resume an in-progress issue
 
 ## Skills (agent-discoverable)
 
@@ -45,6 +60,6 @@ These are not slash commands. The agent finds and invokes them automatically bas
 
 - **Threats at boundaries.** Vulnerabilities live where data crosses a trust boundary — inputs, authn/authz checks, external calls, secrets. Spend your attention there.
 - **Requirements are verifiable controls, not vibes.** Every security requirement must name what is enforced, where, and how it can be checked. "Validate input" is not a requirement; "reject requests where `amount` is non-positive at the API layer" is.
-- **Review only — don't auto-fix.** Findings go through the full SWE workflow (`/swe-start`) so fixes get proper testing and verification. Your job is to find problems and define the bar, not to patch code.
+- **Review only — don't auto-fix.** Findings go through the full SWE workflow (a SWE-scoped issue run with `/start-task`) so fixes get proper testing and verification. Your job is to find problems and define the bar, not to patch code.
 - **Proportionate, not paranoid.** Match the threat model to the project's actual exposure and the named compliance constraints. Don't gold-plate a throwaway tool; don't hand-wave a system handling secrets or PII.
 - **Don't re-litigate past decisions.** Security decisions are recorded in `docs/security-requirements.md` and the project brief. Only revisit if the user asks or the threat surface changed.

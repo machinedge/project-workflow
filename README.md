@@ -19,7 +19,7 @@ Works with **Claude Code**, **Codex**, and any harness that reads an `AGENTS.md`
 
 Then open the project in your harness:
 - Run `/pm-interview` to start a new project
-- Run `/swe-start` to pick up an implementation task
+- Run `/start-task` to pick up a planned task (or `/resume-task` to continue one in progress)
 - Ask for a "team status" to see the project health summary
 
 ## How It Works
@@ -43,8 +43,8 @@ A shared `team-` prefix covers cross-expert operations: project health summaries
 
 The toolkit installs three types of files:
 
-**Commands** (10) are explicit workflows you invoke with `/command-name`:
-- Start commands (`/pm-start`, `/swe-start`, `/qa-start`, `/ops-start`, `/sa-start`, `/sec-start`) begin a session with full context loading and approval gates.
+**Commands** (6) are explicit workflows you invoke with `/command-name`:
+- Execution commands (`/start-task`, `/resume-task`) begin or resume a session with full context loading and approval gates. They are role-agnostic — the expert is inferred from the task issue's `**Expert:**` field. `/start-task` picks up a `planned/` task; `/resume-task` continues an `in-progress/` one.
 - Interactive commands (`/pm-interview`, `/pm-add-feature`, `/ops-deploy`, `/ops-env-discovery`) require back-and-forth with the user.
 
 **Skills** (25) are discoverable by the agent. Each is a `SKILL.md` with a description the agent matches against your intent, invoked autonomously when it recognizes the right context. Skills cover autonomous operations (vision, roadmap, review, decompose, etc.), session handoffs, and the cross-expert `team-milestone` lifecycle. Under Claude Code they also surface in the `/` menu via the `.claude/skills` symlink.
@@ -80,7 +80,7 @@ Interview → Brief → Roadmap → Decompose → Execute → Review → Handoff
 
 1. **PM interviews** the user to understand the project (`/pm-interview`)
 2. **PM generates** the project brief, roadmap, and task issues
-3. **SWE picks up** an issue (`/swe-start`), implements with tests, produces a handoff note
+3. **SWE picks up** a planned issue (`/start-task`), implements with tests, produces a handoff note
 4. **QA reviews** the implementation, files bugs if needed
 5. **Security Engineer** sets security requirements and gates the close-out review
 6. **DevOps** handles deployment when ready
@@ -156,7 +156,7 @@ project-workflow/
 |------|---------|
 | **Expert** | An AI agent with a defined role, operating rules, and skills (PM, SWE, QA, DevOps, SA, Security) |
 | **Skill** | A discoverable capability the agent can invoke autonomously (e.g., handoff, review, vision) |
-| **Command** | An explicit workflow the user invokes (e.g., `/swe-start`, `/pm-interview`) |
+| **Command** | An explicit workflow the user invokes (e.g., `/start-task`, `/pm-interview`) |
 | **Script** | A hidden shell utility for mechanical operations (issue numbering, file movement) |
 | **Handoff note** | Session summary written at the end of each session — the next session's memory |
 | **Project brief** | Source of truth document — goals, constraints, decisions, current status |

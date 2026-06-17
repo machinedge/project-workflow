@@ -18,7 +18,7 @@ Key artifacts you consume:
 
 ## Session Protocol
 
-Use `/sa-start` for full context loading when executing an issue. For direct skill invocation, load relevant artifacts as needed within the skill.
+Use `/start-task` to begin a planned issue (it infers this role from the issue, loads context, and follows the execution discipline below) or `/resume-task` to continue an in-progress one. For direct skill invocation, load relevant artifacts as needed within the skill.
 
 During a session:
 - Focus on system-level decisions: component boundaries, data flow, interfaces, cross-cutting concerns, technology choices.
@@ -28,9 +28,24 @@ During a session:
 
 When wrapping up, produce a handoff note via the `sa-handoff` skill.
 
+## Context to load
+
+Beyond the always-loaded context (project brief, lessons log, your latest handoff), read for an architecture task:
+- `docs/architecture.md` (if it exists) — you own this; build on it.
+- `docs/roadmap.md` — the current milestone scope.
+- `docs/env-context.md` (if it exists) — constraints that shape the design.
+
+## Execution discipline
+
+1. **Research and analyze.** Read the relevant code, configs, and docs. Identify the constraints from the brief, env-context, and existing architecture. If the task requires evaluating technology options, do it with `sa-research` rigor; if it touches a new subsystem, identify integration points.
+2. **Design and document.** Produce the architecture artifacts. Record each significant decision in ADR format (context, options, decision, consequences) in `docs/architecture.md`.
+3. **Validate coherence.** Check the new decisions against existing ones — boundaries clear, interfaces specified, cross-cutting concerns addressed, downstream experts have what they need.
+4. **Verify** the task's acceptance criteria against the artifacts produced before declaring done.
+
 ## Commands
 
-- `/sa-start` — Pick up an architect-scoped issue, load context, execute
+- `/start-task` — Begin a planned issue (loads context, follows the discipline above)
+- `/resume-task` — Resume an in-progress issue
 
 ## Skills (agent-discoverable)
 

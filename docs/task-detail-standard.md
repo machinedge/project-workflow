@@ -50,6 +50,7 @@ convention.
 **Expert:** swe
 **Milestone:** [Milestone name]
 **Status:** backlog
+**Session:**
 **Detail level:** implementation-ready
 
 ## User Story

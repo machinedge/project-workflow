@@ -72,7 +72,7 @@ The rule: **one source, harness-specific wiring is symlinks only.**
 
 ### ADR-013: Milestone workflows + Security Engineer role
 
-**Context:** Each expert skill had to be invoked by hand, one hop at a time — a milestone went from roadmap to shipped only by a human walking it through `sa-design` → `qa-test-plan` → `pm-decompose` → `/swe-start` → `qa-review` → … The user wanted to hand off a whole milestone and have every expert lens applied automatically, producing tasks dense enough for a small model to implement, then implemented and reviewed. Two gaps blocked this: there was no security capability (only incidental "security" bullets inside `qa-review`/`sa-review`), and no orchestration construct or task-detail bar.
+**Context:** Each expert skill had to be invoked by hand, one hop at a time — a milestone went from roadmap to shipped only by a human walking it through `sa-design` → `qa-test-plan` → `pm-decompose` → swe build → `qa-review` → … The user wanted to hand off a whole milestone and have every expert lens applied automatically, producing tasks dense enough for a small model to implement, then implemented and reviewed. Two gaps blocked this: there was no security capability (only incidental "security" bullets inside `qa-review`/`sa-review`), and no orchestration construct or task-detail bar.
 
 **Options considered:**
 - **(A) Portable runbook + Claude Code accelerator** — A `team-` runbook skill (`team-milestone`) that any AGENTS.md harness can follow, reusing the existing expert skills, plus a Claude Code Workflow-tool script (`workflows/milestone.js`) that parallelizes the fan-out phases and drives a small-model implementation loop. New Security Engineer role for the security lens.
@@ -81,7 +81,21 @@ The rule: **one source, harness-specific wiring is symlinks only.**
 
 **Decision:** Option A. The portable `team-milestone` runbook is the harness-neutral source of truth and the executable spec; the Claude Code accelerator is an optional speed layer that implements the same phases with parallel subagents. Human approval gates (foundations, task set, go/no-go) live in the main conversation, so the accelerator runs **one phase per invocation** and returns structured results to the gate — it never tries to pause mid-run. Security becomes a first-class peer expert (`sec` prefix) owning `docs/security-requirements.md` (kickoff) and the `sec-review` gate (close-out), so its constraints are inlined into tasks and enforced at release. Implementation-ready task density is defined once in `docs/task-detail-standard.md` and enforced by a completeness verifier in `pm-decompose`.
 
-**Consequences:** A new expert role, three `sec-*` skills + `sec-start`, the `team-milestone` runbook, `docs/task-detail-standard.md`, and `workflows/milestone.js` ship in the payload. The accelerator lives in `agents/workflows/` and reaches Claude Code through a new `.claude/workflows → ../.agents/workflows` symlink; the installer wires it. Auto-invocation of the review gates lives **inside** the workflow script (which `agent()`s each gate), not in a `settings.json` hook — Claude Code hooks are event-driven shell commands and cannot spawn subagents, and a global review hook would fire on unrelated sessions. Non-Claude harnesses run the runbook sequentially and lose only parallelism. `pm-decompose` gains an implementation-ready mode but its default behavior is unchanged.
+**Consequences:** A new expert role, three `sec-*` skills, a `sec-start` execution command (later folded into the generic `/start-task` — see ADR-014), the `team-milestone` runbook, `docs/task-detail-standard.md`, and `workflows/milestone.js` ship in the payload. The accelerator lives in `agents/workflows/` and reaches Claude Code through a new `.claude/workflows → ../.agents/workflows` symlink; the installer wires it. Auto-invocation of the review gates lives **inside** the workflow script (which `agent()`s each gate), not in a `settings.json` hook — Claude Code hooks are event-driven shell commands and cannot spawn subagents, and a global review hook would fire on unrelated sessions. Non-Claude harnesses run the runbook sequentially and lose only parallelism. `pm-decompose` gains an implementation-ready mode but its default behavior is unchanged.
+
+### ADR-014: Plan-first milestones, a status-bucket lifecycle, and unified execution commands
+
+**Context:** ADR-013 shipped the milestone workflow as **Enrich → Compile → Implement → Review**, with `pm-decompose` creating tasks *inside* Compile (after enrichment) straight into `backlog/`, and implementation reading from `backlog/`. Two problems surfaced in use: (1) the milestone was never *planned* before foundations work was invested — enrichment had no task list to scope itself to, and there was no cheap early gate to adjust scope; and (2) the four status buckets (`backlog/planned/in-progress/done`) were declared but only `backlog` and `done` were used, while the six `*-start` commands (`{swe,qa,sa,sec,pm,ops}-start`) were near-identical except for a role-specific middle that lived *only* in those command files.
+
+**Decision:**
+- **Plan first.** Decompose the milestone into a skeleton task set (`pm-decompose` *standard* mode → `backlog/`) **before** enrichment, behind a new plan-approval gate. Enrichment is scoped by that plan. `pm-decompose` *implementation-ready* mode (the Compile phase) then **densifies the existing backlog tasks in place** and **proposes** a `backlog → planned` promotion subset; the human approves the planned set at a gate, and only approved tasks move to `planned/`. The lifecycle becomes **Plan → Enrich → Compile → Implement → Review** with four gates (plan, foundations, planned-set, go/no-go).
+- **A real status lifecycle.** `backlog → planned → in-progress → done`. Execution reads from `planned/`; each task walks `planned → in-progress → done` (via `move-issue.sh`, keeping the issue's `**Status:**` field in step).
+- **Unified, role-agnostic execution commands.** Replace the six `*-start` commands with a single `/start-task` (pulls only from `planned/`) and `/resume-task` (pulls only from `in-progress/`). They infer the expert from the selected issue's `**Expert:**` field and load that role file. Each role's execution discipline — previously embedded in its start command — moves into its role file (a *Context to load* + *Execution discipline* section), so nothing is lost.
+- **Session stamping.** On pickup, `/start-task` stamps the issue's `**Session:**` field with the working session id via the `${CLAUDE_SESSION_ID}` command-text substitution (the only id source available off a hook). `/resume-task` reconstructs context from the issue, its session summary, and handoffs (documents-as-memory, harness-neutral); on Claude Code it can additionally surface `claude --resume <id>` as a shell convenience.
+
+**Alternatives considered:** keeping six per-expert starts (rejected — duplicated bookends, and the planned/in-progress split would have to be re-stated six times); a single shared command that loads the role dynamically (chosen); a `SessionEnd` hook to auto-stamp the session id (deferred — Claude-Code-only and more moving parts than the substitution).
+
+**Consequences:** Net commands drop from 10 to 6. The role files now carry execution discipline, not just identity. `team-milestone`/`milestone.js` gain a `plan` phase and a gated promotion step; the accelerator's `implement` phase moves tasks through the buckets. The session-id stamp degrades to a no-op (date) on non-Claude harnesses. A `SessionEnd`-hook auto-stamp remains possible future work.
 
 ### ADR-012: Generic AGENTS.md model
 
@@ -258,7 +272,7 @@ The in-scope expert files fall into these categories:
 | Workflow scripts | 1 | `workflows/<name>.js` | Claude Code Workflow tool (named workflow) |
 | Shared protocol | 1 | Absorbed into `AGENTS.md` | N/A |
 
-**Totals:** 6 roles + 10 commands + 25 skills = 41 installed files, plus `AGENTS.md` and the Claude Code `workflows/` accelerator. The sixth role is the Security Engineer (`sec`); the new skills are `sec-requirements`, `sec-review`, `sec-handoff`, and the cross-expert `team-milestone` runbook.
+**Totals:** 6 roles + 6 commands + 25 skills = 37 installed files, plus `AGENTS.md` and the Claude Code `workflows/` accelerator. The six commands are the role-agnostic `/start-task` and `/resume-task` (ADR-014) plus `/pm-interview`, `/pm-add-feature`, `/ops-env-discovery`, and `/ops-deploy`. The sixth role is the Security Engineer (`sec`); the new skills are `sec-requirements`, `sec-review`, `sec-handoff`, and the cross-expert `team-milestone` runbook.
 
 ### AGENTS.md
 
@@ -307,20 +321,21 @@ The command resolves through the `.claude/scripts → ../.agents/scripts` symlin
 
 ### Milestone Workflow (ADR-013)
 
-The `team-milestone` skill runs one roadmap milestone through its full lifecycle, reusing existing expert skills and pausing at three human gates:
+The `team-milestone` skill runs one roadmap milestone through its full lifecycle, reusing existing expert skills and pausing at four human gates (the milestone is **decomposed before it is enriched** — see ADR-014):
 
 | Phase | Reuses | Output | Gate |
 |-------|--------|--------|------|
-| 1. Enrich | `sa-design`, `sec-requirements`, `qa-test-plan`, `ops-pipeline` | architecture, security requirements, test plan, pipeline | **Foundations approval** |
-| 2. Compile | `pm-decompose` (implementation-ready mode) + completeness verifier | dense task issues in `.sdlc/issues/backlog/` | **Task set approval** |
-| 3. Implement | per-task code + tests; verify; retry/escalate | working, tested code | — |
-| 4. Review | `qa-review`, `sa-review`, `sec-review`, `qa-regression` | findings → fix loop / backlog issues | **Go / no-go** |
-| 5. Wrap-up | `pm-postmortem`, handoff skills | postmortem, updated roadmap/brief, closed issues | — |
+| 1. Plan | `pm-decompose` (standard mode) | skeleton task issues in `.sdlc/issues/backlog/` | **Plan approval** |
+| 2. Enrich | `sa-design`, `sec-requirements`, `qa-test-plan`, `ops-pipeline` | architecture, security requirements, test plan, pipeline | **Foundations approval** |
+| 3. Compile | `pm-decompose` (implementation-ready mode) densifies the backlog tasks in place + completeness verifier; proposes promotion | implementation-ready tasks; approved subset moved `backlog → planned` | **Planned-set approval** |
+| 4. Implement | per-task code + tests; verify; retry/escalate; each task walks `planned → in-progress → done` | working, tested code | — |
+| 5. Review | `qa-review`, `sa-review`, `sec-review`, `qa-regression` | findings → fix loop / backlog issues | **Go / no-go** |
+| 6. Wrap-up | `pm-postmortem`, handoff skills | postmortem, updated roadmap/brief, closed issues | — |
 
 Two layers implement the same phases:
 
 - **Portable runbook** — `skills/team-milestone/SKILL.md`. Harness-neutral instructions; runs the phases sequentially in any AGENTS.md harness. It is the source of truth and the spec the accelerator follows.
-- **Claude Code accelerator** — `workflows/milestone.js`, a Workflow-tool script invoked **once per phase** (`args.phase`). It parallelizes the enrich and review fan-outs, verifies tasks adversarially, and drives the Phase-3 implementation loop with a small model (`model: 'haiku'`), escalating on failure. It returns structured results to the main conversation, where the human gate for that phase happens — it never pauses mid-run, because Workflow scripts are non-interactive.
+- **Claude Code accelerator** — `workflows/milestone.js`, a Workflow-tool script invoked **once per phase** (`args.phase`, starting at `plan`). It parallelizes the enrich and review fan-outs, verifies tasks adversarially, and drives the implementation loop with a small model (`model: 'haiku'`) over the approved `planned/` tasks, escalating on failure. It returns structured results to the main conversation, where the human gate for that phase happens — it never pauses mid-run, because Workflow scripts are non-interactive. The `backlog → planned` promotion runs in the conversation after the planned-set gate (the script can't pause mid-run), so the `compile` phase only **proposes** the promotion.
 
 Implementation-ready task density is the contract in `docs/task-detail-standard.md`: exact files, interfaces, test cases, and inlined `SR-NNN` security / architecture constraints — enough for a small model to implement code and tests with no further design. `pm-decompose`'s completeness verifier enforces it.
 

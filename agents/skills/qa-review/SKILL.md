@@ -76,7 +76,7 @@ Skip this section if no env-context exists or if it's not relevant (e.g., pure w
 - Missing documentation where intent isn't obvious from the code
 
 **Architecture Fit**
-- Does this code fit the architecture defined in Phase 3 of `/swe-start`, or did it drift?
+- Does this code fit the architecture the SWE established (its execution discipline and `docs/architecture.md`), or did it drift?
 - Are module boundaries clean, or is there inappropriate coupling?
 - Would this code be easy for the next session to extend or modify?
 
@@ -148,4 +148,4 @@ After creating issue files:
 - If the review found scope drift or incorrect decisions, flag these for the user to update in `docs/project-brief.md`
 - List the created issue filenames so the user has a clear action list
 
-Do not auto-fix the code. This is a review, not a refactoring session. Fixes should happen in a dedicated `/swe-start` session so they go through the full plan, architect, test, implement, verify loop.
+Do not auto-fix the code. This is a review, not a refactoring session. Fixes should happen in a dedicated `/start-task` session on a SWE-scoped issue so they go through the full plan → architect → test → implement → verify loop.

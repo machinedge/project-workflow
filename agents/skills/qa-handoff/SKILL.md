@@ -68,9 +68,10 @@ Add a session summary section to the issue file:
 
 If all acceptance criteria are met:
 1. Run `.agents/scripts/move-issue.sh <filename> done` to move the issue to `.sdlc/issues/done/`.
-2. Run `.agents/scripts/update-issues-list.sh` to regenerate the issues list.
+2. Edit the issue header so `**Status:**` reads `done`.
+3. Run `.agents/scripts/update-issues-list.sh` to regenerate the issues list.
 
-If acceptance criteria are NOT all met, leave the issue file in its current folder and note what remains in the session summary.
+If acceptance criteria are NOT all met, leave the issue file in its current folder (it stays `in-progress`) and note what remains in the session summary so `/resume-task` can pick it up.
 
 ## Step 5: Update the project brief
 

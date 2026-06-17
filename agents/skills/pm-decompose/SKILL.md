@@ -11,8 +11,8 @@ The user may specify which milestone: $ARGUMENTS
 
 This skill runs in one of two detail modes:
 
-- **Standard mode** (default, invoked directly): session-sized tasks with acceptance criteria and referenced file paths, using the templates below.
-- **Implementation-ready mode** (invoked as the *Compile* phase of the `team-milestone` workflow): denser tasks that a small language model can implement — code and tests — with no further design. SA, Security, QA, and DevOps have already enriched the milestone; their outputs are inlined into each task. Use the implementation-ready SWE template and follow the bar in `docs/task-detail-standard.md`, then run the completeness check in Step 4.5.
+- **Standard mode** (default, invoked directly — and the *Plan* phase of the `team-milestone` workflow, which decomposes the milestone **before** it is enriched): session-sized tasks with acceptance criteria and referenced file paths, using the templates below. These are **new** issue files created in `.sdlc/issues/backlog/`. This is the milestone's up-front execution plan; the foundation artifacts don't exist yet, so don't aim for implementation-ready detail.
+- **Implementation-ready mode** (invoked as the *Compile* phase of the `team-milestone` workflow): denser tasks that a small language model can implement — code and tests — with no further design. SA, Security, QA, and DevOps have already enriched the milestone; their outputs are inlined into each task. **The skeleton tasks already exist in `backlog/` from the Plan phase — densify each one in place, reusing its issue number; do not create duplicates.** Use the implementation-ready SWE template and follow the bar in `docs/task-detail-standard.md`, then run the completeness check in Step 4.5 and propose which tasks are ready to promote `backlog → planned` (Step 5).
 
 If you are unsure which mode you're in: you're in implementation-ready mode only when the milestone workflow says so, or when `docs/security-requirements.md` and the enrichment artifacts for this milestone exist and the user asks for implementation-ready tasks.
 
@@ -65,6 +65,7 @@ Create a file like `.sdlc/issues/backlog/swe-feature-001.md`:
 **Expert:** swe
 **Milestone:** [Milestone name]
 **Status:** backlog
+**Session:**
 
 ## User Story
 
@@ -88,7 +89,7 @@ As a [persona], I [need | want | desire] [feature / capability] so that I can [v
 **Out of scope:** [What NOT to do — prevents scope creep]
 ```
 
-**In implementation-ready mode**, use the denser SWE template in `docs/task-detail-standard.md` instead of the one above. It adds *Files to Create or Modify*, *Interfaces and Data Models*, an *Implementation Outline*, a *Test Specification* (explicit input→output cases), and inlined *Security Constraints* (`SR-NNN`) and *Architecture Contracts* drawn from the enrichment artifacts. The goal: a small model can write the code and tests from the task alone, without inventing any design decision.
+**In implementation-ready mode**, you are not creating new files — you are **rewriting the existing skeleton issues in place** (created in the Plan phase) to the denser SWE template in `docs/task-detail-standard.md`. Keep each issue's filename and number; replace its body. The denser template adds *Files to Create or Modify*, *Interfaces and Data Models*, an *Implementation Outline*, a *Test Specification* (explicit input→output cases), and inlined *Security Constraints* (`SR-NNN`) and *Architecture Contracts* drawn from the enrichment artifacts. The goal: a small model can write the code and tests from the task alone, without inventing any design decision.
 
 ### QA tasks
 
@@ -103,6 +104,7 @@ Create a file like `.sdlc/issues/backlog/qa-feature-004.md`:
 **Expert:** qa
 **Milestone:** [Milestone name]
 **Status:** backlog
+**Session:**
 
 ## Description
 
@@ -136,6 +138,7 @@ Create a file like `.sdlc/issues/backlog/devops-feature-005.md`:
 **Expert:** devops
 **Milestone:** [Milestone name]
 **Status:** backlog
+**Session:**
 
 ## Description
 
@@ -160,7 +163,7 @@ Create a file like `.sdlc/issues/backlog/devops-feature-005.md`:
 
 ### Writing good acceptance criteria
 
-Each criterion should be independently verifiable. Write them as checkboxes so they can be checked off during `/swe-start` Phase 6 (Verify).
+Each criterion should be independently verifiable. Write them as checkboxes so they can be checked off during the Verify step of `/start-task`.
 
 Good: "- [ ] Warehouse manager can filter orders by status (pending, shipped, late)"
 Bad: "- [ ] The code works correctly"
@@ -191,9 +194,11 @@ If a task fails any check, enrich it (pull the missing detail from the architect
 
 ## Step 5: Finalize
 
-After creating all issue files:
+After creating (standard mode) or densifying (implementation-ready mode) all issue files:
 
-1. List the created issue files and present them to the user for review.
+1. List the issue files and present them to the user for review.
 2. Run `.agents/scripts/update-issues-list.sh` to regenerate `.sdlc/issues/issues-list.md`.
 3. Update `docs/roadmap.md` to note that the milestone has been decomposed. Log the issue filenames in the roadmap's change log.
 4. Update `docs/project-brief.md` "Current Status" with the first task's issue filename as "Next task."
+
+**In implementation-ready mode (Compile phase), also propose the promotion.** Recommend which tasks are ready to move `backlog → planned` for execution: a task is promotable only if it cleared the completeness check (Step 4.5) **and** every task it depends on is also promotable. Present the proposed *promote* set and the *hold* set (with the reason each is held — failed checklist item, or blocked by a held dependency). **Do not move the files yourself** — promotion is a gated decision. After the user approves, move each approved task with `.agents/scripts/move-issue.sh <file> planned`, set its `**Status:**` to `planned`, and re-run `.agents/scripts/update-issues-list.sh`. Held tasks stay in `backlog/`.
