@@ -7,7 +7,7 @@ Run one roadmap milestone through its full lifecycle. This is a **cross-expert**
 
 The user names the milestone to run: $ARGUMENTS
 
-> **Claude Code:** a multi-agent accelerator exists at `.claude/workflows/milestone.js` that runs the enrichment and review fan-outs in parallel and drives the implementation loop with a small model. Prefer it when available (invoke the Workflow tool with that script). This runbook is the portable, harness-neutral equivalent — and the spec that accelerator implements. On harnesses without the Workflow tool, follow the steps below sequentially.
+> **Claude Code:** a multi-agent accelerator exists at `.claude/workflows/milestone.js` that runs the enrichment and review fan-outs in parallel and drives the implementation loop with a small model. Prefer it when available. Invoke the Workflow tool **once per phase**, passing the milestone id and phase as `args` — either the object form `args: { milestone: 'M1', phase: 'plan' }` or the string form `"M1 plan"` (the named milestone is `$ARGUMENTS`). The phases are `plan → enrich → compile → implement → review`; the human gate for each runs in the conversation between invocations, and the `implement` phase also takes `args.tasks` (the planned/ paths approved at GATE 3). This runbook is the portable, harness-neutral equivalent — and the spec that accelerator implements. On harnesses without the Workflow tool, follow the steps below sequentially.
 
 ## Step 0: Load context and confirm the milestone
 

@@ -1,6 +1,6 @@
 export const meta = {
   name: 'milestone',
-  description: 'Accelerate one phase of the team-milestone lifecycle: up-front decomposition into a milestone plan, parallel cross-expert enrichment, implementation-ready task synthesis + verification with a backlog→planned promotion proposal, small-model implementation from the planned bucket, or parallel close-out reviews. Human approval gates live in the main conversation BETWEEN phase invocations — invoke this once per phase.',
+  description: 'Accelerate one phase of the team-milestone lifecycle: up-front decomposition into a milestone plan, parallel cross-expert enrichment, implementation-ready task synthesis + verification with a backlog→planned promotion proposal, small-model implementation from the planned bucket, or parallel close-out reviews. Human approval gates live in the main conversation BETWEEN phase invocations — invoke this once per phase. REQUIRED: pass args as an object with the explicit milestone id and phase, e.g. args: { milestone: "M1", phase: "plan" }. phase is one of plan|enrich|compile|implement|review (implement also needs args.tasks = the approved planned/ paths). The script does NOT guess — it errors if args.milestone is missing. Resolve and confirm the target milestone from docs/roadmap.md in the conversation BEFORE invoking.',
   phases: [
     { title: 'Plan' },
     { title: 'Enrich' },
@@ -10,7 +10,17 @@ export const meta = {
   ],
 }
 
-// args: { milestone: string, phase: 'plan'|'enrich'|'compile'|'implement'|'review', tasks?: string[] }
+// args may arrive in EITHER shape:
+//   - object form (programmatic, how the main loop chains phases forward):
+//       { milestone: string, phase: 'plan'|'enrich'|'compile'|'implement'|'review', tasks?: string[] }
+//   - string form (slash command, e.g. `/milestone m1` or `/milestone M1 enrich`):
+//       "m1" | "M1 enrich" | "plan m1" — the milestone id plus an optional phase token.
+// normalizeArgs() below collapses both into the object form. The script does NOT guess: if no
+// milestone is resolvable it returns an error rather than silently defaulting to "the next
+// un-started milestone" — that silent default once decomposed the WRONG milestone (M2) when a
+// caller invoked without args. Resolving/confirming the target is the conversation's job
+// (team-milestone Step 0), done BEFORE invoking. The Plan/Compile subagents additionally echo
+// back the milestone they ACTUALLY decomposed (resolvedMilestone) so the human gate can confirm.
 // This is the Claude Code accelerator for agents/skills/team-milestone/SKILL.md (the portable
 // runbook). It runs the parallelizable work of ONE phase and returns structured results to the
 // main loop, where the human gate for that phase happens. Skills are followed by reading their
@@ -27,8 +37,29 @@ export const meta = {
 // The backlog->planned promotion runs in the main conversation AFTER GATE 3 (the script
 // can't pause mid-run), so 'compile' only PROPOSES; 'implement' receives the approved paths.
 
-const milestone = (args && args.milestone) || 'the next un-started milestone in docs/roadmap.md'
-const stage = (args && args.phase) || 'plan'
+const PHASES = ['plan', 'enrich', 'compile', 'implement', 'review']
+function normalizeArgs(a) {
+  if (a && typeof a === 'object' && !Array.isArray(a)) return a
+  if (typeof a === 'string') {
+    const toks = a.trim().split(/\s+/).filter(Boolean)
+    const phase = toks.map(t => t.toLowerCase()).find(t => PHASES.includes(t))
+    const milestone = toks.filter(t => !PHASES.includes(t.toLowerCase())).join(' ')
+    return { milestone: milestone || undefined, phase }
+  }
+  return {}
+}
+const a = normalizeArgs(args)
+const milestone = a.milestone
+const stage = a.phase || 'plan'
+
+// Fail loud, never guess. A missing milestone is the bug that silently decomposed the wrong
+// milestone — refuse to run instead of falling back to "the next un-started" one.
+if (!milestone) {
+  return {
+    error: 'No milestone specified. This workflow does not guess. Invoke the Workflow tool with explicit object args, e.g. args: { milestone: "M1", phase: "plan" }. Valid phases: plan, enrich, compile, implement, review. Resolve and confirm the target milestone from docs/roadmap.md in the conversation first (team-milestone Step 0).',
+  }
+}
+if (!a.phase) log('No phase in args — defaulting to "plan". Pass args.phase (enrich|compile|implement|review) to run a later phase.')
 
 const ENRICH_SCHEMA = {
   type: 'object',
@@ -43,8 +74,9 @@ const ENRICH_SCHEMA = {
 
 const DECOMP_SCHEMA = {
   type: 'object',
-  required: ['tasks'],
+  required: ['resolvedMilestone', 'tasks'],
   properties: {
+    resolvedMilestone: { type: 'string', description: 'the milestone actually decomposed, canonical "M<N> — <title>" from docs/roadmap.md' },
     tasks: {
       type: 'array',
       items: {
@@ -122,12 +154,12 @@ if (stage === 'plan') {
   phase('Plan')
   log(`Planning ${milestone}: decomposing into a skeleton task set (backlog/).`)
   const decomp = await agent(
-    `Run pm-decompose in STANDARD mode for milestone "${milestone}". Read and follow .agents/skills/pm-decompose/SKILL.md (its Modes section — standard mode, the Plan phase of the milestone workflow). Produce the milestone's execution plan: session-sized task issues with acceptance criteria, referenced file paths, and dependency order, created under .sdlc/issues/backlog/. Do NOT attempt implementation-ready detail — the enrichment artifacts (architecture, security requirements, test plan) do not exist yet; they are inlined later in the Compile phase. Return the list of created task files with their dependency order.`,
+    `Run pm-decompose in STANDARD mode for milestone "${milestone}". First read docs/roadmap.md, confirm "${milestone}" matches a real roadmap milestone, and return its canonical "M<N> — <title>" as resolvedMilestone so the human gate can confirm the right target before any work is committed. Read and follow .agents/skills/pm-decompose/SKILL.md (its Modes section — standard mode, the Plan phase of the milestone workflow). Produce the milestone's execution plan: session-sized task issues with acceptance criteria, referenced file paths, and dependency order, created under .sdlc/issues/backlog/. Do NOT attempt implementation-ready detail — the enrichment artifacts (architecture, security requirements, test plan) do not exist yet; they are inlined later in the Compile phase. Return the list of created task files with their dependency order.`,
     { label: 'plan:decompose', phase: 'Plan', schema: DECOMP_SCHEMA }
   )
   return {
     phase: 'plan',
-    milestone,
+    milestone: (decomp && decomp.resolvedMilestone) || milestone,
     tasks: (decomp && decomp.tasks) || [],
     nextGate: 'GATE 1 — present the execution plan (task list + dependency order) for approval before enriching. Adjust scope here, where it is cheap, before investing in foundations.',
   }
@@ -170,7 +202,7 @@ if (stage === 'compile') {
   phase('Compile')
   log(`Compiling ${milestone}: densifying the planned tasks to implementation-ready.`)
   const decomp = await agent(
-    `Run pm-decompose in IMPLEMENTATION-READY mode for milestone "${milestone}". Read and follow .agents/skills/pm-decompose/SKILL.md (its Modes + implementation-ready template) and docs/task-detail-standard.md. The skeleton task issues for this milestone ALREADY EXIST under .sdlc/issues/backlog/ (created in the Plan phase) — DENSIFY EACH ONE IN PLACE to implementation-ready, reusing its already-assigned issue number. Do NOT create new duplicate issues. Inline the architecture contracts, SR-NNN security constraints, and test cases from the enrichment artifacts. Return the list of task files with their dependency order.`,
+    `Run pm-decompose in IMPLEMENTATION-READY mode for milestone "${milestone}". First read docs/roadmap.md, confirm "${milestone}" matches a real roadmap milestone, and return its canonical "M<N> — <title>" as resolvedMilestone so the gate can confirm the right target. Read and follow .agents/skills/pm-decompose/SKILL.md (its Modes + implementation-ready template) and docs/task-detail-standard.md. The skeleton task issues for this milestone ALREADY EXIST under .sdlc/issues/backlog/ (created in the Plan phase) — DENSIFY EACH ONE IN PLACE to implementation-ready, reusing its already-assigned issue number. Do NOT create new duplicate issues. Inline the architecture contracts, SR-NNN security constraints, and test cases from the enrichment artifacts. Return the list of task files with their dependency order.`,
     { label: 'compile:densify', phase: 'Compile', schema: DECOMP_SCHEMA }
   )
   const tasks = (decomp && decomp.tasks) || []
@@ -201,7 +233,7 @@ if (stage === 'compile') {
   }
   return {
     phase: 'compile',
-    milestone,
+    milestone: (decomp && decomp.resolvedMilestone) || milestone,
     tasks,
     verdicts: verdicts.filter(Boolean),
     promote,
@@ -218,7 +250,7 @@ if (stage === 'compile') {
 // ---------------------------------------------------------------------------
 if (stage === 'implement') {
   phase('Implement')
-  const tasks = (args && args.tasks) || []
+  const tasks = a.tasks || []
   if (!tasks.length) {
     return { phase: 'implement', milestone, error: 'Pass args.tasks as the ordered list of approved planned/ task file paths to implement (the set approved at GATE 3).' }
   }
