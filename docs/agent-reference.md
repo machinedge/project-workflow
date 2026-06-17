@@ -1,6 +1,6 @@
 # Agent Reference
 
-This document is for AI coding assistants working **on this repository** — helping to build, modify, or extend expert definitions. It is not operating instructions for deployed experts; those come from each platform's rules/roles at runtime.
+This document is for AI coding assistants working **on this repository** — helping to build, modify, or extend expert definitions. It is not operating instructions for deployed experts; those come from `AGENTS.md` and the role files at runtime.
 
 If you're an AI assistant and someone has asked you to work on this repo, read this first.
 
@@ -8,39 +8,32 @@ If you're an AI assistant and someone has asked you to work on this repo, read t
 
 ### What This Repo Is
 
-This repo defines platform-native AI expert implementations for Cursor and Claude Code. Each expert has a role definition, structured skills, commands, and scripts. The implementations are pre-built and installed to users' projects via direct copy.
+This repo defines a single, harness-neutral set of AI expert implementations. Each expert has a role definition, structured skills, commands, and scripts under `agents/`. The installer copies that one source into a project and wires it up for Claude Code, Codex, and any harness that reads `AGENTS.md`.
 
 ### Key Directories
 
 | Path | Purpose |
 |------|---------|
-| `targets/ide/cursor/` | Cursor platform-native implementation (rules, commands, skills, scripts) |
-| `targets/ide/claude-code/` | Claude Code platform-native implementation (roles, commands, skills, scripts) |
-| `targets/ide/install.sh` | Shared installer — copies platform files to user's project |
+| `agents/` | Single source of truth — `AGENTS.md`, roles, commands, skills, scripts, settings.json |
+| `install.sh` / `install.ps1` | Installer — copies `agents/` into a user's project |
 | `docs/` | Documentation about the repo itself (you're reading one now) |
 
 ### Repo Structure
 
 ```
-targets/ide/
-  install.sh / install.ps1       ← Shared installer
-  cursor/                        ← Cursor implementation
-    README.md
-    rules/                       ← .mdc files with YAML frontmatter
-    commands/                    ← Explicit command files (.md)
-    skills/                      ← Discoverable skill folders (SKILL.md)
-    scripts/                     ← Mechanical shell scripts (.sh + .ps1)
-  claude-code/                   ← Claude Code implementation
-    README.md
-    CLAUDE.md                    ← Shared principles + expert routing
-    settings.json                ← Hook definitions
-    roles/                       ← Expert role files (.md)
-    commands/                    ← Explicit command files (.md)
-    skills/                      ← Discoverable skill folders (SKILL.md)
-    scripts/                     ← Mechanical shell scripts (.sh + .ps1)
+install.sh / install.ps1         ← Installer
+agents/                          ← Single source of truth
+  AGENTS.md                      ← Operating-system file (expert routing + conventions)
+  settings.json                  ← Claude Code SessionStart hook definition
+  roles/                         ← Expert role files (.md)
+  commands/                      ← Explicit command files (.md)
+  skills/                        ← Discoverable skill folders (SKILL.md)
+  scripts/                       ← Mechanical shell scripts (.sh + .ps1)
 docs/                            ← Vision, architecture, guides
-.workflow/                       ← Managed artifacts (handoff notes, issues, lessons log)
+.sdlc/                       ← Managed artifacts (handoff notes, issues, lessons log)
 ```
+
+The installer produces this layout in a project: a top-level `AGENTS.md` (copy), `CLAUDE.md → AGENTS.md` (symlink), `.agents/` (copy of `agents/`), and — unless `--no-claude` — `.claude/{commands,skills,roles,scripts}` symlinks into `.agents/` plus the merged `settings.json` hook.
 
 ### Current Experts
 
@@ -51,29 +44,30 @@ docs/                            ← Vision, architecture, guides
 | QA | `qa-` | Active |
 | DevOps | `ops-` | Active |
 | System Architect | `sa-` | Active |
-| Shared | `team-` | Active (cross-expert) |
+| Security Engineer | `sec-` | Active |
+| Shared | `team-` | Active (cross-expert; `team-status`, `team-milestone`) |
 
 ## How to Work on Expert Definitions
 
 ### Modifying an Existing Expert
 
-1. Read the expert's role definition to understand its identity and protocols:
-   - Cursor: `targets/ide/cursor/rules/<expert>-os.mdc`
-   - Claude Code: `targets/ide/claude-code/roles/<expert>.md`
+1. Read the expert's role definition to understand its identity and protocols: `agents/roles/<expert>.md`
 2. Read the expert's existing skills and commands to understand capabilities
-3. Make changes in **both** platform implementations to keep them aligned
+3. Make the change once in `agents/`
 4. Test by installing into a real project
 
 ### File Types
 
-| Type | Cursor Location | Claude Code Location | Purpose |
-|------|----------------|---------------------|---------|
-| Role/Rule | `rules/<expert>-os.mdc` | `roles/<expert>.md` | Expert identity, session protocols, principles |
-| Command | `commands/<prefix>-<name>.md` | `commands/<prefix>-<name>.md` | Explicit user-invoked workflows (`/start`, `/interview`, etc.) |
-| Skill | `skills/<prefix>-<name>/SKILL.md` | `skills/<prefix>-<name>/SKILL.md` | Agent-discoverable autonomous operations |
-| Script | `scripts/<name>.sh` + `.ps1` | `scripts/<name>.sh` + `.ps1` | Mechanical shell utilities |
+All live under `agents/`:
 
-### Writing a Role/Rule
+| Type | Location | Purpose |
+|------|----------|---------|
+| Role | `roles/<expert>.md` | Expert identity, session protocols, principles |
+| Command | `commands/<name>.md` | Explicit user-invoked workflows. The role-agnostic `start-task`/`resume-task` infer the expert from the issue; others are prefixed (`pm-interview`, `ops-deploy`, …) |
+| Skill | `skills/<prefix>-<name>/SKILL.md` | Agent-discoverable autonomous operations |
+| Script | `scripts/<name>.sh` + `.ps1` | Mechanical shell utilities |
+
+### Writing a Role
 
 The role file defines the expert's identity. It must include:
 
@@ -85,7 +79,7 @@ The role file defines the expert's identity. It must include:
 | **Skills** | Agent-discoverable capabilities with descriptions |
 | **Principles** | Non-negotiable behavioral rules |
 
-Cursor rules use `.mdc` format with YAML frontmatter (`alwaysApply`, `description`). Claude Code roles are plain markdown.
+Role files are plain markdown. `AGENTS.md` holds the always-loaded routing table and shared conventions; expert role files are loaded on demand by prefix.
 
 ### Writing a Skill
 
@@ -105,8 +99,8 @@ The body contains the skill instructions — steps, context loading, output spec
 ### Writing a Command
 
 Commands are plain markdown files. They use `$ARGUMENTS` for user input. Commands are used for workflows that need:
-- Full context loading with approval gates (`/start` commands)
-- Back-and-forth interaction with the user (`/interview`, `/deploy`)
+- Full context loading with approval gates (`/start-task`, `/resume-task`)
+- Back-and-forth interaction with the user (`/pm-interview`, `/ops-deploy`)
 
 ### Adding Scripts
 
@@ -120,28 +114,30 @@ Experts communicate through shared documents and issues:
 |----------|----------|-------------|
 | Project Manager | `docs/project-brief.md` | All experts |
 | Project Manager | `docs/roadmap.md` | All experts |
-| Project Manager | `.workflow/issues/` (task issues) | SWE, QA, DevOps |
+| Project Manager | `.sdlc/issues/` (task issues) | SWE, QA, DevOps |
 | SWE | Code + tests | QA, DevOps |
-| SWE | `.workflow/handoff-notes/swe/session-NN.md` | Project Manager, QA |
+| SWE | `.sdlc/handoff-notes/swe/session-NN.md` | Project Manager, QA |
 | QA | `docs/test-plan.md` | SWE, DevOps |
 | QA | Review issues | SWE, Project Manager |
-| QA | `.workflow/handoff-notes/qa/session-NN.md` | Project Manager, SWE |
+| QA | `.sdlc/handoff-notes/qa/session-NN.md` | Project Manager, SWE |
 | DevOps | `docs/env-context.md` | SWE, QA |
 | DevOps | `docs/release-plan.md` | Project Manager, QA |
-| DevOps | `.workflow/handoff-notes/devops/session-NN.md` | Project Manager |
+| DevOps | `.sdlc/handoff-notes/devops/session-NN.md` | Project Manager |
 | System Architect | `docs/architecture.md` | SWE, QA, DevOps, Project Manager |
-| System Architect | `.workflow/handoff-notes/system-architect/session-NN.md` | Project Manager, SWE |
+| System Architect | `.sdlc/handoff-notes/system-architect/session-NN.md` | Project Manager, SWE |
+| Security Engineer | `docs/security-requirements.md` | SWE, QA, DevOps, Project Manager |
+| Security Engineer | `.sdlc/handoff-notes/security-engineer/session-NN.md` | Project Manager, SWE |
 
 ### In-Repo Issue Tracking
 
-Issues are tracked as files in `.workflow/issues/` within the deployed project. The project manager manages issue lifecycle. Skills that create, read, or close issues reference `.workflow/issues/` rather than any external service.
+Issues are tracked as files in `.sdlc/issues/` within the deployed project. The project manager manages issue lifecycle. Skills that create, read, or close issues reference `.sdlc/issues/` rather than any external service.
 
 ## Common Mistakes When Editing This Repo
 
-**Updating one platform but not the other.** Changes must go into both `targets/ide/cursor/` and `targets/ide/claude-code/`. The implementations should stay aligned.
+**Hardcoding a harness path.** Reference scripts and skills via `.agents/...`, not `.claude/...` or `.cursor/...`. The `.agents/` path resolves for every harness; `.claude/` only exists when Claude wiring is installed.
 
 **Weak skill descriptions.** The `description` field in SKILL.md frontmatter is how the agent discovers the skill. Include both what it does and when to use it.
 
 **Forgetting script companions.** Every `.sh` script needs a `.ps1` companion. They must maintain behavioral parity.
 
-**Referencing external services in skills.** Skills should reference `.workflow/issues/` for task tracking, not GitHub Issues or any other external service. The system is designed to work in disconnected environments.
+**Referencing external services in skills.** Skills should reference `.sdlc/issues/` for task tracking, not GitHub Issues or any other external service. The system is designed to work in disconnected environments.
