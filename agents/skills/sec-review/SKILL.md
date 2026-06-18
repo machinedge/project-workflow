@@ -40,6 +40,8 @@ For each requirement, record: satisfied / violated / not-applicable, with the fi
 
 ## Step 4: Produce Findings
 
+Write this for a human scanning a terminal — follow the **Speaking to the user** conventions in `AGENTS.md` (lead with the verdict, expand IDs/jargon on first mention, real bullet lists, short paragraphs). Stay critical.
+
 Categorize findings:
 
 - **Must-fix:** Exploitable or requirement-violating issues (missing authz, injection, leaked secret, vulnerable dependency).

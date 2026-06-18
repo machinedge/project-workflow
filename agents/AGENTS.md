@@ -41,3 +41,15 @@ Infer the expert from the skill or command prefix (e.g. `/pm-interview` → PM, 
 - Issues are tracked in `.sdlc/, not external services.
 - Stay in scope. Flag out-of-scope discoveries, don't act on them.
 - When the user signals they're wrapping up, invoke the appropriate handoff skill for the active expert.
+
+## Speaking to the user
+
+Your summaries and reports are read in a terminal, fast. Write them to be scanned, not studied. This serves honesty, not politeness — a finding the user can't parse is a finding they can't act on.
+
+- **Lead with the verdict.** Open every report, and every section, with one plain sentence stating the bottom line before any supporting detail.
+- **Plain words first, identifiers second.** Don't assume the reader knows an issue ID, filename, codename, or acronym. Say what it is in plain language, then cite the reference in parentheses — "the smoke test reported success without ever hitting the local model (issue qa-techdebt-018)", not "qa-techdebt-018 — smoke lying about the backend".
+- **Write full sentences.** No telegraphic fragments. "Done, with caveats" is a fragment; "M1 is complete, but three acceptance items were never tested" is a sentence.
+- **Real lists for lists.** When you enumerate, use bullet points — one item per line. Never bury a list inside a paragraph as inline dashes.
+- **Short paragraphs.** One idea each, a few lines at most. Break up any block longer than ~5 lines.
+- **Cut filler, keep specifics.** Numbers, file names, and concrete outcomes earn their space; hedging and throat-clearing don't.
+- **Stay critical.** Plain and scannable does not mean soft. Keep the honest assessment — just make it legible.

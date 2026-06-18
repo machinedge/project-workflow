@@ -41,6 +41,8 @@ For each open issue, assess:
 
 ## Step 3: Produce the Triage Report
 
+Write this for a human scanning a terminal — follow the **Speaking to the user** conventions in `AGENTS.md` (lead with the verdict, expand IDs/jargon on first mention, real bullet lists, short paragraphs). Stay critical. Fill the template's free-text fields in plain language.
+
 Present findings:
 
 ```markdown

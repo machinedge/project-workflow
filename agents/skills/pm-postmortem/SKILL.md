@@ -23,7 +23,7 @@ If the user didn't specify a milestone, determine which one was most recently co
 
 ## Step 2: Perform the post-mortem
 
-Analyze and present:
+Gather the eight areas below, then present them to the user in the scannable layout at the end of this step.
 
 **1. Progress Assessment**
 Is the milestone actually done? Compare what was planned vs. what was delivered. Check the issue files — are all tasks in `.sdlc/issues/done/`? Any still in `backlog/`, `planned/`, or `in-progress/`? Any review findings (`must-fix`, `should-fix`) unresolved?
@@ -62,6 +62,39 @@ Produce an updated `docs/project-brief.md` with current status, all decisions, a
 
 **8. Next Milestone Prep**
 What should the first task of the next milestone be? Any blockers to resolve first? Any open `must-fix` or `should-fix` issues that should be addressed before starting new work? Any QA or DevOps tasks to front-load?
+
+### Presentation layout
+
+Present the post-mortem in this layout. Follow the **Speaking to the user** conventions in `AGENTS.md` — lead each section with its verdict, expand every issue ID and codename on first mention, write full sentences, use real bullets. The *Updated Project Brief* (area 7) is a document action in Step 3, not a presented section. Be critical, not encouraging.
+
+```markdown
+## Postmortem: M<N> — <title>
+**Bottom line:** <one sentence — is it done, and the single most important caveat>
+
+### Is it actually done?
+<one-line status, e.g. "6 of 6 issues done; 3 acceptance items never verified">
+- <plain bullet per gap, jargon expanded>
+
+### Impact on the plan
+- <risks to remaining milestones, scope shifts — plain bullets>
+
+### Decisions to record
+- <each decision made this milestone, and whether it's already in the brief>
+
+### Quality
+- <findings must-fix vs should-fix, resolved vs open; coverage gaps; regression; trend. Note if no QA ran.>
+
+### Delivery
+- <pipeline / deploy / release-gate / rollback notes. Note if no DevOps ran, or N/A.>
+
+### What we learned
+- <what went well / what was harder than expected — plain bullets>
+
+### What to do next
+- <first task of the next milestone; blockers to clear first; open must-fix/should-fix to address>
+```
+
+Section map: *Is it actually done?* = area 1, *Impact on the plan* = area 2, *Decisions to record* = area 3, *Quality* = area 5, *Delivery* = area 6, *What we learned* = area 4, *What to do next* = area 8.
 
 ## Step 3: Update documents
 

@@ -82,6 +82,8 @@ Skip this section if no env-context exists or if it's not relevant (e.g., pure w
 
 ## Step 5: Present Findings
 
+Write this for a human scanning a terminal — follow the **Speaking to the user** conventions in `AGENTS.md` (lead with the verdict, expand IDs/jargon on first mention, real bullet lists, short paragraphs). Stay critical.
+
 Organize your findings into three categories:
 
 ### Must Fix
