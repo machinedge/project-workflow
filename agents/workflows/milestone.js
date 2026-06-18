@@ -1,12 +1,13 @@
 export const meta = {
   name: 'milestone',
-  description: 'Accelerate one phase of the team-milestone lifecycle: up-front decomposition into a milestone plan, parallel cross-expert enrichment, implementation-ready task synthesis + verification with a backlog→planned promotion proposal, small-model implementation from the planned bucket, or parallel close-out reviews. Human approval gates live in the main conversation BETWEEN phase invocations — invoke this once per phase. REQUIRED: pass args as an object with the explicit milestone id and phase, e.g. args: { milestone: "M1", phase: "plan" }. phase is one of plan|enrich|compile|implement|review (implement also needs args.tasks = the approved planned/ paths). The script does NOT guess — it errors if args.milestone is missing. Resolve and confirm the target milestone from docs/roadmap.md in the conversation BEFORE invoking.',
+  description: 'Accelerate one phase of the team-milestone lifecycle: up-front decomposition into a milestone plan, parallel cross-expert enrichment, implementation-ready task synthesis + verification with a backlog→planned promotion proposal, small-model implementation from the planned bucket, parallel close-out reviews, or the closing postmortem. Human approval gates live in the main conversation BETWEEN phase invocations — invoke this once per phase. REQUIRED: pass args as an object with the explicit milestone id and phase, e.g. args: { milestone: "M1", phase: "plan" }. phase is one of plan|enrich|compile|implement|review|postmortem (implement also needs args.tasks = the approved planned/ paths). The script does NOT guess — it errors if args.milestone is missing. Resolve and confirm the target milestone from docs/roadmap.md in the conversation BEFORE invoking.',
   phases: [
     { title: 'Plan' },
     { title: 'Enrich' },
     { title: 'Compile' },
     { title: 'Implement' },
     { title: 'Review' },
+    { title: 'Postmortem' },
   ],
 }
 
@@ -34,10 +35,14 @@ export const meta = {
 //             propose which to promote backlog -> planned                               [GATE 3]
 //   implement read the approved planned/ tasks; each moves planned -> in-progress -> done
 //   review    QA / SA / Security / regression close-out gates                           [GATE 4]
+//   postmortem honest close-out review of the completed milestone (pm-postmortem):
+//             progress / plan-impact / decisions / lessons / quality / delivery; drafts
+//             the updated brief, roadmap, and lessons-log for the final human gate.
 // The backlog->planned promotion runs in the main conversation AFTER GATE 3 (the script
 // can't pause mid-run), so 'compile' only PROPOSES; 'implement' receives the approved paths.
+// 'postmortem' runs AFTER the GATE 4 go decision — never on a milestone with open must-fix.
 
-const PHASES = ['plan', 'enrich', 'compile', 'implement', 'review']
+const PHASES = ['plan', 'enrich', 'compile', 'implement', 'review', 'postmortem']
 function normalizeArgs(a) {
   if (a && typeof a === 'object' && !Array.isArray(a)) return a
   if (typeof a === 'string') {
@@ -142,6 +147,25 @@ const REVIEW_SCHEMA = {
         },
       },
     },
+  },
+}
+
+const POSTMORTEM_SCHEMA = {
+  type: 'object',
+  required: ['resolvedMilestone', 'milestoneComplete', 'summary', 'lessons', 'draftsWritten'],
+  properties: {
+    resolvedMilestone: { type: 'string', description: 'canonical "M<N> — <title>" of the milestone reviewed, from docs/roadmap.md' },
+    milestoneComplete: { type: 'boolean', description: 'true only if all tasks are in done/ AND no must-fix finding is unresolved' },
+    progressAssessment: { type: 'string', description: 'planned vs delivered; tasks still in backlog/planned/in-progress; unresolved findings' },
+    planImpact: { type: 'string', description: 'do remaining milestones change? new risks / scope adjustments' },
+    decisionsAudit: { type: 'array', items: { type: 'string' }, description: 'each decision made across the milestone and whether it is captured in the project brief (note any added)' },
+    lessons: { type: 'array', items: { type: 'string' }, description: 'what went well, what was harder than expected, what to change next milestone' },
+    qualityAssessment: { type: 'string', description: 'review findings must-fix vs should-fix, resolved vs open; test coverage gaps; regression; bugs caught early vs late; trend. Note if no QA ran.' },
+    deliveryAssessment: { type: 'string', description: 'pipeline health, deploy/env issues, release gates, rollbacks. Note if no DevOps ran or N/A.' },
+    openIssues: { type: 'array', items: { type: 'string' }, description: 'unresolved must-fix / should-fix issues to address before new work' },
+    nextMilestonePrep: { type: 'string', description: 'first task of the next milestone; blockers to resolve first; QA/DevOps work to front-load' },
+    draftsWritten: { type: 'array', items: { type: 'string' }, description: 'doc paths drafted for the human gate (project-brief.md, roadmap.md, lessons-log.md)' },
+    summary: { type: 'string', description: 'honest one-paragraph close-out — critical, not cheerleading' },
   },
 }
 
@@ -344,4 +368,29 @@ if (stage === 'review') {
   }
 }
 
-return { error: `Unknown phase "${stage}". Use one of: plan, enrich, compile, implement, review.` }
+// ---------------------------------------------------------------------------
+// Phase 6: Postmortem — honest close-out review of the COMPLETED milestone. Runs
+// after the GATE 4 go decision. A single agent follows pm-postmortem end to end:
+// it reads the full context (brief, roadmap, every expert's handoff notes, the
+// lessons log, the milestone's issues, test/release plans), produces the honest
+// assessment across all pm-postmortem sections, and DRAFTS the updated brief,
+// roadmap, and lessons-log for the final human gate. The script can't pause, so
+// the agent drafts and returns; applying/approving the doc updates is the
+// conversation's job at the postmortem gate.
+// ---------------------------------------------------------------------------
+if (stage === 'postmortem') {
+  phase('Postmortem')
+  log(`Running the close-out postmortem for ${milestone} (pm-postmortem).`)
+  const pm = await agent(
+    `Run the pm-postmortem skill for milestone "${milestone}". First read docs/roadmap.md, confirm "${milestone}" matches a real roadmap milestone, and return its canonical "M<N> — <title>" as resolvedMilestone. Read and follow EVERY step of .agents/skills/pm-postmortem/SKILL.md exactly — capture ALL of it. That means: load the full context it lists (docs/project-brief.md, docs/roadmap.md, ALL handoff notes under every .sdlc/handoff-notes/<expert>/ directory, .sdlc/lessons-log.md, docs/test-plan.md and docs/release-plan.md if they exist, and the milestone's issues across all .sdlc/issues/ subdirectories plus issues-list.md); then perform the post-mortem across all eight sections — Progress Assessment, Plan Impact, Decisions Audit, Lessons Learned, Quality Assessment, Delivery Assessment, Updated Project Brief, and Next Milestone Prep — noting any missing QA/DevOps coverage as a gap. Be critical, not encouraging. You are a NON-INTERACTIVE subagent: do NOT wait for user approval. DRAFT the document updates the skill's Step 3 prescribes — write the updated docs/project-brief.md, update docs/roadmap.md (mark the milestone complete, adjust risks), and append the lessons to .sdlc/lessons-log.md — and list every file you wrote in draftsWritten. Return the full structured assessment.`,
+    { label: 'postmortem:review', phase: 'Postmortem', schema: POSTMORTEM_SCHEMA }
+  )
+  return {
+    phase: 'postmortem',
+    milestone: (pm && pm.resolvedMilestone) || milestone,
+    postmortem: pm,
+    nextGate: 'Postmortem gate — present the honest assessment and the drafted doc updates (project-brief, roadmap, lessons-log) for the user to review and approve. After approval, the docs are the record of the closed milestone; write the expert handoff notes (team-milestone Phase 6, step 4) for the experts that did substantive work.',
+  }
+}
+
+return { error: `Unknown phase "${stage}". Use one of: plan, enrich, compile, implement, review, postmortem.` }

@@ -7,7 +7,7 @@ Run one roadmap milestone through its full lifecycle. This is a **cross-expert**
 
 The user names the milestone to run: $ARGUMENTS
 
-> **Claude Code:** a multi-agent accelerator exists at `.claude/workflows/milestone.js` that runs the enrichment and review fan-outs in parallel and drives the implementation loop with a small model. Prefer it when available. Invoke the Workflow tool **once per phase**, passing the milestone id and phase as `args` — either the object form `args: { milestone: 'M1', phase: 'plan' }` or the string form `"M1 plan"` (the named milestone is `$ARGUMENTS`). The phases are `plan → enrich → compile → implement → review`; the human gate for each runs in the conversation between invocations, and the `implement` phase also takes `args.tasks` (the planned/ paths approved at GATE 3). This runbook is the portable, harness-neutral equivalent — and the spec that accelerator implements. On harnesses without the Workflow tool, follow the steps below sequentially.
+> **Claude Code:** a multi-agent accelerator exists at `.claude/workflows/milestone.js` that runs the enrichment and review fan-outs in parallel and drives the implementation loop with a small model. Prefer it when available. Invoke the Workflow tool **once per phase**, passing the milestone id and phase as `args` — either the object form `args: { milestone: 'M1', phase: 'plan' }` or the string form `"M1 plan"` (the named milestone is `$ARGUMENTS`). The phases are `plan → enrich → compile → implement → review → postmortem`; the human gate for each runs in the conversation between invocations, and the `implement` phase also takes `args.tasks` (the planned/ paths approved at GATE 3). The closing `postmortem` phase runs after the GATE 4 go decision — it drafts the honest close-out assessment and the updated brief/roadmap/lessons-log for the wrap-up gate. This runbook is the portable, harness-neutral equivalent — and the spec that accelerator implements. On harnesses without the Workflow tool, follow the steps below sequentially.
 
 ## Step 0: Load context and confirm the milestone
 
@@ -83,7 +83,7 @@ Present the review verdict: criteria met, open must-fix issues (if any), securit
 
 Once the user gives the go:
 
-1. Run `pm-postmortem` for the milestone (honest assessment, lessons, plan adjustments).
+1. Run `pm-postmortem` for the milestone (honest assessment, lessons, plan adjustments). On Claude Code this is the accelerator's `postmortem` phase, which drafts the assessment and the doc updates for you to review; on a plain harness, run the `pm-postmortem` skill directly.
 2. Update `docs/roadmap.md` (mark the milestone complete) and `docs/project-brief.md` status.
 3. Move completed issues to `.sdlc/issues/done/` (`move-issue.sh`) and regenerate the list (`update-issues-list.sh`).
 4. Write handoff notes for the experts that did substantive work, via their `*-handoff` skills.
