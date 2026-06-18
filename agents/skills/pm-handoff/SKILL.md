@@ -17,6 +17,8 @@ Read the issue file from `.sdlc/issues/` (check `in-progress/`, `planned/`, or `
 
 ## Step 3: Write the handoff note
 
+Write the note following the **Writing clearly** conventions in `AGENTS.md` — expand issue IDs and codenames on first mention, full sentences, real bullet lists, no walls of text. The next session has no memory of this one; make it legible.
+
 Save to `.sdlc/handoff-notes/pm/session-NN.md`:
 
 ```markdown

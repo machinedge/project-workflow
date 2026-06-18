@@ -42,7 +42,7 @@ For each of these, report whether it exists and give a one-line summary if it do
 
 ## Step 5: Produce the status report
 
-Keep the template structure below. Fill its free-text fields (the Workflow Activity summaries and Attention Needed items) following the **Speaking to the user** conventions in `AGENTS.md` — plain language, expand issue IDs and codenames on first mention, one concrete point per bullet.
+Keep the template structure below. Fill its free-text fields (the Workflow Activity summaries and Attention Needed items) following the **Writing clearly** conventions in `AGENTS.md` — plain language, expand issue IDs and codenames on first mention, one concrete point per bullet.
 
 Format:
 

@@ -43,7 +43,7 @@ For each requirement, record: satisfied / violated / not-applicable, with concre
 
 ## Step 4: Produce Findings
 
-Write this for a human scanning a terminal — follow the **Speaking to the user** conventions in `AGENTS.md` (lead with the verdict, expand IDs/jargon on first mention, real bullet lists, short paragraphs). Stay critical.
+Write this for a human scanning a terminal — follow the **Writing clearly** conventions in `AGENTS.md` (lead with the verdict, expand IDs/jargon on first mention, real bullet lists, short paragraphs). Stay critical.
 
 Categorize findings:
 

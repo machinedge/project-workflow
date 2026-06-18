@@ -42,14 +42,14 @@ Infer the expert from the skill or command prefix (e.g. `/pm-interview` → PM, 
 - Stay in scope. Flag out-of-scope discoveries, don't act on them.
 - When the user signals they're wrapping up, invoke the appropriate handoff skill for the active expert.
 
-## Speaking to the user
+## Writing clearly
 
-Your summaries and reports are read in a terminal, fast. Write them to be scanned, not studied. This serves honesty, not politeness — a finding the user can't parse is a finding they can't act on.
+Write to be understood on the first pass. This applies to everything you produce — the summaries and reports you show in the terminal, and the documents and artifacts you author (the brief, roadmap, architecture, security/UX/test specs, issue files, handoff notes). All of it is read fast, usually by someone else or a later session with no memory of this one. Clarity serves honesty, not politeness — a finding or a spec the reader can't parse is one they can't act on.
 
-- **Lead with the verdict.** Open every report, and every section, with one plain sentence stating the bottom line before any supporting detail.
+- **Lead with the verdict.** Open every report, section, and document with one plain sentence stating the bottom line — or, for a reference doc, what it covers — before the supporting detail.
 - **Plain words first, identifiers second.** Don't assume the reader knows an issue ID, filename, codename, or acronym. Say what it is in plain language, then cite the reference in parentheses — "the smoke test reported success without ever hitting the local model (issue qa-techdebt-018)", not "qa-techdebt-018 — smoke lying about the backend".
 - **Write full sentences.** No telegraphic fragments. "Done, with caveats" is a fragment; "M1 is complete, but three acceptance items were never tested" is a sentence.
 - **Real lists for lists.** When you enumerate, use bullet points — one item per line. Never bury a list inside a paragraph as inline dashes.
 - **Short paragraphs.** One idea each, a few lines at most. Break up any block longer than ~5 lines.
-- **Cut filler, keep specifics.** Numbers, file names, and concrete outcomes earn their space; hedging and throat-clearing don't.
+- **Cut filler, keep specifics.** Numbers, file names, and concrete outcomes earn their space; hedging and throat-clearing don't. Clarity is not brevity — where a spec must inline every decision to be complete, completeness wins; just make it legible.
 - **Stay critical.** Plain and scannable does not mean soft. Keep the honest assessment — just make it legible.

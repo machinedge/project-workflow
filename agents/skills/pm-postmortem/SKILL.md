@@ -65,7 +65,7 @@ What should the first task of the next milestone be? Any blockers to resolve fir
 
 ### Presentation layout
 
-Present the post-mortem in this layout. Follow the **Speaking to the user** conventions in `AGENTS.md` — lead each section with its verdict, expand every issue ID and codename on first mention, write full sentences, use real bullets. The *Updated Project Brief* (area 7) is a document action in Step 3, not a presented section. Be critical, not encouraging.
+Present the post-mortem in this layout. Follow the **Writing clearly** conventions in `AGENTS.md` — lead each section with its verdict, expand every issue ID and codename on first mention, write full sentences, use real bullets. The *Updated Project Brief* (area 7) is a document action in Step 3, not a presented section. Be critical, not encouraging.
 
 ```markdown
 ## Postmortem: M<N> — <title>
@@ -97,6 +97,8 @@ Present the post-mortem in this layout. Follow the **Speaking to the user** conv
 Section map: *Is it actually done?* = area 1, *Impact on the plan* = area 2, *Decisions to record* = area 3, *Quality* = area 5, *Delivery* = area 6, *What we learned* = area 4, *What to do next* = area 8.
 
 ## Step 3: Update documents
+
+These are authored artifacts that future sessions read as memory — write the edits following the **Writing clearly** conventions in `AGENTS.md` (plain language, expand IDs/codenames on first mention, real lists, no walls of text), not the dense terminal report you just presented.
 
 After user reviews and approves:
 - Save updated `docs/project-brief.md`
