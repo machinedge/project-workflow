@@ -267,12 +267,12 @@ The in-scope expert files fall into these categories:
 | Role definitions | 6 | `roles/<expert>.md` | Loaded by prefix when expert is identified |
 | Start commands | 6 | `commands/<prefix>-start.md` | Explicit `/prefix-start` |
 | Interactive commands | 4 | `commands/<prefix>-<name>.md` | Explicit `/prefix-name` |
-| Autonomous skills | 19 | `skills/<prefix>-<name>/SKILL.md` | Agent-discovered or explicit `/prefix-name` |
-| Handoff skills | 6 | `skills/<prefix>-handoff/SKILL.md` | Agent-discovered or explicit `/prefix-handoff` |
+| Autonomous skills | 24 | `skills/<prefix>-<name>/SKILL.md` | Agent-discovered or explicit `/prefix-name` |
+| Handoff skills | 8 | `skills/<prefix>-handoff/SKILL.md` | Agent-discovered or explicit `/prefix-handoff` |
 | Workflow scripts | 1 | `workflows/<name>.js` | Claude Code Workflow tool (named workflow) |
 | Shared protocol | 1 | Absorbed into `AGENTS.md` | N/A |
 
-**Totals:** 6 roles + 6 commands + 25 skills = 37 installed files, plus `AGENTS.md` and the Claude Code `workflows/` accelerator. The six commands are the role-agnostic `/start-task` and `/resume-task` (ADR-014) plus `/pm-interview`, `/pm-add-feature`, `/ops-env-discovery`, and `/ops-deploy`. The sixth role is the Security Engineer (`sec`); the new skills are `sec-requirements`, `sec-review`, `sec-handoff`, and the cross-expert `team-milestone` runbook.
+**Totals:** 8 roles + 6 commands + 32 skills = 46 installed files, plus `AGENTS.md` and the Claude Code `workflows/` accelerator. The six commands are the role-agnostic `/start-task` and `/resume-task` (ADR-014) plus `/pm-interview`, `/pm-add-feature`, `/ops-env-discovery`, and `/ops-deploy`. Beyond the original five experts: the sixth role is the Security Engineer (`sec`); the seventh is the UX Designer (`ux`) with `ux-guidelines`, `ux-review`, `ux-handoff`; and the eighth is the Technical Writer (`doc`) with `doc-plan`, `doc-author`, `doc-review`, `doc-handoff`. The Technical Writer is a hybrid advisor+author — it plans documentation (`docs/documentation-plan.md`), writes the accessible guides in `docs/guides/` itself as task execution, and gates the docs close-out review.
 
 ### AGENTS.md
 

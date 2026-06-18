@@ -34,6 +34,7 @@ Produce the foundation artifacts for this milestone, each **scoped to the planne
 - **System Architect** → `sa-design` (scoped to the milestone): component boundaries, interfaces, data flow, contracts → `docs/architecture.md`.
 - **Security** → `sec-requirements`: threat model + verifiable controls (`SR-NNN`) → `docs/security-requirements.md`.
 - **UX Designer** → `ux-guidelines`: user flows, interaction, accessibility, content & CLI ergonomics (`UX-NNN`) → `docs/ux-guidelines.md` (says so and produces a minimal note if the milestone has no user-facing surface).
+- **Technical Writer** → `doc-plan`: audiences (end user / operator / maintainer), the guides this milestone needs, and verifiable documentation requirements (`DOC-NNN`) → `docs/documentation-plan.md` (minimal note if nothing user- or operator-facing changed).
 - **QA** → `qa-test-plan`: test strategy, acceptance criteria, explicit test cases → `docs/test-plan.md`.
 - **DevOps** → `ops-pipeline`: build/test/deploy stages and environment needs.
 
@@ -41,7 +42,7 @@ Each skill has its own user-approval step; honor them. If an upstream artifact a
 
 ### [GATE 2] Foundations approval
 
-Consolidate the foundation artifacts into a short walkthrough (the milestone's "Foundations defined" demo): the architecture slice, the top threats and their controls, the key UX flows and their requirements, the test strategy, and the pipeline. Present it. **Wait for the user to approve the foundations before the tasks are densified.** If they want changes, loop back to the relevant skill.
+Consolidate the foundation artifacts into a short walkthrough (the milestone's "Foundations defined" demo): the architecture slice, the top threats and their controls, the key UX flows and their requirements, the documentation plan (audiences and the guides to write), the test strategy, and the pipeline. Present it. **Wait for the user to approve the foundations before the tasks are densified.** If they want changes, loop back to the relevant skill.
 
 ## Phase 3: Compile (densify the tasks and promote them for execution)
 
@@ -71,6 +72,7 @@ Run the review gates over the milestone's implemented work. On Claude Code these
 - **System Architect** → `sa-review` (conformance to architecture)
 - **Security** → `sec-review` (controls enforced; vuln/authz/secrets/deps)
 - **UX** → `ux-review` (`UX-NNN` conformance; flow completeness; accessibility; consistency; CLI ergonomics)
+- **Technical Writer** → `doc-review` (`DOC-NNN` conformance; guides accurate vs. what shipped, complete, and followable by an unfamiliar reader)
 - **QA** → `qa-regression` (acceptance criteria still pass across the milestone)
 
 Collect all findings. **Must-fix** findings loop back to Phase 4 (implement the fix, re-verify). Other findings become backlog issues via the skills' own issue-filing steps.

@@ -46,6 +46,7 @@ The installer produces this layout in a project: a top-level `AGENTS.md` (copy),
 | System Architect | `sa-` | Active |
 | Security Engineer | `sec-` | Active |
 | UX Designer | `ux-` | Active |
+| Technical Writer | `doc-` | Active |
 | Shared | `team-` | Active (cross-expert; `team-status`, `team-milestone`) |
 
 ## How to Work on Expert Definitions
@@ -130,6 +131,9 @@ Experts communicate through shared documents and issues:
 | Security Engineer | `.sdlc/handoff-notes/security-engineer/session-NN.md` | Project Manager, SWE |
 | UX Designer | `docs/ux-guidelines.md` | SWE, QA, Project Manager |
 | UX Designer | `.sdlc/handoff-notes/ux/session-NN.md` | Project Manager, SWE |
+| Technical Writer | `docs/documentation-plan.md` | Project Manager, QA |
+| Technical Writer | `docs/guides/*.md` | End users, operators, maintainers |
+| Technical Writer | `.sdlc/handoff-notes/doc/session-NN.md` | Project Manager |
 
 ### In-Repo Issue Tracking
 

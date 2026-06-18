@@ -26,7 +26,7 @@ Then open the project in your harness:
 
 ### Experts
 
-Seven experts, each with a defined role and set of skills:
+Eight experts, each with a defined role and set of skills:
 
 | Expert | Prefix | What It Does |
 |--------|--------|-------------|
@@ -37,6 +37,7 @@ Seven experts, each with a defined role and set of skills:
 | **System Architect** | `sa-` | Designs system architecture, researches technical questions, reviews implementation against intent |
 | **Security Engineer** | `sec-` | Defines security requirements and threat models, reviews implementation for vulnerabilities and authz/secrets risk |
 | **UX Designer** | `ux-` | Defines UX guidelines (flows, accessibility, content, CLI ergonomics), reviews implementation for usability and accessibility |
+| **Technical Writer** | `doc-` | Plans documentation, writes accessible user/deployment/maintenance guides for people unfamiliar with the project, reviews docs against what shipped |
 
 A shared `team-` prefix covers cross-expert operations: project health summaries (`team-status`) and the full milestone lifecycle (`team-milestone`).
 
@@ -48,7 +49,7 @@ The toolkit installs three types of files:
 - Execution commands (`/start-task`, `/resume-task`) begin or resume a session with full context loading and approval gates. They are role-agnostic — the expert is inferred from the task issue's `**Expert:**` field. `/start-task` picks up a `planned/` task; `/resume-task` continues an `in-progress/` one.
 - Interactive commands (`/pm-interview`, `/pm-add-feature`, `/ops-deploy`, `/ops-env-discovery`) require back-and-forth with the user.
 
-**Skills** (28) are discoverable by the agent. Each is a `SKILL.md` with a description the agent matches against your intent, invoked autonomously when it recognizes the right context. Skills cover autonomous operations (vision, roadmap, review, decompose, etc.), session handoffs, and the cross-expert `team-milestone` lifecycle. Under Claude Code they also surface in the `/` menu via the `.claude/skills` symlink.
+**Skills** (32) are discoverable by the agent. Each is a `SKILL.md` with a description the agent matches against your intent, invoked autonomously when it recognizes the right context. Skills cover autonomous operations (vision, roadmap, review, decompose, etc.), session handoffs, and the cross-expert `team-milestone` lifecycle. Under Claude Code they also surface in the `/` menu via the `.claude/skills` symlink.
 
 **Scripts** (5) are hidden shell utilities for mechanical operations — issue numbering, file movement, session claiming, issues list regeneration, and atomic project brief updates. Skills call these via shell instead of reimplementing the logic.
 
@@ -66,7 +67,7 @@ docs/
 .sdlc/
   lessons-log.md                # Project-specific gotchas and patterns
   handoff-notes/                # What each expert accomplished per session
-    pm/ swe/ qa/ devops/ system-architect/ security-engineer/ ux/
+    pm/ swe/ qa/ devops/ system-architect/ security-engineer/ ux/ doc/
   issues/
     backlog/ planned/ in-progress/ done/
 ```
@@ -85,11 +86,12 @@ Interview → Brief → Roadmap → Decompose → Execute → Review → Handoff
 4. **QA reviews** the implementation, files bugs if needed
 5. **Security Engineer** sets security requirements and gates the close-out review
 6. **UX Designer** sets UX guidelines and gates the close-out review for usability and accessibility
-7. **DevOps** handles deployment when ready
-7. **System Architect** makes cross-cutting design decisions as needed
-8. **PM runs a postmortem** at milestone boundaries
+7. **Technical Writer** plans the documentation, writes the user/deployment/maintenance guides, and gates the close-out review against what shipped
+8. **DevOps** handles deployment when ready
+9. **System Architect** makes cross-cutting design decisions as needed
+10. **PM runs a postmortem** at milestone boundaries
 
-Or hand off a whole milestone to **`team-milestone`**, which chains these into one gated lifecycle — enrich (SA + Security + QA + DevOps) → compile implementation-ready tasks → implement + verify → close-out review.
+Or hand off a whole milestone to **`team-milestone`**, which chains these into one gated lifecycle — enrich (SA + Security + UX + Technical Writer + QA + DevOps) → compile implementation-ready tasks → implement + verify → close-out review.
 
 ## What Gets Installed
 
@@ -98,9 +100,9 @@ AGENTS.md           # The operating-system file — expert routing + conventions
                     #   Read by Codex and any AGENTS.md-aware harness.
 CLAUDE.md → AGENTS.md   # Symlink, so Claude Code reads the same file.
 .agents/            # The toolkit payload — one generic copy:
-  roles/            #   6 expert role files
+  roles/            #   8 expert role files
   commands/         #   10 explicit command files
-  skills/           #   25 discoverable skill folders (SKILL.md each)
+  skills/           #   32 discoverable skill folders (SKILL.md each)
   scripts/          #   5 shell scripts + PowerShell companions + session-primer.sh
   workflows/        #   Claude Code multi-agent workflow scripts (.js)
 .claude/            # Claude Code wiring (skipped with --no-claude):

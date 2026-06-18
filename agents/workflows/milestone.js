@@ -195,11 +195,12 @@ if (stage === 'plan') {
 // ---------------------------------------------------------------------------
 if (stage === 'enrich') {
   phase('Enrich')
-  log(`Enriching ${milestone} across SA, Security, UX, QA, DevOps (parallel drafts).`)
+  log(`Enriching ${milestone} across SA, Security, UX, Docs, QA, DevOps (parallel drafts).`)
   const lenses = [
     { key: 'architecture', skill: 'sa-design', out: 'docs/architecture.md', focus: 'component boundaries, interfaces, data flow, and contracts for this milestone' },
     { key: 'security', skill: 'sec-requirements', out: 'docs/security-requirements.md', focus: 'a threat model and verifiable security controls (SR-NNN)' },
     { key: 'ux', skill: 'ux-guidelines', out: 'docs/ux-guidelines.md', focus: 'user flows, interaction patterns, accessibility, content/error clarity, and CLI ergonomics (UX-NNN); if the milestone has no user-facing surface, say so and produce a minimal note rather than inventing UI' },
+    { key: 'documentation', skill: 'doc-plan', out: 'docs/documentation-plan.md', focus: 'audiences (end user / operator / maintainer), the guides this milestone needs, and verifiable DOC-NNN requirements written for readers unfamiliar with the project; if the milestone changes nothing a user or operator touches, say so and produce a minimal note rather than inventing docs' },
     { key: 'test', skill: 'qa-test-plan', out: 'docs/test-plan.md', focus: 'test strategy, acceptance criteria, and explicit test cases' },
     { key: 'pipeline', skill: 'ops-pipeline', out: 'the pipeline definition', focus: 'build/test/deploy stages and environment needs' },
   ]
@@ -331,12 +332,13 @@ if (stage === 'implement') {
 // ---------------------------------------------------------------------------
 if (stage === 'review') {
   phase('Review')
-  log(`Running close-out gates for ${milestone} (QA, SA, Security, UX, regression) in parallel.`)
+  log(`Running close-out gates for ${milestone} (QA, SA, Security, UX, Docs, regression) in parallel.`)
   const gates = [
     { key: 'qa', skill: 'qa-review', focus: 'code vs. intent and the test plan' },
     { key: 'architecture', skill: 'sa-review', focus: 'conformance to docs/architecture.md' },
     { key: 'security', skill: 'sec-review', focus: 'security controls enforced; vuln / authz / secrets / dependency risk' },
     { key: 'ux', skill: 'ux-review', focus: 'UX-NNN conformance: flow completeness, accessibility, consistency, content & CLI ergonomics; skip if no user-facing surface' },
+    { key: 'documentation', skill: 'doc-review', focus: 'DOC-NNN conformance: guides accurate vs. what shipped, complete, and followable by an unfamiliar reader; skip if no user/operator surface changed' },
     { key: 'regression', skill: 'qa-regression', focus: 'acceptance criteria still pass across the milestone' },
   ]
   const reviews = await parallel(gates.map(g => () =>
