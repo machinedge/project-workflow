@@ -26,7 +26,7 @@ Then open the project in your harness:
 
 ### Experts
 
-Six experts, each with a defined role and set of skills:
+Seven experts, each with a defined role and set of skills:
 
 | Expert | Prefix | What It Does |
 |--------|--------|-------------|
@@ -36,6 +36,7 @@ Six experts, each with a defined role and set of skills:
 | **DevOps** | `ops-` | Captures environment context, defines pipelines, plans releases, executes deployments |
 | **System Architect** | `sa-` | Designs system architecture, researches technical questions, reviews implementation against intent |
 | **Security Engineer** | `sec-` | Defines security requirements and threat models, reviews implementation for vulnerabilities and authz/secrets risk |
+| **UX Designer** | `ux-` | Defines UX guidelines (flows, accessibility, content, CLI ergonomics), reviews implementation for usability and accessibility |
 
 A shared `team-` prefix covers cross-expert operations: project health summaries (`team-status`) and the full milestone lifecycle (`team-milestone`).
 
@@ -47,7 +48,7 @@ The toolkit installs three types of files:
 - Execution commands (`/start-task`, `/resume-task`) begin or resume a session with full context loading and approval gates. They are role-agnostic — the expert is inferred from the task issue's `**Expert:**` field. `/start-task` picks up a `planned/` task; `/resume-task` continues an `in-progress/` one.
 - Interactive commands (`/pm-interview`, `/pm-add-feature`, `/ops-deploy`, `/ops-env-discovery`) require back-and-forth with the user.
 
-**Skills** (25) are discoverable by the agent. Each is a `SKILL.md` with a description the agent matches against your intent, invoked autonomously when it recognizes the right context. Skills cover autonomous operations (vision, roadmap, review, decompose, etc.), session handoffs, and the cross-expert `team-milestone` lifecycle. Under Claude Code they also surface in the `/` menu via the `.claude/skills` symlink.
+**Skills** (28) are discoverable by the agent. Each is a `SKILL.md` with a description the agent matches against your intent, invoked autonomously when it recognizes the right context. Skills cover autonomous operations (vision, roadmap, review, decompose, etc.), session handoffs, and the cross-expert `team-milestone` lifecycle. Under Claude Code they also surface in the `/` menu via the `.claude/skills` symlink.
 
 **Scripts** (5) are hidden shell utilities for mechanical operations — issue numbering, file movement, session claiming, issues list regeneration, and atomic project brief updates. Skills call these via shell instead of reimplementing the logic.
 
@@ -65,7 +66,7 @@ docs/
 .sdlc/
   lessons-log.md                # Project-specific gotchas and patterns
   handoff-notes/                # What each expert accomplished per session
-    pm/ swe/ qa/ devops/ system-architect/
+    pm/ swe/ qa/ devops/ system-architect/ security-engineer/ ux/
   issues/
     backlog/ planned/ in-progress/ done/
 ```
@@ -83,7 +84,8 @@ Interview → Brief → Roadmap → Decompose → Execute → Review → Handoff
 3. **SWE picks up** a planned issue (`/start-task`), implements with tests, produces a handoff note
 4. **QA reviews** the implementation, files bugs if needed
 5. **Security Engineer** sets security requirements and gates the close-out review
-6. **DevOps** handles deployment when ready
+6. **UX Designer** sets UX guidelines and gates the close-out review for usability and accessibility
+7. **DevOps** handles deployment when ready
 7. **System Architect** makes cross-cutting design decisions as needed
 8. **PM runs a postmortem** at milestone boundaries
 
