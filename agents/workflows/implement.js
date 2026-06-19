@@ -1,5 +1,5 @@
 export const meta = {
-  name: 'implement-milestone',
+  name: 'implement',
   description: 'Accelerate one phase of the team-milestone lifecycle: up-front decomposition into a milestone plan, parallel cross-expert enrichment, implementation-ready task synthesis + verification with a backlog→planned promotion proposal, small-model implementation from the planned bucket, parallel close-out reviews, or the closing postmortem. Human approval gates live in the main conversation BETWEEN phase invocations — invoke this once per phase. REQUIRED: pass args as an object with the explicit milestone id and phase, e.g. args: { milestone: "M1", phase: "plan" }. phase is one of plan|enrich|compile|implement|review|postmortem (implement also needs args.tasks = the approved planned/ paths). The script does NOT guess — it errors if args.milestone is missing. Resolve and confirm the target milestone from docs/roadmap.md in the conversation BEFORE invoking.',
   phases: [
     { title: 'Plan' },

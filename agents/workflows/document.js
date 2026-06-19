@@ -1,5 +1,5 @@
 export const meta = {
-  name: 'create-documentation',
+  name: 'document',
   description: 'Accelerate the documentation lifecycle: plan the guides, author them in parallel, review them across accuracy / not-overstated / readability-per-audience / completeness lenses, then revise to apply the must-fix findings. Human approval gates live in the main conversation BETWEEN phase invocations — invoke this once per phase. Pass args as an object, e.g. args: { scope: "project", phase: "plan" }. scope defaults to "project" (the whole codebase) and may instead be a milestone id (e.g. "M18") or a single topic/guide. phase is one of plan|author|review|revise. The author/review phases also take args.guides = the guide set approved at the plan gate; the revise phase takes args.guides = [{ path, findings }] (the guides with their must-fix findings approved at the review gate).',
   phases: [
     { title: 'Plan' },
