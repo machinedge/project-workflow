@@ -39,7 +39,7 @@ Eight experts, each with a defined role and set of skills:
 | **UX Designer** | `ux-` | Defines UX guidelines (flows, accessibility, content, CLI ergonomics), reviews implementation for usability and accessibility |
 | **Technical Writer** | `doc-` | Plans documentation, writes accessible user/deployment/maintenance guides for people unfamiliar with the project, reviews docs against what shipped |
 
-A shared `team-` prefix covers cross-expert operations: project health summaries (`team-status`) and the full milestone lifecycle (`team-milestone`).
+A shared `team-` prefix covers cross-expert operations: project health summaries (`team-status`), the full milestone lifecycle (`team-milestone`), and the full documentation lifecycle (`team-docs`).
 
 ### Skills, Commands, and Scripts
 
@@ -49,11 +49,11 @@ The toolkit installs three types of files:
 - Execution commands (`/start-task`, `/resume-task`) begin or resume a session with full context loading and approval gates. They are role-agnostic — the expert is inferred from the task issue's `**Expert:**` field. `/start-task` picks up a `planned/` task; `/resume-task` continues an `in-progress/` one.
 - Interactive commands (`/pm-interview`, `/pm-add-feature`, `/ops-deploy`, `/ops-env-discovery`) require back-and-forth with the user.
 
-**Skills** (32) are discoverable by the agent. Each is a `SKILL.md` with a description the agent matches against your intent, invoked autonomously when it recognizes the right context. Skills cover autonomous operations (vision, roadmap, review, decompose, etc.), session handoffs, and the cross-expert `team-milestone` lifecycle. Under Claude Code they also surface in the `/` menu via the `.claude/skills` symlink.
+**Skills** (33) are discoverable by the agent. Each is a `SKILL.md` with a description the agent matches against your intent, invoked autonomously when it recognizes the right context. Skills cover autonomous operations (vision, roadmap, review, decompose, etc.), session handoffs, and the cross-expert `team-milestone` and `team-docs` lifecycles. Under Claude Code they also surface in the `/` menu via the `.claude/skills` symlink.
 
 **Scripts** (5) are hidden shell utilities for mechanical operations — issue numbering, file movement, session claiming, issues list regeneration, and atomic project brief updates. Skills call these via shell instead of reimplementing the logic.
 
-**Workflows** (Claude Code) are multi-agent scripts under `workflows/`. `team-milestone`'s accelerator (`workflows/milestone.js`) runs the milestone's enrich and review phases as parallel subagents and drives a small-model implementation loop. Other harnesses run the portable `team-milestone` runbook sequentially.
+**Workflows** (Claude Code) are multi-agent scripts under `workflows/`. `team-milestone`'s accelerator (`workflows/milestone.js`) runs the milestone's enrich and review phases as parallel subagents and drives a small-model implementation loop. `team-docs`'s accelerator (`workflows/documentation.js`) runs the documentation lifecycle — plan → author → review → revise — authoring guides in parallel and fanning the review out across accuracy, not-overstated, readability-per-audience, and completeness lenses. Other harnesses run the portable `team-milestone` / `team-docs` runbooks sequentially.
 
 ### Documents Are Memory
 
@@ -102,9 +102,9 @@ CLAUDE.md → AGENTS.md   # Symlink, so Claude Code reads the same file.
 .agents/            # The toolkit payload — one generic copy:
   roles/            #   8 expert role files
   commands/         #   10 explicit command files
-  skills/           #   32 discoverable skill folders (SKILL.md each)
+  skills/           #   33 discoverable skill folders (SKILL.md each)
   scripts/          #   5 shell scripts + PowerShell companions + session-primer.sh
-  workflows/        #   Claude Code multi-agent workflow scripts (.js)
+  workflows/        #   2 Claude Code multi-agent workflow scripts (milestone.js, documentation.js)
 .claude/            # Claude Code wiring (skipped with --no-claude):
   commands → ../.agents/commands   # symlink — native /command discovery
   skills   → ../.agents/skills     # symlink — native skill discovery

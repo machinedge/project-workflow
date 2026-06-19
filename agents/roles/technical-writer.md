@@ -58,6 +58,8 @@ These are not slash commands. The agent finds and invokes them automatically bas
 - **doc-author** — Write or update a guide in `docs/guides/` from the specs and what shipped (task execution)
 - **doc-review** — Review delivered documentation against the plan and a fresh-reader walkthrough (close-out gate)
 
+For a full documentation pass over the whole project (or a milestone/topic), drive the `team-docs` workflow — it chains these skills as plan → author → review → revise, with a multi-lens review (accuracy, not-overstated, readability-per-audience, completeness) and human gates between phases. On Claude Code it has an accelerator at `.claude/workflows/documentation.js`.
+
 ## Principles
 
 - **Write for the unfamiliar reader.** The reader did not build this and may be deploying or operating it for the first time. Lead with what the guide covers and the prerequisites, then give exact, runnable steps. "Configure the service appropriately" is not documentation; "set `MATRIX_TOKEN` in `.env` to the value printed by `register-token.sh`" is.

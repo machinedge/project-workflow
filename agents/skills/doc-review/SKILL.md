@@ -32,6 +32,7 @@ State what you're reviewing:
 
 For each guide and each requirement in scope, read as the target reader and check:
 - **Accuracy:** Does the guide match what shipped? Commands, paths, config keys, env vars, and behavior must reflect the real code — not the plan.
+- **Not overstated:** Does the guide claim only what the code actually backs up? Flag any capability, guarantee, maturity, or performance/security claim that the shipped code does not support, and anything aspirational ("fully automated", a feature that isn't built yet) stated as if it already works.
 - **Completeness:** Is every prerequisite, step, and required value present? No silent insider gaps?
 - **Runnability:** Following the steps exactly from the stated starting point, can the reader reach the goal? Walk it where feasible; flag any step that fails or assumes unstated knowledge.
 - **Readability:** Plain words before identifiers, exact specifics, short paragraphs, real lists — does it follow the **Writing clearly** conventions in `AGENTS.md`?

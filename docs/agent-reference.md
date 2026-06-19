@@ -47,7 +47,7 @@ The installer produces this layout in a project: a top-level `AGENTS.md` (copy),
 | Security Engineer | `sec-` | Active |
 | UX Designer | `ux-` | Active |
 | Technical Writer | `doc-` | Active |
-| Shared | `team-` | Active (cross-expert; `team-status`, `team-milestone`) |
+| Shared | `team-` | Active (cross-expert; `team-status`, `team-milestone`, `team-docs`) |
 
 ## How to Work on Expert Definitions
 

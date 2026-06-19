@@ -269,10 +269,10 @@ The in-scope expert files fall into these categories:
 | Interactive commands | 4 | `commands/<prefix>-<name>.md` | Explicit `/prefix-name` |
 | Autonomous skills | 24 | `skills/<prefix>-<name>/SKILL.md` | Agent-discovered or explicit `/prefix-name` |
 | Handoff skills | 8 | `skills/<prefix>-handoff/SKILL.md` | Agent-discovered or explicit `/prefix-handoff` |
-| Workflow scripts | 1 | `workflows/<name>.js` | Claude Code Workflow tool (named workflow) |
+| Workflow scripts | 2 | `workflows/<name>.js` | Claude Code Workflow tool (named workflow) |
 | Shared protocol | 1 | Absorbed into `AGENTS.md` | N/A |
 
-**Totals:** 8 roles + 6 commands + 32 skills = 46 installed files, plus `AGENTS.md` and the Claude Code `workflows/` accelerator. The six commands are the role-agnostic `/start-task` and `/resume-task` (ADR-014) plus `/pm-interview`, `/pm-add-feature`, `/ops-env-discovery`, and `/ops-deploy`. Beyond the original five experts: the sixth role is the Security Engineer (`sec`); the seventh is the UX Designer (`ux`) with `ux-guidelines`, `ux-review`, `ux-handoff`; and the eighth is the Technical Writer (`doc`) with `doc-plan`, `doc-author`, `doc-review`, `doc-handoff`. The Technical Writer is a hybrid advisor+author — it plans documentation (`docs/documentation-plan.md`), writes the accessible guides in `docs/guides/` itself as task execution, and gates the docs close-out review.
+**Totals:** 8 roles + 6 commands + 33 skills = 47 installed files, plus `AGENTS.md` and the two Claude Code `workflows/` accelerators (`milestone.js`, `documentation.js`). The six commands are the role-agnostic `/start-task` and `/resume-task` (ADR-014) plus `/pm-interview`, `/pm-add-feature`, `/ops-env-discovery`, and `/ops-deploy`. Beyond the original five experts: the sixth role is the Security Engineer (`sec`); the seventh is the UX Designer (`ux`) with `ux-guidelines`, `ux-review`, `ux-handoff`; and the eighth is the Technical Writer (`doc`) with `doc-plan`, `doc-author`, `doc-review`, `doc-handoff`. The Technical Writer is a hybrid advisor+author — it plans documentation (`docs/documentation-plan.md`), writes the accessible guides in `docs/guides/` itself as task execution, and gates the docs close-out review.
 
 ### AGENTS.md
 
@@ -338,6 +338,19 @@ Two layers implement the same phases:
 - **Claude Code accelerator** — `workflows/milestone.js`, a Workflow-tool script invoked **once per phase** (`args.phase`, starting at `plan`). It parallelizes the enrich and review fan-outs, verifies tasks adversarially, and drives the implementation loop with a small model (`model: 'haiku'`) over the approved `planned/` tasks, escalating on failure. It returns structured results to the main conversation, where the human gate for that phase happens — it never pauses mid-run, because Workflow scripts are non-interactive. The `backlog → planned` promotion runs in the conversation after the planned-set gate (the script can't pause mid-run), so the `compile` phase only **proposes** the promotion.
 
 Implementation-ready task density is the contract in `docs/task-detail-standard.md`: exact files, interfaces, test cases, and inlined `SR-NNN` security / architecture constraints — enough for a small model to implement code and tests with no further design. `pm-decompose`'s completeness verifier enforces it.
+
+### Documentation Workflow
+
+The `team-docs` skill runs the documentation lifecycle for the whole project (or a milestone / topic), reusing the Technical Writer's skills and pausing at three human gates:
+
+| Phase | Reuses | Output | Gate |
+|-------|--------|--------|------|
+| 1. Plan | `doc-plan` | audiences + guide inventory + `DOC-NNN` in `docs/documentation-plan.md` | **Inventory approval** |
+| 2. Author | `doc-author` (one per guide) | guides written in `docs/guides/`, each self-verified by walking its steps | **Drafts review** |
+| 3. Review | `doc-review` applied per lens | findings grouped by guide (accuracy, not-overstated, readability-per-audience, completeness) | **Findings review** |
+| 4. Revise | `doc-author` (fix mode) | must-fix findings applied; remaining should-fix filed as `doc-` issues | — |
+
+Same two layers as the milestone workflow: the portable runbook is `skills/team-docs/SKILL.md`; the Claude Code accelerator is `workflows/documentation.js`, a Workflow-tool script invoked **once per phase** (`args.scope` defaulting to `project`, `args.phase`). It authors guides in parallel (distinct files, no worktree) and fans the review out across guides × lenses, where the readability lens runs once per audience the guide serves. Like `milestone.js`, it returns structured results to the gate in the main conversation and never pauses mid-run. The "not overstated" lens — flagging any claim the shipped code can't back — is the explicit guard against documentation overselling the system.
 
 ### Install Steps
 

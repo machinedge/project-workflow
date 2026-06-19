@@ -74,14 +74,15 @@ Developers using AI coding assistants who want structured, repeatable workflows 
 | 2026-06-16 | Milestone workflows + Security Engineer role (ADR-013) | Hand off a whole milestone and have every expert lens applied automatically; portable runbook stays harness-neutral, Claude Code accelerator adds parallelism + a small-model build loop; security becomes a first-class gate |
 | 2026-06-17 | Add UX Designer advisor role (`ux`) | No expert evaluated usability or accessibility; UX joins as an advisor (like Security) — owns `docs/ux-guidelines.md`, gates close-out review, and runs as a standing lens in the milestone enrich/review fan-outs (graceful no-op when a milestone has no user-facing surface) |
 | 2026-06-18 | Add Technical Writer role (`doc`) | No expert owned user-facing documentation; the Technical Writer is a hybrid — it plans docs (enrich lens), writes the guides itself as task execution (unlike the pure advisors), and gates the docs review (close-out). Owns `docs/documentation-plan.md` + `docs/guides/`; writes for readers unfamiliar with how to deploy, maintain, or use the project |
+| 2026-06-18 | Add documentation workflow (`team-docs` + `workflows/documentation.js`) | A single doc lens in the milestone flow doesn't produce a full guide set; `team-docs` runs the whole documentation lifecycle (plan → author → review → revise) with a multi-lens review (accuracy, not-overstated, readability-per-audience, completeness) so docs are verified, not just written. Defaults to whole-project scope; mirrors the `team-milestone`/`milestone.js` runbook+accelerator pattern |
 
 ## Current Status
 
 - **Milestones:** M1-M16 complete. M17 (UX Advisor role) and M18 (Technical Writer role) added.
-- **Experts:** PM, SWE, QA, DevOps, System Architect, Security Engineer, UX Designer, Technical Writer — one harness-neutral implementation. 8 roles, 6 commands, 32 skills.
+- **Experts:** PM, SWE, QA, DevOps, System Architect, Security Engineer, UX Designer, Technical Writer — one harness-neutral implementation. 8 roles, 6 commands, 33 skills, 2 workflow accelerators (`milestone.js`, `documentation.js`).
 - **Blockers:** None
 - **Next task:** Verify the milestone lifecycle end-to-end on a real milestone (run `team-milestone` and the `workflows/milestone.js` accelerator against a sample milestone in a consuming project), now including the UX and documentation enrich/review lenses.
-- **Last updated:** Added the Technical Writer role (`doc`) with `doc-plan`, `doc-author`, `doc-review`, `doc-handoff`, wired into the milestone enrich/review fan-outs; it plans and writes accessible guides in `docs/guides/` for readers unfamiliar with the project.
+- **Last updated:** Added the `team-docs` documentation workflow and its Claude Code accelerator (`workflows/documentation.js`) — plan → author → review → revise, with a multi-lens review (accuracy, not-overstated, readability-per-audience, completeness) that verifies the guides, not just writes them. Builds on the Technical Writer role (`doc`) added earlier.
 
 ## Notes for AI
 
