@@ -34,11 +34,11 @@ Look for handoff notes in `.sdlc/handoff-notes/` subdirectories (swe/, qa/, devo
 
 ## Step 4: Check downstream artifacts
 
-For each of these, report whether it exists and give a one-line summary if it does:
-- `docs/env-context.md` — Environment and deployment context (DevOps)
-- `docs/test-plan.md` — Test plan (QA)
-- `docs/release-plan.md` — Release plan (DevOps)
-- `docs/architecture.md` — System architecture (System Architect)
+For each of these, report whether it exists and give a one-line summary if it does. Note: absent specs are *reported* here, not failed on; required-spec fail-loud is enforced in the consuming/authoring skills.
+- `.sdlc/env-context.md` — Environment and deployment context (DevOps)
+- `.sdlc/test-plan.md` — Test plan (QA)
+- `.sdlc/release-plan.md` — Release plan (DevOps)
+- `.sdlc/architecture.md` — System architecture (System Architect)
 
 ## Step 5: Produce the status report
 

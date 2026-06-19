@@ -10,12 +10,10 @@ The user may specify what to review: $ARGUMENTS
 ## Step 1: Load Context
 
 Read these files automatically:
-1. `docs/ux-guidelines.md` — the requirements to evaluate against (your checklist)
+1. `.sdlc/ux-guidelines.md` — the requirements to evaluate against (your checklist). If this milestone produced a `ux-guidelines.md` (the milestone has a UX surface) but it is absent at `.sdlc/`, this is a documented no-op for a no-UX-surface milestone (proceed without it — not an error). If the milestone has a UX surface and the file is absent, STOP and report: "ux-guidelines.md not found at .sdlc/ux-guidelines.md. Produce it with ux-guidelines, or run migrate-sdlc for an existing project."
 2. `docs/project-brief.md` — who the users are, constraints, the kind of surface
-3. `docs/architecture.md` (if it exists) — which components present a surface
+3. `.sdlc/architecture.md` — Read this file. If it is absent, STOP and report: "architecture.md not found at .sdlc/architecture.md. Produce it with sa-design, or run migrate-sdlc for an existing project." Do not proceed with the task — architecture is required for any implementation milestone. Which components present a surface.
 4. Recent SWE handoff notes in `.sdlc/handoff-notes/swe/` — what was built and changed
-
-If `docs/ux-guidelines.md` doesn't exist, tell the user: "No UX guidelines exist yet. Ask for the `ux-guidelines` skill first to establish the bar, or this review will have no baseline to evaluate against." You may still do a best-effort review from standard heuristics (Nielsen, WCAG), but say so.
 
 If the milestone has no user-facing surface, say so and stop — there is nothing to review.
 

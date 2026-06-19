@@ -1,6 +1,6 @@
 # Overview: What This Toolkit Is
 
-MachinEdge Expert Teams is a toolkit you install into a software project so that an AI coding assistant works as a coordinated team of specialists — a project manager, an engineer, a reviewer, and others — instead of a single general-purpose chatbot. This page is the big-picture orientation for anyone who has never seen the project. You can read it in one pass, before any other document. When you want the decision-level detail behind a claim here, follow the link to the architecture document (`docs/architecture.md`).
+MachinEdge Expert Teams is a toolkit you install into a software project so that an AI coding assistant works as a coordinated team of specialists — a project manager, an engineer, a reviewer, and others — instead of a single general-purpose chatbot. This page is the big-picture orientation for anyone who has never seen the project. You can read it in one pass, before any other document. When you want the decision-level detail behind a claim here, follow the link to the architecture document (`.sdlc/architecture.md`).
 
 ## The one-paragraph version
 
@@ -64,10 +64,10 @@ Each workflow works as a portable runbook in any `AGENTS.md` harness, run step b
 
 Because documents are memory, it matters where each document lives. The toolkit splits project state into two top-level folders.
 
-- **`docs/`** holds the documents meant for humans to read and edit — the durable planning artifacts. The project brief (`docs/project-brief.md`), the roadmap (`docs/roadmap.md`), the architecture (`docs/architecture.md`), the test plan, and the user-facing guides under `docs/guides/` all live here.
-- **`.sdlc/`** holds the working artifacts the AI manages session to session — noisy for a human browsing the tree, so they are tucked into a dot-folder. This is where issue files (`.sdlc/issues/`), handoff notes (`.sdlc/handoff-notes/`), and the lessons log (`.sdlc/lessons-log.md`) live.
+- **`docs/`** holds only the user-facing material — what a human reads to understand the project. The project brief (`docs/project-brief.md`), the roadmap (`docs/roadmap.md`), and the guides under `docs/guides/` all live here.
+- **`.sdlc/`** holds everything the experts author and manage session to session — both their detailed specs and their working artifacts. This is where the architecture (`.sdlc/architecture.md`), the test plan (`.sdlc/test-plan.md`), the security requirements and UX guidelines, issue files (`.sdlc/issues/`), handoff notes (`.sdlc/handoff-notes/`), and the lessons log (`.sdlc/lessons-log.md`) live.
 
-A simple rule of thumb: if it is something you would put in front of a stakeholder, it is in `docs/`; if it is the team's internal scratch and tracking, it is in `.sdlc/`.
+A simple rule of thumb: if it is something you would put in front of a stakeholder to understand the project, it is in `docs/`; if it is the experts' own specs, scratch, and tracking, it is in `.sdlc/`.
 
 Issue files move through four status folders as work progresses: `.sdlc/issues/backlog/` (broken down, not yet committed), `.sdlc/issues/planned/` (approved to work on), `.sdlc/issues/in-progress/` (being worked now), and `.sdlc/issues/done/`. The `/start-task` command picks up work only from `planned/`; `/resume-task` continues only what is already `in-progress/`.
 
@@ -84,12 +84,12 @@ Installing is a copy operation. The installer (`install.sh` on macOS or Linux, `
 
 To extend the toolkit — say, to change how an expert behaves — you edit the source under `agents/` in this repo and re-install. You never edit the installed copy in a consuming project as the way to make a lasting change, because the next install would overwrite it.
 
-The architecture document (`docs/architecture.md`) covers the reasoning behind this single-source model, the symlink wiring, and the exact install steps.
+The architecture document (`.sdlc/architecture.md`) covers the reasoning behind this single-source model, the symlink wiring, and the exact install steps.
 
 ## Where to go next
 
 - To install the toolkit and reach a first productive session, read the getting-started guide (`docs/guides/getting-started.md`).
-- For the design decisions behind everything above, read the architecture document (`docs/architecture.md`).
+- For the design decisions behind everything above, read the architecture document (`.sdlc/architecture.md`).
 - For the exhaustive contracts (which document each expert produces, file-type rules), read the agent reference (`docs/agent-reference.md`).
 
 - For the day-to-day commands and the order of operations, read the usage guide (`docs/guides/usage.md`).

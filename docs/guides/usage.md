@@ -115,6 +115,26 @@ On harnesses without the Workflow tool (Codex and others), the same lifecycles r
 
 Day to day you do not need any of these filenames: ask for the workflow in plain language, or invoke `implement` or `document` by name. (Maintainer footnote: some prose elsewhere in the repo still calls these accelerators by their old names, `milestone.js` and `documentation.js`; the files that actually ship are `implement.js` and `document.js`.)
 
+## Migrating an existing project to use the new .sdlc/ layout
+
+If you have an existing project with specs in `docs/` (such as `docs/architecture.md`, `docs/test-plan.md`, `docs/security-requirements.md`, and spec subfolders like `docs/research/`), and you want to adopt the new `.sdlc/` layout, run the migration workflow:
+
+**On bash/macOS/Linux:**
+```bash
+.agents/scripts/migrate-sdlc.sh
+```
+
+**On PowerShell/Windows:**
+```powershell
+.\.agents\scripts\migrate-sdlc.ps1
+```
+
+The workflow relocates your canonical spec files from `docs/` into `.sdlc/` — including files like `architecture.md`, `pipeline.md`, `components.md`, `documentation-plan.md`, `test-plan.md`, `security-requirements.md`, `ux-guidelines.md`, `task-detail-standard.md`, `env-context.md`, and `release-plan.md`, plus any draft versions (e.g., `architecture.m19-draft.md`) and the spec subfolders (`research/`, `security/`, `runbooks/`).
+
+User-facing files stay in `docs/` — your `docs/guides/`, `README.md`, `project-brief.md`, `roadmap.md`, and any files you created are left untouched.
+
+The workflow is **idempotent**: you can run it multiple times safely. A second run finds nothing to move and exits cleanly. It is also **collision-safe**: if a spec already exists at the `.sdlc/` destination, the workflow reports the collision by name and leaves both files in place so you can resolve it manually — it will never silently overwrite or discard your work.
+
 ## Troubleshooting
 
 - **`/start-task` says no tasks are eligible.** The `planned/` bucket is empty. Promote work from `backlog/` to `planned/` first — that is a PM decision (or the `team-milestone` planned-set gate). `/start-task` will not pull from `backlog/`.
@@ -122,3 +142,4 @@ Day to day you do not need any of these filenames: ask for the workflow in plain
 - **A skill you expected to run did not.** Skills are matched by intent, not name. Describe the outcome you want more concretely ("generate the project brief from the interview notes"), or, under Claude Code, type the skill from the `/` menu directly.
 - **A command does not appear in the `/` menu.** Slash-command discovery requires the Claude wiring, which is skipped when the toolkit is installed with `--no-claude`. On a `--no-claude` (Codex) install, ask for the workflow in plain language instead.
 - **The Workflow tool cannot find `implement` or `document`.** You are on a harness without the Workflow tool, or the `.claude/workflows` symlink was not installed. Fall back to the sequential runbook in the workflow's `SKILL.md` under `.agents/skills/`.
+- **The migration script says "COLLISION"**. A spec file already exists at both `docs/` and `.sdlc/` locations. The workflow leaves both in place. Inspect the files to see which one is newer or more complete, delete or merge them as needed, then re-run the migration script.

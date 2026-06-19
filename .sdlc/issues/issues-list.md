@@ -88,3 +88,26 @@
 | doc-techdebt-084 | TECHDEBT: README overstates command count as 10; actual is 6 | doc | techdebt |  | — | backlog |
 | doc-techdebt-085 | TECHDEBT: Handoff-note path mismatch: AGENTS.md says .sdlc/notes/, skills write .sdlc/handoff-notes/ | doc | techdebt |  | — | backlog |
 | doc-techdebt-086 | TECHDEBT: CONTRIBUTING.md references a non-existent /swe-start command | doc | techdebt |  | — | backlog |
+| pm-feature-087 | FEATURE: Enable readers to dig deeper than the user-facing documentation | pm | feature |  | — | backlog |
+| swe-feature-088 | Repoint spec skills' authoring and consume paths from docs/ to .sdlc/ | swe | feature | [SDLC Boundary] | none | done |
+| swe-feature-089 | Repoint role files, AGENTS.md conventions, and brief convention to .sdlc/ | swe | feature | [SDLC Boundary] | none | done |
+| swe-feature-090 | Repoint team-* runbooks, ops/start commands, and the two workflow accelerators to .sdlc/ | swe | feature | [SDLC Boundary] | none | done |
+| swe-feature-091 | Make spec consumers fail loudly when a spec is missing at the new .sdlc/ path | swe | feature | [SDLC Boundary] | swe-feature-088, swe-feature-089, swe-feature-090 — **HARD blocker, this task is last in the SWE repoint chain.** The paths must already be repointed to `.sdlc/` before the fail-loud behavior is layered on the same consume steps. By the time 091 runs, the consume steps already say `.sdlc/<spec>.md``); 091 only adds the fail-loud directive and removes that soft suffix on required specs — it does **not** repoint `docs/ → .sdlc/`. If a consume step still shows `docs/<spec>.md`, an upstream task has not landed: report it, do not repoint it here. Downstream of 091: swe-feature-093 and qa-feature-094. | done |
+| swe-feature-092 | Update installer to stop seeding specs into docs/ and create .sdlc/ spec locations | swe | feature | [SDLC Boundary] | none | done |
+| swe-feature-093 | Add migrate-sdlc workflow that relocates an existing project's specs docs/ → .sdlc/ | swe | feature | [SDLC Boundary] | swe-feature-088, swe-feature-089, swe-feature-090, swe-feature-091, swe-feature-092 | done |
+| qa-feature-094 | QA: Grep audit and end-to-end verification of the SDLC boundary | qa | feature | [SDLC Boundary] | — | done |
+| swe-bug-095 | BUG: Skill files were left pointing at docs/ after the SDLC-boundary migration | swe | bug | [SDLC Boundary] | — | done |
+| swe-bug-096 | BUG: migrate-sdlc moves ANY docs/*-draft.md, including user files — SR-003 / architecture draft-glob contract violation | swe | bug |  | — | done |
+| swe-techdebt-097 | TECHDEBT: No M19 test plan exists; the QA verification issue references paths and procedures that are not present | swe | techdebt |  | — | done |
+| swe-techdebt-098 | TECHDEBT: Claimed verification artifact test-sdlc-boundary.sh does not exist in the repo | swe | techdebt |  | — | done |
+| swe-techdebt-099 | TECHDEBT: M19 deliverables are entirely uncommitted; roadmap has no M19 row | swe | techdebt |  | — | done |
+| swe-techdebt-100 | TECHDEBT: migrate-sdlc draft glob is broader than the architecture's canonical inventory specifies | swe | techdebt |  | — | done |
+| swe-bug-101 | BUG: Migration draft glob is over-broad — relocates user-owned files it does not own (SR-003 / T-002 violation) | swe | bug |  | — | done |
+| swe-bug-102 | BUG: docs/security/ subfolder is migrated wholesale, capturing any user content under that name (SR-003 edge / T-002) | swe | bug |  | — | backlog |
+| swe-bug-103 | BUG: migrate-sdlc move-lines violate UX-007: absolute paths + ASCII arrow instead of the installer's `docs/X → .sdlc/X` convention | swe | bug |  | — | done |
+| swe-bug-104 | BUG: Collision run prints the contradictory line `Already clean — no specs to migrate.` (UX-009 / UX-011 clarity) | swe | bug |  | — | done |
+| swe-bug-105 | BUG: No explicit closing verification summary on success (UX-011) | swe | bug |  | — | done |
+| swe-bug-106 | BUG: Installer migration output is inconsistent across bash and PowerShell (UX-006) | swe | bug |  | — | done |
+| swe-bug-107 | BUG: overview.md links readers to docs/architecture.md, which no longer exists after M19 moved it to .sdlc/architecture.md (DOC-011, DOC-015) | swe | bug |  | — | done |
+| swe-bug-108 | BUG: overview.md 'Where state lives' describes the docs/ vs .sdlc/ boundary backwards (DOC-010, DOC-011) | swe | bug |  | — | done |
+| swe-bug-109 | BUG: contributing.md install-output example shows 'Scripts: 11 files'; the installer now prints 13 after M19 added the migrate-sdlc pair (DOC-012, DOC-015) | swe | bug |  | — | done |

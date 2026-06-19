@@ -34,7 +34,7 @@ Save to `.sdlc/handoff-notes/devops/session-NN.md`:
 - [ ] [Criterion not yet met — explain why]
 
 ## Environment Changes
-[What changed in the environment? Update `docs/env-context.md` if not already done.]
+[What changed in the environment? Update `.sdlc/env-context.md` if not already done.]
 
 ## Decisions Made This Session
 | Decision | Reasoning |

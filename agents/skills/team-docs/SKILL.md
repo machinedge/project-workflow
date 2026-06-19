@@ -11,7 +11,7 @@ The user names the scope to document: $ARGUMENTS (defaults to the whole project;
 
 ## Step 0: Resolve the scope
 
-Read `docs/project-brief.md` and, if it exists, `docs/documentation-plan.md`. Determine what to document:
+Read `docs/project-brief.md` and, when present, `.sdlc/documentation-plan.md`. Determine what to document:
 - **project** (default) — the whole codebase: how to deploy, maintain, and use it.
 - a **milestone id** (e.g. `M18`) — the docs for that milestone's changes.
 - a **topic / guide** (e.g. "deployment guide") — a single guide.
@@ -22,7 +22,7 @@ Restate the scope and the likely audiences (end user / developer / maintainer / 
 
 ## Phase 1: Plan (audiences + guide inventory)
 
-Run `doc-plan` scoped to the resolved scope. It reads the brief, the expert specs (`docs/architecture.md`, `docs/ux-guidelines.md`, `docs/env-context.md`, `docs/release-plan.md` — whichever exist), and the shipped code, then produces or extends `docs/documentation-plan.md` with the audiences, the guide inventory under `docs/guides/`, and verifiable `DOC-NNN` requirements.
+Run `doc-plan` scoped to the resolved scope. It reads the brief, the expert specs (`.sdlc/architecture.md`, `.sdlc/ux-guidelines.md`, `.sdlc/env-context.md`, `.sdlc/release-plan.md` — whichever exist) using gather-what-exists reads (soft, not fail-loud), and the shipped code, then produces or extends `.sdlc/documentation-plan.md` with the audiences, the guide inventory under `docs/guides/`, and verifiable `DOC-NNN` requirements. Note: fail-loud for required specs is enforced in the delegated doc-plan and doc-review skills, not here.
 
 ### [GATE 1] Guide inventory approval
 

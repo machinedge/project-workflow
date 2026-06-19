@@ -30,7 +30,7 @@ Save to `.sdlc/handoff-notes/security-engineer/session-NN.md`:
 [2-3 sentences. Requirements produced? Review performed? Scope?]
 
 ## Security Posture Summary
-- **Requirements defined / updated:** [count or "n/a"] (`docs/security-requirements.md`)
+- **Requirements defined / updated:** [count or "n/a"] (`.sdlc/security-requirements.md`)
 - **Must-fix:** [count] issues
 - **Should-fix:** [count] issues
 - **Observations:** [count]

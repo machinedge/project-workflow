@@ -25,7 +25,7 @@ export const meta = {
 // return — they never wait for user approval.
 //
 // Phase order:
-//   plan    doc-plan -> docs/documentation-plan.md (audiences, guide inventory, DOC-NNN)   [GATE 1]
+//   plan    doc-plan -> .sdlc/documentation-plan.md (audiences, guide inventory, DOC-NNN)   [GATE 1]
 //   author  one doc-author per approved guide -> docs/guides/*.md (parallel, distinct files)[GATE 2]
 //   review  guides x lenses fan-out (accuracy / overclaiming / completeness / readability), [GATE 3]
 //           returns findings grouped by guide; must-fix block
@@ -121,14 +121,14 @@ const REVIEW_SCHEMA = {
 }
 
 // ---------------------------------------------------------------------------
-// Phase 1: Plan — produce/extend docs/documentation-plan.md (audiences, guide
+// Phase 1: Plan — produce/extend .sdlc/documentation-plan.md (audiences, guide
 // inventory, DOC-NNN) scoped to `scope`. Proposes the guide set for GATE 1.
 // ---------------------------------------------------------------------------
 if (stage === 'plan') {
   phase('Plan')
   log(`Planning documentation for scope "${scope}": audiences, guide inventory, and DOC-NNN.`)
   const plan = await agent(
-    `You are planning the documentation for scope "${scope}" (this is the whole project unless the scope names a milestone or a single topic). Read and follow .agents/skills/doc-plan/SKILL.md. Read docs/project-brief.md, docs/architecture.md, docs/ux-guidelines.md, docs/env-context.md, docs/release-plan.md (whichever exist) and the actual code/commands so the plan reflects what shipped. Produce or extend docs/documentation-plan.md with the audiences (end user / developer / maintainer / operator as applicable), the inventory of guides under docs/guides/ that this scope needs, and verifiable DOC-NNN requirements written for readers unfamiliar with the project. You are a non-interactive subagent: do NOT wait for user approval — write the plan file and RETURN the audiences and the guide inventory (each guide with its path, audience(s), summary, and DOC-NNN ids) for the human gate.`,
+    `You are planning the documentation for scope "${scope}" (this is the whole project unless the scope names a milestone or a single topic). Read and follow .agents/skills/doc-plan/SKILL.md. Read docs/project-brief.md, .sdlc/architecture.md, .sdlc/ux-guidelines.md, .sdlc/env-context.md, .sdlc/release-plan.md (whichever exist) and the actual code/commands so the plan reflects what shipped. Produce or extend .sdlc/documentation-plan.md with the audiences (end user / developer / maintainer / operator as applicable), the inventory of guides under docs/guides/ that this scope needs, and verifiable DOC-NNN requirements written for readers unfamiliar with the project. You are a non-interactive subagent: do NOT wait for user approval — write the plan file and RETURN the audiences and the guide inventory (each guide with its path, audience(s), summary, and DOC-NNN ids) for the human gate.`,
     { label: 'plan:doc-plan', phase: 'Plan', schema: DOCPLAN_SCHEMA }
   )
   return {
@@ -152,7 +152,7 @@ if (stage === 'author') {
   log(`Authoring ${guides.length} guide(s) in parallel from the specs and the shipped code.`)
   const results = await parallel(guides.map(g => () =>
     agent(
-      `You are authoring one documentation guide for scope "${scope}". Read and follow .agents/skills/doc-author/SKILL.md. The guide to write or update is ${g.path}${g.summary ? ` — it covers: ${g.summary}` : ''}${g.audiences ? ` (audience: ${[].concat(g.audiences).join(', ')})` : ''}. Read docs/documentation-plan.md for its DOC-NNN requirements, read the relevant expert specs (docs/architecture.md, docs/ux-guidelines.md, docs/env-context.md, docs/release-plan.md) and the ACTUAL shipped code/commands, then write the guide for a reader unfamiliar with the project — exact commands, paths, and example values, following the "Writing clearly" conventions in AGENTS.md. Self-verify by walking every step/command as the target reader; fix anything that fails or assumes insider knowledge. You are a non-interactive subagent: do NOT wait for user approval. RETURN the path, a summary, whether you verified it by walking it, and any steps you could not verify.`,
+      `You are authoring one documentation guide for scope "${scope}". Read and follow .agents/skills/doc-author/SKILL.md. The guide to write or update is ${g.path}${g.summary ? ` — it covers: ${g.summary}` : ''}${g.audiences ? ` (audience: ${[].concat(g.audiences).join(', ')})` : ''}. Read .sdlc/documentation-plan.md for its DOC-NNN requirements; if this scope has a docs surface (a documentation plan was produced) but .sdlc/documentation-plan.md is absent, STOP and report: "documentation-plan.md not found at .sdlc/documentation-plan.md. Produce it with doc-plan, or run migrate-sdlc for an existing project." (if this scope legitimately has no docs surface, that is a documented no-op — but you were handed a guide to author, so the plan is required). Then read the relevant expert specs (.sdlc/architecture.md, .sdlc/ux-guidelines.md, .sdlc/env-context.md, .sdlc/release-plan.md) and the ACTUAL shipped code/commands, then write the guide for a reader unfamiliar with the project — exact commands, paths, and example values, following the "Writing clearly" conventions in AGENTS.md. Self-verify by walking every step/command as the target reader; fix anything that fails or assumes insider knowledge. You are a non-interactive subagent: do NOT wait for user approval. RETURN the path, a summary, whether you verified it by walking it, and any steps you could not verify.`,
       { label: `author:${g.path}`, phase: 'Author', schema: AUTHOR_SCHEMA }
     )
   ))
@@ -182,7 +182,7 @@ if (stage === 'review') {
     const audiences = (g.audiences && [].concat(g.audiences)) || (g.audience ? [g.audience] : ['end user', 'developer', 'maintainer'])
     jobs.push({ path, lens: 'accuracy', focus: 'every command, path, config key, and behavior in the guide matches the REAL shipped code — not the plan; flag anything wrong, stale, or unverifiable, with the exact location' })
     jobs.push({ path, lens: 'overclaiming', focus: 'flag any capability, guarantee, maturity, or performance/security claim the code does NOT back up; nothing aspirational may be stated as if it already works' })
-    jobs.push({ path, lens: 'completeness', focus: 'every DOC-NNN requirement for this guide (see docs/documentation-plan.md) is delivered, with no missing prerequisite or step' })
+    jobs.push({ path, lens: 'completeness', focus: 'every DOC-NNN requirement for this guide (see .sdlc/documentation-plan.md) is delivered, with no missing prerequisite or step. Read .sdlc/documentation-plan.md; if it is absent, STOP and report: "documentation-plan.md not found at .sdlc/documentation-plan.md. Produce it with doc-plan, or run migrate-sdlc for an existing project." — without the plan there are no DOC-NNN requirements to check completeness against' })
     for (const aud of audiences) {
       jobs.push({ path, lens: `readability:${aud}`, focus: `read the guide as a ${aud} with NO insider knowledge — is every step followable and the whole thing digestible from that seat? Flag jargon, gaps, and assumed context that would stall this reader` })
     }

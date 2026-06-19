@@ -9,10 +9,10 @@ Define the build/test/deploy pipeline based on the project's environment context
 
 Read these files:
 1. `docs/project-brief.md` — understand the project goals and constraints
-2. `docs/env-context.md` — understand the build, targets, testing infrastructure, and delivery mechanisms
-3. `docs/test-plan.md` (if it exists) — understand what tests need to run and at what level
+2. `.sdlc/env-context.md` — understand the build, targets, testing infrastructure, and delivery mechanisms
+3. `.sdlc/test-plan.md` (when present) — understand what tests need to run and at what level
 
-If `docs/env-context.md` doesn't exist, tell the user: "No environment context found. Run `/ops-env-discovery` first so I understand your build targets and deployment mechanisms."
+If `.sdlc/env-context.md` doesn't exist, tell the user: "No environment context found. Run `/ops-env-discovery` first so I understand your build targets and deployment mechanisms."
 
 ## Step 2: Design Pipeline Stages
 
@@ -80,7 +80,7 @@ Present as a pipeline definition:
 ```markdown
 # Pipeline Definition
 
-**Based on:** `docs/env-context.md`
+**Based on:** `.sdlc/env-context.md`
 
 ## Pipeline Overview
 
@@ -147,7 +147,7 @@ Create `.sdlc/issues/backlog/devops-feature-[number].md`:
 
 ## Description
 
-Implement the pipeline defined in docs/pipeline.md. See docs/env-context.md for environment details.
+Implement the pipeline defined in .sdlc/pipeline.md. See .sdlc/env-context.md for environment details.
 
 ## Acceptance Criteria
 

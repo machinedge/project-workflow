@@ -3,7 +3,7 @@ name: sec-requirements
 description: "Produce the threat model and security requirements spec for a milestone. Use at milestone kickoff when the user needs to establish trust boundaries, authn/authz (RBAC) rules, input-validation and secrets-handling requirements, and dependency constraints before implementation begins."
 ---
 
-Produce the threat model and security requirements spec for a milestone. Produces or extends `docs/security-requirements.md`.
+Produce the threat model and security requirements spec for a milestone. Produces or extends `.sdlc/security-requirements.md`.
 
 The user may specify a milestone or scope: $ARGUMENTS
 
@@ -11,12 +11,12 @@ The user may specify a milestone or scope: $ARGUMENTS
 
 Read these files automatically:
 1. `docs/project-brief.md` — constraints, compliance needs, what the system handles (secrets, PII, money, etc.)
-2. `docs/architecture.md` (if it exists) — components and the trust boundaries between them
-3. `docs/roadmap.md` (if it exists) — the milestone being scoped
+2. `.sdlc/architecture.md` (when present) — components and the trust boundaries between them
+3. `docs/roadmap.md` (when present) — the milestone being scoped
 4. `.sdlc/interview-notes*.md` (if any exist — raw requirements context)
-5. `docs/security-requirements.md` (if it exists — you may be extending, not starting fresh)
+5. `.sdlc/security-requirements.md` (when present — you may be extending, not starting fresh)
 
-If `docs/architecture.md` doesn't exist, you can still proceed from the brief, but tell the user: "No architecture document exists yet — trust boundaries will be inferred from the brief. Ask for the `sa-design` skill if you want boundaries pinned down first."
+If `.sdlc/architecture.md` doesn't exist, you can still proceed from the brief, but tell the user: "No architecture document exists yet — trust boundaries will be inferred from the brief. Ask for the `sa-design` skill if you want boundaries pinned down first."
 
 Confirm your understanding:
 - "Milestone: [name / scope]"
@@ -57,7 +57,7 @@ Turn each credible threat into one or more **verifiable controls**. A requiremen
 
 Each requirement must be phrased so QA can write a test and `sec-review` can check it. Bad: "validate input." Good: "the API rejects `amount <= 0` with HTTP 400 before any persistence."
 
-## Step 5: Draft `docs/security-requirements.md`
+## Step 5: Draft `.sdlc/security-requirements.md`
 
 Create or extend the document using this structure:
 
@@ -93,6 +93,6 @@ Scale detail to the project's real exposure. A low-risk tool gets a short spec; 
 
 Present the draft. Walk through the top threats and the requirements that mitigate them. Wait for approval before saving.
 
-Save `docs/security-requirements.md` only after the user approves.
+Save `.sdlc/security-requirements.md` only after the user approves.
 
 These requirements become inputs to `pm-decompose` (so tasks carry their security constraints inline) and the checklist for the `sec-review` close-out gate. Note that linkage in your closing summary.

@@ -14,8 +14,8 @@ Read these files:
 2. `docs/roadmap.md`
 3. ALL handoff notes across all workflows — read every file in `.sdlc/handoff-notes/swe/`, `.sdlc/handoff-notes/qa/`, `.sdlc/handoff-notes/devops/`, `.sdlc/handoff-notes/pm/`, and `.sdlc/handoff-notes/system-architect/`
 4. `.sdlc/lessons-log.md`
-5. `docs/test-plan.md` (if it exists — QA's test plan)
-6. `docs/release-plan.md` (if it exists — DevOps release plan)
+5. `.sdlc/test-plan.md` (when present — QA's test plan)
+6. `.sdlc/release-plan.md` (when present — DevOps release plan)
 
 Also read the milestone's issues: scan all `.sdlc/issues/` subdirectories for files matching the milestone (check the **Milestone** field in each file). Read `.sdlc/issues/issues-list.md` for a quick overview.
 
@@ -40,7 +40,7 @@ What went well? What was harder than expected? What should change for the next m
 **5. Quality Assessment**
 Pull QA data from handoff notes and issues:
 - Review findings: how many must-fix vs. should-fix? How many resolved vs. unresolved?
-- If `docs/test-plan.md` exists: what's the test coverage? Any gaps?
+- If `.sdlc/test-plan.md` exists: what's the test coverage? Any gaps?
 - Regression results: any cross-task interference discovered?
 - Were bugs caught early (during development) or late (during review/regression)?
 - Overall quality trend: is quality improving, stable, or declining across milestones?
@@ -51,7 +51,7 @@ If no QA sessions were run for this milestone, note that as a gap.
 Pull DevOps data from handoff notes and issues:
 - Did the build/test pipeline work smoothly? Any failures or flakiness?
 - Any deployment failures or environment issues?
-- If `docs/release-plan.md` exists: were all release gates met? Any gate failures?
+- If `.sdlc/release-plan.md` exists: were all release gates met? Any gate failures?
 - Time from "code complete" to "deployed and verified" — was it reasonable?
 - Any rollback events?
 

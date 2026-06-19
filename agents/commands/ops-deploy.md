@@ -7,15 +7,15 @@ The user may specify a milestone: $ARGUMENTS
 ## Step 1: Load Context and Verify Readiness
 
 Read these files:
-1. `docs/release-plan.md` — the release gates, rollback procedure, and artifact definitions
+1. `.sdlc/release-plan.md` — the release gates, rollback procedure, and artifact definitions
 2. `docs/project-brief.md` — project context
-3. `docs/env-context.md` — deployment mechanism and failure/recovery characteristics
+3. `.sdlc/env-context.md` — deployment mechanism and failure/recovery characteristics
 
-If `docs/release-plan.md` doesn't exist, tell the user: "No release plan found. Ask for the `ops-release-plan` skill first to define release gates and rollback procedures."
+If `.sdlc/release-plan.md` doesn't exist, tell the user: "No release plan found. Ask for the `ops-release-plan` skill first to define release gates and rollback procedures."
 
 ## Step 2: Check Release Gates
 
-Walk through every gate in `docs/release-plan.md` and verify it's met:
+Walk through every gate in `.sdlc/release-plan.md` and verify it's met:
 
 **Code gates:**
 Check the local issue files:
@@ -31,8 +31,8 @@ Check the local issue files:
 - Verify each compliance requirement is met
 
 **Deployment gates:**
-- Rollback procedure documented? (check release-plan.md)
-- Release notes drafted? (check release-plan.md)
+- Rollback procedure documented? (check .sdlc/release-plan.md)
+- Release notes drafted? (check .sdlc/release-plan.md)
 - Artifacts built? (check or build them)
 
 ## Step 3: Gate Check Result
@@ -62,7 +62,7 @@ Present the gate check results:
 
 ## Step 4: Build Release Artifacts
 
-Following the release plan's artifact definitions:
+Following the .sdlc/release-plan.md artifact definitions:
 1. Build the release artifacts (per env-context build process)
 2. Verify the artifacts (checksums, signatures, size checks)
 3. Tag the release in git if applicable
@@ -71,7 +71,7 @@ Present the artifacts to the user for confirmation.
 
 ## Step 5: Deploy
 
-Following the env-context delivery mechanism and the release plan's pre-release checklist:
+Following the .sdlc/env-context.md delivery mechanism and the .sdlc/release-plan.md pre-release checklist:
 
 1. Execute the deployment procedure step by step
 2. After each step, verify it succeeded before proceeding
@@ -85,8 +85,8 @@ Following the env-context delivery mechanism and the release plan's pre-release 
 ## Step 6: Post-Deployment Verification
 
 After deployment completes:
-1. Run the post-deployment checks defined in the release plan
-2. Verify monitoring/observability signals (per env-context)
+1. Run the post-deployment checks defined in the .sdlc/release-plan.md
+2. Verify monitoring/observability signals (per .sdlc/env-context.md)
 3. Confirm the deployed version matches what was intended
 
 ## Step 7: Produce Deployment Report

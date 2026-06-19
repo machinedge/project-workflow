@@ -1,21 +1,21 @@
 ---
 name: sa-update
-description: "Evolve the architecture based on new requirements, implementation feedback, or changed constraints. Use when the user needs to update docs/architecture.md after a new feature, a review finding, or a shift in project direction."
+description: "Evolve the architecture based on new requirements, implementation feedback, or changed constraints. Use when the user needs to update .sdlc/architecture.md after a new feature, a review finding, or a shift in project direction."
 ---
 
-Evolve the architecture based on new requirements, implementation feedback, or changed constraints. Updates `docs/architecture.md`.
+Evolve the architecture based on new requirements, implementation feedback, or changed constraints. Updates `.sdlc/architecture.md`.
 
 The user may specify what changed: $ARGUMENTS
 
 ## Step 1: Load Context
 
 Read these files automatically:
-1. `docs/architecture.md` — the current architecture
+1. `.sdlc/architecture.md` — the current architecture
 2. `docs/project-brief.md` — current project context and constraints
-3. `docs/roadmap.md` (if it exists) — upcoming work that the architecture should support
+3. `docs/roadmap.md` (when present) — upcoming work that the architecture should support
 4. Recent handoff notes across all experts — what happened since the architecture was last updated
 
-If `docs/architecture.md` doesn't exist, tell the user: "No architecture document exists yet. Ask for the `sa-design` skill to create one, or run `/start-task` to pick up an architect-scoped issue."
+If `.sdlc/architecture.md` doesn't exist, tell the user: "No architecture document exists yet. Ask for the `sa-design` skill to create one, or run `/start-task` to pick up an architect-scoped issue."
 
 ## Step 2: Identify What Changed
 
@@ -38,7 +38,7 @@ Wait for user confirmation before proceeding.
 
 For each change:
 
-- What specifically changes in `docs/architecture.md`?
+- What specifically changes in `.sdlc/architecture.md`?
 - Why? (Link back to the driver from Step 2)
 - What are the consequences? (Other components affected, migration needed, etc.)
 - Does this invalidate any existing Architecture Decision Records? If so, document the superseding decision.
@@ -60,7 +60,7 @@ Flag any conflicts or cascading effects for the user.
 
 After user approval:
 
-1. Update `docs/architecture.md` with the approved changes
+1. Update `.sdlc/architecture.md` with the approved changes
 2. Add new ADRs for any new decisions; mark superseded ADRs as "Superseded by ADR-XXX"
 3. Update the document's revision history
 

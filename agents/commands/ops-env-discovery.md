@@ -10,7 +10,7 @@ Read `docs/project-brief.md`, specifically the "Delivery & Operations Context" s
 
 If `docs/project-brief.md` doesn't exist, tell the user: "No project brief found. Run `/pm-interview` and ask for the `pm-vision` skill first so I have project context to build on."
 
-Also read `docs/env-context.md` if it exists — this may be an update to an existing environment context, not a first-time capture.
+Also read `.sdlc/env-context.md` when present — this may be an update to an existing environment context, not a first-time capture.
 
 ## Step 2: Interview
 
@@ -39,7 +39,7 @@ Rules:
 
 ## Step 3: Produce the Environment Context
 
-After all categories, save to `docs/env-context.md`:
+After all categories, save to `.sdlc/env-context.md`:
 
 ```markdown
 # Environment Context

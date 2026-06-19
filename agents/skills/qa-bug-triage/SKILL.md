@@ -11,7 +11,7 @@ Read these files:
 1. `docs/project-brief.md` — understand the project goals, constraints, and current status
 2. `docs/roadmap.md` — understand the current milestone and what's planned
 3. Most recent handoff note in `.sdlc/handoff-notes/qa/` (if any exist) — understand recent QA activity
-4. `docs/architecture.md` (if it exists) — understand system-level context for assessing impact
+4. `.sdlc/architecture.md` (when present) — understand system-level context for assessing impact
 
 Read `.sdlc/issues/issues-list.md` for an overview, then scan `.sdlc/issues/backlog/`, `.sdlc/issues/planned/`, and `.sdlc/issues/in-progress/` to read all open issue files.
 
