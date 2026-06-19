@@ -2,7 +2,7 @@
 
 **Type:** techdebt
 **Expert:** swe
-**Status:** in-progress
+**Status:** done
 **Severity:** should-fix
 
 ## Description

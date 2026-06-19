@@ -100,7 +100,7 @@
 | swe-bug-096 | BUG: migrate-sdlc moves ANY docs/*-draft.md, including user files — SR-003 / architecture draft-glob contract violation | swe | bug |  | — | done |
 | swe-techdebt-097 | TECHDEBT: No M19 test plan exists; the QA verification issue references paths and procedures that are not present | swe | techdebt |  | — | done |
 | swe-techdebt-098 | TECHDEBT: Claimed verification artifact test-sdlc-boundary.sh does not exist in the repo | swe | techdebt |  | — | done |
-| swe-techdebt-099 | TECHDEBT: M19 deliverables are entirely uncommitted; roadmap has no M19 row | swe | techdebt |  | — | in-progress |
+| swe-techdebt-099 | TECHDEBT: M19 deliverables are entirely uncommitted; roadmap has no M19 row | swe | techdebt |  | — | done |
 | swe-techdebt-100 | TECHDEBT: migrate-sdlc draft glob is broader than the architecture's canonical inventory specifies | swe | techdebt |  | — | done |
 | swe-bug-101 | BUG: Migration draft glob is over-broad — relocates user-owned files it does not own (SR-003 / T-002 violation) | swe | bug |  | — | done |
 | swe-bug-102 | BUG: docs/security/ subfolder is migrated wholesale, capturing any user content under that name (SR-003 edge / T-002) | swe | bug |  | — | backlog |
