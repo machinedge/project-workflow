@@ -83,3 +83,8 @@
 | qa-feature-079 | QA: Verify Migration End-to-End | qa | feature | [Workflow Directory] Migration from old structure (M14) | — | done |
 | swe-bug-080 | Project Brief Constraints Section Has Stale `issues/` Path | swe | bug | [Workflow Directory] Update structure and references (M13) | — | done |
 | swe-bug-081 | architecture.md Has Stale Paths in Non-ADR Sections | swe | bug | [Workflow Directory] Update structure and references (M13) | — | done |
+| swe-bug-082 | BUG: pm-interview command writes a typo'd notes filename (.sdlc/rview-notes.md) | swe | bug |  | — | done |
+| doc-techdebt-083 | TECHDEBT: Workflow accelerators still called milestone.js / documentation.js in ~9 docs | doc | techdebt |  | — | backlog |
+| doc-techdebt-084 | TECHDEBT: README overstates command count as 10; actual is 6 | doc | techdebt |  | — | backlog |
+| doc-techdebt-085 | TECHDEBT: Handoff-note path mismatch: AGENTS.md says .sdlc/notes/, skills write .sdlc/handoff-notes/ | doc | techdebt |  | — | backlog |
+| doc-techdebt-086 | TECHDEBT: CONTRIBUTING.md references a non-existent /swe-start command | doc | techdebt |  | — | backlog |

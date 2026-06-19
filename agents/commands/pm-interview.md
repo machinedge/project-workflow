@@ -27,7 +27,7 @@ Rules:
 - After category 10, calibrate the synthesis based on the user's background:
   - **If the user is experienced** (built similar things before, comfortable with AI tools, deep domain knowledge): produce the summary as-is and flag any gaps or contradictions for the user to resolve.
   - **If the user is light on experience** (first project, new to AI tools, or expressed uncertainty throughout earlier categories): fill in plausible assumptions for any gaps rather than leaving them blank. Label each one explicitly — e.g. "**Assumption:** tech stack is TypeScript + React because you mentioned familiarity with web dev — adjust if wrong." Present the enriched summary and invite the user to correct any assumption before saving.
-- Save the summary to `.sdlc/rview-notes.md`.
+- Save the summary to `.sdlc/interview-notes.md`.
 - Tell the user to ask for the `pm-vision` skill next to generate the project brief.
 
 DO NOT:

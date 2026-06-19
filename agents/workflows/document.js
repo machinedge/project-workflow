@@ -37,6 +37,16 @@ const PHASES = ['plan', 'author', 'review', 'revise']
 function normalizeArgs(a) {
   if (a && typeof a === 'object' && !Array.isArray(a)) return a
   if (typeof a === 'string') {
+    // An object arg can arrive JSON-stringified (some harness paths serialize it in transit).
+    // Detect that BEFORE slash-token parsing — otherwise the JSON body is tokenized and any
+    // stray phase word inside it (e.g. "review" in a guide summary) misroutes the phase.
+    const t = a.trim()
+    if (t.startsWith('{') || t.startsWith('[')) {
+      try {
+        const parsed = JSON.parse(t)
+        if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) return parsed
+      } catch (_) { /* not JSON — fall through to slash-token parsing */ }
+    }
     const toks = a.trim().split(/\s+/).filter(Boolean)
     const phase = toks.map(t => t.toLowerCase()).find(t => PHASES.includes(t))
     const scope = toks.filter(t => !PHASES.includes(t.toLowerCase())).join(' ')
