@@ -82,7 +82,9 @@ echo ""
 # Create shared project structure
 # ─────────────────────────────────────────────
 
-# docs/ always needed for core planning docs (project-brief, roadmap, architecture, etc.)
+# docs/ holds user-facing material only (guides/, README.md, project-brief.md,
+# roadmap.md). These files are authored later by the user/PM (e.g. brief via
+# pm-vision) — the installer seeds NO spec files here. Expert specs live in .sdlc/.
 mkdir -p "$TARGET/docs"
 
 # ─────────────────────────────────────────────
@@ -148,6 +150,10 @@ mkdir -p "$TARGET/.sdlc/issues/done"
 for expert in pm swe qa devops system-architect security-engineer ux doc; do
     mkdir -p "$TARGET/.sdlc/handoff-notes/$expert"
 done
+
+mkdir -p "$TARGET/.sdlc/research"
+mkdir -p "$TARGET/.sdlc/security"
+mkdir -p "$TARGET/.sdlc/runbooks"
 
 if [ ! -f "$TARGET/.sdlc/lessons-log.md" ]; then
 cat > "$TARGET/.sdlc/lessons-log.md" << 'EOF'

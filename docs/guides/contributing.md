@@ -90,7 +90,7 @@ MachinEdge Expert Teams — Install
     Roles: 8 files
     Commands: 6 files
     Skills: 33 folders
-    Scripts: 11 files
+    Scripts: 13 files
   Wiring .claude/ for Claude Code ...
     Symlinks: .claude/{commands,skills,roles,scripts,workflows} → ../.agents/*
     Settings: created .claude/settings.json

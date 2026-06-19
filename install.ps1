@@ -53,7 +53,9 @@ Write-Host ""
 # Create shared project structure
 # ─────────────────────────────────────────────
 
-# docs/ always needed for core planning docs (project-brief, roadmap, architecture, etc.)
+# docs/ holds user-facing material only (guides/, README.md, project-brief.md,
+# roadmap.md). These files are authored later by the user/PM (e.g. brief via
+# pm-vision) — the installer seeds NO spec files here. Expert specs live in .sdlc/.
 New-Item -ItemType Directory -Path (Join-Path $Target "docs") -Force | Out-Null
 
 # ─────────────────────────────────────────────
@@ -94,25 +96,25 @@ if ((Test-Path $oldHandoff) -or (Test-Path $oldIssues)) {
     Write-Host "  Migrating artifacts to .sdlc/..."
 
     if (Migrate-Directory -Src (Join-Path $Target "docs/handoff-notes") -Dest (Join-Path $Target ".sdlc/handoff-notes")) {
-        Write-Host "    docs/handoff-notes/ -> .sdlc/handoff-notes/"
+        Write-Host "    docs/handoff-notes/ → .sdlc/handoff-notes/"
     }
     if (Migrate-Directory -Src (Join-Path $Target "issues") -Dest (Join-Path $Target ".sdlc/issues")) {
-        Write-Host "    issues/ -> .sdlc/issues/"
+        Write-Host "    issues/ → .sdlc/issues/"
     }
 
     if (Migrate-File -Src (Join-Path $Target "docs/lessons-log.md") -Dest (Join-Path $Target ".sdlc/lessons-log.md")) {
-        Write-Host "    docs/lessons-log.md -> .sdlc/lessons-log.md"
+        Write-Host "    docs/lessons-log.md → .sdlc/lessons-log.md"
     }
 
     Get-ChildItem (Join-Path $Target "docs/interview-notes*.md") -ErrorAction SilentlyContinue | ForEach-Object {
         if (Migrate-File -Src $_.FullName -Dest (Join-Path $Target ".sdlc/$($_.Name)")) {
-            Write-Host "    docs/$($_.Name) -> .sdlc/$($_.Name)"
+            Write-Host "    docs/$($_.Name) → .sdlc/$($_.Name)"
         }
     }
 
     Get-ChildItem (Join-Path $Target "docs/research-*.md") -ErrorAction SilentlyContinue | ForEach-Object {
         if (Migrate-File -Src $_.FullName -Dest (Join-Path $Target ".sdlc/$($_.Name)")) {
-            Write-Host "    docs/$($_.Name) -> .sdlc/$($_.Name)"
+            Write-Host "    docs/$($_.Name) → .sdlc/$($_.Name)"
         }
     }
 
@@ -124,7 +126,10 @@ foreach ($dir in @(
     ".sdlc/issues/backlog",
     ".sdlc/issues/planned",
     ".sdlc/issues/in-progress",
-    ".sdlc/issues/done"
+    ".sdlc/issues/done",
+    ".sdlc/research",
+    ".sdlc/security",
+    ".sdlc/runbooks"
 )) {
     New-Item -ItemType Directory -Path (Join-Path $Target $dir) -Force | Out-Null
 }

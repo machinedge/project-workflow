@@ -14,9 +14,9 @@ Read these files:
 2. `docs/roadmap.md` — identify the milestone scope
 3. ALL SWE handoff notes in `.sdlc/handoff-notes/swe/` — understand what was built across the milestone
 4. ALL QA handoff notes in `.sdlc/handoff-notes/qa/` — understand what's already been reviewed
-5. `docs/test-plan.md` (if it exists) — the defined test requirements
+5. `.sdlc/test-plan.md` (when present) — the defined test requirements
 6. `.sdlc/lessons-log.md` — known gotchas
-7. `docs/architecture.md` (if it exists) — understand architectural intent for evaluating coherence across tasks
+7. `.sdlc/architecture.md` (when present) — understand architectural intent for evaluating coherence across tasks
 
 Scan all `.sdlc/issues/` subdirectories for files matching the milestone (check the **Milestone** field in each file). Read each issue to get its acceptance criteria and scope.
 
@@ -43,7 +43,7 @@ For each item on the checklist:
    - Test files modified or deleted by later tasks
 3. **Document the result.** Pass (with evidence) or Fail (with details).
 
-If `docs/test-plan.md` exists, verify coverage against it:
+If `.sdlc/test-plan.md` exists, verify coverage against it:
 - Which test matrix rows pass?
 - Which fail?
 - Which were never implemented?

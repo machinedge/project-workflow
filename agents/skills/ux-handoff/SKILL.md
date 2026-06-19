@@ -30,7 +30,7 @@ Save to `.sdlc/handoff-notes/ux/session-NN.md`:
 [2-3 sentences. Guidelines produced? Review performed? Scope?]
 
 ## UX Findings Summary
-- **Requirements defined / updated:** [count or "n/a"] (`docs/ux-guidelines.md`)
+- **Requirements defined / updated:** [count or "n/a"] (`.sdlc/ux-guidelines.md`)
 - **Must-fix:** [count] issues
 - **Should-fix:** [count] issues
 - **Observations:** [count]

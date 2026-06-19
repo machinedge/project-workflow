@@ -10,12 +10,10 @@ The user may specify what to review: $ARGUMENTS
 ## Step 1: Load Context
 
 Read these files automatically:
-1. `docs/documentation-plan.md` — the requirements to evaluate against (your checklist)
+1. `.sdlc/documentation-plan.md` — the requirements to evaluate against (your checklist). If this milestone produced a `documentation-plan.md` (the milestone has a docs surface) but it is absent at `.sdlc/`, this is a documented no-op for a no-docs-surface milestone (proceed without it — not an error). If the milestone has a docs surface and the file is absent, STOP and report: "documentation-plan.md not found at .sdlc/documentation-plan.md. Produce it with doc-plan, or run migrate-sdlc for an existing project."
 2. The guides in `docs/guides/` that are in scope
 3. `docs/project-brief.md` — who the readers are, the kind of surface
-4. The upstream specs and the shipped code the guides describe (`docs/architecture.md`, `docs/env-context.md`, `docs/release-plan.md`, and recent `.sdlc/handoff-notes/swe/` and `.sdlc/handoff-notes/devops/`) — so you can check the guides against reality
-
-If `docs/documentation-plan.md` doesn't exist, tell the user: "No documentation plan exists yet. Ask for the `doc-plan` skill first to establish the bar, or this review will have no baseline." You may still do a best-effort review for accuracy and readability, but say so.
+4. `.sdlc/architecture.md` — If it is absent, STOP and report: "architecture.md not found at .sdlc/architecture.md. Produce it with sa-design, or run migrate-sdlc for an existing project." Do not proceed with the task — architecture is required for any implementation milestone. The upstream specs (so you can check the guides against reality) including `.sdlc/env-context.md`, `.sdlc/release-plan.md`, and recent `.sdlc/handoff-notes/swe/` and `.sdlc/handoff-notes/devops/`.
 
 If the milestone changed nothing a user, operator, or maintainer interacts with, say so and stop — there is nothing to review.
 

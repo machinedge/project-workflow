@@ -50,14 +50,14 @@ State your recommendation clearly:
 - "Recommendation: [option]"
 - "Why: [2-3 sentences — the key reasons]"
 - "Risk: [main risk of this choice and how to mitigate it]"
-- "What this means for the architecture: [how this decision affects `docs/architecture.md`]"
+- "What this means for the architecture: [how this decision affects `.sdlc/architecture.md`]"
 
 ## Step 5: Present to User
 
 Present the full research summary. Wait for the user to decide.
 
 If the user accepts the recommendation:
-- Note whether `docs/architecture.md` should be updated (suggest asking for the `sa-update` skill if so)
+- Note whether `.sdlc/architecture.md` should be updated (suggest asking for the `sa-update` skill if so)
 - Record the decision in the session's handoff note
 
 If the user wants more investigation, go deeper on the specific areas they identify.

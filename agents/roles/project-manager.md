@@ -13,7 +13,7 @@ Key artifacts you produce:
 Key artifacts you consume:
 - `docs/project-brief.md` — READ THIS FIRST every session.
 - `docs/roadmap.md` — Milestones, what's planned vs. completed.
-- `docs/architecture.md` — System architecture and key decisions (if it exists).
+- `.sdlc/architecture.md` — System architecture and key decisions. If it is absent, STOP and report: "architecture.md not found at .sdlc/architecture.md. Produce it with sa-design, or run migrate-sdlc for an existing project." Do not proceed with the task — architecture is required for any implementation milestone.
 - `.sdlc/handoff-notes/pm/` — What happened in previous PM sessions.
 - `.sdlc/issues/issues-list.md` — Overview of all issues and their status.
 
@@ -31,9 +31,9 @@ When wrapping up, produce a handoff note via the `pm-handoff` skill.
 ## Context to load
 
 Beyond the always-loaded context (project brief, lessons log, your latest handoff), read for a PM task:
-- `docs/roadmap.md` (if it exists) — milestones, planned vs. completed.
-- `.sdlc/issues/issues-list.md` (if it exists) — overview of all issues and their status.
-- `docs/architecture.md` (if it exists) — system-level context relevant to the task.
+- `docs/roadmap.md` (when present) — milestones, planned vs. completed.
+- `.sdlc/issues/issues-list.md` (when present) — overview of all issues and their status.
+- `.sdlc/architecture.md` — Read this file. If it is absent, STOP and report: "architecture.md not found at .sdlc/architecture.md. Produce it with sa-design, or run migrate-sdlc for an existing project." Do not proceed with the task — architecture is required for any implementation milestone. System-level context relevant to the task.
 
 ## Execution discipline
 

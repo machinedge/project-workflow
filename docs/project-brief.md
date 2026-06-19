@@ -26,13 +26,18 @@ Developers using AI coding assistants who want structured, repeatable workflows 
 - [x] [Workflow Directory] Install over existing project migrates artifacts to `.sdlc/` without data loss
 - [x] [Milestone Workflows] `team-milestone` runs a milestone end-to-end (enrich → compile → implement → review) with human gates; Claude Code accelerator parallelizes it (ADR-013)
 - [x] [Milestone Workflows] Security Engineer (`sec`) role owns security requirements (kickoff) and the security review gate (close-out)
-- [x] [Milestone Workflows] `pm-decompose` emits implementation-ready tasks meeting `docs/task-detail-standard.md`, enforced by a completeness verifier
+- [x] [Milestone Workflows] `pm-decompose` emits implementation-ready tasks meeting `.sdlc/task-detail-standard.md`, enforced by a completeness verifier
 - [x] [UX Advisor] UX Designer (`ux`) role owns UX guidelines (kickoff) and the UX review gate (close-out), wired as a standing lens into the milestone enrich and review fan-outs
 - [x] [Technical Writer] Technical Writer (`doc`) role owns the documentation plan (kickoff), writes accessible user/deployment/maintenance guides in `docs/guides/` as task execution, and gates the docs review (close-out); wired as a standing lens into the milestone enrich and review fan-outs
+- [x] [SDLC Boundary] `docs/` contains only user-facing documentation (`guides/`, `README.md`, `project-brief.md`, `roadmap.md`); every expert-authored spec/plan/draft lives in `.sdlc/`
+- [x] [SDLC Boundary] Every spec skill, role file, runbook, and accelerator points authored artifacts at `.sdlc/`; consumers fail loudly when a referenced spec is missing at the new path
+- [x] [SDLC Boundary] A `migrate-sdlc` workflow relocates an existing project's specs `docs/ → .sdlc/` idempotently and verifies a clean end state (re-install, then run the workflow)
 
 ## Constraints
 
 - `agents/` is the single source of truth; payload paths use `.agents/...` to resolve across harnesses
+- `docs/` is user-facing only (guides, README, project-brief, roadmap); expert-authored specs/plans/drafts live in `.sdlc/`
+- Expert-authored specs in `.sdlc/`: architecture, security-requirements, ux-guidelines, documentation-plan, test-plan, env-context, release-plan, plus research/, security/, and runbooks/ subdirectories
 - Project brief must stay under 1,000 words
 - Issues tracked in `.sdlc/issues/`, not external services
 
@@ -72,21 +77,23 @@ Developers using AI coding assistants who want structured, repeatable workflows 
 | — | Install migrates files but does not rewrite path references inside migrated documents | Historical handoff notes and interview notes are records of what was true when written; rewriting would be revisionist and error-prone |
 | 2026-06-16 | Generic AGENTS.md model; drop Cursor and `targets/` (ADR-012) | One harness-neutral `agents/` source ends dual-platform maintenance; `AGENTS.md` covers Claude + Codex, with Claude native discovery preserved via symlinks |
 | 2026-06-16 | Milestone workflows + Security Engineer role (ADR-013) | Hand off a whole milestone and have every expert lens applied automatically; portable runbook stays harness-neutral, Claude Code accelerator adds parallelism + a small-model build loop; security becomes a first-class gate |
-| 2026-06-17 | Add UX Designer advisor role (`ux`) | No expert evaluated usability or accessibility; UX joins as an advisor (like Security) — owns `docs/ux-guidelines.md`, gates close-out review, and runs as a standing lens in the milestone enrich/review fan-outs (graceful no-op when a milestone has no user-facing surface) |
-| 2026-06-18 | Add Technical Writer role (`doc`) | No expert owned user-facing documentation; the Technical Writer is a hybrid — it plans docs (enrich lens), writes the guides itself as task execution (unlike the pure advisors), and gates the docs review (close-out). Owns `docs/documentation-plan.md` + `docs/guides/`; writes for readers unfamiliar with how to deploy, maintain, or use the project |
+| 2026-06-17 | Add UX Designer advisor role (`ux`) | No expert evaluated usability or accessibility; UX joins as an advisor (like Security) — owns `.sdlc/ux-guidelines.md`, gates close-out review, and runs as a standing lens in the milestone enrich/review fan-outs (graceful no-op when a milestone has no user-facing surface) |
+| 2026-06-18 | Add Technical Writer role (`doc`) | No expert owned user-facing documentation; the Technical Writer is a hybrid — it plans docs (enrich lens), writes the guides itself as task execution (unlike the pure advisors), and gates the docs review (close-out). Owns `.sdlc/documentation-plan.md` + `docs/guides/`; writes for readers unfamiliar with how to deploy, maintain, or use the project |
 | 2026-06-18 | Add documentation workflow (`team-docs` + `workflows/documentation.js`) | A single doc lens in the milestone flow doesn't produce a full guide set; `team-docs` runs the whole documentation lifecycle (plan → author → review → revise) with a multi-lens review (accuracy, not-overstated, readability-per-audience, completeness) so docs are verified, not just written. Defaults to whole-project scope; mirrors the `team-milestone`/`milestone.js` runbook+accelerator pattern |
+| 2026-06-19 | `docs/` is user-facing only; expert specs/plans move to `.sdlc/` (M19) | `docs/` had become a dumping ground for expert-authored specs — by design, not drift: every spec skill/role drafted to `docs/<spec>.md` and the M13 split only relocated *session* artifacts, leaving specs behind; M16/M17/M18 then added three more spec-owning advisors. With a Technical Writer now able to synthesize user docs from `.sdlc/`, specs no longer need to live in `docs/`. Hard line: only `guides/`, `README.md`, `project-brief.md`, `roadmap.md` stay (a user wants what/where/where-next). Consumers fail loudly at the new path; a `migrate-sdlc` workflow owns user-side migration |
 
 ## Current Status
 
-- **Milestones:** M1-M16 complete. M17 (UX Advisor role) and M18 (Technical Writer role) added.
+- **Milestones:** M1-M19 all complete. M19 ([SDLC Boundary]) drew the hard line — expert specs now live in `.sdlc/`, `docs/` is user-facing only.
 - **Experts:** PM, SWE, QA, DevOps, System Architect, Security Engineer, UX Designer, Technical Writer — one harness-neutral implementation. 8 roles, 6 commands, 33 skills, 2 workflow accelerators (`milestone.js`, `documentation.js`).
-- **Blockers:** None
-- **Next task:** Verify the milestone lifecycle end-to-end on a real milestone (run `team-milestone` and the `workflows/milestone.js` accelerator against a sample milestone in a consuming project), now including the UX and documentation enrich/review lenses.
-- **Last updated:** Added the `team-docs` documentation workflow and its Claude Code accelerator (`workflows/documentation.js`) — plan → author → review → revise, with a multi-lens review (accuracy, not-overstated, readability-per-audience, completeness) that verifies the guides, not just writes them. Builds on the Technical Writer role (`doc`) added earlier.
+- **Blockers:** None functional. One process gap: the entire M19 change set is uncommitted in the working tree even though swe-techdebt-099 (which required committing it) was marked done. Commit M19 before starting new work so the close-out state is durable.
+- **Next task:** Pick up the deferred "verify the milestone lifecycle end-to-end" item, or pull from the open backlog. Resolve the two open should-fix follow-ups first (below) and commit M19.
+- **Open follow-ups:** swe-bug-102 — the `migrate-sdlc` workflow still moves the whole `docs/security/` named subfolder, capturing any user file under that name (should-fix, deliberately deferred; fix is a loud up-front warning). pm-feature-087 — give readers of the user-facing guides a signposted path into the deeper `.sdlc/` reasoning now that specs left `docs/` (separate future feature). Four M18-era documentation-debt items (doc-techdebt-083 through 086) also sit in backlog, unrelated to M19.
+- **Last updated:** Closed out [SDLC Boundary] (M19). 7 planned tasks delivered; the close-out review fan-out filed a 15-issue fix tail (Security/UX/Technical Writer/SWE lenses), almost all resolved. The QA grep audit (qa-feature-094) confirms zero stale `docs/<spec>.md` authoring references. Specs relocated cleanly to `.sdlc/`; `migrate-sdlc` (bash + PowerShell) verified idempotent with a collision guard.
 
 ## Notes for AI
 
 - The single source of truth is `agents/`; the installer copies it into projects
 - Read `docs/agent-reference.md` before modifying expert definitions
-- The System Architect owns `docs/architecture.md`; the Security Engineer owns `docs/security-requirements.md`; the UX Designer owns `docs/ux-guidelines.md`; the Technical Writer owns `docs/documentation-plan.md` and `docs/guides/`; all other experts consume them
+- The System Architect owns `.sdlc/architecture.md`; the Security Engineer owns `.sdlc/security-requirements.md`; the UX Designer owns `.sdlc/ux-guidelines.md`; the Technical Writer owns `.sdlc/documentation-plan.md` and `docs/guides/`; all other experts consume them
 - `team-milestone` chains the expert skills into a milestone lifecycle; `agents/workflows/milestone.js` is its Claude Code accelerator

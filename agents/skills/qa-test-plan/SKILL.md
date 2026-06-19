@@ -12,8 +12,8 @@ The user may specify a milestone or task: $ARGUMENTS
 Read these files:
 1. `docs/project-brief.md` — understand the project goals and constraints
 2. `docs/roadmap.md` — understand the milestone structure
-3. `docs/env-context.md` (if it exists) — understand environment constraints, test infrastructure, and hardware requirements
-4. `docs/architecture.md` (if it exists) — understand system-level constraints and component boundaries relevant to testing
+3. `.sdlc/env-context.md` (when present) — understand environment constraints, test infrastructure, and hardware requirements
+4. `.sdlc/architecture.md` (when present) — understand system-level constraints and component boundaries relevant to testing
 5. Most recent handoff note in `.sdlc/handoff-notes/qa/` (if any exist) — understand what QA has already covered
 6. The relevant issue files:
    - If a milestone was specified: scan all `.sdlc/issues/` subdirectories for files matching that milestone
@@ -28,7 +28,7 @@ Identify:
 - What milestone or tasks this test plan covers
 - All acceptance criteria across the in-scope issues
 - Any non-functional requirements from the project brief (performance, security, compliance)
-- Any environment-specific testing needs from `docs/env-context.md`
+- Any environment-specific testing needs from `.sdlc/env-context.md`
 
 ## Step 3: Build the Test Matrix
 
@@ -40,7 +40,7 @@ For each acceptance criterion or behavior, determine:
 
 ## Step 4: Produce the Test Plan
 
-Save to `docs/test-plan.md`:
+Save to `.sdlc/test-plan.md`:
 
 ```markdown
 # Test Plan
@@ -73,7 +73,7 @@ Save to `docs/test-plan.md`:
 
 ## Test Infrastructure Requirements
 
-[Only include this section if `docs/env-context.md` exists and testing needs go beyond a local dev machine.]
+[Only include this section if `.sdlc/env-context.md` exists and testing needs go beyond a local dev machine.]
 
 - [What's needed — emulator, hardware-in-the-loop rig, specific OS version, etc.]
 - [What's needed]
@@ -110,7 +110,7 @@ Don't save until the user approves.
 ## Step 6: Update Documents
 
 After user approval:
-- Save `docs/test-plan.md`
+- Save `.sdlc/test-plan.md`
 - Update `docs/roadmap.md` change log noting that a test plan was created for this scope
 
 The test plan asks what the project needs based on the context PM captured. It doesn't assume any particular test infrastructure exists — it states what's needed and lets DevOps figure out how to provide it.

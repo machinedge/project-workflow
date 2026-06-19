@@ -3,7 +3,7 @@ name: ux-guidelines
 description: "Produce the UX guidelines spec for a milestone — target users, key flows, and verifiable UX requirements (UX-NNN) covering interaction, accessibility, content/error clarity, and CLI ergonomics. Use at milestone kickoff before implementation begins."
 ---
 
-Produce the UX guidelines spec for a milestone. Produces or extends `docs/ux-guidelines.md`.
+Produce the UX guidelines spec for a milestone. Produces or extends `.sdlc/ux-guidelines.md`.
 
 The user may specify a milestone or scope: $ARGUMENTS
 
@@ -11,14 +11,14 @@ The user may specify a milestone or scope: $ARGUMENTS
 
 Read these files automatically:
 1. `docs/project-brief.md` — who the project is for, their goals, constraints, the kind of surface (GUI, web, CLI, API)
-2. `docs/architecture.md` (if it exists) — which components present a surface to a user
-3. `docs/roadmap.md` (if it exists) — the milestone being scoped
+2. `.sdlc/architecture.md` (when present) — which components present a surface to a user
+3. `docs/roadmap.md` (when present) — the milestone being scoped
 4. `.sdlc/interview-notes*.md` (if any exist — raw requirements context)
-5. `docs/ux-guidelines.md` (if it exists — you may be extending, not starting fresh)
+5. `.sdlc/ux-guidelines.md` (when present — you may be extending, not starting fresh)
 
-If `docs/architecture.md` doesn't exist, you can still proceed from the brief, but tell the user: "No architecture document exists yet — surfaces will be inferred from the brief. Ask for the `sa-design` skill if you want component boundaries pinned down first."
+If `.sdlc/architecture.md` doesn't exist, you can still proceed from the brief, but tell the user: "No architecture document exists yet — surfaces will be inferred from the brief. Ask for the `sa-design` skill if you want component boundaries pinned down first."
 
-**If the milestone has no user-facing surface** (pure backend, infra, internal plumbing — nothing a human or operator interacts with directly), say so plainly, record a one-line note in `docs/ux-guidelines.md` under a "Scope" entry ("M-NN: no user-facing surface — no UX requirements"), and stop. Do not invent UI.
+**If the milestone has no user-facing surface** (pure backend, infra, internal plumbing — nothing a human or operator interacts with directly), say so plainly, record a one-line note in `.sdlc/ux-guidelines.md` under a "Scope" entry ("M-NN: no user-facing surface — no UX requirements"), and stop. Do not invent UI.
 
 Confirm your understanding:
 - "Milestone: [name / scope]"
@@ -58,7 +58,7 @@ Turn each flow and risk into one or more **verifiable controls**. A requirement 
 
 Each requirement must be phrased so QA can write a test and `ux-review` can check it. Bad: "make errors helpful." Good: "on invalid input the CLI prints the offending argument, the expected format, and exits non-zero."
 
-## Step 5: Draft `docs/ux-guidelines.md`
+## Step 5: Draft `.sdlc/ux-guidelines.md`
 
 Create or extend the document using this structure:
 
@@ -92,6 +92,6 @@ Scale detail to the project's real surface. A developer CLI gets ergonomics, hel
 
 Present the draft. Walk through the key flows and the requirements that protect them. Wait for approval before saving.
 
-Save `docs/ux-guidelines.md` only after the user approves.
+Save `.sdlc/ux-guidelines.md` only after the user approves.
 
 These requirements become inputs to `pm-decompose` (so tasks carry their UX constraints inline) and the checklist for the `ux-review` close-out gate. Note that linkage in your closing summary.

@@ -30,7 +30,7 @@ Save to `.sdlc/handoff-notes/doc/session-NN.md`:
 [2-3 sentences. Plan produced? Guides written or updated? Review performed? Scope?]
 
 ## Documentation Summary
-- **Plan defined / updated:** [count of DOC-NNN or "n/a"] (`docs/documentation-plan.md`)
+- **Plan defined / updated:** [count of DOC-NNN or "n/a"] (`.sdlc/documentation-plan.md`)
 - **Guides written / updated:** [list the `docs/guides/*` files]
 - **Verified by walking:** [which guides you ran end to end; which steps you could not verify and why]
 - **Must-fix:** [count] issues

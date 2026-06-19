@@ -11,11 +11,11 @@ The user may specify a milestone: $ARGUMENTS
 
 Read these files:
 1. `docs/project-brief.md` — understand the project goals, constraints, and compliance requirements
-2. `docs/env-context.md` — understand the delivery mechanism and failure/recovery characteristics
+2. `.sdlc/env-context.md` — understand the delivery mechanism and failure/recovery characteristics
 3. `docs/roadmap.md` — understand the milestone scope
-4. `docs/test-plan.md` (if it exists) — understand what tests must pass
+4. `.sdlc/test-plan.md` (when present) — understand what tests must pass
 
-If `docs/env-context.md` doesn't exist, tell the user: "No environment context found. Run `/ops-env-discovery` first so I understand your deployment targets and failure/recovery characteristics."
+If `.sdlc/env-context.md` doesn't exist, tell the user: "No environment context found. Run `/ops-env-discovery` first so I understand your deployment targets and failure/recovery characteristics."
 
 Scan all `.sdlc/issues/` subdirectories for files matching the milestone (check the **Milestone** field in each file). Read `.sdlc/issues/issues-list.md` for a quick overview.
 
@@ -31,7 +31,7 @@ Based on the project context, define the gates that must pass before release:
 - No open blocker issues (check: scan open issue folders for files with **Severity: blocker**)
 
 **Test gates:**
-- If `docs/test-plan.md` exists: all P1 test matrix rows passing
+- If `.sdlc/test-plan.md` exists: all P1 test matrix rows passing
 - Regression check completed (or scheduled)
 - Test coverage at acceptable level (define what "acceptable" means for this project)
 
@@ -47,7 +47,7 @@ Based on the project context, define the gates that must pass before release:
 
 ## Step 3: Define Rollback Procedure
 
-Based on `docs/env-context.md`, document how to revert a failed release:
+Based on `.sdlc/env-context.md`, document how to revert a failed release:
 
 - **How to detect a failed release** — what signals indicate the release is bad? (monitoring, health checks, user reports, automated tests)
 - **How to revert** — specific to the delivery mechanism (redeploy previous version, OTA rollback, reflash, revert container tag, etc.)
@@ -66,7 +66,7 @@ What gets shipped:
 
 ## Step 5: Produce the Release Plan
 
-Save to `docs/release-plan.md`:
+Save to `.sdlc/release-plan.md`:
 
 ```markdown
 # Release Plan

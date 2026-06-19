@@ -10,12 +10,10 @@ The user may specify what to review: $ARGUMENTS
 ## Step 1: Load Context
 
 Read these files automatically:
-1. `docs/security-requirements.md` — the requirements to evaluate against (your checklist)
+1. `.sdlc/security-requirements.md` — Read this file. If it is absent, STOP and report: "security-requirements.md not found at .sdlc/security-requirements.md. Produce it with sec-requirements, or run migrate-sdlc for an existing project." Do not proceed with the task — security requirements are the review baseline; this surface exists by definition when sec-review runs. The requirements to evaluate against (your checklist).
 2. `docs/project-brief.md` — constraints, compliance, what's sensitive
-3. `docs/architecture.md` (if it exists) — trust boundaries
+3. `.sdlc/architecture.md` — Read this file. If it is absent, STOP and report: "architecture.md not found at .sdlc/architecture.md. Produce it with sa-design, or run migrate-sdlc for an existing project." Do not proceed with the task — architecture is required for any implementation milestone. Trust boundaries.
 4. Recent SWE handoff notes in `.sdlc/handoff-notes/swe/` — what was built and changed
-
-If `docs/security-requirements.md` doesn't exist, tell the user: "No security requirements exist yet. Ask for the `sec-requirements` skill first to establish the bar, or this review will have no baseline to evaluate against." You may still do a best-effort review from common categories, but say so.
 
 If the user specified what to review (a component, a session's work), focus there. Otherwise review the milestone's changes broadly.
 

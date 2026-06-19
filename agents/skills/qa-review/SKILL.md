@@ -23,9 +23,9 @@ Read these files:
 3. The relevant issue file(s) from `.sdlc/issues/` — find them in `in-progress/`, `done/`, or `planned/` and read each one for acceptance criteria and scope
 4. The relevant SWE handoff note(s) in `.sdlc/handoff-notes/swe/` — understand what was done and what decisions were made
 5. Most recent handoff note in `.sdlc/handoff-notes/qa/` (if any exist) — understand what QA has already reviewed
-6. `docs/test-plan.md` (if it exists) — understand what QA has defined as test requirements
-7. `docs/env-context.md` (if it exists) — understand environment-specific constraints
-8. `docs/architecture.md` (if it exists) — understand architectural intent for evaluating architecture fit
+6. `.sdlc/test-plan.md` — If this milestone produced a `test-plan.md` (the milestone has a test surface) but it is absent at `.sdlc/`, STOP and report: "test-plan.md not found at .sdlc/test-plan.md. Produce it with qa-test-plan, or run migrate-sdlc for an existing project." If this milestone has no test surface and therefore produced no `test-plan.md`, proceed without it — this is a documented no-op, not an error. Understand what QA has defined as test requirements.
+7. `.sdlc/env-context.md` (when present) — understand environment-specific constraints
+8. `.sdlc/architecture.md` — Read this file. If it is absent, STOP and report: "architecture.md not found at .sdlc/architecture.md. Produce it with sa-design, or run migrate-sdlc for an existing project." Do not proceed with the task — architecture is required for any implementation milestone. Understand architectural intent for evaluating architecture fit.
 
 Do NOT read the code yet. Understand the intent first so you can evaluate the code against what it was supposed to do, not just what it happens to do.
 
@@ -46,7 +46,7 @@ Assess the code across these dimensions. Be critical, not polite. The goal is to
 - Do the tests actually test the important behavior, or do they just test the happy path?
 - Are there missing edge case tests?
 - Could the tests pass even if the implementation were subtly wrong? (Tests that are too tightly coupled to implementation details are a smell.)
-- If `docs/test-plan.md` exists: evaluate coverage against the test plan, not just against "does it test the happy path." Are QA's defined test requirements implemented?
+- Evaluate coverage against `.sdlc/test-plan.md`. If this milestone produced a `test-plan.md` (the milestone has a test surface) but it is absent at `.sdlc/`, STOP and report: "test-plan.md not found at .sdlc/test-plan.md. Produce it with qa-test-plan, or run migrate-sdlc for an existing project." If this milestone has no test surface and therefore produced no `test-plan.md`, proceed without it — this is a documented no-op, not an error. When present, evaluate coverage against the test plan, not just against "does it test the happy path." Are QA's defined test requirements implemented?
 
 **Security & Error Handling**
 - Input validation — is user/external input trusted where it shouldn't be?
@@ -60,7 +60,7 @@ Assess the code across these dimensions. Be critical, not polite. The goal is to
 - If multiple tasks are being reviewed: do the pieces fit together coherently, or do they look like they were written by different people with different assumptions?
 
 **Environment-Specific Concerns**
-If `docs/env-context.md` exists, also evaluate:
+If `.sdlc/env-context.md` exists, also evaluate:
 - Memory constraints — any unbounded allocations, large buffers, or memory leaks?
 - Target architecture — endianness assumptions, word size, alignment?
 - Peripheral or hardware assumptions — hardcoded addresses, timing assumptions?
@@ -76,7 +76,7 @@ Skip this section if no env-context exists or if it's not relevant (e.g., pure w
 - Missing documentation where intent isn't obvious from the code
 
 **Architecture Fit**
-- Does this code fit the architecture the SWE established (its execution discipline and `docs/architecture.md`), or did it drift?
+- Does this code fit the architecture the SWE established (its execution discipline and `.sdlc/architecture.md`), or did it drift? Read `.sdlc/architecture.md`. If it is absent, STOP and report: "architecture.md not found at .sdlc/architecture.md. Produce it with sa-design, or run migrate-sdlc for an existing project." Do not proceed with the task — architecture is required for any implementation milestone.
 - Are module boundaries clean, or is there inappropriate coupling?
 - Would this code be easy for the next session to extend or modify?
 

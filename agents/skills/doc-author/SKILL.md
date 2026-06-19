@@ -11,12 +11,12 @@ This is a task-execution skill: it is normally reached through `/start-task` on 
 
 Read these files automatically:
 1. The task issue (in `.sdlc/issues/in-progress/` once `/start-task` has moved it) — the acceptance criteria and the `DOC-NNN` requirements this guide must satisfy
-2. `docs/documentation-plan.md` — the guide's audience and requirements
-3. The upstream specs the guide draws on — `docs/architecture.md`, `docs/ux-guidelines.md`, `docs/env-context.md`, `docs/release-plan.md`, `docs/security-requirements.md` (whichever apply)
+2. `.sdlc/documentation-plan.md` — the guide's audience and requirements
+3. The upstream specs the guide draws on — `.sdlc/architecture.md`, `.sdlc/ux-guidelines.md`, `.sdlc/env-context.md`, `.sdlc/release-plan.md`, `.sdlc/security-requirements.md` (whichever apply)
 4. The relevant `.sdlc/handoff-notes/swe/` and `.sdlc/handoff-notes/devops/` — what actually shipped
 5. The code, config, and commands the guide describes — read them directly so the guide matches reality
 
-If `docs/documentation-plan.md` doesn't exist, tell the user: "No documentation plan exists yet. Ask for the `doc-plan` skill first so this guide has defined audience and requirements," then proceed best-effort from the brief and the issue if the user wants.
+If `.sdlc/documentation-plan.md` doesn't exist, tell the user: "No documentation plan exists yet. Ask for the `doc-plan` skill first so this guide has defined audience and requirements," then proceed best-effort from the brief and the issue if the user wants.
 
 ## Step 2: Confirm the Reader and Their Starting Point
 

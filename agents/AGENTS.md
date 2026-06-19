@@ -21,13 +21,15 @@ Infer the expert from the skill or command prefix (e.g. `/pm-interview` → PM, 
 
 ## Conventions
 
-**Handoff notes:** `.sdlc/notes/<expert>/session-NN.md`. Each expert writes only to its own subdirectory. Session numbers are sequential.
+**Expert specs/plans/drafts:** `.sdlc/` is the home for all expert-authored specifications, plans, and working documents (architecture, security-requirements, ux-guidelines, test-plan, documentation-plan, env-context, release-plan, and the associated research/, security/, and runbooks/ subdirectories). `docs/` contains only user-facing content: `guides/`, `README.md`, `project-brief.md`, and `roadmap.md`.
+
+**Handoff notes:** `.sdlc/handoff-notes/<expert>/session-NN.md`. Each expert writes only to its own subdirectory. Session numbers are sequential.
 
 **Issues:** `.sdlc/issues/<status>/[expert]-[type]-[NNN].md` where status is `backlog/`, `planned/`, `in-progress/`, or `done/`. The `[expert]` prefix is the **executor** — the expert who will fix or implement the issue, not the expert who found it. DevOps issues use `devops-` (not `ops-`). All experts can read all issues and create in `backlog/`. Only PM moves issues between directories.
 
 **Status lifecycle:** `backlog` (decomposed, not yet committed) → `planned` (approved for execution) → `in-progress` (actively being worked) → `done`. Promotion `backlog → planned` is a deliberate decision — a PM call, or the `team-milestone` planned-set gate. `/start-task` pulls work **only** from `planned/`, moves the issue to `in-progress/`, and stamps its header `**Status:**` and `**Session:**` (the working session id); `/resume-task` picks up **only** from `in-progress/`. The `*-handoff` skills move the issue to `done/` once acceptance criteria are met. Keep the issue's `**Status:**` field in step with its bucket on every move (`.agents/scripts/move-issue.sh`).
 
-**Workflow contracts:** Each expert produces artifacts that others consume. If an upstream artifact doesn't exist, tell the user what's missing and how to create it — don't fail silently or invent data.
+**Workflow contracts:** Each expert produces artifacts that others consume. A missing *required* spec at `.sdlc/` is a hard failure that names the file and remedy: "spec.md not found at .sdlc/spec.md. Produce it with <authoring-skill>, or run migrate-sdlc for an existing project." Genuinely optional artifacts or no-surface specs are an exempt documented no-op: "this milestone has no <surface> surface and therefore produced no spec.md, proceed without it — this is not an error." Don't fail silently or invent data.
 
 **Skills:** Expert skills live in `.agents/skills/`. Each expert's role file lists its available skills. The agent finds and invokes them automatically based on context — they are not slash commands. (Claude Code also surfaces them in the `/` menu via the `.claude/skills` symlink.)
 

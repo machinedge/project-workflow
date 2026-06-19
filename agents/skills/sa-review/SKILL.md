@@ -10,11 +10,9 @@ The user may specify what to review: $ARGUMENTS
 ## Step 1: Load Context
 
 Read these files automatically:
-1. `docs/architecture.md` — the architectural intent to evaluate against
+1. `.sdlc/architecture.md` — the architectural intent to evaluate against. If it is absent, STOP and report: "architecture.md not found at .sdlc/architecture.md. Produce it with sa-design, or run migrate-sdlc for an existing project." Do not proceed with the task — architecture is required for any implementation milestone.
 2. `docs/project-brief.md` — project constraints and decisions
 3. Recent SWE handoff notes in `.sdlc/handoff-notes/swe/` — what was built and what changed
-
-If `docs/architecture.md` doesn't exist, tell the user: "No architecture document exists yet. Ask for the `sa-design` skill first to establish the architectural intent, or this review will have no baseline to evaluate against."
 
 If the user specified what to review (e.g., a specific component, a recent session's work), focus there. Otherwise, review broadly.
 

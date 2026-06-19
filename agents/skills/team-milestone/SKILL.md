@@ -31,11 +31,11 @@ Present the task list and dependency order. **Wait for the user to approve the e
 
 Produce the foundation artifacts for this milestone, each **scoped to the planned task set** from Phase 1. On Claude Code these run in parallel; otherwise run them in order. Each is the existing skill, scoped to this milestone:
 
-- **System Architect** → `sa-design` (scoped to the milestone): component boundaries, interfaces, data flow, contracts → `docs/architecture.md`.
-- **Security** → `sec-requirements`: threat model + verifiable controls (`SR-NNN`) → `docs/security-requirements.md`.
-- **UX Designer** → `ux-guidelines`: user flows, interaction, accessibility, content & CLI ergonomics (`UX-NNN`) → `docs/ux-guidelines.md` (says so and produces a minimal note if the milestone has no user-facing surface).
-- **Technical Writer** → `doc-plan`: audiences (end user / operator / maintainer), the guides this milestone needs, and verifiable documentation requirements (`DOC-NNN`) → `docs/documentation-plan.md` (minimal note if nothing user- or operator-facing changed).
-- **QA** → `qa-test-plan`: test strategy, acceptance criteria, explicit test cases → `docs/test-plan.md`.
+- **System Architect** → `sa-design` (scoped to the milestone): component boundaries, interfaces, data flow, contracts → `.sdlc/architecture.md`.
+- **Security** → `sec-requirements`: threat model + verifiable controls (`SR-NNN`) → `.sdlc/security-requirements.md`.
+- **UX Designer** → `ux-guidelines`: user flows, interaction, accessibility, content & CLI ergonomics (`UX-NNN`) → `.sdlc/ux-guidelines.md` (says so and produces a minimal note if the milestone has no user-facing surface).
+- **Technical Writer** → `doc-plan`: audiences (end user / operator / maintainer), the guides this milestone needs, and verifiable documentation requirements (`DOC-NNN`) → `.sdlc/documentation-plan.md` (minimal note if nothing user- or operator-facing changed).
+- **QA** → `qa-test-plan`: test strategy, acceptance criteria, explicit test cases → `.sdlc/test-plan.md`.
 - **DevOps** → `ops-pipeline`: build/test/deploy stages and environment needs.
 
 Each skill has its own user-approval step; honor them. If an upstream artifact a skill needs is missing, follow that skill's guidance — don't invent data.
@@ -46,7 +46,7 @@ Consolidate the foundation artifacts into a short walkthrough (the milestone's "
 
 ## Phase 3: Compile (densify the tasks and promote them for execution)
 
-Run `pm-decompose` in **implementation-ready mode** (see its Modes section and `docs/task-detail-standard.md`). The skeleton tasks already exist from Phase 1 — **densify each one in place** (reuse its issue number; don't create duplicates), inlining the enrichment outputs — architecture contracts, `SR-NNN` security constraints, and test cases — so a small model can implement it.
+Run `pm-decompose` in **implementation-ready mode** (see its Modes section and `.sdlc/task-detail-standard.md`). The skeleton tasks already exist from Phase 1 — **densify each one in place** (reuse its issue number; don't create duplicates), inlining the enrichment outputs — architecture contracts, `SR-NNN` security constraints, and test cases — so a small model can implement it.
 
 Then run the **completeness check** (`pm-decompose` Step 4.5): for each task, confirm it could be implemented and tested with no further design decision. Enrich any task that fails; if the gap is in a source artifact, flag it. Propose which tasks are ready to **promote** (cleared the bar, dependencies promotable) and which to **hold**.
 

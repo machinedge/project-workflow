@@ -3,7 +3,7 @@ name: sa-design
 description: "Create the initial system architecture or a major feature architecture. Use when the user needs to establish component boundaries, interfaces, data flow, and key technology decisions for a new system or a significant new area."
 ---
 
-Create the initial system architecture or a major feature architecture. Produces `docs/architecture.md`.
+Create the initial system architecture or a major feature architecture. Produces `.sdlc/architecture.md`.
 
 The user may specify a scope or focus area: $ARGUMENTS
 
@@ -11,10 +11,10 @@ The user may specify a scope or focus area: $ARGUMENTS
 
 Read these files automatically:
 1. `docs/project-brief.md`
-2. `docs/roadmap.md` (if it exists)
+2. `docs/roadmap.md` (when present)
 3. `.sdlc/interview-notes*.md` (if any exist — raw requirements context)
-4. `docs/architecture.md` (if it exists — you may be extending, not starting fresh)
-5. `docs/env-context.md` (if it exists — deployment and infrastructure constraints)
+4. `.sdlc/architecture.md` (when present — you may be extending, not starting fresh)
+5. `.sdlc/env-context.md` (when present — deployment and infrastructure constraints)
 
 If the user specified a scope (e.g., "design the data layer"), focus on that area. Otherwise, design the full system architecture.
 
@@ -55,7 +55,7 @@ For each significant architectural decision:
 
 Use an Architecture Decision Record (ADR) style within the document.
 
-## Step 5: Draft `docs/architecture.md`
+## Step 5: Draft `.sdlc/architecture.md`
 
 Create the architecture document using this structure:
 
@@ -104,4 +104,4 @@ Present the draft to the user. Walk through the key decisions and trade-offs. Wa
 
 If the user requests changes, update the draft and present again.
 
-Save `docs/architecture.md` only after the user approves.
+Save `.sdlc/architecture.md` only after the user approves.

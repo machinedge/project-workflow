@@ -2,7 +2,7 @@ The user wants to scope new work for an existing project.
 
 If the user provided a description: $ARGUMENTS
 
-First, read `docs/project-brief.md` and `docs/roadmap.md` (if it exists) so you understand the project context, constraints, audience, and what's already been built or planned. If `docs/project-brief.md` doesn't exist, tell the user to run `/pm-interview` and ask for the `pm-vision` skill first — this command is for adding to an existing project.
+First, read `docs/project-brief.md` and `docs/roadmap.md` (when present) so you understand the project context, constraints, audience, and what's already been built or planned. If `docs/project-brief.md` doesn't exist, tell the user to run `/pm-interview` and ask for the `pm-vision` skill first — this command is for adding to an existing project.
 
 ## Step 1: Assess Complexity
 
